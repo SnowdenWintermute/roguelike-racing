@@ -5,11 +5,13 @@ pub struct User {
     email: String,
 }
 
+#[derive(Debug)]
 pub struct EntityProperties {
     pub id: u32,
     pub name: String,
 }
 
+#[derive(Debug)]
 pub struct MaxAndCurrent<T> {
     pub max: T,
     pub current: T,

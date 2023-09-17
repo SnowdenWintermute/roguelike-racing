@@ -13,6 +13,7 @@ pub enum StatTypes {
     Intelligence,
 }
 
+#[derive(Debug)]
 pub enum EquipmentSlots {
     LeftHand,
     RightHand,
@@ -35,25 +36,41 @@ pub enum ItemTypes {
     Consumable,
 }
 
+#[derive(Debug, EnumIter, Clone, Copy, PartialEq)]
+pub enum ConsumableTypes {
+    RoomFinder,
+    RepairKit,
+    UpgradeKit,
+    SmokeBomb,
+    MilkDrink,
+    FruitDrink,
+    MonsterScanner,
+    Antidote,
+}
+
+#[derive(Debug)]
 pub struct ItemBaseStats {
     damage: u16,
     armor_class: u16,
     durability: Option<MaxAndCurrent<u16>>,
 }
 
+#[derive(Debug)]
 pub struct ItemBonusStats {
     dexterity: u16,
     strength: u16,
     intelligence: u16,
 }
 
+#[derive(Debug)]
 pub struct Item {
     entity_properties: EntityProperties,
+    item_level: u8,
     item_type: ItemTypes,
     base_stats: Option<ItemBaseStats>,
     bonus_stats: Option<ItemBonusStats>,
+    consumable_type: Option<ConsumableTypes>,
     uses_remaining: Option<u8>,
-    use_item: Option<Box<dyn Fn(Self) -> ()>>,
 }
 
 impl Item {
@@ -67,11 +84,13 @@ impl Item {
 
         let mut base_stats = None;
         let mut bonus_stats = None;
+        let mut consumable_type = None;
         let mut uses_remaining: Option<u8> = None;
         let mut use_item: Option<Box<dyn Fn(Item) -> ()>> = None;
 
         if item_type == ItemTypes::Consumable {
-            //
+            let consumable_types: Vec<_> = ConsumableTypes::iter().collect();
+            consumable_type = Some(*consumable_types.choose(&mut rand::thread_rng()).unwrap());
         }
 
         if item_type != ItemTypes::Consumable {
@@ -133,19 +152,12 @@ impl Item {
                 id: game.get_next_entity_id(),
                 name: "name".to_owned(),
             },
+            item_level: level as u8,
             base_stats,
             bonus_stats,
             item_type,
-            uses_remaining: None,
-            use_item: Some(Box::new(|item| {
-                let random_thing = "lolol";
-                match item.base_stats {
-                    Some(base_stats) => {
-                        println!("item damage: {}, {}", base_stats.damage, random_thing)
-                    }
-                    None => (),
-                }
-            })),
+            consumable_type,
+            uses_remaining,
         }
     }
 }

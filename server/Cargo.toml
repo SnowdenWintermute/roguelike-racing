@@ -6,7 +6,5 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-actix = "0.13.1"
-actix-web = "4.4.0"
-actix-web-actors = "4.2.0"
-uuid = {version="1.4.1", features = ["v4", "serde"]}
+common = { path = "../common/"}
+

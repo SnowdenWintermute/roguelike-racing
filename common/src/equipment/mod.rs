@@ -1,10 +1,10 @@
 #![allow(dead_code)]
-use rand::{distributions::Standard, prelude::*};
-use std::{fmt::Arguments, process::Output};
+use rand::prelude::*;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
-use crate::scratch_paper::{Character, EntityProperties, Game, MaxAndCurrent};
+use crate::game::Game;
+use crate::primatives::{EntityProperties, MaxAndCurrent};
 
 #[derive(Debug, EnumIter, Clone, Copy)]
 pub enum StatTypes {
@@ -46,6 +46,7 @@ pub enum ConsumableTypes {
     FruitDrink,
     MonsterScanner,
     Antidote,
+    Grenade,
 }
 
 #[derive(Debug)]
@@ -74,7 +75,7 @@ pub struct Item {
 }
 
 impl Item {
-    fn generate(&self, game: Game, level: u16) -> Item {
+    pub fn generate(mut game: Game, level: u16) -> Item {
         let mut rng = rand::thread_rng();
         let item_types: Vec<_> = ItemTypes::iter().collect();
         let item_type = *item_types.choose(&mut rand::thread_rng()).unwrap();
@@ -86,11 +87,11 @@ impl Item {
         let mut bonus_stats = None;
         let mut consumable_type = None;
         let mut uses_remaining: Option<u8> = None;
-        let mut use_item: Option<Box<dyn Fn(Item) -> ()>> = None;
 
         if item_type == ItemTypes::Consumable {
             let consumable_types: Vec<_> = ConsumableTypes::iter().collect();
             consumable_type = Some(*consumable_types.choose(&mut rand::thread_rng()).unwrap());
+            uses_remaining = Some(1);
         }
 
         if item_type != ItemTypes::Consumable {

@@ -1,8 +1,11 @@
-mod lobby;
-mod messages;
-mod start_connection;
-mod ws;
+use common::{equipment, game};
 
 fn main() {
-    println!("Hello, world!");
+    let mut game = game::Game::new();
+    game.add_player_character("mikey@mikesilverman.net");
+    game.add_player_character("lucella@battleschool.io");
+    game.add_player_character("gamefull@battleschool.io");
+    // let item = equipment::Item::generate(game, 10);
+    // println!("{:#?}", item);
+    println!("{:#?}", game);
 }

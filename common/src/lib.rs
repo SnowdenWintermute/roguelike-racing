@@ -1,5 +1,10 @@
+pub mod character;
+pub mod consts;
+pub mod dungeon_rooms;
 pub mod equipment;
-pub mod scratch_paper;
+pub mod game;
+pub mod monster;
+pub mod primatives;
 
 pub fn add(left: usize, right: usize) -> usize {
     left + right

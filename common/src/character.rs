@@ -1,8 +1,9 @@
 #![allow(dead_code)]
 use crate::consts::{CHARACTER_INVENTORY_DEFAULT_CAPACITY, DEEPEST_FLOOR};
 use crate::dungeon_rooms::{DungeonRoom, DungeonRoomTypes};
-use crate::equipment::Item;
+use crate::items::Item;
 use crate::primatives::{MaxAndCurrent, UpOrDown};
+use crate::status_effects::StatusEffects;
 
 #[derive(Debug)]
 pub struct CharacterEquipment {
@@ -63,9 +64,12 @@ pub enum CharacterClasses {
 
 #[derive(Debug)]
 pub struct CharacterAbility {
-    name: String,
-    class: Option<CharacterClasses>,
-    level: u8,
+    pub name: String,
+    pub class: Option<CharacterClasses>,
+    pub level: u8,
+    pub mana_cost: u8,
+    pub mana_cost_level_multiplier: u8,
+    pub shard_cost: u8,
 }
 
 #[derive(Debug)]
@@ -83,21 +87,33 @@ impl CharacterAbilities {
                 name: "Attack".to_string(),
                 class: None,
                 level: 1,
+                mana_cost: 0,
+                mana_cost_level_multiplier: 0,
+                shard_cost: 0,
             },
             CharacterAbilities::HeatLance => CharacterAbility {
                 name: "Heat Lance".to_string(),
                 class: Some(CharacterClasses::Mage),
                 level: 0,
+                mana_cost: 1,
+                mana_cost_level_multiplier: 1,
+                shard_cost: 0,
             },
             CharacterAbilities::ArmorBreak => CharacterAbility {
                 name: "Armor Break".to_string(),
                 class: Some(CharacterClasses::Warrior),
                 level: 0,
+                mana_cost: 1,
+                mana_cost_level_multiplier: 1,
+                shard_cost: 0,
             },
             CharacterAbilities::ShootArrow => CharacterAbility {
                 name: "Shoot Arrow".to_string(),
                 class: Some(CharacterClasses::Rogue),
                 level: 0,
+                mana_cost: 0,
+                mana_cost_level_multiplier: 0,
+                shard_cost: 1,
             },
         }
     }
@@ -108,6 +124,7 @@ pub struct Character {
     pub user_email: String,
     pub hit_points: MaxAndCurrent<u16>,
     pub mana: MaxAndCurrent<u16>,
+    pub status_effects: Vec<StatusEffects>,
     pub equipment: CharacterEquipment,
     pub inventory: CharacterInventory,
     pub abilities: Vec<CharacterAbility>,
@@ -136,6 +153,7 @@ impl Character {
             user_email,
             hit_points: MaxAndCurrent::new(10, 10),
             mana: MaxAndCurrent::new(10, 10),
+            status_effects: vec![],
             equipment: CharacterEquipment::new(),
             inventory: CharacterInventory::new(),
             abilities,
@@ -173,6 +191,4 @@ impl Character {
 
         self.explore_dungeon();
     }
-
-    // pub fn tick_combat(&mut self)
 }

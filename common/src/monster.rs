@@ -1,7 +1,11 @@
 #![allow(dead_code)]
 use strum_macros::EnumIter;
 
-use crate::{character::CharacterEquipment, primatives::MaxAndCurrent};
+use crate::{
+    character::items::CharacterEquipment,
+    game::IdGenerator,
+    primatives::{EntityProperties, MaxAndCurrent},
+};
 
 #[derive(Debug, EnumIter, Clone, Copy, PartialEq)]
 pub enum MonsterTraits {
@@ -21,16 +25,21 @@ pub enum MonsterAbilities {
 
 #[derive(Debug)]
 pub struct Monster {
-    hit_points: MaxAndCurrent<u16>,
-    mana: MaxAndCurrent<u16>,
-    equipment: CharacterEquipment,
-    special_trait: Option<MonsterTraits>,
-    special_ability: Option<MonsterAbilities>,
+    pub entity_properties: EntityProperties,
+    pub hit_points: MaxAndCurrent<u16>,
+    pub mana: MaxAndCurrent<u16>,
+    pub equipment: CharacterEquipment,
+    pub special_trait: Option<MonsterTraits>,
+    pub special_ability: Option<MonsterAbilities>,
 }
 
 impl Monster {
-    pub fn generate(_level: u8) -> Monster {
+    pub fn generate(id_generator: &mut IdGenerator, _level: u8) -> Monster {
         Monster {
+            entity_properties: EntityProperties {
+                id: id_generator.get_next_entity_id(),
+                name: "some monster name".to_string(),
+            },
             hit_points: MaxAndCurrent::new(10, 10),
             mana: MaxAndCurrent::new(10, 10),
             equipment: CharacterEquipment::new(),

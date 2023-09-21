@@ -2,7 +2,7 @@
 use rand::prelude::*;
 use strum_macros::EnumIter;
 
-use crate::game::Game;
+use crate::game::IdGenerator;
 use crate::primatives::{EntityProperties, MaxAndCurrent};
 
 mod generate_consumable_properties;
@@ -90,15 +90,13 @@ pub struct Item {
 }
 
 impl Item {
-    pub fn generate(mut game: Game, level: u16) -> Item {
+    pub fn generate(mut id_generator: IdGenerator, level: u16) -> Item {
         let mut rng = rand::thread_rng();
         let random_number = rng.gen_range(1..6);
         let mut item_category: ItemCategories = ItemCategories::Equipment;
         if random_number > 5 {
             item_category = ItemCategories::Consumable;
         }
-
-        let mut name = String::from("");
 
         let item_properties = match item_category {
             ItemCategories::Equipment => Item::generate_equipment_properties(level),
@@ -107,8 +105,8 @@ impl Item {
 
         Item {
             entity_properties: EntityProperties {
-                id: game.get_next_entity_id(),
-                name: "name".to_owned(),
+                id: id_generator.get_next_entity_id(),
+                name: "some item name".to_owned(),
             },
             item_level: level as u8,
             item_category,

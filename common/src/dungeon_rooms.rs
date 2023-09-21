@@ -1,5 +1,6 @@
 #![allow(dead_code)]
-use crate::equipment::Item;
+use crate::game::IdGenerator;
+use crate::items::Item;
 use crate::monster::Monster;
 use rand::prelude::*;
 use strum::IntoEnumIterator;
@@ -53,6 +54,7 @@ pub struct DungeonRoom {
 
 impl DungeonRoom {
     pub fn generate(
+        id_generator: &mut IdGenerator,
         floor: u8,
         stairs_possible: bool,
         forced_type: Option<DungeonRoomTypes>,
@@ -78,7 +80,7 @@ impl DungeonRoom {
 
         let mut monster = None;
         if room_type == DungeonRoomTypes::MonsterLair {
-            monster = Some(Monster::generate(floor));
+            monster = Some(Monster::generate(id_generator, floor));
         }
 
         DungeonRoom {

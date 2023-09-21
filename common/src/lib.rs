@@ -2,6 +2,7 @@ pub mod character;
 pub mod combat;
 pub mod consts;
 pub mod dungeon_rooms;
+pub mod errors;
 pub mod game;
 pub mod items;
 pub mod monster;

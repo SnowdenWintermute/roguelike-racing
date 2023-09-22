@@ -1,79 +1,57 @@
 #![allow(dead_code)]
 use std::collections::HashMap;
 
-use crate::consts::DEEPEST_FLOOR;
-use crate::dungeon_rooms::{DungeonRoom, DungeonRoomTypes};
-use crate::errors::{AppError, AppErrorTypes};
-use crate::game::IdGenerator;
-use crate::primatives::{EntityProperties, MaxAndCurrent, UpOrDown};
-use crate::status_effects::StatusEffects;
+use crate::game::id_generator::IdGenerator;
+use crate::primatives::{EntityProperties, MaxAndCurrent};
 
-use self::abilities::{CharacterAbilities, CharacterAbility};
-use self::items::{CharacterEquipment, CharacterInventory};
+use self::abilities::{CombatantAbilities, CombatantAbility};
+use self::combatant_properties::{CombatantClass, CombatantProperties};
+use self::items::{CharacterInventory, CombatantEquipment};
 
 pub mod abilities;
+pub mod combatant_properties;
 pub mod items;
-
-#[derive(Debug)]
-pub struct RoomsExplored {
-    pub total: u16,
-    pub on_current_floor: u16,
-}
-
-#[derive(Debug)]
-pub enum CharacterClasses {
-    Warrior,
-    Mage,
-    Rogue,
-}
 
 #[derive(Debug)]
 pub struct Character {
     pub entity_properties: EntityProperties,
-    pub user_email: String,
-    pub hit_points: MaxAndCurrent<u16>,
-    pub mana: MaxAndCurrent<u16>,
-    pub status_effects: Vec<StatusEffects>,
-    pub equipment: CharacterEquipment,
+    pub combatant_properties: CombatantProperties,
     pub inventory: CharacterInventory,
-    pub abilities: HashMap<CharacterAbilities, CharacterAbility>,
     pub unspent_ability_points: u8,
-    pub current_floor: u8,
-    pub rooms_explored: RoomsExplored,
-    pub current_room: DungeonRoom,
+    pub actions_taken: u8,
 }
 
 impl Character {
     pub fn new(
         id_generator: &mut IdGenerator,
         name: &str,
-        user_email: String,
-        character_class: CharacterClasses,
+        combatant_class: CombatantClass,
     ) -> Character {
-        let mut abilities = HashMap::<CharacterAbilities, CharacterAbility>::new();
+        let mut abilities = HashMap::<CombatantAbilities, CombatantAbility>::new();
         abilities.insert(
-            CharacterAbilities::Attack,
-            CharacterAbilities::new(&CharacterAbilities::Attack),
+            CombatantAbilities::Attack,
+            CombatantAbilities::new(&CombatantAbilities::Attack),
         );
-        match character_class {
-            CharacterClasses::Mage => {
+        match combatant_class {
+            CombatantClass::Mage => {
                 abilities.insert(
-                    CharacterAbilities::HeatLance,
-                    CharacterAbilities::new(&CharacterAbilities::HeatLance),
+                    CombatantAbilities::HeatLance,
+                    CombatantAbilities::new(&CombatantAbilities::HeatLance),
                 );
             }
-            CharacterClasses::Rogue => {
+            CombatantClass::Rogue => {
                 abilities.insert(
-                    CharacterAbilities::ShootArrow,
-                    CharacterAbilities::new(&CharacterAbilities::ShootArrow),
+                    CombatantAbilities::ShootArrow,
+                    CombatantAbilities::new(&CombatantAbilities::ShootArrow),
                 );
             }
-            CharacterClasses::Warrior => {
+            CombatantClass::Warrior => {
                 abilities.insert(
-                    CharacterAbilities::ArmorBreak,
-                    CharacterAbilities::new(&CharacterAbilities::ArmorBreak),
+                    CombatantAbilities::ArmorBreak,
+                    CombatantAbilities::new(&CombatantAbilities::ArmorBreak),
                 );
             }
+            CombatantClass::Monster => {}
         }
 
         Character {
@@ -81,62 +59,17 @@ impl Character {
                 id: id_generator.get_next_entity_id(),
                 name: name.to_owned(),
             },
-            user_email,
-            hit_points: MaxAndCurrent::new(10, 10),
-            mana: MaxAndCurrent::new(10, 10),
-            status_effects: vec![],
-            equipment: CharacterEquipment::new(),
-            inventory: CharacterInventory::new(),
-            abilities,
-            unspent_ability_points: 1,
-            current_floor: 1,
-            rooms_explored: RoomsExplored {
-                total: 0,
-                on_current_floor: 0,
+            combatant_properties: CombatantProperties {
+                combatant_class,
+                hit_points: MaxAndCurrent::new(10, 10),
+                mana: MaxAndCurrent::new(10, 10),
+                status_effects: vec![],
+                equipment: CombatantEquipment::new(),
+                abilities,
             },
-            current_room: DungeonRoom::generate(
-                id_generator,
-                1,
-                true,
-                Some(DungeonRoomTypes::Stairs),
-            ),
+            inventory: CharacterInventory::new(),
+            unspent_ability_points: 1,
+            actions_taken: 0,
         }
-    }
-
-    pub fn explore_dungeon(&mut self, id_generator: &mut IdGenerator) -> Result<(), AppError> {
-        if self.current_room.monster.is_some() {
-            return Err(AppError {
-                error_type: AppErrorTypes::InvalidInput,
-                message: "The monster in this room is blocking you from exploring the next room."
-                    .to_string(),
-            });
-        }
-
-        self.rooms_explored.total += 1;
-        self.rooms_explored.on_current_floor += 1;
-
-        let possible_to_find_stairs = self.rooms_explored.on_current_floor > 3;
-        self.current_room = DungeonRoom::generate(
-            id_generator,
-            self.current_floor,
-            possible_to_find_stairs,
-            None,
-        );
-        println!("generated room: ");
-        println!("{:#?}", self.current_room);
-        Ok(())
-    }
-
-    pub fn take_stairs(&mut self, id_generator: &mut IdGenerator, direction: UpOrDown) {
-        if direction == UpOrDown::Down {
-            self.current_floor += 1;
-            if self.current_floor >= DEEPEST_FLOOR {
-                return println!("escaped the dungeon");
-            }
-        } else {
-            self.current_floor -= 1;
-        }
-
-        let _ = self.explore_dungeon(id_generator);
     }
 }

@@ -1,3 +1,4 @@
+pub mod adventuring_party;
 pub mod character;
 pub mod combat;
 pub mod consts;

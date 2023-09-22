@@ -1,5 +1,5 @@
 #![allow(dead_code)]
-use crate::game::IdGenerator;
+use crate::game::id_generator::IdGenerator;
 use crate::items::Item;
 use crate::monster::Monster;
 use rand::prelude::*;
@@ -49,7 +49,7 @@ pub struct DungeonRoom {
     pub room_type: DungeonRoomTypes,
     pub treasure_chest: Option<TreasureChest>,
     pub items: Option<Vec<Item>>,
-    pub monster: Option<Monster>,
+    pub monsters: Option<Vec<Monster>>,
 }
 
 impl DungeonRoom {
@@ -78,15 +78,15 @@ impl DungeonRoom {
             treasure_chest = Some(TreasureChest::generate(floor));
         }
 
-        let mut monster = None;
+        let mut monsters = None;
         if room_type == DungeonRoomTypes::MonsterLair {
-            monster = Some(Monster::generate(id_generator, floor));
+            monsters = Some(vec![Monster::generate(id_generator, floor)]);
         }
 
         DungeonRoom {
             room_type,
             items: None,
-            monster,
+            monsters,
             treasure_chest,
         }
     }

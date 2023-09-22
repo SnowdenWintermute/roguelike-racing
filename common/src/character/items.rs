@@ -1,7 +1,7 @@
 use crate::{consts::CHARACTER_INVENTORY_DEFAULT_CAPACITY, items::Item};
 
 #[derive(Debug)]
-pub struct CharacterEquipment {
+pub struct CombatantEquipment {
     left_hand: Option<Item>,
     right_hand: Option<Item>,
     head: Option<Item>,
@@ -11,9 +11,9 @@ pub struct CharacterEquipment {
     amulet: Option<Item>,
 }
 
-impl CharacterEquipment {
-    pub fn new() -> CharacterEquipment {
-        CharacterEquipment {
+impl CombatantEquipment {
+    pub fn new() -> CombatantEquipment {
+        CombatantEquipment {
             left_hand: None,
             right_hand: None,
             head: None,

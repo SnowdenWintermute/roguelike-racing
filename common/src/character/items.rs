@@ -27,10 +27,10 @@ impl CombatantEquipment {
 
 #[derive(Debug)]
 pub struct CharacterInventory {
-    items: Vec<Item>,
-    capacity: u8,
-    shards: u16,
-    autoinjectors: u16,
+    pub items: Vec<Item>,
+    pub capacity: u8,
+    pub shards: u16,
+    pub autoinjectors: u16,
 }
 
 impl CharacterInventory {

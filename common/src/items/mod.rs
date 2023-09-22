@@ -92,7 +92,7 @@ pub struct Item {
 }
 
 impl Item {
-    pub fn generate(mut id_generator: IdGenerator, level: u16) -> Item {
+    pub fn generate(id_generator: &mut IdGenerator, level: u16) -> Item {
         let mut rng = rand::thread_rng();
         let random_number = rng.gen_range(1..6);
         let mut item_category: ItemCategories = ItemCategories::Equipment;

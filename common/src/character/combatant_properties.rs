@@ -1,7 +1,6 @@
 use super::abilities::CombatantAbilities;
 use super::items::CombatantEquipment;
 use crate::character::CombatantAbility;
-use crate::items::Item;
 use crate::primatives::MaxAndCurrent;
 use crate::status_effects::StatusEffects;
 use std::collections::HashMap;
@@ -24,6 +23,6 @@ pub struct CombatantProperties {
     pub abilities: HashMap<CombatantAbilities, CombatantAbility>,
     // pub traits: HashSet<CombatantTraits>
     pub target_ids: Option<Vec<u32>>,
-    pub selected_ability: Option<CombatantAbility>,
-    pub selected_item: Option<Item>,
+    pub selected_ability_slot: Option<u8>,
+    pub selected_item_slot: Option<u8>,
 }

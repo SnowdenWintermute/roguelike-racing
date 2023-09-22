@@ -15,10 +15,10 @@ pub enum DungeonRoomTypes {
 
 #[derive(Debug)]
 pub struct TreasureChest {
-    is_opened: bool,
-    is_locked: bool,
-    is_trapped: bool,
-    level: u8,
+    pub is_opened: bool,
+    pub is_locked: bool,
+    pub is_trapped: bool,
+    pub level: u8,
 }
 
 impl TreasureChest {

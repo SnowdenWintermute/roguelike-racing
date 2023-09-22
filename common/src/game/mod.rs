@@ -5,6 +5,7 @@ use std::{collections::HashMap, time::Instant};
 
 use self::player_actions::PlayerActionRequest;
 pub mod id_generator;
+pub mod open_treasure_chest;
 pub mod player_actions;
 
 #[derive(Debug)]

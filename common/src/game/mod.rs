@@ -1,12 +1,13 @@
 #![allow(dead_code)]
+use self::player_actions::PlayerActionRequest;
 use crate::adventuring_party::AdventuringParty;
 use crate::game::id_generator::IdGenerator;
 use std::{collections::HashMap, time::Instant};
-
-use self::player_actions::PlayerActionRequest;
 pub mod id_generator;
 pub mod open_treasure_chest;
 pub mod player_actions;
+pub mod select_consumable;
+pub mod use_selected_consumable;
 
 #[derive(Debug)]
 pub struct Game {
@@ -28,16 +29,5 @@ impl Game {
         let party_id = self.id_generator.get_next_entity_id();
         let new_party = AdventuringParty::new(party_id, &mut self.id_generator);
         self.adventuring_parties.insert(party_id, new_party);
-    }
-
-    pub fn process_player_action(
-        &mut self,
-        party_id: u32,
-        player_action_request: PlayerActionRequest,
-    ) {
-        // validate action
-        //   if action requires player active, check if action comes from active player
-        // process the action
-        // send client(s) updated adventure info
     }
 }

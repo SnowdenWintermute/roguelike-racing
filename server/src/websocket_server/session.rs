@@ -1,8 +1,10 @@
-use actix::prelude::*;
-use actix_web_actors::ws;
-use std::time::{Duration, Instant};
-
 use crate::websocket_server;
+use actix::prelude::*;
+use actix_web::web::Buf;
+use actix_web_actors::ws;
+use common::game::player_actions::PlayerInputRequest;
+use serde_cbor;
+use std::time::{Duration, Instant};
 
 const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(5);
 const CLIENT_TIMEOUT: Duration = Duration::from_secs(10);
@@ -100,12 +102,20 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsChatSession {
             }
             ws::Message::Pong(_) => self.time_of_last_ping_received = Instant::now(),
             ws::Message::Binary(bytes) => {
-                self.server_address
-                    .do_send(websocket_server::ClientBinaryMessage {
-                        sender_id: self.id,
-                        content: bytes.to_vec(),
-                        room: self.current_room.clone(),
-                    })
+                println!("received binary message");
+                // let reader = bytes.reader();
+                let byte_slice = &bytes[..];
+                let deserialized: Result<PlayerInputRequest, _> =
+                    serde_cbor::from_slice(byte_slice);
+                println!("{:#?}", deserialized);
+                println!("ayy");
+                println!("ayy");
+                // self.server_address
+                //     .do_send(websocket_server::ClientBinaryMessage {
+                //         sender_id: self.id,
+                //         content: bytes.clone().to_vec(),
+                //         room: self.current_room.clone(),
+                //     })
             }
             ws::Message::Text(text) => {
                 let m = text.trim();

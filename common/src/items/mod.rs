@@ -1,11 +1,10 @@
 #![allow(dead_code)]
-use rand::prelude::*;
-use strum_macros::EnumIter;
-
 use crate::character::abilities::{TargetingScheme, ValidTargets};
 use crate::game::id_generator::IdGenerator;
 use crate::primatives::{EntityProperties, MaxAndCurrent};
-
+use rand::prelude::*;
+use serde::{Deserialize, Serialize};
+use strum_macros::EnumIter;
 mod generate_consumable_properties;
 mod generate_equipment_properties;
 
@@ -22,7 +21,7 @@ pub enum ItemCategories {
     Consumable,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum EquipmentSlots {
     LeftHand,
     RightHand,

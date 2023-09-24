@@ -1,5 +1,9 @@
+use common::game::player_actions::PlayerInputRequest;
+use common::game::player_actions::PlayerInputs;
 use leptos::*;
 use leptos_use::{use_websocket, UseWebSocketReadyState, UseWebsocketReturn};
+use serde::Serializer;
+use serde_cbor;
 
 #[component]
 pub fn ws_test(cx: Scope) -> impl IntoView {
@@ -44,8 +48,17 @@ pub fn ws_test(cx: Scope) -> impl IntoView {
     };
 
     let send_byte_message = move |_| {
-        let m = b"Hello, world!\r\n".to_vec();
-        send_bytes(m.clone());
+        // let m = b"Hello, world!\r\n".to_vec();
+        let some_player_action = PlayerInputRequest {
+            party_id: 0,
+            player_character_id: 0,
+            player_input: PlayerInputs::SelectConsumable(0),
+        };
+        let serialized = serde_cbor::to_vec(&some_player_action);
+        match serialized {
+            Ok(bytes) => send_bytes(bytes),
+            Err(_e) => print!("error serializing player input"),
+        }
     };
 
     let status = move || ready_state.get().to_string();

@@ -3,15 +3,18 @@ use crate::game::player_input_handlers::{
     open_treasure_chest, select_consumable, use_selected_consumable,
 };
 use crate::items::EquipmentSlots;
+use serde::{Deserialize, Serialize};
 
 use super::Game;
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct PlayerInputRequest {
-    party_id: u32,
-    player_character_id: u32,
-    player_input: PlayerInputs,
+    pub party_id: u32,
+    pub player_character_id: u32,
+    pub player_input: PlayerInputs,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub enum PlayerInputs {
     // use items and abilities
     SelectConsumable(u8),

@@ -44,6 +44,9 @@ impl Monster {
                 hit_points: MaxAndCurrent::new(10, 10),
                 mana: MaxAndCurrent::new(10, 10),
                 equipment: CombatantEquipment::new(),
+                selected_item_slot: None,
+                selected_ability_slot: None,
+                target_ids: None,
             },
         }
     }

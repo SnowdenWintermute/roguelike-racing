@@ -52,8 +52,9 @@ impl AdventuringParty {
         name: &str,
     ) -> u32 {
         let new_character = Character::new(id_generator, name, combatant_class);
+        let new_character_id = new_character.entity_properties.id;
         self.player_characters
             .insert(new_character.entity_properties.id, new_character);
-        new_character.entity_properties.id
+        new_character_id
     }
 }

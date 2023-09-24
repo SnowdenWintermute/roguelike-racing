@@ -13,6 +13,7 @@ pub fn use_selected_consumable(
             message: "tried to process player input but couldn't find the player character"
                 .to_string(),
         })?;
+
     let selected_item_slot = player_character
         .combatant_properties
         .selected_item_slot
@@ -20,6 +21,7 @@ pub fn use_selected_consumable(
             error_type: crate::errors::AppErrorTypes::InvalidInput,
             message: "Tried to use the selected item but no item was selected".to_string(),
         })?;
+
     let selected_consumable = player_character
         .inventory
         .items

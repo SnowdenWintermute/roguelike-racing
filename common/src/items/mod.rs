@@ -2,7 +2,7 @@
 use rand::prelude::*;
 use strum_macros::EnumIter;
 
-use crate::character::abilities::TargetingScheme;
+use crate::character::abilities::{TargetingScheme, ValidTargets};
 use crate::game::id_generator::IdGenerator;
 use crate::primatives::{EntityProperties, MaxAndCurrent};
 
@@ -75,6 +75,7 @@ pub struct ConsumableProperties {
     pub combat_use_only: bool,
     pub requires_combat_turn: bool,
     pub targeting_schemes: Vec<TargetingScheme>,
+    pub valid_targets: ValidTargets,
 }
 
 #[derive(Debug)]

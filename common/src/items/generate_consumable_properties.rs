@@ -1,3 +1,7 @@
+use std::vec;
+
+use crate::character::abilities::{TargetingScheme, ValidTargets};
+
 use super::{ConsumableProperties, ConsumableTypes, Item, ItemProperties};
 use rand::prelude::*;
 use strum::IntoEnumIterator;
@@ -13,6 +17,8 @@ impl Item {
             uses_remaining,
             combat_use_only: true,
             requires_combat_turn: true,
+            targeting_schemes: vec![TargetingScheme::Single],
+            valid_targets: ValidTargets::AllyOrSelf,
         })
     }
 }

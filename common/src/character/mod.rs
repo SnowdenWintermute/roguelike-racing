@@ -1,8 +1,7 @@
 #![allow(dead_code)]
-use std::collections::HashMap;
-
 use crate::game::id_generator::IdGenerator;
 use crate::primatives::{EntityProperties, MaxAndCurrent};
+use std::collections::HashMap;
 
 use self::abilities::{CombatantAbilities, CombatantAbility};
 use self::combatant_properties::{CombatantClass, CombatantProperties};
@@ -66,6 +65,9 @@ impl Character {
                 status_effects: vec![],
                 equipment: CombatantEquipment::new(),
                 abilities,
+                selected_item_slot: None,
+                selected_ability_slot: None,
+                target_ids: None,
             },
             inventory: CharacterInventory::new(),
             unspent_ability_points: 1,

@@ -8,7 +8,7 @@ pub enum TargetingScheme {
 }
 
 #[derive(Debug)]
-pub enum CombatantAbilityValidTargets {
+pub enum ValidTargets {
     Opponent,
     AllyOrSelf,
     Any,
@@ -25,7 +25,7 @@ pub struct CombatantAbility {
     pub requires_combat_turn: bool,
     pub combat_use_only: bool,
     pub targeting_schemes: Vec<TargetingScheme>,
-    pub valid_targets: CombatantAbilityValidTargets,
+    pub valid_targets: ValidTargets,
 }
 
 impl Default for CombatantAbility {
@@ -39,8 +39,8 @@ impl Default for CombatantAbility {
             shard_cost: 0,
             requires_combat_turn: true,
             combat_use_only: true,
-            targeting_schemes: vec![CombatantAbilityTargetingScheme::Single],
-            valid_targets: CombatantAbilityValidTargets::Opponent,
+            targeting_schemes: vec![TargetingScheme::Single],
+            valid_targets: ValidTargets::Opponent,
         }
     }
 }

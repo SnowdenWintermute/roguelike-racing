@@ -1,13 +1,10 @@
 #![allow(dead_code)]
-use self::player_actions::PlayerActionRequest;
 use crate::adventuring_party::AdventuringParty;
 use crate::game::id_generator::IdGenerator;
 use std::{collections::HashMap, time::Instant};
 pub mod id_generator;
-pub mod open_treasure_chest;
 pub mod player_actions;
-pub mod select_consumable;
-pub mod use_selected_consumable;
+pub mod player_input_handlers;
 
 #[derive(Debug)]
 pub struct Game {

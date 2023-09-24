@@ -1,6 +1,4 @@
-use crate::character::abilities::{
-    CombatantAbilities, CombatantAbility, CombatantAbilityTargetingScheme,
-};
+use crate::character::abilities::{CombatantAbilities, CombatantAbility};
 use crate::character::combatant_properties::CombatantProperties;
 use crate::errors::AppError;
 use crate::status_effects::StatusEffects;
@@ -38,11 +36,10 @@ pub struct CombatEvent {
 }
 
 impl CombatantProperties {
-    pub fn perform_combat_action(
+    pub fn process_combat_action(
         &self,
         perpetrator_id: u32,
-        target_id: u32,
-        targeting_scheme: CombatantAbilityTargetingScheme,
+        target_ids: Vec<u32>,
         combat_action: CombatAction,
         opponent_combatant_properties: CombatantProperties,
     ) -> Result<Vec<CombatEvent>, AppError> {

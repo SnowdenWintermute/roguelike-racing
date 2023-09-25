@@ -1,3 +1,5 @@
+use std::mem::size_of;
+
 use common::game::player_actions::PlayerInputRequest;
 use common::game::player_actions::PlayerInputs;
 use leptos::*;
@@ -56,7 +58,10 @@ pub fn ws_test(cx: Scope) -> impl IntoView {
         };
         let serialized = serde_cbor::to_vec(&some_player_action);
         match serialized {
-            Ok(bytes) => send_bytes(bytes),
+            Ok(bytes) => {
+                log!("size: {}", bytes.len());
+                send_bytes(bytes);
+            }
             Err(_e) => print!("error serializing player input"),
         }
     };
@@ -75,15 +80,37 @@ pub fn ws_test(cx: Scope) -> impl IntoView {
 
     view! { cx,
         <div>
-            <p>"status: " {status}</p>
+            <p class="bg-amber-600 text-white" >"status: " {status}</p>
 
-            <button on:click=send_message disabled=move || !connected()>"Send"</button>
-            <button on:click=send_byte_message disabled=move || !connected()>"Send bytes"</button>
-            <button on:click=open_connection disabled=connected>"Open"</button>
-            <button on:click=close_connection disabled=move || !connected()>"Close"</button>
+            <button class="bg-blue-100" on:click=send_message disabled=move || !connected()>
+                "Send"
+            </button>
+            <button class="bg-blue-900" on:click=send_byte_message disabled=move || !connected()>
+                "Send bytes"
+            </button>
+            <button on:click=open_connection disabled=connected>
+                "Open"
+            </button>
+            <button on:click=close_connection disabled=move || !connected()>
+                "Close"
+            </button>
 
-            <p>"Receive message: " {move || format! {"{}", displayed.get()}}</p>
-            <p>"Receive byte message: " {move || format! {"{:?}", displayed_bytes.get()}}</p>
+            <p>
+                "Receive message: "
+                {move || {
+                    format! {
+                        "{}", displayed.get()
+                    }
+                }}
+            </p>
+            <p>
+                "Receive byte message: "
+                {move || {
+                    format! {
+                        "{:?}", displayed_bytes.get()
+                    }
+                }}
+            </p>
         </div>
     }
 }

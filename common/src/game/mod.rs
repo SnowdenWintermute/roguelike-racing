@@ -24,7 +24,7 @@ impl Game {
 
     pub fn add_adventuring_party(&mut self) {
         let party_id = self.id_generator.get_next_entity_id();
-        let new_party = AdventuringParty::new(party_id, &mut self.id_generator);
+        let new_party = AdventuringParty::new(party_id);
         self.adventuring_parties.insert(party_id, new_party);
     }
 }

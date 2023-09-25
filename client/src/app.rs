@@ -1,6 +1,5 @@
-// use crate::home_page::HomePage;
-// use crate::not_found::NotFound;
-// use crate::ws
+use crate::home_page::HomePage;
+use crate::not_found::NotFound;
 use crate::ws_test::WsTest;
 use leptos::*;
 use leptos_meta::*;
@@ -23,9 +22,9 @@ pub fn App(cx: Scope) -> impl IntoView {
         <Router>
             <main>
                 <Routes>
-                    // <Route path="" view=HomePage/>
+                    <Route path="" view=HomePage/>
                     <Route path="/ws-test" view=WsTest/>
-                    // <Route path="/*any" view=NotFound/>
+                <Route path="/*any" view=NotFound/>
                 </Routes>
             </main>
         </Router>

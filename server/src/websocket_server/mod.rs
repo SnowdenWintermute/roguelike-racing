@@ -146,6 +146,7 @@ impl Handler<Disconnect> for ChatServer {
     fn handle(&mut self, message: Disconnect, _: &mut Context<Self>) {
         println!("Someone disconnected");
         let mut rooms: Vec<String> = Vec::new();
+        self.visitor_count.fetch_sub(1, Ordering::SeqCst);
 
         if self.sessions.remove(&message.sender_id).is_some() {
             for (room_name, sessions) in &mut self.rooms {

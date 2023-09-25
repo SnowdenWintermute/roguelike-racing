@@ -18,13 +18,13 @@ pub struct AdventuringParty {
     pub active_player_id: Option<u32>,
     pub current_floor: u8,
     pub rooms_explored: RoomsExplored,
-    pub current_room: DungeonRoom,
+    pub current_room: Option<DungeonRoom>,
     pub time_of_death: Option<Instant>,
     pub time_of_escape: Option<Instant>,
 }
 
 impl AdventuringParty {
-    pub fn new(id: u32, id_generator: &mut IdGenerator) -> AdventuringParty {
+    pub fn new(id: u32) -> AdventuringParty {
         AdventuringParty {
             id,
             active_player_id: None,
@@ -34,12 +34,7 @@ impl AdventuringParty {
                 total: 0,
                 on_current_floor: 0,
             },
-            current_room: DungeonRoom::generate(
-                id_generator,
-                1,
-                true,
-                Some(DungeonRoomTypes::Stairs),
-            ),
+            current_room: None,
             time_of_death: None,
             time_of_escape: None,
         }

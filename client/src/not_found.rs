@@ -17,7 +17,5 @@ pub fn not_found(cx: Scope) -> impl IntoView {
         resp.set_status(actix_web::http::StatusCode::NOT_FOUND);
     }
 
-    view! { cx,
-        <h1>"Not Found"</h1>
-    }
+    view! { cx, <h1>"Not Found"</h1> }
 }

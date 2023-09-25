@@ -1,5 +1,6 @@
 #![allow(unused)]
 pub mod app;
+pub mod dungeon_room;
 pub mod home_page;
 pub mod not_found;
 pub mod ws_test;

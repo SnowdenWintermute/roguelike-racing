@@ -8,17 +8,14 @@ use web_sys::{ErrorEvent, MessageEvent, WebSocket};
 #[derive(Clone, Debug)]
 pub struct AppState {
     pub ws: ReadSignal<Option<WebSocket>>,
-    pub adventuring_party: ReadSignal<Option<AdventuringParty>>,
+    pub adventuring_party: ReadSignal<AdventuringParty>,
 }
 
 #[component]
 pub fn home_page(cx: Scope) -> impl IntoView {
-    // create a signal which will store the socket
     let (ws, set_ws) = create_signal::<Option<WebSocket>>(cx, None);
-    // some app state, need to make it a signal because it allows not implementing Clone, Eq,
-    // PartialEq etc on all the sub structs of AdventuringParty
     let (adventuring_party, set_adventuring_party) =
-        create_signal::<Option<AdventuringParty>>(cx, Some(AdventuringParty::new(0)));
+        create_signal::<AdventuringParty>(cx, AdventuringParty::new(0));
 
     let app_state = provide_context(
         cx,
@@ -42,12 +39,7 @@ pub fn home_page(cx: Scope) -> impl IntoView {
 
     // signal can be updated
     create_effect(cx, move |_| {
-        set_adventuring_party.update(|party| match party {
-            Some(party) => {
-                party.current_floor = 5;
-            }
-            None => (),
-        })
+        set_adventuring_party.update(|party| party.current_floor = 5)
     });
 
     view! { cx, <main class="h-screen w-screen flex flex-wrap bg-green-200" >

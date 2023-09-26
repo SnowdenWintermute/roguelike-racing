@@ -1,6 +1,6 @@
 use crate::websocket_server;
 use actix::prelude::*;
-use actix_web::web::Buf;
+// use actix_web::web::Buf;
 use actix_web_actors::ws;
 use common::game::player_actions::PlayerInputRequest;
 use serde_cbor;
@@ -15,11 +15,10 @@ pub struct WsChatSession {
     pub time_of_last_ping_received: Instant,
     pub current_room: String,
     pub username: Option<String>,
-    pub server_address: Addr<websocket_server::ChatServer>,
+    pub server_address: Addr<websocket_server::game_server::GameServer>,
 }
 
 impl WsChatSession {
-    // check client heartbeats
     fn heartbeat(&self, context: &mut ws::WebsocketContext<Self>) {
         context.run_interval(HEARTBEAT_INTERVAL, |act, context| {
             if Instant::now().duration_since(act.time_of_last_ping_received) > CLIENT_TIMEOUT {
@@ -69,10 +68,10 @@ impl Actor for WsChatSession {
 }
 
 /// Handle messages from chat server, we simply send it to peer websocket
-impl Handler<websocket_server::Message> for WsChatSession {
+impl Handler<websocket_server::AppMessage> for WsChatSession {
     type Result = ();
 
-    fn handle(&mut self, message: websocket_server::Message, context: &mut Self::Context) {
+    fn handle(&mut self, message: websocket_server::AppMessage, context: &mut Self::Context) {
         match message.0 {
             websocket_server::MessageContent::Str(string_message) => context.text(string_message),
             websocket_server::MessageContent::Bytes(byte_message) => context.binary(byte_message),
@@ -108,14 +107,12 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsChatSession {
                 let deserialized: Result<PlayerInputRequest, _> =
                     serde_cbor::from_slice(byte_slice);
                 println!("{:#?}", deserialized);
-                println!("ayy");
-                println!("ayy");
-                // self.server_address
-                //     .do_send(websocket_server::ClientBinaryMessage {
-                //         sender_id: self.id,
-                //         content: bytes.clone().to_vec(),
-                //         room: self.current_room.clone(),
-                //     })
+                self.server_address
+                    .do_send(websocket_server::ClientBinaryMessage {
+                        sender_id: self.id,
+                        content: bytes.clone().to_vec(),
+                        room: self.current_room.clone(),
+                    })
             }
             ws::Message::Text(text) => {
                 let m = text.trim();

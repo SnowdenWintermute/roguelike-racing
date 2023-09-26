@@ -11,14 +11,11 @@ pub fn dungeon_room(cx: Scope) -> impl IntoView {
     // let adventuring_party = expect_context::<RwSignal<AdventuringParty>>(cx);
     let app_state = expect_context::<RwSignal<AppState>>(cx);
     // this is horrible
-    let current_floor: Memo<Option<u8>> = create_memo(cx, move |_| {
+    let current_floor: Memo<u8> = create_memo(cx, move |_| {
         app_state.with(move |state| {
             state
                 .adventuring_party
-                .with(|adventuring_party| match adventuring_party {
-                    Some(party) => Some(party.current_floor),
-                    None => None,
-                })
+                .with(|adventuring_party| adventuring_party.current_floor)
         })
     });
 
@@ -55,7 +52,7 @@ pub fn dungeon_room(cx: Scope) -> impl IntoView {
                 // "adventuring party id: "{id}
             </li>
             <li>
-                "current floor: "{move || current_floor.get().unwrap_or(0)}
+                "current floor: "{move || current_floor.get()}
             </li>
         </ul>
         </div>

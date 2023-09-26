@@ -5,7 +5,7 @@ use crate::game::player_input_handlers::{
 use crate::items::EquipmentSlots;
 use serde::{Deserialize, Serialize};
 
-use super::Game;
+use super::RoguelikeRacerGame;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PlayerInputRequest {
@@ -41,7 +41,7 @@ pub enum PlayerInputs {
     ShardItemOnGround,
 }
 
-impl Game {
+impl RoguelikeRacerGame {
     pub fn process_player_input(
         &mut self,
         player_input_request: PlayerInputRequest,

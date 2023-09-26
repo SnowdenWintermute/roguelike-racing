@@ -2,7 +2,9 @@ use std::collections::HashMap;
 use std::time::Instant;
 
 use crate::character::{combatant_properties::CombatantClass, Character};
+use crate::consts::MAX_PARTY_SIZE;
 use crate::dungeon_rooms::{DungeonRoom, DungeonRoomTypes};
+use crate::errors::AppError;
 use crate::game::id_generator::IdGenerator;
 
 #[derive(Debug)]
@@ -45,11 +47,17 @@ impl AdventuringParty {
         id_generator: &mut IdGenerator,
         combatant_class: CombatantClass,
         name: &str,
-    ) -> u32 {
+    ) -> Result<u32, AppError> {
+        if self.player_characters.len() > MAX_PARTY_SIZE.into() {
+            return Err(AppError {
+                error_type: crate::errors::AppErrorTypes::InvalidInput,
+                message: "failed to add a new character because doing so would exceed the maximum party size".to_string()
+            });
+        }
         let new_character = Character::new(id_generator, name, combatant_class);
         let new_character_id = new_character.entity_properties.id;
         self.player_characters
             .insert(new_character.entity_properties.id, new_character);
-        new_character_id
+        Ok(new_character_id)
     }
 }

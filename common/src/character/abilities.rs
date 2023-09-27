@@ -1,4 +1,4 @@
-use crate::character::CombatantClass;
+use crate::character::combatant_properties::CombatantClass;
 
 #[derive(Debug)]
 pub enum TargetingScheme {

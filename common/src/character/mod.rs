@@ -4,7 +4,7 @@ use crate::primatives::{EntityProperties, MaxAndCurrent};
 use std::collections::HashMap;
 
 use self::abilities::{CombatantAbilities, CombatantAbility};
-use self::combatant_properties::{CombatantClass, CombatantProperties};
+use self::combatant_properties::CombatantProperties;
 use self::items::{CharacterInventory, CombatantEquipment};
 
 pub mod abilities;
@@ -24,7 +24,7 @@ impl Character {
     pub fn new(
         id_generator: &mut IdGenerator,
         name: &str,
-        combatant_class: CombatantClass,
+        combatant_class: combatant_properties::CombatantClass,
     ) -> Character {
         let mut abilities = HashMap::<CombatantAbilities, CombatantAbility>::new();
         abilities.insert(
@@ -32,25 +32,25 @@ impl Character {
             CombatantAbilities::new(&CombatantAbilities::Attack),
         );
         match combatant_class {
-            CombatantClass::Mage => {
+            combatant_properties::CombatantClass::Mage => {
                 abilities.insert(
                     CombatantAbilities::HeatLance,
                     CombatantAbilities::new(&CombatantAbilities::HeatLance),
                 );
             }
-            CombatantClass::Rogue => {
+            combatant_properties::CombatantClass::Rogue => {
                 abilities.insert(
                     CombatantAbilities::ShootArrow,
                     CombatantAbilities::new(&CombatantAbilities::ShootArrow),
                 );
             }
-            CombatantClass::Warrior => {
+            combatant_properties::CombatantClass::Warrior => {
                 abilities.insert(
                     CombatantAbilities::ArmorBreak,
                     CombatantAbilities::new(&CombatantAbilities::ArmorBreak),
                 );
             }
-            CombatantClass::Monster => {}
+            combatant_properties::CombatantClass::Monster => {}
         }
 
         Character {

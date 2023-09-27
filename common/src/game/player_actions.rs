@@ -1,11 +1,11 @@
+use super::RoguelikeRacerGame;
+use crate::character::combatant_properties::CombatantClass;
 use crate::errors::AppError;
 use crate::game::player_input_handlers::{
     open_treasure_chest, select_consumable, use_selected_consumable,
 };
 use crate::items::EquipmentSlots;
 use serde::{Deserialize, Serialize};
-
-use super::RoguelikeRacerGame;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PlayerInputRequest {
@@ -15,7 +15,31 @@ pub struct PlayerInputRequest {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+pub struct GameCreation {
+    name: String,
+    password: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct CharacterCreation {
+    name: String,
+    class: CombatantClass,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct EquipItem {
+    item_slot: u8,
+    equipment_slot: EquipmentSlots,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub enum PlayerInputs {
+    // lobby
+    CreateGame(GameCreation),
+    JoinGame(String),
+    LeaveGame(String),
+    SelectCharacter(CharacterCreation),
+    ToggleReady,
     // use items and abilities
     SelectConsumable(u8),
     UseSelectedConsumable,
@@ -26,7 +50,7 @@ pub enum PlayerInputs {
     // manage equipment and items
     UnequipEquipmentSlot(EquipmentSlots),
     ShardInventorySlot(u8),
-    EquipInventoryItem(u8, EquipmentSlots),
+    EquipInventoryItem(EquipItem),
     // manage abilities
     LevelUpAbilitySlot(u8),
     // exploration

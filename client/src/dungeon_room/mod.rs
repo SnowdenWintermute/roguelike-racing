@@ -13,8 +13,6 @@ pub fn dungeon_room(cx: Scope) -> impl IntoView {
         adventuring_party.with(|adventuring_party| adventuring_party.current_floor)
     });
 
-    // pub fn handle_ws_message(message:)
-
     let send_test_bytes = move |_| {
         ws.with(|socket| match socket {
             Some(ws) => {

@@ -3,9 +3,10 @@ use super::items::CombatantEquipment;
 use crate::character::CombatantAbility;
 use crate::primatives::MaxAndCurrent;
 use crate::status_effects::StatusEffects;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum CombatantClass {
     Warrior,
     Mage,

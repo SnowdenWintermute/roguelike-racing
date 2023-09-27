@@ -14,6 +14,7 @@ pub struct WsChatSession {
     pub id: usize,
     pub time_of_last_ping_received: Instant,
     pub current_room: String,
+    pub current_game_id: Option<u32>,
     pub username: Option<String>,
     pub server_address: Addr<websocket_server::game_server::GameServer>,
 }
@@ -70,7 +71,6 @@ impl Actor for WsChatSession {
 /// Handle messages from chat server, we simply send it to peer websocket
 impl Handler<websocket_server::AppMessage> for WsChatSession {
     type Result = ();
-
     fn handle(&mut self, message: websocket_server::AppMessage, context: &mut Self::Context) {
         match message.0 {
             websocket_server::MessageContent::Str(string_message) => context.text(string_message),
@@ -101,12 +101,6 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsChatSession {
             }
             ws::Message::Pong(_) => self.time_of_last_ping_received = Instant::now(),
             ws::Message::Binary(bytes) => {
-                println!("received binary message");
-                // let reader = bytes.reader();
-                let byte_slice = &bytes[..];
-                let deserialized: Result<PlayerInputRequest, _> =
-                    serde_cbor::from_slice(byte_slice);
-                println!("{:#?}", deserialized);
                 self.server_address
                     .do_send(websocket_server::ClientBinaryMessage {
                         sender_id: self.id,

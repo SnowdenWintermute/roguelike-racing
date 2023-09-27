@@ -1,5 +1,6 @@
 #![allow(dead_code, unused_imports)]
 use actix::prelude::*;
+use common::game::player_actions::PlayerInputs;
 use common::game::RoguelikeRacerGame;
 use rand::{self, rngs::ThreadRng, Rng};
 use std::collections::{HashMap, HashSet};
@@ -8,6 +9,7 @@ use std::sync::Arc;
 pub mod connection_handler;
 pub mod disconnection_handler;
 pub mod join_server_handler;
+pub mod message_handler;
 
 use super::{
     AppMessage, ClientBinaryMessage, ClientMessage, Disconnect, Join, ListRooms, MessageContent,
@@ -86,6 +88,17 @@ impl Handler<ClientBinaryMessage> for GameServer {
     type Result = ();
     fn handle(&mut self, message: ClientBinaryMessage, _: &mut Context<Self>) {
         println!("message received: {:?}", message.content);
+        // deserialize and handle message
+        let byte_slice = &message.content[..];
+        let deserialized: Result<PlayerInputs, _> = serde_cbor::from_slice(byte_slice);
+        println!("{:#?}", deserialized);
+        match deserialized {
+            Ok(PlayerInputs::CreateGame(game_creation_data)) => {
+                //
+            },
+            _ => ()
+        }
+        // right now all we do is send it to everyone in the same room with this function:
         self.send_byte_message(&message.room, &message.content.clone(), message.sender_id);
     }
 }

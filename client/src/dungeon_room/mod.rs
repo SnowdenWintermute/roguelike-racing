@@ -16,12 +16,9 @@ pub fn dungeon_room(cx: Scope) -> impl IntoView {
     let send_test_bytes = move |_| {
         ws.with(|socket| match socket {
             Some(ws) => {
-                let some_player_action = PlayerInputRequest {
-                    party_id: 0,
-                    player_character_id: 0,
-                    player_input: PlayerInputs::SelectConsumable(0),
-                };
+                let some_player_action = PlayerInputs::SelectConsumable(0);
                 let serialized = serde_cbor::to_vec(&some_player_action);
+
                 match serialized {
                     Ok(bytes) => ws.send_with_u8_array(bytes.as_slice()),
                     Err(_) => Ok(()),

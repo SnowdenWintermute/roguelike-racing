@@ -1,11 +1,9 @@
 #![allow(dead_code)]
+use super::GameServer;
+use crate::websocket_server::{Connect, MAIN_CHAT_ROOM};
 use actix::{Context, Handler};
 use rand::{self, Rng};
 use std::sync::atomic::Ordering;
-
-use crate::websocket_server::{Connect, MAIN_CHAT_ROOM};
-
-use super::GameServer;
 
 impl Handler<Connect> for GameServer {
     type Result = usize;

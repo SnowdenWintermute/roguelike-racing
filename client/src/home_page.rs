@@ -32,7 +32,7 @@ pub fn home_page(cx: Scope) -> impl IntoView {
                         log!("Arraybuffer received {}bytes: {:?}", len, array.to_vec());
                         //
                         let byte_slice = &array.to_vec()[..];
-                        let deserialized: Result<PlayerInputRequest, _> =
+                        let deserialized: Result<PlayerInputs, _> =
                             serde_cbor::from_slice(byte_slice);
                         log!("{:#?}", deserialized);
                     } else if let Ok(txt) = e.data().dyn_into::<js_sys::JsString>() {

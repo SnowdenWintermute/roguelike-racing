@@ -5,12 +5,10 @@ use actix_web::{
 use actix_web_actors::ws;
 use common::game::RoguelikeRacerGame;
 use std::collections::HashMap;
-use websocket_server::session::WsChatSession;
-// use common::game;
-// use std::io;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::time::Instant;
+use websocket_server::session::WsChatSession;
 mod websocket_server;
 
 /// Entry point for our websocket route
@@ -23,6 +21,7 @@ async fn chat_route(
         WsChatSession {
             id: 0,
             time_of_last_ping_received: Instant::now(),
+            current_game_id: None,
             current_room: websocket_server::MAIN_CHAT_ROOM.to_owned(),
             username: None,
             server_address: server.get_ref().clone(),

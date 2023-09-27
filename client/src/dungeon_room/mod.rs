@@ -1,46 +1,40 @@
-use crate::home_page::AppState;
-use common::{
-    adventuring_party::AdventuringParty,
-    game::player_actions::{PlayerInputRequest, PlayerInputs},
-};
+use common::adventuring_party::AdventuringParty;
+use common::game::player_actions::{PlayerInputRequest, PlayerInputs};
+
 use leptos::*;
-use wasm_bindgen::JsValue;
+use web_sys::WebSocket;
 
 #[component]
 pub fn dungeon_room(cx: Scope) -> impl IntoView {
-    // let adventuring_party = expect_context::<RwSignal<AdventuringParty>>(cx);
-    let app_state = expect_context::<RwSignal<AppState>>(cx);
-    // this is horrible
+    let adventuring_party = expect_context::<RwSignal<AdventuringParty>>(cx);
+    let ws = expect_context::<ReadSignal<Option<WebSocket>>>(cx);
+
     let current_floor: Memo<u8> = create_memo(cx, move |_| {
-        app_state.with(move |state| {
-            state
-                .adventuring_party
-                .with(|adventuring_party| adventuring_party.current_floor)
-        })
+        adventuring_party.with(|adventuring_party| adventuring_party.current_floor)
     });
 
+    // pub fn handle_ws_message(message:)
+
     let send_test_bytes = move |_| {
-        app_state.with(move |state| {
-            state.ws.with(|socket| match socket {
-                Some(ws) => {
-                    let some_player_action = PlayerInputRequest {
-                        party_id: 0,
-                        player_character_id: 0,
-                        player_input: PlayerInputs::SelectConsumable(0),
-                    };
-                    let serialized = serde_cbor::to_vec(&some_player_action);
-                    match serialized {
-                        Ok(bytes) => ws.send_with_u8_array(bytes.as_slice()),
-                        Err(_) => Ok(()),
-                    };
-                }
-                None => {
-                    println!("no websocket in global state");
-                    ()
-                }
-            });
-            ()
-        })
+        ws.with(|socket| match socket {
+            Some(ws) => {
+                let some_player_action = PlayerInputRequest {
+                    party_id: 0,
+                    player_character_id: 0,
+                    player_input: PlayerInputs::SelectConsumable(0),
+                };
+                let serialized = serde_cbor::to_vec(&some_player_action);
+                match serialized {
+                    Ok(bytes) => ws.send_with_u8_array(bytes.as_slice()),
+                    Err(_) => Ok(()),
+                };
+            }
+            None => {
+                println!("no websocket in global state");
+                ()
+            }
+        });
+        ()
     };
 
     view! { cx,

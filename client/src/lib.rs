@@ -3,6 +3,7 @@ pub mod app;
 pub mod dungeon_room;
 pub mod home_page;
 pub mod not_found;
+pub mod websocket_context;
 pub mod ws_test;
 
 use cfg_if::cfg_if;

@@ -1538,6 +1538,7 @@ dependencies = [
  "common",
  "console_error_panic_hook",
  "http",
+ "js-sys",
  "leptos",
  "leptos-use",
  "leptos_actix",
@@ -1549,6 +1550,7 @@ dependencies = [
  "tokio",
  "tokio-tungstenite",
  "wasm-bindgen",
+ "web-sys",
 ]
 
 [[package]]

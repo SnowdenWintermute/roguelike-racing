@@ -1,4 +1,3 @@
-#![allow(dead_code)]
 use crate::adventuring_party::AdventuringParty;
 use crate::game::id_generator::IdGenerator;
 use std::{collections::HashMap, time::Instant};
@@ -7,15 +6,15 @@ pub mod player_actions;
 pub mod player_input_handlers;
 
 #[derive(Debug)]
-pub struct Game {
+pub struct RoguelikeRacerGame {
     pub adventuring_parties: HashMap<u32, AdventuringParty>,
     pub time_started: Instant,
     pub id_generator: IdGenerator,
 }
 
-impl Game {
-    pub fn new() -> Game {
-        Game {
+impl RoguelikeRacerGame {
+    pub fn new() -> RoguelikeRacerGame {
+        RoguelikeRacerGame {
             adventuring_parties: HashMap::new(),
             time_started: Instant::now(),
             id_generator: IdGenerator::new(),

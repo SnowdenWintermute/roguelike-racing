@@ -3,6 +3,8 @@ use actix_web::{
     middleware::Logger, web, App, Error, HttpRequest, HttpResponse, HttpServer, Responder,
 };
 use actix_web_actors::ws;
+use common::game::RoguelikeRacerGame;
+use std::collections::HashMap;
 use websocket_server::session::WsChatSession;
 // use common::game;
 // use std::io;
@@ -15,7 +17,7 @@ mod websocket_server;
 async fn chat_route(
     req: HttpRequest,
     stream: web::Payload,
-    server: web::Data<Addr<websocket_server::ChatServer>>,
+    server: web::Data<Addr<websocket_server::game_server::GameServer>>,
 ) -> Result<HttpResponse, Error> {
     ws::start(
         WsChatSession {
@@ -41,8 +43,9 @@ async fn main() -> std::io::Result<()> {
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
     // set up applications state
     let visitor_count = Arc::new(AtomicUsize::new(0));
+    let games: HashMap<String, RoguelikeRacerGame> = HashMap::new();
     // start chat server actor
-    let server = websocket_server::ChatServer::new(visitor_count.clone()).start();
+    let server = websocket_server::game_server::GameServer::new(visitor_count.clone()).start();
 
     log::info!("starting HTTP server at http://localhost:8080");
 
@@ -54,7 +57,7 @@ async fn main() -> std::io::Result<()> {
             .route("/ws", web::get().to(chat_route))
             .wrap(Logger::default())
     })
-    .workers(2)
+    .workers(1)
     .bind(("127.0.0.1", 8080))?
     .run()
     .await

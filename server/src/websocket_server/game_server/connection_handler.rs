@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 use super::GameServer;
-use crate::websocket_server::{Connect, MAIN_CHAT_ROOM};
+use crate::websocket_server::{game_server::ConnectedUser, Connect, MAIN_CHAT_ROOM};
 use actix::{Context, Handler};
 use rand::{self, Rng};
 use std::sync::atomic::Ordering;
@@ -8,20 +8,25 @@ use std::sync::atomic::Ordering;
 impl Handler<Connect> for GameServer {
     type Result = usize;
     fn handle(&mut self, message: Connect, _: &mut Context<Self>) -> Self::Result {
-        let id = self.rng.gen::<usize>();
-        self.sessions.insert(id, message.session_address);
-        println!("Someone joined, assigned the id {}", id);
+        let Connect {
+            actor_id,
+            actor_address,
+        } = message;
 
-        self.send_message(MAIN_CHAT_ROOM, "Someone joined", 0);
+        let new_user_connection_data = ConnectedUser::new(actor_id, actor_address);
+        self.sessions.insert(actor_id, new_user_connection_data);
+        println!("actor id {} connected", actor_id);
+
+        self.send_string_message(MAIN_CHAT_ROOM, "Someone joined");
 
         self.rooms
             .entry(MAIN_CHAT_ROOM.to_owned())
             .or_default()
-            .insert(id);
+            .insert(actor_id);
 
         let count = self.visitor_count.fetch_add(1, Ordering::SeqCst);
-        self.send_message(MAIN_CHAT_ROOM, &format!("Total visitors {count}"), 0);
+        self.send_string_message(MAIN_CHAT_ROOM, &format!("Total visitors {count}"));
 
-        id
+        actor_id
     }
 }

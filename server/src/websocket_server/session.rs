@@ -2,8 +2,6 @@ use crate::websocket_server;
 use actix::prelude::*;
 // use actix_web::web::Buf;
 use actix_web_actors::ws;
-use common::game::player_actions::PlayerInputRequest;
-use serde_cbor;
 use std::time::{Duration, Instant};
 
 const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(5);
@@ -13,10 +11,7 @@ const CLIENT_TIMEOUT: Duration = Duration::from_secs(10);
 pub struct WsChatSession {
     pub id: usize,
     pub time_of_last_ping_received: Instant,
-    pub current_room: String,
-    pub current_game_id: Option<u32>,
-    pub username: Option<String>,
-    pub server_address: Addr<websocket_server::game_server::GameServer>,
+    pub game_server_actor_address: Addr<websocket_server::game_server::GameServer>,
 }
 
 impl WsChatSession {
@@ -24,8 +19,8 @@ impl WsChatSession {
         context.run_interval(HEARTBEAT_INTERVAL, |act, context| {
             if Instant::now().duration_since(act.time_of_last_ping_received) > CLIENT_TIMEOUT {
                 println!("Websocket Client heartbeat failed, disconnecting!");
-                act.server_address
-                    .do_send(websocket_server::Disconnect { sender_id: act.id });
+                act.game_server_actor_address
+                    .do_send(websocket_server::Disconnect { actor_id: act.id });
                 context.stop();
                 return;
             }
@@ -39,16 +34,16 @@ impl Actor for WsChatSession {
     type Context = ws::WebsocketContext<Self>;
     fn started(&mut self, context: &mut Self::Context) {
         self.heartbeat(context);
-
         // register self in chat server. `AsyncContext::wait` register
         // future within context, but context waits until this future resolves
         // before processing any other events.
         // HttpContext::state() is instance of WsChatSessionState, state is shared
         // across all routes within application
-        let session_address = context.address();
-        self.server_address
+        let actor_address = context.address();
+        self.game_server_actor_address
             .send(websocket_server::Connect {
-                session_address: session_address.recipient(),
+                actor_id: self.id,
+                actor_address: actor_address.recipient(),
             })
             .into_actor(self)
             .then(|response, actor, context| {
@@ -62,13 +57,13 @@ impl Actor for WsChatSession {
     }
 
     fn stopping(&mut self, _: &mut Self::Context) -> Running {
-        self.server_address
-            .do_send(websocket_server::Disconnect { sender_id: self.id });
+        self.game_server_actor_address
+            .do_send(websocket_server::Disconnect { actor_id: self.id });
         Running::Stop
     }
 }
 
-/// Handle messages from chat server, we simply send it to peer websocket
+/// Handle messages from chat server, we simply send it to client websocket
 impl Handler<websocket_server::AppMessage> for WsChatSession {
     type Result = ();
     fn handle(&mut self, message: websocket_server::AppMessage, context: &mut Self::Context) {
@@ -101,11 +96,10 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsChatSession {
             }
             ws::Message::Pong(_) => self.time_of_last_ping_received = Instant::now(),
             ws::Message::Binary(bytes) => {
-                self.server_address
+                self.game_server_actor_address
                     .do_send(websocket_server::ClientBinaryMessage {
-                        sender_id: self.id,
+                        actor_id: self.id,
                         content: bytes.clone().to_vec(),
-                        room: self.current_room.clone(),
                     })
             }
             ws::Message::Text(text) => {
@@ -119,7 +113,7 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsChatSession {
                             // Send ListRooms message to chat server and wait for
                             // response
                             println!("List rooms");
-                            self.server_address
+                            self.game_server_actor_address
                                 .send(websocket_server::ListRooms)
                                 .into_actor(self)
                                 .then(|response, _, context| {
@@ -140,38 +134,26 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsChatSession {
                         }
                         "/join" => {
                             if v.len() == 2 {
-                                self.current_room = v[1].to_owned();
-                                self.server_address.do_send(websocket_server::Join {
-                                    sender_id: self.id,
-                                    room_name: self.current_room.clone(),
-                                });
+                                self.game_server_actor_address
+                                    .do_send(websocket_server::Join {
+                                        actor_id: self.id,
+                                        room_name: v[1].to_owned(),
+                                    });
 
                                 context.text("joined");
                             } else {
                                 context.text("!!! room name is required");
                             }
                         }
-                        "/name" => {
-                            if v.len() == 2 {
-                                self.username = Some(v[1].to_owned());
-                            } else {
-                                context.text("!!! name is required");
-                            }
-                        }
                         _ => context.text(format!("!!! unknown command: {m:?}")),
                     }
                 } else {
-                    let message_content = if let Some(ref name) = self.username {
-                        format!("{name}: {m}")
-                    } else {
-                        m.to_owned()
-                    };
+                    let message_content = m.to_owned();
                     // send message to chat server
-                    self.server_address
+                    self.game_server_actor_address
                         .do_send(websocket_server::ClientMessage {
-                            sender_id: self.id,
+                            actor_id: self.id,
                             content: message_content,
-                            room: self.current_room.clone(),
                         })
                 }
             }

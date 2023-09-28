@@ -3,8 +3,7 @@ use actix_web::{
     middleware::Logger, web, App, Error, HttpRequest, HttpResponse, HttpServer, Responder,
 };
 use actix_web_actors::ws;
-use common::game::RoguelikeRacerGame;
-use std::collections::HashMap;
+use rand::Rng;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::time::Instant;
@@ -17,14 +16,12 @@ async fn chat_route(
     stream: web::Payload,
     server: web::Data<Addr<websocket_server::game_server::GameServer>>,
 ) -> Result<HttpResponse, Error> {
+    let mut rng = rand::thread_rng();
     ws::start(
         WsChatSession {
-            id: 0,
+            id: rng.gen::<usize>(),
             time_of_last_ping_received: Instant::now(),
-            current_game_id: None,
-            current_room: websocket_server::MAIN_CHAT_ROOM.to_owned(),
-            username: None,
-            server_address: server.get_ref().clone(),
+            game_server_actor_address: server.get_ref().clone(),
         },
         &req,
         stream,
@@ -42,16 +39,16 @@ async fn main() -> std::io::Result<()> {
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
     // set up applications state
     let visitor_count = Arc::new(AtomicUsize::new(0));
-    let games: HashMap<String, RoguelikeRacerGame> = HashMap::new();
     // start chat server actor
-    let server = websocket_server::game_server::GameServer::new(visitor_count.clone()).start();
+    let game_server_actor_address =
+        websocket_server::game_server::GameServer::new(visitor_count.clone()).start();
 
     log::info!("starting HTTP server at http://localhost:8080");
 
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::from(visitor_count.clone()))
-            .app_data(web::Data::new(server.clone()))
+            .app_data(web::Data::new(game_server_actor_address.clone()))
             .route("/count", web::get().to(get_count))
             .route("/ws", web::get().to(chat_route))
             .wrap(Logger::default())
@@ -61,18 +58,3 @@ async fn main() -> std::io::Result<()> {
     .run()
     .await
 }
-
-// fn main() -> io::Result<()> {
-//     let mut game = game::Game::new();
-//     let mut id_generator = game::IdGenerator {
-//         last_assigned_entity_id: 0,
-//     };
-//     let mike_email = "mikey@mikesilverman.net";
-//     game.add_player_character(
-//         &mut id_generator,
-//         mike_email,
-//         common::character::combatant_properties::CombatantClass::Mage,
-//     );
-
-//     Ok(())
-// }

@@ -16,8 +16,8 @@ pub struct PlayerInputRequest {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct GameCreation {
-    name: String,
-    password: Option<String>,
+    pub name: String,
+    pub password: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

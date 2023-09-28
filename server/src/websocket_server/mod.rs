@@ -22,29 +22,28 @@ pub struct BinaryMessage {
 #[derive(Message)]
 #[rtype(usize)]
 pub struct Connect {
-    pub session_address: Recipient<AppMessage>,
+    pub actor_id: usize,
+    pub actor_address: Recipient<AppMessage>,
 }
 
 #[derive(Message)]
 #[rtype(result = "()")]
 pub struct Disconnect {
-    pub sender_id: usize,
+    pub actor_id: usize,
 }
 
 #[derive(Message)]
 #[rtype(result = "()")]
 pub struct ClientMessage {
-    pub sender_id: usize,
+    pub actor_id: usize,
     pub content: String,
-    pub room: String,
 }
 
 #[derive(Message)]
 #[rtype(result = "()")]
 pub struct ClientBinaryMessage {
-    pub sender_id: usize,
+    pub actor_id: usize,
     pub content: Vec<u8>,
-    pub room: String,
 }
 
 pub struct ListRooms;
@@ -56,6 +55,6 @@ impl actix::Message for ListRooms {
 #[derive(Message)]
 #[rtype(result = "()")]
 pub struct Join {
-    pub sender_id: usize,
+    pub actor_id: usize,
     pub room_name: String,
 }

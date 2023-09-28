@@ -8,8 +8,12 @@ use std::sync::atomic::AtomicUsize;
 use std::sync::Arc;
 pub mod connection_handler;
 pub mod disconnection_handler;
-pub mod join_server_handler;
-pub mod message_handler;
+pub mod join_room_handler;
+pub mod list_rooms_handler;
+pub mod player_input_handler;
+pub mod send_messages;
+
+use crate::websocket_server::game_server::player_input_handler::create_game_handler::create_game_handler;
 
 use super::{
     AppMessage, ClientBinaryMessage, ClientMessage, Disconnect, Join, ListRooms, MessageContent,
@@ -17,10 +21,30 @@ use super::{
 };
 
 #[derive(Debug)]
+pub struct ConnectedUser {
+    pub id: usize,
+    pub actor_address: Recipient<AppMessage>,
+    pub username: Option<String>,
+    pub current_room_name: String,
+    pub current_game_name: Option<String>,
+}
+
+impl ConnectedUser {
+    pub fn new(id: usize, actor_address: Recipient<AppMessage>) -> Self {
+        ConnectedUser {
+            id,
+            actor_address,
+            username: None,
+            current_room_name: MAIN_CHAT_ROOM.to_string(),
+            current_game_name: None,
+        }
+    }
+}
+
+#[derive(Debug)]
 pub struct GameServer {
-    sessions: HashMap<usize, Recipient<AppMessage>>,
+    sessions: HashMap<usize, ConnectedUser>,
     rooms: HashMap<String, HashSet<usize>>,
-    rng: ThreadRng,
     games: HashMap<String, RoguelikeRacerGame>,
     visitor_count: Arc<AtomicUsize>,
 }
@@ -33,7 +57,6 @@ impl GameServer {
         GameServer {
             sessions: HashMap::new(),
             rooms,
-            rng: rand::thread_rng(),
             games: HashMap::new(),
             visitor_count,
         }
@@ -41,47 +64,7 @@ impl GameServer {
 }
 
 impl Actor for GameServer {
-    /// We are going to use simple Context, we just need ability to communicate
-    /// with other actors.
     type Context = Context<Self>;
-}
-
-impl GameServer {
-    fn send_message(&self, room: &str, message: &str, skip_id: usize) {
-        if let Some(sessions) = self.rooms.get(room) {
-            for id in sessions {
-                if *id == skip_id {
-                    continue;
-                }
-
-                if let Some(session_address) = self.sessions.get(id) {
-                    session_address.do_send(AppMessage(MessageContent::Str(message.to_owned())));
-                }
-            }
-        }
-    }
-
-    fn send_byte_message(&self, room: &str, message: &Vec<u8>, skip_id: usize) {
-        if let Some(sessions) = self.rooms.get(room) {
-            for id in sessions {
-                // if *id == skip_id {
-                //     continue;
-                // }
-                // self.games
-                if let Some(addr) = self.sessions.get(id) {
-                    addr.do_send(AppMessage(MessageContent::Bytes(message.to_vec())));
-                }
-            }
-        }
-    }
-}
-
-impl Handler<ClientMessage> for GameServer {
-    type Result = ();
-    fn handle(&mut self, message: ClientMessage, _: &mut Context<Self>) {
-        println!("message received: {}", message.content);
-        self.send_message(&message.room, message.content.as_str(), message.sender_id);
-    }
 }
 
 impl Handler<ClientBinaryMessage> for GameServer {
@@ -91,27 +74,34 @@ impl Handler<ClientBinaryMessage> for GameServer {
         // deserialize and handle message
         let byte_slice = &message.content[..];
         let deserialized: Result<PlayerInputs, _> = serde_cbor::from_slice(byte_slice);
-        println!("{:#?}", deserialized);
         match deserialized {
             Ok(PlayerInputs::CreateGame(game_creation_data)) => {
-                //
-            },
-            _ => ()
+                create_game_handler(self, game_creation_data)
+            }
+            _ => {
+                println! {"unhandled binary message\n {:#?}:",deserialized}
+            }
         }
+
+        let room = &self
+            .sessions
+            .get(&message.actor_id)
+            .expect("if we got a message from this id, the user should exist in our list")
+            .current_room_name;
         // right now all we do is send it to everyone in the same room with this function:
-        self.send_byte_message(&message.room, &message.content.clone(), message.sender_id);
+        self.send_byte_message(&room, &message.content.clone());
     }
 }
 
-impl Handler<ListRooms> for GameServer {
-    type Result = MessageResult<ListRooms>;
-    fn handle(&mut self, _: ListRooms, _: &mut Context<Self>) -> Self::Result {
-        let mut rooms = Vec::new();
-
-        for key in self.rooms.keys() {
-            rooms.push(key.to_owned())
-        }
-
-        MessageResult(rooms)
+impl Handler<ClientMessage> for GameServer {
+    type Result = ();
+    fn handle(&mut self, message: ClientMessage, _: &mut Context<Self>) {
+        println!("message received: {}", message.content);
+        let room = &self
+            .sessions
+            .get(&message.actor_id)
+            .expect("if we got a message from this id, the user should exist in our list")
+            .current_room_name;
+        self.send_string_message(&room, message.content.as_str());
     }
 }

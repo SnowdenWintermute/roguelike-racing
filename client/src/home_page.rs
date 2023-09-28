@@ -1,7 +1,9 @@
 use crate::dungeon_room::DungeonRoom;
+use crate::lobby::Lobby;
 use common::adventuring_party::AdventuringParty;
 use common::game::player_actions::PlayerInputRequest;
 use common::game::player_actions::PlayerInputs;
+use common::game::RoguelikeRacerGame;
 use leptos::*;
 use leptos_use::use_websocket;
 use wasm_bindgen::prelude::Closure;
@@ -12,6 +14,7 @@ use web_sys::{ErrorEvent, MessageEvent, WebSocket};
 pub fn home_page(cx: Scope) -> impl IntoView {
     let (ws, set_ws) = create_signal::<Option<WebSocket>>(cx, None);
     provide_context(cx, create_rw_signal(cx, AdventuringParty::new(0)));
+    provide_context(cx, create_rw_signal::<Option<RoguelikeRacerGame>>(cx, None));
     let adventuring_party = expect_context::<RwSignal<AdventuringParty>>(cx);
 
     provide_context(cx, ws);
@@ -62,6 +65,7 @@ pub fn home_page(cx: Scope) -> impl IntoView {
         // <div class="bg-green-200 p-4">"lmao"</div>
         <div class="h-1/2 w-full flex">
             <div class="bg-yellow-200 p-4 w-1/2 lg:w-auto flex-1">
+                <Lobby />
             </div>
             <div class="bg-pink-200 p-4 w-1/2 lg:w-[61.8%]">"mlao"</div>
         </div>

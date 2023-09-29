@@ -2,6 +2,7 @@
 use actix::prelude::*;
 use common::game::player_actions::PlayerInputs;
 use common::game::RoguelikeRacerGame;
+use common::utils::generate_random_username;
 use rand::{self, rngs::ThreadRng, Rng};
 use std::collections::{HashMap, HashSet};
 use std::sync::atomic::AtomicUsize;
@@ -24,7 +25,7 @@ use super::{
 pub struct ConnectedUser {
     pub id: usize,
     pub actor_address: Recipient<AppMessage>,
-    pub username: Option<String>,
+    pub username: String,
     pub current_room_name: String,
     pub current_game_name: Option<String>,
 }
@@ -34,7 +35,7 @@ impl ConnectedUser {
         ConnectedUser {
             id,
             actor_address,
-            username: None,
+            username: generate_random_username(),
             current_room_name: MAIN_CHAT_ROOM.to_string(),
             current_game_name: None,
         }
@@ -76,7 +77,7 @@ impl Handler<ClientBinaryMessage> for GameServer {
         let deserialized: Result<PlayerInputs, _> = serde_cbor::from_slice(byte_slice);
         match deserialized {
             Ok(PlayerInputs::CreateGame(game_creation_data)) => {
-                create_game_handler(self, game_creation_data)
+                create_game_handler(self, message.actor_id, game_creation_data)
             }
             _ => {
                 println! {"unhandled binary message\n {:#?}:",deserialized}

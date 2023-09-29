@@ -6,6 +6,7 @@ use crate::consts::MAX_PARTY_SIZE;
 use crate::dungeon_rooms::{DungeonRoom, DungeonRoomTypes};
 use crate::errors::AppError;
 use crate::game::id_generator::IdGenerator;
+use crate::game::RoguelikeRacerPlayer;
 
 #[derive(Debug)]
 pub struct RoomsExplored {
@@ -16,12 +17,13 @@ pub struct RoomsExplored {
 #[derive(Debug)]
 pub struct AdventuringParty {
     pub id: u32,
+    pub players: HashMap<String, RoguelikeRacerPlayer>,
     pub player_characters: HashMap<u32, Character>,
     pub active_player_id: Option<u32>,
     pub current_floor: u8,
     pub rooms_explored: RoomsExplored,
     pub current_room: Option<DungeonRoom>,
-    pub time_of_death: Option<Instant>,
+    pub time_of_wipe: Option<Instant>,
     pub time_of_escape: Option<Instant>,
 }
 
@@ -30,6 +32,7 @@ impl AdventuringParty {
         AdventuringParty {
             id,
             active_player_id: None,
+            players: HashMap::new(),
             player_characters: HashMap::new(),
             current_floor: 1,
             rooms_explored: RoomsExplored {
@@ -37,7 +40,7 @@ impl AdventuringParty {
                 on_current_floor: 0,
             },
             current_room: None,
-            time_of_death: None,
+            time_of_wipe: None,
             time_of_escape: None,
         }
     }

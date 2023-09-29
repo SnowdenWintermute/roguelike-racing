@@ -38,7 +38,9 @@ pub enum PlayerInputs {
     CreateGame(GameCreation),
     JoinGame(String),
     LeaveGame(String),
+    CreateAdventuringParty(String),
     SelectCharacter(CharacterCreation),
+    DeselectCharacter,
     ToggleReady,
     // use items and abilities
     SelectConsumable(u8),

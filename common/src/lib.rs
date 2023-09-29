@@ -10,6 +10,7 @@ pub mod items;
 pub mod monster;
 pub mod primatives;
 pub mod status_effects;
+pub mod utils;
 
 pub fn add(left: usize, right: usize) -> usize {
     left + right

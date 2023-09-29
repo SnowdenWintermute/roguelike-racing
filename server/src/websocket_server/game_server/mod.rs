@@ -13,6 +13,7 @@ pub mod join_room_handler;
 pub mod list_rooms_handler;
 pub mod player_input_handler;
 pub mod send_messages;
+pub mod update_packets;
 
 use crate::websocket_server::game_server::player_input_handler::create_game_handler::create_game_handler;
 
@@ -84,13 +85,13 @@ impl Handler<ClientBinaryMessage> for GameServer {
             }
         }
 
-        let room = &self
-            .sessions
-            .get(&message.actor_id)
-            .expect("if we got a message from this id, the user should exist in our list")
-            .current_room_name;
+        // let _room = &self
+        //     .sessions
+        //     .get(&message.actor_id)
+        //     .expect("if we got a message from this id, the user should exist in our list")
+        //     .current_room_name;
         // right now all we do is send it to everyone in the same room with this function:
-        self.send_byte_message(&room, &message.content.clone());
+        // self.send_byte_message(&room, &message.content.clone());
     }
 }
 

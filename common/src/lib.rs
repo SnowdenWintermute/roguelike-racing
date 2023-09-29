@@ -8,6 +8,7 @@ pub mod errors;
 pub mod game;
 pub mod items;
 pub mod monster;
+pub mod packets;
 pub mod primatives;
 pub mod status_effects;
 pub mod utils;

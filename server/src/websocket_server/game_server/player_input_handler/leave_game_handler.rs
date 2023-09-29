@@ -14,16 +14,12 @@ pub fn leave_game_handler(game_server: &mut GameServer, actor_id: usize) {
         Some(game_name) => {
             match game_server.games.get_mut(game_name) {
                 Some(game) => {
-                    let mut total_remaining_players = 0;
                     // remove them from game and delete their player characters
                     game.partyless_players
                         .remove(&connected_user.username.to_string());
-                    // count the players that remain so we can remove empty games
-                    total_remaining_players += game.partyless_players.len();
                     for (_, party) in game.adventuring_parties.iter_mut() {
                         let player_option =
                             party.players.remove(&connected_user.username.to_string());
-                        total_remaining_players += party.players.len();
                         if player_option.is_some() {
                             let player = player_option.expect("is some");
                             // delete their characters
@@ -35,7 +31,7 @@ pub fn leave_game_handler(game_server: &mut GameServer, actor_id: usize) {
                         }
                     }
                     // if game empty remove it
-                    if total_remaining_players == 0 {
+                    if game.get_number_of_players() == 0 {
                         game_server.games.remove(game_name);
                     }
                 }
@@ -53,4 +49,5 @@ pub fn leave_game_handler(game_server: &mut GameServer, actor_id: usize) {
             return;
         }
     }
+    game_server.send_lobby_and_game_full_updates(actor_id);
 }

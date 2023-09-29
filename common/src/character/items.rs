@@ -1,6 +1,8 @@
+use serde::{Deserialize, Serialize};
+
 use crate::{consts::CHARACTER_INVENTORY_DEFAULT_CAPACITY, items::Item};
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CombatantEquipment {
     left_hand: Option<Item>,
     right_hand: Option<Item>,
@@ -25,7 +27,7 @@ impl CombatantEquipment {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CharacterInventory {
     pub items: Vec<Item>,
     pub capacity: u8,

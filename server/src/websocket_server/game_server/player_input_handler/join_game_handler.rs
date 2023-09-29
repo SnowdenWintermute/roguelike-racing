@@ -20,6 +20,10 @@ pub fn join_game_handler(game_server: &mut GameServer, actor_id: usize, game_nam
     // @TODO
     // reject if game is full
     // reject if game has started
+    if game.time_started.is_some() {
+        println!("can't join a game that has already started");
+        return;
+    }
 
     // reject if actor already in a game
     if connected_user.current_game_name.is_some() {
@@ -33,4 +37,8 @@ pub fn join_game_handler(game_server: &mut GameServer, actor_id: usize, game_nam
         .insert(connected_user.username.to_string(), new_player);
     // put a reference to the current game in connected_user
     connected_user.current_game_name = Some(game_name.to_string());
+
+    // join them to the "room" for the game
+    // send update to them and their roommates
+    game_server.send_lobby_and_game_full_updates(actor_id);
 }

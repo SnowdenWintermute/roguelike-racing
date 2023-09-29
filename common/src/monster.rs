@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 use std::collections::HashMap;
 
+use serde::{Deserialize, Serialize};
 use strum_macros::EnumIter;
 
 use crate::character::combatant_properties::CombatantProperties;
@@ -24,7 +25,7 @@ pub enum MonsterAbilities {
     Thorns,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Monster {
     pub entity_properties: EntityProperties,
     pub combatant_properties: CombatantProperties,

@@ -1,10 +1,12 @@
-#[derive(Debug)]
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EntityProperties {
     pub id: u32,
     pub name: String,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MaxAndCurrent<T> {
     pub max: T,
     pub current: T,

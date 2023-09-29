@@ -4,6 +4,7 @@ use common::adventuring_party::AdventuringParty;
 use common::game::player_actions::PlayerInputRequest;
 use common::game::player_actions::PlayerInputs;
 use common::game::RoguelikeRacerGame;
+use common::packets::server_to_client::GameServerUpdatePackets;
 use leptos::*;
 use leptos_use::use_websocket;
 use wasm_bindgen::prelude::Closure;
@@ -35,9 +36,9 @@ pub fn home_page(cx: Scope) -> impl IntoView {
                         log!("Arraybuffer received {}bytes: {:?}", len, array.to_vec());
                         //
                         let byte_slice = &array.to_vec()[..];
-                        let deserialized: Result<PlayerInputs, _> =
+                        let deserialized: Result<GameServerUpdatePackets, _> =
                             serde_cbor::from_slice(byte_slice);
-                        log!("{:#?}", deserialized);
+                        log!("line41: {:#?}", deserialized);
                     } else if let Ok(txt) = e.data().dyn_into::<js_sys::JsString>() {
                         log!("message event, received Text: {:?}", txt);
                     } else {

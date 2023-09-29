@@ -6,7 +6,7 @@ use crate::status_effects::StatusEffects;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum CombatantClass {
     Warrior,
     Mage,
@@ -14,7 +14,7 @@ pub enum CombatantClass {
     Monster,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CombatantProperties {
     pub combatant_class: CombatantClass,
     pub hit_points: MaxAndCurrent<u16>,

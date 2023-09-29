@@ -3,17 +3,18 @@ use crate::game::id_generator::IdGenerator;
 use crate::items::Item;
 use crate::monster::Monster;
 use rand::prelude::*;
+use serde::{Deserialize, Serialize};
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
-#[derive(Debug, EnumIter, Clone, Copy, PartialEq)]
+#[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub enum DungeonRoomTypes {
     MonsterLair,
     Treasure,
     Stairs,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TreasureChest {
     pub is_opened: bool,
     pub is_locked: bool,
@@ -44,7 +45,7 @@ impl TreasureChest {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DungeonRoom {
     pub room_type: DungeonRoomTypes,
     pub treasure_chest: Option<TreasureChest>,

@@ -1,5 +1,7 @@
 use std::collections::HashMap;
-use std::time::Instant;
+use std::time::{Instant, SystemTime};
+
+use serde::{Deserialize, Serialize};
 
 use crate::character::{combatant_properties::CombatantClass, Character};
 use crate::consts::MAX_PARTY_SIZE;
@@ -8,13 +10,13 @@ use crate::errors::AppError;
 use crate::game::id_generator::IdGenerator;
 use crate::game::RoguelikeRacerPlayer;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RoomsExplored {
     pub total: u16,
     pub on_current_floor: u16,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdventuringParty {
     pub id: u32,
     pub players: HashMap<String, RoguelikeRacerPlayer>,
@@ -23,8 +25,8 @@ pub struct AdventuringParty {
     pub current_floor: u8,
     pub rooms_explored: RoomsExplored,
     pub current_room: Option<DungeonRoom>,
-    pub time_of_wipe: Option<Instant>,
-    pub time_of_escape: Option<Instant>,
+    pub time_of_wipe: Option<u64>,
+    pub time_of_escape: Option<u64>,
 }
 
 impl AdventuringParty {

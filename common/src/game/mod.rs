@@ -1,3 +1,5 @@
+use serde::{Deserialize, Serialize};
+
 use crate::adventuring_party::AdventuringParty;
 use crate::game::id_generator::IdGenerator;
 use std::{collections::HashMap, hash::Hash, time::Instant};
@@ -5,7 +7,7 @@ pub mod id_generator;
 pub mod player_actions;
 pub mod player_input_handlers;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RoguelikeRacerPlayer {
     pub actor_id: Option<usize>,
     pub username: String,
@@ -24,13 +26,13 @@ impl RoguelikeRacerPlayer {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RoguelikeRacerGame {
     pub name: String,
     pub password: Option<String>,
     pub partyless_players: HashMap<String, RoguelikeRacerPlayer>,
     pub adventuring_parties: HashMap<u32, AdventuringParty>,
-    pub time_started: Option<Instant>,
+    pub time_started: Option<u64>,
     pub id_generator: IdGenerator,
 }
 
@@ -44,6 +46,14 @@ impl RoguelikeRacerGame {
             time_started: None,
             id_generator: IdGenerator::new(),
         }
+    }
+
+    pub fn get_number_of_players(&self) -> u8 {
+        let mut number_of_players = self.partyless_players.len();
+        for (_, party) in self.adventuring_parties.iter() {
+            number_of_players += party.players.len();
+        }
+        number_of_players as u8
     }
 
     pub fn add_adventuring_party(&mut self) {

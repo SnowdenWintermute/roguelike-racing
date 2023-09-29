@@ -41,4 +41,5 @@ pub fn create_game_handler(
     let actor_id = connected_user.id;
     join_game_handler(game_server, actor_id, game_name.to_string());
     println!("{:#?}", game_server);
+    game_server.send_lobby_and_game_full_updates(actor_id);
 }

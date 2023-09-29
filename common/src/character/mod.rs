@@ -1,4 +1,6 @@
 #![allow(dead_code)]
+use serde::{Deserialize, Serialize};
+
 use crate::game::id_generator::IdGenerator;
 use crate::primatives::{EntityProperties, MaxAndCurrent};
 use std::collections::HashMap;
@@ -11,7 +13,7 @@ pub mod abilities;
 pub mod combatant_properties;
 pub mod items;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Character {
     pub entity_properties: EntityProperties,
     pub combatant_properties: CombatantProperties,

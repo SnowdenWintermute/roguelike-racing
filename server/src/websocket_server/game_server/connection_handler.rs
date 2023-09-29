@@ -26,6 +26,7 @@ impl Handler<Connect> for GameServer {
 
         let count = self.visitor_count.fetch_add(1, Ordering::SeqCst);
         self.send_string_message(MAIN_CHAT_ROOM, &format!("Total visitors {count}"));
+        self.send_lobby_and_game_full_updates(actor_id);
         println!("{:#?}", self);
 
         actor_id

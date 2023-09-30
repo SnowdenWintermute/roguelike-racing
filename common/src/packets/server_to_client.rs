@@ -21,7 +21,7 @@ pub struct GameListFullUpdate {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct FullUpdate {
+pub struct RoguelikeRacerAppState {
     pub room: RoomFullUpdate,
     pub game_list: GameListFullUpdate,
     pub current_game: Option<RoguelikeRacerGame>,
@@ -29,5 +29,5 @@ pub struct FullUpdate {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum GameServerUpdatePackets {
-    FullUpdate(FullUpdate),
+    FullUpdate(RoguelikeRacerAppState),
 }

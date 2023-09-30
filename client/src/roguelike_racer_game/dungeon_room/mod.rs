@@ -6,12 +6,12 @@ use web_sys::WebSocket;
 
 #[component]
 pub fn dungeon_room(cx: Scope) -> impl IntoView {
-    let adventuring_party = expect_context::<RwSignal<AdventuringParty>>(cx);
+    let adventuring_party = expect_context::<RwSignal<Option<AdventuringParty>>>(cx);
     let ws = expect_context::<ReadSignal<Option<WebSocket>>>(cx);
 
-    let current_floor: Memo<u8> = create_memo(cx, move |_| {
-        adventuring_party.with(|adventuring_party| adventuring_party.current_floor)
-    });
+    // let current_floor: Memo<u8> = create_memo(cx, move |_| {
+    //     adventuring_party.with(|adventuring_party| adventuring_party.get().expec.current_floor)
+    // });
 
     let send_test_bytes = move |_| {
         ws.with(|socket| match socket {
@@ -41,7 +41,7 @@ pub fn dungeon_room(cx: Scope) -> impl IntoView {
                 // "adventuring party id: "{id}
             </li>
             <li>
-                "current floor: "{move || current_floor.get()}
+                // "current floor: "{move || current_floor.get()}
             </li>
         </ul>
         </div>

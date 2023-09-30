@@ -1,11 +1,10 @@
 #![allow(unused)]
 pub mod app;
-pub mod dungeon_room;
 pub mod home_page;
 pub mod lobby;
 pub mod not_found;
-pub mod websocket_context;
-pub mod ws_test;
+pub mod roguelike_racer_game;
+pub mod websocket_provider;
 
 use cfg_if::cfg_if;
 

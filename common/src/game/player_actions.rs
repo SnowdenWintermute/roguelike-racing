@@ -37,7 +37,7 @@ pub enum PlayerInputs {
     // lobby
     CreateGame(GameCreation),
     JoinGame(String),
-    LeaveGame(String),
+    LeaveGame,
     CreateAdventuringParty(String),
     SelectCharacter(CharacterCreation),
     DeselectCharacter,

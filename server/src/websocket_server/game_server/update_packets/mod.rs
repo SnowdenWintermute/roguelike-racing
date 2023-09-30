@@ -1,7 +1,8 @@
 use super::GameServer;
 use common::game::RoguelikeRacerGame;
 use common::packets::server_to_client::{
-    FullUpdate, GameListEntry, GameListFullUpdate, GameServerUpdatePackets, RoomFullUpdate,
+    GameListEntry, GameListFullUpdate, GameServerUpdatePackets, RoguelikeRacerAppState,
+    RoomFullUpdate,
 };
 use serde::{Deserialize, Serialize};
 use std::time::Instant;
@@ -70,7 +71,7 @@ impl GameServer {
             None => (),
         }
 
-        let full_update = FullUpdate {
+        let full_update = RoguelikeRacerAppState {
             room: room_update,
             game_list,
             current_game,

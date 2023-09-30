@@ -14,8 +14,9 @@ pub mod list_rooms_handler;
 pub mod player_input_handler;
 pub mod send_messages;
 pub mod update_packets;
-
 use crate::websocket_server::game_server::player_input_handler::create_game_handler::create_game_handler;
+use crate::websocket_server::game_server::player_input_handler::join_game_handler::join_game_handler;
+use crate::websocket_server::game_server::player_input_handler::leave_game_handler::leave_game_handler;
 
 use super::{
     AppMessage, ClientBinaryMessage, ClientMessage, Disconnect, Join, ListRooms, MessageContent,
@@ -73,25 +74,18 @@ impl Handler<ClientBinaryMessage> for GameServer {
     type Result = ();
     fn handle(&mut self, message: ClientBinaryMessage, _: &mut Context<Self>) {
         println!("message received: {:?}", message.content);
-        // deserialize and handle message
         let byte_slice = &message.content[..];
         let deserialized: Result<PlayerInputs, _> = serde_cbor::from_slice(byte_slice);
         match deserialized {
             Ok(PlayerInputs::CreateGame(game_creation_data)) => {
                 create_game_handler(self, message.actor_id, game_creation_data)
             }
-            _ => {
-                println! {"unhandled binary message\n {:#?}:",deserialized}
+            Ok(PlayerInputs::JoinGame(game_name)) => {
+                join_game_handler(self, message.actor_id, game_name)
             }
+            Ok(PlayerInputs::LeaveGame) => leave_game_handler(self, message.actor_id),
+            _ => println! {"unhandled binary message\n {:#?}:",deserialized},
         }
-
-        // let _room = &self
-        //     .sessions
-        //     .get(&message.actor_id)
-        //     .expect("if we got a message from this id, the user should exist in our list")
-        //     .current_room_name;
-        // right now all we do is send it to everyone in the same room with this function:
-        // self.send_byte_message(&room, &message.content.clone());
     }
 }
 

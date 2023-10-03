@@ -1,7 +1,7 @@
 use super::GameServer;
 use common::game::RoguelikeRacerGame;
 use common::packets::server_to_client::{
-    GameListEntry, GameListFullUpdate, GameServerUpdatePackets, RoguelikeRacerAppState,
+    ClientGameListState, GameListEntry, GameServerUpdatePackets, RoguelikeRacerAppState,
     RoomFullUpdate,
 };
 use serde::{Deserialize, Serialize};
@@ -32,6 +32,7 @@ impl GameServer {
         let mut room_update = RoomFullUpdate {
             room_name: connected_user.current_room_name.clone(),
             users: Vec::new(),
+            chat_messages: None,
         };
 
         for actor_id in room.iter() {
@@ -42,7 +43,7 @@ impl GameServer {
         }
 
         // GAME LIST UPDATE
-        let mut game_list = GameListFullUpdate { games: Vec::new() };
+        let mut game_list = ClientGameListState { games: Vec::new() };
         for (game_name, game) in self.games.iter() {
             game_list.games.push(GameListEntry {
                 game_name: game_name.to_string(),

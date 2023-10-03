@@ -1,69 +1,36 @@
+use crate::lobby::game_list::GameList;
+use crate::lobby::list_rendering::DynamicList;
+use crate::lobby::list_rendering_example::DynamicListExample;
+use crate::lobby::lobby_menu::LobbyMenu;
+use crate::websocket_provider::send_client_input::send_client_input;
+pub mod game_list;
+pub mod list_rendering;
+pub mod list_rendering_example;
+pub mod lobby_menu;
 use common::adventuring_party::AdventuringParty;
 use common::game::player_actions::{GameCreation, PlayerInputRequest, PlayerInputs};
 use common::game::RoguelikeRacerGame;
-
+use common::packets::server_to_client::RoguelikeRacerAppState;
 use leptos::ev::InputEvent;
 use leptos::*;
 use web_sys::WebSocket;
 
-pub fn send_client_input(ws: ReadSignal<Option<WebSocket>>, player_action: PlayerInputs) {
-    ws.with(|socket| match socket {
-        Some(ws) => {
-            let serialized = serde_cbor::to_vec(&player_action);
-            match serialized {
-                Ok(bytes) => ws.send_with_u8_array(bytes.as_slice()),
-                Err(_) => Ok(()),
-            };
-        }
-        None => {
-            println!("no websocket in global state");
-            ()
-        }
-    });
-    ()
-}
-
 #[component]
 pub fn lobby(cx: Scope) -> impl IntoView {
-    // let game = expect_context::<RwSignal<Option<RoguelikeRacerGame>>>(cx);
-    let ws = expect_context::<ReadSignal<Option<WebSocket>>>(cx);
-
-    let (new_game_name, set_new_game_name) = create_signal(cx, "".to_string());
-
-    let create_game = move |_| {
-        send_client_input(
-            ws,
-            PlayerInputs::CreateGame(GameCreation {
-                name: new_game_name.get(),
-                password: None,
-            }),
-        )
-    };
-
-    let leave_game = move |_| send_client_input(ws, PlayerInputs::LeaveGame);
-    let join_game = move |e| send_client_input(ws, PlayerInputs::JoinGame(event_target_value(&e)));
+    let (is_client, set_is_client) = create_signal(cx, false);
+    create_effect(cx, move |_| set_is_client.set(true));
+    create_effect(cx, move |_| log!("is client: {}", is_client.get()));
 
     view! { cx,
-    <main class="h-screen w-screen p-2 bg-teal-950 text-zinc-300" >
-        <section class="bg-slate-700 p-2 h-full">
-            <ul class="list-none">
-                <li>
-                    <button on:click=create_game>"Create Game " { new_game_name }</button>
-                </li>
-                <li>
-                    <button on:click=join_game value="">"Join Game " { new_game_name }</button>
-                </li>
-                <li>
-                    <button on:click=leave_game value="">"Leave Game " { new_game_name }</button>
-                </li>
-            </ul>
-             <input type="text"
-            on:input=move |ev| {
-                set_new_game_name(event_target_value(&ev));
-            }
-            prop:value=new_game_name
-        />
-        </section>
+    <main class="h-screen w-screen p-4 bg-teal-950 text-zinc-300 flex flex-col" >
+        // <DynamicList initial_length=1 />
+        // <DynamicListExample initial_length=1 />
+        <LobbyMenu />
+        <Show
+            when=move || is_client.get()
+            fallback=|cx| view! {cx, <div/>}>
+            <GameList />
+        </Show>
     </main>
     }
 }

@@ -38,6 +38,12 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
                                         *game_list_state = update.game_list.clone()
                                     })
                                 }
+                                GameServerUpdatePackets::GameList(update) => {
+                                    log!("got game list: {:#?}", update);
+                                    game_list.update(move |game_list_state| {
+                                        *game_list_state = update.clone()
+                                    })
+                                }
                             };
                         };
                     } else if let Ok(txt) = e.data().dyn_into::<js_sys::JsString>() {

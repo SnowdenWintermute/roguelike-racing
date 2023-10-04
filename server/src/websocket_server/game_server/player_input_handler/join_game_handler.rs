@@ -40,5 +40,4 @@ pub fn join_game_handler(game_server: &mut GameServer, actor_id: usize, game_nam
 
     // join them to the "room" for the game
     // send update to them and their roommates
-    game_server.send_lobby_and_game_full_updates(actor_id);
 }

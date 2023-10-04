@@ -44,8 +44,9 @@ fn games_list_element(game: GameListEntry) -> impl IntoView {
         move |e: MouseEvent| send_client_input(ws, PlayerInputs::JoinGame(event_target_value(&e)));
 
     view! {
-        <li class="h-10 w-full flex border-lime-500 p-4 mb-4">
-            <button value=game_name.clone() on:click=join_game>"Join Game " {game_name.clone()} </button>
+        <li class="h-10 w-full flex border border-lime-500 p-4 mb-4">
+
+            <button class="" value=game_name.clone() on:click=join_game>"Join Game " {game_name.clone()} </button>
         </li>
     }
 }

@@ -51,4 +51,5 @@ impl RoguelikeRacerAppState {
 #[derive(Debug, Serialize, Deserialize)]
 pub enum GameServerUpdatePackets {
     FullUpdate(RoguelikeRacerAppState),
+    GameList(ClientGameListState),
 }

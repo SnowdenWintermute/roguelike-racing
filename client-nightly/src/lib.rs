@@ -1,5 +1,6 @@
 pub mod app;
 use cfg_if::cfg_if;
+pub mod common_components;
 pub mod home_page;
 pub mod lobby;
 pub mod websocket_provider;

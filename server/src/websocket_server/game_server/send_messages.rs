@@ -1,3 +1,5 @@
+use common::packets::server_to_client::GameServerUpdatePackets;
+
 use super::GameServer;
 use crate::websocket_server::{AppMessage, MessageContent};
 
@@ -23,6 +25,18 @@ impl GameServer {
                         .actor_address
                         .do_send(AppMessage(MessageContent::Bytes(message.to_vec())));
                 }
+            }
+        }
+    }
+
+    pub fn send_packet(&self, packet: GameServerUpdatePackets, actor_id: usize) {
+        if let Some(connected_user) = self.sessions.get(&actor_id) {
+            let serialized = serde_cbor::to_vec(&packet);
+            match serialized {
+                Ok(bytes) => connected_user
+                    .actor_address
+                    .do_send(AppMessage(MessageContent::Bytes(bytes))),
+                Err(_e) => println!("error serializing full update"),
             }
         }
     }

@@ -1,7 +1,7 @@
+use crate::home_page::HomePage;
 use leptos::*;
 use leptos_meta::*;
 use leptos_router::*;
-use crate::home_page::HomePage;
 
 #[component]
 pub fn App() -> impl IntoView {

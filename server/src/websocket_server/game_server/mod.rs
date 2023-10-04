@@ -15,6 +15,7 @@ pub mod player_input_handler;
 pub mod send_messages;
 pub mod update_packets;
 use crate::websocket_server::game_server::player_input_handler::create_game_handler::create_game_handler;
+use crate::websocket_server::game_server::player_input_handler::game_list_update_request_handler::game_list_update_request_handler;
 use crate::websocket_server::game_server::player_input_handler::join_game_handler::join_game_handler;
 use crate::websocket_server::game_server::player_input_handler::leave_game_handler::leave_game_handler;
 
@@ -84,6 +85,9 @@ impl Handler<ClientBinaryMessage> for GameServer {
                 join_game_handler(self, message.actor_id, game_name)
             }
             Ok(PlayerInputs::LeaveGame) => leave_game_handler(self, message.actor_id),
+            Ok(PlayerInputs::RequestGameList) => {
+                game_list_update_request_handler(self, message.actor_id)
+            }
             _ => println! {"unhandled binary message\n {:#?}:",deserialized},
         }
     }

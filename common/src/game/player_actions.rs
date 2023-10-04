@@ -35,6 +35,7 @@ pub struct EquipItem {
 #[derive(Debug, Serialize, Deserialize)]
 pub enum PlayerInputs {
     // lobby
+    RequestGameList,
     CreateGame(GameCreation),
     JoinGame(String),
     LeaveGame,

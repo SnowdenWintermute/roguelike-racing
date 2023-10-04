@@ -1,4 +1,7 @@
-use crate::websocket_provider::send_client_input::send_client_input;
+use crate::{
+    common_components::button_basic::ButtonBasic,
+    websocket_provider::send_client_input::send_client_input,
+};
 use common::game::player_actions::{GameCreation, PlayerInputs};
 use leptos::*;
 use web_sys::{MouseEvent, WebSocket};
@@ -8,6 +11,7 @@ pub fn lobby_menu() -> impl IntoView {
     let ws = expect_context::<ReadSignal<Option<WebSocket>>>();
 
     let (new_game_name, set_new_game_name) = create_signal("".to_string());
+    let disabled = MaybeSignal::derive(move || new_game_name().len() < 1);
 
     let create_game = move |_: MouseEvent| {
         send_client_input(
@@ -18,6 +22,9 @@ pub fn lobby_menu() -> impl IntoView {
             }),
         )
     };
+
+    let refresh_game_list =
+        move |_: MouseEvent| send_client_input(ws, PlayerInputs::RequestGameList);
 
     // let leave_game = move |_| send_client_input(ws, PlayerInputs::LeaveGame);
     // <li>
@@ -33,10 +40,14 @@ pub fn lobby_menu() -> impl IntoView {
             prop:value=new_game_name
             prop:placeholder="Enter a game name..."
         />
-        <button class="border border-l-0 border-sky-500 h-10 cursor-pointer pr-4 pl-4
-        flex justify-center items-center disabled:opacity-50 disabled:cursor-auto"
-            prop:disabled={move || new_game_name().len() < 1}
-            on:click=create_game>"Create Game"</button>
+        <ButtonBasic
+            disabled=disabled
+            on:click=create_game
+            extra_styles="border-l-0 "
+        >
+            "Create Game"
+        </ButtonBasic>
+        <ButtonBasic on:click=refresh_game_list>"Refresh List"</ButtonBasic>
         </section>
     }
 }

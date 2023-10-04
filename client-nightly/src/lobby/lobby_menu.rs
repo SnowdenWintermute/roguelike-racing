@@ -4,7 +4,7 @@ use crate::{
 };
 use common::game::player_actions::{GameCreation, PlayerInputs};
 use leptos::*;
-use web_sys::{MouseEvent, WebSocket};
+use web_sys::{MouseEvent, SubmitEvent, WebSocket};
 
 #[component]
 pub fn lobby_menu() -> impl IntoView {
@@ -13,7 +13,8 @@ pub fn lobby_menu() -> impl IntoView {
     let (new_game_name, set_new_game_name) = create_signal("".to_string());
     let disabled = MaybeSignal::derive(move || new_game_name().len() < 1);
 
-    let create_game = move |_: MouseEvent| {
+    let create_game = move |e: SubmitEvent| {
+        e.prevent_default();
         send_client_input(
             ws,
             PlayerInputs::CreateGame(GameCreation {
@@ -26,27 +27,25 @@ pub fn lobby_menu() -> impl IntoView {
     let refresh_game_list =
         move |_: MouseEvent| send_client_input(ws, PlayerInputs::RequestGameList);
 
-    // let leave_game = move |_| send_client_input(ws, PlayerInputs::LeaveGame);
-    // <li>
-    //     <button on:click=leave_game value="">"Leave Game " { new_game_name }</button>
-    // </li>
     view! {
-        <section class="bg-slate-700 p-4 mb-4 flex">
-             <input type="text"
-             class="bg-slate-700 border border-sky-500 h-10 p-4"
-            on:input=move |ev| {
-                set_new_game_name(event_target_value(&ev));
-            }
-            prop:value=new_game_name
-            prop:placeholder="Enter a game name..."
-        />
-        <ButtonBasic
-            disabled=disabled
-            on:click=create_game
-            extra_styles="border-l-0 "
-        >
-            "Create Game"
-        </ButtonBasic>
+        <section class="w-full bg-slate-700 border border-slate-400 p-4 mb-4 flex justify-between">
+            <form class="flex" on:submit=create_game>
+              <input type="text"
+                  class="bg-slate-700 border border-slate-400 h-10 p-4"
+                  on:input=move |ev| {
+                      set_new_game_name(event_target_value(&ev));
+                  }
+                  prop:value=new_game_name
+                  prop:placeholder="Enter a game name..."
+             />
+            <ButtonBasic
+                disabled=disabled
+                extra_styles="border-l-0 "
+                button_type="submit"
+            >
+                "Create Game"
+            </ButtonBasic>
+        </form>
         <ButtonBasic on:click=refresh_game_list>"Refresh List"</ButtonBasic>
         </section>
     }

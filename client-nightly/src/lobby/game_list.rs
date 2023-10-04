@@ -3,6 +3,7 @@ use common::packets::server_to_client::{ClientGameListState, GameListEntry};
 use leptos::{logging::log, *};
 use web_sys::{MouseEvent, WebSocket};
 
+use crate::common_components::button_basic::ButtonBasic;
 use crate::websocket_provider::send_client_input::send_client_input;
 
 #[component]
@@ -14,7 +15,7 @@ pub fn game_list() -> impl IntoView {
     create_effect(move |_| log!("game list: {:#?}", game_list()));
 
     view! {
-        <section id="game_list" class="flex-1 p-4 bg-slate-700 border border-lime-500">
+        <section class="flex-1 p-4 bg-slate-700 border border-slate-400" id="game_list" >
             <h3>"Games"</h3>
             <ul class="list-none">
                   <For
@@ -40,13 +41,25 @@ fn games_list_element(game: GameListEntry) -> impl IntoView {
         time_started,
     } = game;
 
-    let join_game =
-        move |e: MouseEvent| send_client_input(ws, PlayerInputs::JoinGame(event_target_value(&e)));
-
     view! {
-        <li class="h-10 w-full flex border border-lime-500 p-4 mb-4">
-
-            <button class="" value=game_name.clone() on:click=join_game>"Join Game " {game_name.clone()} </button>
+        <li class="w-full flex border border-slate-400 mb-4 justify-between">
+            <div class="flex">
+                <div class="h-full flex items-center w-20 overflow-hidden whitespace-nowrap overflow-ellipsis
+                border-r border-slate-400 pl-4 pr-4" >
+                    {game_name.clone()}
+                </div>
+                <div class="h-full flex items-center w-20 overflow-hidden whitespace-nowrap overflow-ellipsis
+                border-r border-slate-400 pl-4 pr-4" >
+                    "Players:" {number_of_users}
+                </div>
+            </div>
+            <ButtonBasic
+                on:click=move |_| send_client_input(ws, PlayerInputs::JoinGame(game_name.clone()))
+                extra_styles="border-r-0 border-t-0 border-b-0"
+                disabled={MaybeSignal::derive(move || time_started.is_some())}
+            >
+                "Join"
+            </ButtonBasic>
         </li>
     }
 }

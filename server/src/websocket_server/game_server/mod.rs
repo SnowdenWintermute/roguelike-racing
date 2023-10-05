@@ -1,5 +1,6 @@
 #![allow(dead_code, unused_imports)]
 use actix::prelude::*;
+use common::consts::MAIN_CHAT_ROOM;
 use common::game::player_actions::PlayerInputs;
 use common::game::RoguelikeRacerGame;
 use common::utils::generate_random_username;
@@ -9,20 +10,15 @@ use std::sync::atomic::AtomicUsize;
 use std::sync::Arc;
 pub mod connection_handler;
 pub mod disconnection_handler;
-pub mod join_room_handler;
 pub mod list_rooms_handler;
-pub mod player_input_handler;
+pub mod player_input_handlers;
 pub mod send_messages;
-pub mod update_packets;
-use crate::websocket_server::game_server::player_input_handler::create_game_handler::create_game_handler;
-use crate::websocket_server::game_server::player_input_handler::game_list_update_request_handler::game_list_update_request_handler;
-use crate::websocket_server::game_server::player_input_handler::join_game_handler::join_game_handler;
-use crate::websocket_server::game_server::player_input_handler::leave_game_handler::leave_game_handler;
-
-use super::{
-    AppMessage, ClientBinaryMessage, ClientMessage, Disconnect, Join, ListRooms, MessageContent,
-    MAIN_CHAT_ROOM,
-};
+pub mod update_packet_creators;
+use super::{AppMessage, ClientBinaryMessage, ClientMessage};
+use crate::websocket_server::game_server::player_input_handlers::create_game_handler::create_game_handler;
+use crate::websocket_server::game_server::player_input_handlers::game_list_update_request_handler::game_list_update_request_handler;
+use crate::websocket_server::game_server::player_input_handlers::join_game_handler::join_game_handler;
+use crate::websocket_server::game_server::player_input_handlers::leave_game_handler::leave_game_handler;
 
 #[derive(Debug)]
 pub struct ConnectedUser {

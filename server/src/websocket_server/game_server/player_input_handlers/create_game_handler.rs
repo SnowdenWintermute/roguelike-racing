@@ -1,5 +1,5 @@
 use crate::websocket_server::game_server::{
-    player_input_handler::join_game_handler::join_game_handler, GameServer,
+    player_input_handlers::join_game_handler::join_game_handler, GameServer,
 };
 use common::game::player_actions::{GameCreation, PlayerInputs};
 use common::game::{RoguelikeRacerGame, RoguelikeRacerPlayer};
@@ -24,6 +24,11 @@ pub fn create_game_handler(
     };
 
     println!("{:#?}", message_content);
+    // reject if actor already in a game
+    if connected_user.current_game_name.is_some() {
+        println!("leave your current game before creating one");
+        return;
+    }
 
     // check if game name exists
     if game_server.games.get(game_name).is_some() {

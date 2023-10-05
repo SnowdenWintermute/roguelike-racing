@@ -8,13 +8,13 @@ const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(5);
 const CLIENT_TIMEOUT: Duration = Duration::from_secs(10);
 
 #[derive(Debug)]
-pub struct WsChatSession {
+pub struct WebsocketActor {
     pub id: usize,
     pub time_of_last_ping_received: Instant,
     pub game_server_actor_address: Addr<websocket_server::game_server::GameServer>,
 }
 
-impl WsChatSession {
+impl WebsocketActor {
     fn heartbeat(&self, context: &mut ws::WebsocketContext<Self>) {
         context.run_interval(HEARTBEAT_INTERVAL, |act, context| {
             if Instant::now().duration_since(act.time_of_last_ping_received) > CLIENT_TIMEOUT {
@@ -30,14 +30,14 @@ impl WsChatSession {
     }
 }
 
-impl Actor for WsChatSession {
+impl Actor for WebsocketActor {
     type Context = ws::WebsocketContext<Self>;
     fn started(&mut self, context: &mut Self::Context) {
         self.heartbeat(context);
         // register self in chat server. `AsyncContext::wait` register
         // future within context, but context waits until this future resolves
         // before processing any other events.
-        // HttpContext::state() is instance of WsChatSessionState, state is shared
+        // HttpContext::state() is instance of WebsocketActorState, state is shared
         // across all routes within application
         let actor_address = context.address();
         self.game_server_actor_address
@@ -64,7 +64,7 @@ impl Actor for WsChatSession {
 }
 
 /// Handle messages from chat server, we simply send it to client websocket
-impl Handler<websocket_server::AppMessage> for WsChatSession {
+impl Handler<websocket_server::AppMessage> for WebsocketActor {
     type Result = ();
     fn handle(&mut self, message: websocket_server::AppMessage, context: &mut Self::Context) {
         match message.0 {
@@ -75,7 +75,7 @@ impl Handler<websocket_server::AppMessage> for WsChatSession {
 }
 
 /// WebSocket message handler
-impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsChatSession {
+impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WebsocketActor {
     fn handle(
         &mut self,
         message: Result<ws::Message, ws::ProtocolError>,
@@ -132,19 +132,19 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsChatSession {
                             // so actor wont receive any new messages until it get list
                             // of rooms back
                         }
-                        "/join" => {
-                            if v.len() == 2 {
-                                self.game_server_actor_address
-                                    .do_send(websocket_server::Join {
-                                        actor_id: self.id,
-                                        room_name: v[1].to_owned(),
-                                    });
+                        // "/join" => {
+                        //     if v.len() == 2 {
+                        //         self.game_server_actor_address
+                        //             .do_send(websocket_server::Join {
+                        //                 actor_id: self.id,
+                        //                 room_name: v[1].to_owned(),
+                        //             });
 
-                                context.text("joined");
-                            } else {
-                                context.text("!!! room name is required");
-                            }
-                        }
+                        //         context.text("joined");
+                        //     } else {
+                        //         context.text("!!! room name is required");
+                        //     }
+                        // }
                         _ => context.text(format!("!!! unknown command: {m:?}")),
                     }
                 } else {

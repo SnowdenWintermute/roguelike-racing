@@ -1,7 +1,8 @@
 #![allow(dead_code)]
 use super::GameServer;
-use crate::websocket_server::{game_server::ConnectedUser, Connect, MAIN_CHAT_ROOM};
+use crate::websocket_server::{game_server::ConnectedUser, Connect};
 use actix::{Context, Handler};
+use common::consts::MAIN_CHAT_ROOM;
 use rand::{self, Rng};
 use std::sync::atomic::Ordering;
 
@@ -13,8 +14,8 @@ impl Handler<Connect> for GameServer {
             actor_address,
         } = message;
 
-        let new_user_connection_data = ConnectedUser::new(actor_id, actor_address);
-        self.sessions.insert(actor_id, new_user_connection_data);
+        let new_user_connection = ConnectedUser::new(actor_id, actor_address);
+        self.sessions.insert(actor_id, new_user_connection);
         println!("actor id {} connected", actor_id);
 
         self.send_string_message(MAIN_CHAT_ROOM, "Someone joined");

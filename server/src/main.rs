@@ -7,7 +7,7 @@ use rand::Rng;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::time::Instant;
-use websocket_server::session::WsChatSession;
+use websocket_server::websocket_actor::WebsocketActor;
 mod websocket_server;
 
 /// Entry point for our websocket route
@@ -18,7 +18,7 @@ async fn chat_route(
 ) -> Result<HttpResponse, Error> {
     let mut rng = rand::thread_rng();
     ws::start(
-        WsChatSession {
+        WebsocketActor {
             id: rng.gen::<usize>(),
             time_of_last_ping_received: Instant::now(),
             game_server_actor_address: server.get_ref().clone(),

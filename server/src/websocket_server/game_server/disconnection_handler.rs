@@ -6,8 +6,8 @@ use rand::{rngs::ThreadRng, Rng};
 use std::collections::{HashMap, HashSet};
 use std::sync::atomic::Ordering;
 
-use crate::websocket_server::game_server::player_input_handler::leave_game_handler::leave_game_handler;
-use crate::websocket_server::{Disconnect, MAIN_CHAT_ROOM};
+use crate::websocket_server::game_server::player_input_handlers::leave_game_handler::leave_game_handler;
+use crate::websocket_server::Disconnect;
 
 impl Handler<Disconnect> for GameServer {
     type Result = ();

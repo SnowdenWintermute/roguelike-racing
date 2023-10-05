@@ -2,7 +2,7 @@ pub mod send_client_input;
 use common::adventuring_party::AdventuringParty;
 use common::packets::server_to_client::ClientGameListState;
 use common::packets::server_to_client::GameServerUpdatePackets;
-use common::packets::server_to_client::RoguelikeRacerAppState;
+use common::packets::server_to_client::RoomState;
 use leptos::logging::log;
 use leptos::*;
 use wasm_bindgen::prelude::Closure;
@@ -13,9 +13,9 @@ use web_sys::{MessageEvent, WebSocket};
 pub fn websocket_provider(children: Children) -> impl IntoView {
     let (ws, set_ws) = create_signal::<Option<WebSocket>>(None);
     provide_context(ws);
-    let _app_state = expect_context::<RwSignal<RoguelikeRacerAppState>>();
     let _adventuring_party = expect_context::<RwSignal<Option<AdventuringParty>>>();
     let game_list = expect_context::<RwSignal<ClientGameListState>>();
+    let room = expect_context::<RwSignal<RoomState>>();
 
     create_effect(move |_| {
         let websocket = WebSocket::new("ws://127.0.0.1:8080/ws");
@@ -35,15 +35,20 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
                             match data {
                                 GameServerUpdatePackets::FullUpdate(update) => {
                                     game_list.update(move |game_list_state| {
-                                        *game_list_state = update.game_list.clone()
-                                    })
+                                        *game_list_state = update.game_list
+                                    });
+                                    room.update(move |room_state| *room_state = update.room)
                                 }
                                 GameServerUpdatePackets::GameList(update) => {
                                     log!("got game list: {:#?}", update);
-                                    game_list.update(move |game_list_state| {
-                                        *game_list_state = update.clone()
-                                    })
+                                    game_list
+                                        .update(move |game_list_state| *game_list_state = update)
                                 }
+                                GameServerUpdatePackets::RoomFullUpdate(update) => {
+                                    log!("got room update: {:#?}", update);
+                                    room.update(move |room_state| *room_state = update)
+                                }
+                                _ => log!("unknown binary packet"),
                             };
                         };
                     } else if let Ok(txt) = e.data().dyn_into::<js_sys::JsString>() {

@@ -1,8 +1,6 @@
 use actix::prelude::*;
 pub mod game_server;
-pub mod session;
-
-pub const MAIN_CHAT_ROOM: &str = "main";
+pub mod websocket_actor;
 
 pub enum MessageContent {
     Str(String),

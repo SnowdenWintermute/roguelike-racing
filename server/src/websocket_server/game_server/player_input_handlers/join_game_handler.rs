@@ -1,5 +1,10 @@
 use crate::websocket_server::game_server::GameServer;
-use common::game::{player_actions::GameCreation, RoguelikeRacerPlayer};
+use common::{
+    game::{player_actions::GameCreation, RoguelikeRacerPlayer},
+    packets::server_to_client::GameServerUpdatePackets,
+};
+
+use super::join_room_handler::join_room_handler;
 
 pub fn join_game_handler(game_server: &mut GameServer, actor_id: usize, game_name: String) {
     let game = match game_server.games.get_mut(&game_name) {
@@ -39,5 +44,13 @@ pub fn join_game_handler(game_server: &mut GameServer, actor_id: usize, game_nam
     connected_user.current_game_name = Some(game_name.to_string());
 
     // join them to the "room" for the game
-    // send update to them and their roommates
+    join_room_handler(game_server, &game_name, actor_id);
+
+    // send update to them
+    let game_update = game_server.create_game_full_update(actor_id);
+    game_server.send_packet(
+        &GameServerUpdatePackets::GameFullUpdate(game_update),
+        actor_id,
+    );
+    // and their roommates
 }

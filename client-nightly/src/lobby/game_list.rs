@@ -1,21 +1,20 @@
 use common::game::player_actions::PlayerInputs;
 use common::packets::server_to_client::{ClientGameListState, GameListEntry};
 use leptos::{logging::log, *};
-use web_sys::{MouseEvent, WebSocket};
+use web_sys::WebSocket;
 
 use crate::common_components::button_basic::ButtonBasic;
 use crate::websocket_provider::send_client_input::send_client_input;
 
 #[component]
 pub fn game_list() -> impl IntoView {
-    let _ws = expect_context::<ReadSignal<Option<WebSocket>>>();
     let game_list_state = expect_context::<RwSignal<ClientGameListState>>();
     let game_list = move || game_list_state().games;
 
     create_effect(move |_| log!("game list: {:#?}", game_list()));
 
     view! {
-        <section class="flex-1 p-4 bg-slate-700 border border-slate-400" id="game_list" >
+        <section class="flex-1 p-4 mr-4 bg-slate-700 border border-slate-400" id="game_list" >
             <h3>"Games"</h3>
             <ul class="list-none">
                   <For
@@ -44,13 +43,15 @@ fn games_list_element(game: GameListEntry) -> impl IntoView {
     view! {
         <li class="w-full flex border border-slate-400 mb-4 justify-between">
             <div class="flex">
-                <div class="h-full flex items-center w-20 overflow-hidden whitespace-nowrap overflow-ellipsis
-                border-r border-slate-400 pl-4 pr-4" >
-                    {game_name.clone()}
+                <div class="h-10 flex items-center w-20 border-r border-slate-400 pl-4" >
+                    <div class="overflow-hidden whitespace-nowrap overflow-ellipsis">
+                        {game_name.clone()}
+                    </div>
                 </div>
-                <div class="h-full flex items-center w-20 overflow-hidden whitespace-nowrap overflow-ellipsis
-                border-r border-slate-400 pl-4 pr-4" >
-                    "Players:" {number_of_users}
+                <div class="h-10 flex items-center w-24 border-r border-slate-400 pl-4" >
+                    <div class="overflow-hidden whitespace-nowrap overflow-ellipsis">
+                        "Players:" {number_of_users}
+                    </div>
                 </div>
             </div>
             <ButtonBasic

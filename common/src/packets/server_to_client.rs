@@ -3,10 +3,9 @@ use serde::{Deserialize, Serialize};
 use std::time::Instant;
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct RoomFullUpdate {
+pub struct RoomState {
     pub room_name: String,
     pub users: Vec<String>,
-    pub chat_messages: Option<Vec<String>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -29,7 +28,7 @@ impl ClientGameListState {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RoguelikeRacerAppState {
-    pub room: RoomFullUpdate,
+    pub room: RoomState,
     pub game_list: ClientGameListState,
     pub current_game: Option<RoguelikeRacerGame>,
 }
@@ -37,10 +36,9 @@ pub struct RoguelikeRacerAppState {
 impl RoguelikeRacerAppState {
     pub fn new() -> Self {
         RoguelikeRacerAppState {
-            room: RoomFullUpdate {
+            room: RoomState {
                 room_name: "".to_string(),
                 users: Vec::new(),
-                chat_messages: Some(Vec::new()),
             },
             game_list: ClientGameListState { games: Vec::new() },
             current_game: None,
@@ -52,4 +50,10 @@ impl RoguelikeRacerAppState {
 pub enum GameServerUpdatePackets {
     FullUpdate(RoguelikeRacerAppState),
     GameList(ClientGameListState),
+    GameFullUpdate(Option<RoguelikeRacerGame>),
+    GamePlayerJoined(String),
+    GamePlayerLeft(String),
+    RoomFullUpdate(RoomState),
+    UserJoinedRoom(String),
+    UserLeftRoom(String),
 }

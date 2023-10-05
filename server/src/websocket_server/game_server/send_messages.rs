@@ -29,7 +29,7 @@ impl GameServer {
         }
     }
 
-    pub fn send_packet(&self, packet: GameServerUpdatePackets, actor_id: usize) {
+    pub fn send_packet(&self, packet: &GameServerUpdatePackets, actor_id: usize) {
         if let Some(connected_user) = self.sessions.get(&actor_id) {
             let serialized = serde_cbor::to_vec(&packet);
             match serialized {
@@ -37,6 +37,26 @@ impl GameServer {
                     .actor_address
                     .do_send(AppMessage(MessageContent::Bytes(bytes))),
                 Err(_e) => println!("error serializing full update"),
+            }
+        } else {
+            println!("tried to send a packet to a client but couldn't find any connected user with the provide actor_id")
+        }
+    }
+
+    pub fn emit_packet(
+        &self,
+        room: &str,
+        packet: &GameServerUpdatePackets,
+        skip_id: Option<usize>,
+    ) {
+        if let Some(sessions) = self.rooms.get(room) {
+            for actor_id in sessions {
+                if let Some(id_to_skip) = skip_id {
+                    if &id_to_skip == actor_id {
+                        continue;
+                    }
+                }
+                self.send_packet(packet, *actor_id)
             }
         }
     }

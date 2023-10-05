@@ -1,72 +1,66 @@
+use common::game::player_actions::PlayerInputs;
 use common::packets::server_to_client::{ClientGameListState, GameListEntry};
-use leptos::*;
+use leptos::{logging::log, *};
+use web_sys::WebSocket;
+
+use crate::common_components::button_basic::ButtonBasic;
+use crate::websocket_provider::send_client_input::send_client_input;
 
 #[component]
-pub fn game_list(cx: Scope) -> impl IntoView {
-    let (game_list_state, set_game_list_state) = create_signal(cx, ClientGameListState::new());
-    let (last_game_id, set_last_game_id) = create_signal(cx, 1);
-    let game_list = move || game_list_state.get().games;
+pub fn game_list() -> impl IntoView {
+    let game_list_state = expect_context::<RwSignal<ClientGameListState>>();
+    let game_list = move || game_list_state().games;
 
-    create_effect(cx, move |_| log!("game list: {:#?}", game_list()));
+    create_effect(move |_| log!("game list: {:#?}", game_list()));
 
-    create_effect(cx, move |_| {
-        set_game_list_state.update(move |list_state| {
-            list_state.games.push(GameListEntry {
-                game_name: "game added in effect".to_string(),
-                number_of_users: 1,
-                time_started: None,
-            });
-        })
-    });
-
-    let add_game = move |_| {
-        set_last_game_id.update(|name| {
-            *name += 1;
-        });
-        set_game_list_state.update(move |state| {
-            state.games.push(GameListEntry {
-                game_name: last_game_id.get().to_string(),
-                number_of_users: 1,
-                time_started: None,
-            })
-        })
-    };
-
-    view! { cx,
-        <section id="game_list" class="flex-1 p-4 bg-slate-700 border border-lime-500">
-            <h3>"Games"</h3>
+    view! {
+        <section class="flex-1 p-4 mr-4 bg-slate-700 border border-slate-400" id="game_list" >
+            <h2 class="text-slate-200 text-l mb-2" >"Games"</h2>
             <ul class="list-none">
-            <button on:click=add_game>
-                "Add Game"
-            </button>
-            <For each=game_list
+                  <For
+                each=game_list
                 key=|game| game.game_name.clone()
-                view=move |cx,  game| {
-                        view! {cx,
-                        <li>"game name: "{game.game_name.clone()}</li>
-                        }
-                    }
-                />
+                children=move |game| {
+                  view! {
+                   <GamesListElement game=game/>
+                  }
+            }
+              />
             </ul>
         </section>
     }
 }
 
-// #[component]
-// fn games_list_element(cx: Scope, game: GameListEntry) -> impl IntoView {
-//     let ws = expect_context::<ReadSignal<Option<WebSocket>>>(cx);
-//     let GameListEntry {
-//         game_name,
-//         number_of_users,
-//         time_started,
-//     } = game;
+#[component]
+fn games_list_element(game: GameListEntry) -> impl IntoView {
+    let ws = expect_context::<ReadSignal<Option<WebSocket>>>();
+    let GameListEntry {
+        game_name,
+        number_of_users,
+        time_started,
+    } = game;
 
-//     let join_game =
-//         move |e: MouseEvent| send_client_input(ws, PlayerInputs::JoinGame(event_target_value(&e)));
-
-//     view! {cx,
-//         <li class="h-10 w-full flex border-lime-500 p-4 mb-4">
-//             <button value=game_name.clone() on:click=join_game>"Join Game " {game_name.clone()} </button>
-//         </li>
-//     }
-// }
+    view! {
+        <li class="w-full flex border border-slate-400 mb-4 justify-between">
+            <div class="flex">
+                <div class="h-10 flex items-center w-20 border-r border-slate-400 pl-4" >
+                    <div class="overflow-hidden whitespace-nowrap overflow-ellipsis">
+                        {game_name.clone()}
+                    </div>
+                </div>
+                <div class="h-10 flex items-center w-24 border-r border-slate-400 pl-4" >
+                    <div class="overflow-hidden whitespace-nowrap overflow-ellipsis">
+                        "Players:" {number_of_users}
+                    </div>
+                </div>
+            </div>
+            <ButtonBasic
+                on:click=move |_| send_client_input(ws, PlayerInputs::JoinGame(game_name.clone()))
+                extra_styles="border-r-0 border-t-0 border-b-0"
+                disabled={MaybeSignal::derive(move || time_started.is_some())}
+            >
+                "Join"
+            </ButtonBasic>
+        </li>
+    }
+}

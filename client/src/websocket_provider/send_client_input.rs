@@ -6,7 +6,7 @@ pub fn send_client_input(ws: ReadSignal<Option<WebSocket>>, player_action: Playe
     ws.with(|socket| match socket {
         Some(ws) => {
             let serialized = serde_cbor::to_vec(&player_action);
-            match serialized {
+            let _ = match serialized {
                 Ok(bytes) => ws.send_with_u8_array(bytes.as_slice()),
                 Err(_) => Ok(()),
             };

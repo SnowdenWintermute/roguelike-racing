@@ -1,12 +1,9 @@
-#![allow(unused)]
 pub mod app;
+use cfg_if::cfg_if;
+pub mod common_components;
 pub mod home_page;
 pub mod lobby;
-pub mod not_found;
-pub mod roguelike_racer_game;
 pub mod websocket_provider;
-
-use cfg_if::cfg_if;
 
 cfg_if! {
 if #[cfg(feature = "hydrate")] {
@@ -16,13 +13,11 @@ if #[cfg(feature = "hydrate")] {
     #[wasm_bindgen]
     pub fn hydrate() {
       use app::*;
-      use leptos::*;
+      use leptos;
 
       console_error_panic_hook::set_once();
 
-      leptos::mount_to_body(move |cx| {
-          view! { cx, <App/> }
-      });
+      leptos::mount_to_body(App);
     }
 }
 }

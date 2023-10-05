@@ -16,6 +16,7 @@ pub fn join_room_handler(game_server: &mut GameServer, room_name: &str, actor_id
 
     let username = connected_user.username.clone();
     let previous_room_name = connected_user.current_room_name.clone();
+    println!("previous_room_name: {}", previous_room_name);
     connected_user.current_room_name = room_name.to_string();
 
     // REMOVE THEM FROM THEIR PREVIOUS ROOM
@@ -24,12 +25,17 @@ pub fn join_room_handler(game_server: &mut GameServer, room_name: &str, actor_id
         match room_leaving {
             Some(room) => {
                 room.remove(&actor_id);
-                // UPDATE THEIR PREVIOUS ROOM MEMBERS
-                game_server.emit_packet(
-                    &room_name,
-                    &GameServerUpdatePackets::UserLeftRoom(username.clone()),
-                    None,
-                );
+                if room.len() < 1 {
+                    // if empty, delete the room
+                    game_server.rooms.remove(&previous_room_name);
+                } else {
+                    // UPDATE THEIR PREVIOUS ROOM MEMBERS
+                    game_server.emit_packet(
+                        &previous_room_name,
+                        &GameServerUpdatePackets::UserLeftRoom(username.clone()),
+                        None,
+                    );
+                }
             }
             None => println!("tried to remove a user from a room but no room was found"),
         }

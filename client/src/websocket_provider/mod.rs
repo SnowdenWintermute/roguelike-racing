@@ -1,5 +1,6 @@
 pub mod send_client_input;
 use common::adventuring_party::AdventuringParty;
+use common::game::RoguelikeRacerGame;
 use common::packets::server_to_client::ClientGameListState;
 use common::packets::server_to_client::GameServerUpdatePackets;
 use common::packets::server_to_client::RoomState;
@@ -16,6 +17,7 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
     let _adventuring_party = expect_context::<RwSignal<Option<AdventuringParty>>>();
     let game_list = expect_context::<RwSignal<ClientGameListState>>();
     let room = expect_context::<RwSignal<RoomState>>();
+    let game = expect_context::<RwSignal<Option<RoguelikeRacerGame>>>();
 
     create_effect(move |_| {
         let websocket = WebSocket::new("ws://127.0.0.1:8080/ws");
@@ -63,6 +65,10 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
                                 GameServerUpdatePackets::UserJoinedRoom(update) => {
                                     log!("user joined room: {:#?}", update);
                                     room.update(move |room_state| room_state.users.push(update))
+                                }
+                                GameServerUpdatePackets::GameFullUpdate(update) => {
+                                    log!("received full game update: {:#?}", update);
+                                    game.update(move |game_state| *game_state = update)
                                 }
                                 _ => log!("unknown binary packet"),
                             };

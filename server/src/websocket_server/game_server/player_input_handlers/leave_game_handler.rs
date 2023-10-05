@@ -1,5 +1,11 @@
 use crate::websocket_server::game_server::GameServer;
-use common::game::{player_actions::GameCreation, RoguelikeRacerPlayer};
+use common::{
+    consts::MAIN_CHAT_ROOM,
+    game::{player_actions::GameCreation, RoguelikeRacerPlayer},
+    packets::server_to_client::GameServerUpdatePackets,
+};
+
+use super::join_room_handler::join_room_handler;
 
 pub fn leave_game_handler(game_server: &mut GameServer, actor_id: usize) {
     let connected_user = match game_server.sessions.get_mut(&actor_id) {
@@ -49,5 +55,8 @@ pub fn leave_game_handler(game_server: &mut GameServer, actor_id: usize) {
             return;
         }
     }
-    game_server.send_lobby_and_game_full_updates(actor_id);
+    // join them to the main channel
+    join_room_handler(game_server, MAIN_CHAT_ROOM, actor_id);
+    //
+    game_server.send_packet(&GameServerUpdatePackets::GameFullUpdate(None), actor_id);
 }

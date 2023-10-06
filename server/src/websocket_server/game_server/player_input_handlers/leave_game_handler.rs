@@ -57,6 +57,5 @@ pub fn leave_game_handler(game_server: &mut GameServer, actor_id: usize) {
     }
     // join them to the main channel
     join_room_handler(game_server, MAIN_CHAT_ROOM, actor_id);
-    //
     game_server.send_packet(&GameServerUpdatePackets::GameFullUpdate(None), actor_id);
 }

@@ -80,10 +80,13 @@ impl GameServer {
         };
 
         for actor_id in room.iter() {
-            let user = self.sessions.get(actor_id).expect(
-                "if their actor id is in a room, they should be registered with the game server",
-            );
-            room_update.users.push(user.username.clone());
+            if let Some(user) = self.sessions.get(actor_id) {
+                room_update.users.push(user.username.clone());
+            } else {
+                println!(
+                    "if their actor id is in a room, they should be registered with the game server",
+                    );
+            }
         }
 
         // GAME LIST UPDATE

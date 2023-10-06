@@ -53,7 +53,13 @@ pub fn join_room_handler(game_server: &mut GameServer, room_name: &str, actor_id
         .get(room_name)
         .expect("this room should exist because we just created it or inserted a user into it")
         .into_iter()
-        .map(|id| game_server.sessions.get(id).unwrap().username.clone())
+        .filter_map(|id| {
+            if let Some(connected_user) = game_server.sessions.get(id) {
+                Some(connected_user.username.clone())
+            } else {
+                None
+            }
+        })
         .collect();
 
     // GIVE THEM NEW ROOM INFO

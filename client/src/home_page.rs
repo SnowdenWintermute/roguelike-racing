@@ -21,10 +21,7 @@ pub fn HomePage() -> impl IntoView {
 
     view! {
         <WebsocketProvider>
-            <Show
-                when=move || { game.get().is_none() }
-                fallback=|| view!{<GameSetup />}
-            >
+            <Show when=move || { game.get().is_none() } fallback=|| view! { <GameSetup/> }>
                 <Lobby/>
             </Show>
         </WebsocketProvider>

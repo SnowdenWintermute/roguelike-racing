@@ -19,6 +19,7 @@ pub struct RoomsExplored {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AdventuringParty {
     pub id: u32,
+    pub name: String,
     pub players: HashMap<String, RoguelikeRacerPlayer>,
     pub player_characters: HashMap<u32, Character>,
     pub active_player_id: Option<u32>,
@@ -30,9 +31,10 @@ pub struct AdventuringParty {
 }
 
 impl AdventuringParty {
-    pub fn new(id: u32) -> AdventuringParty {
+    pub fn new(id: u32, name: String) -> AdventuringParty {
         AdventuringParty {
             id,
+            name,
             active_player_id: None,
             players: HashMap::new(),
             player_characters: HashMap::new(),

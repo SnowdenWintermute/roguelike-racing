@@ -30,23 +30,21 @@ pub fn lobby_menu() -> impl IntoView {
     view! {
         <section class="w-full bg-slate-700 border border-slate-400 p-4 mb-4 flex justify-between">
             <form class="flex" on:submit=create_game>
-              <input type="text"
-                  class="bg-slate-700 border border-slate-400 h-10 p-4"
-                  on:input=move |ev| {
-                      set_new_game_name(event_target_value(&ev));
-                  }
-                  prop:value=new_game_name
-                  prop:placeholder="Enter a game name..."
-             />
-            <ButtonBasic
-                disabled=disabled
-                extra_styles="border-l-0 "
-                button_type="submit"
-            >
-                "Create Game"
-            </ButtonBasic>
-        </form>
-        <ButtonBasic on:click=refresh_game_list>"Refresh List"</ButtonBasic>
+                <input
+                    type="text"
+                    class="bg-slate-700 border border-slate-400 h-10 p-4"
+                    on:input=move |ev| {
+                        set_new_game_name(event_target_value(&ev));
+                    }
+
+                    prop:value=new_game_name
+                    prop:placeholder="Enter a game name..."
+                />
+                <ButtonBasic disabled=disabled extra_styles="border-l-0 " button_type="submit">
+                    "Create Game"
+                </ButtonBasic>
+            </form>
+            <ButtonBasic on:click=refresh_game_list>"Refresh List"</ButtonBasic>
         </section>
     }
 }

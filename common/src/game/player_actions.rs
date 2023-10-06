@@ -27,6 +27,12 @@ pub struct CharacterCreation {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+pub struct CharacterClassSelection {
+    character_id: u32,
+    class: CombatantClass,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct EquipItem {
     item_slot: u8,
     equipment_slot: EquipmentSlots,
@@ -40,7 +46,10 @@ pub enum PlayerInputs {
     JoinGame(String),
     LeaveGame,
     CreateAdventuringParty(String),
-    SelectCharacter(CharacterCreation),
+    JoinAdventuringParty(u32),
+    LeaveAdventuringParty,
+    CreateCharacter(CharacterCreation),
+    ChangeCharacterClass(CharacterClassSelection),
     DeselectCharacter,
     ToggleReady,
     // use items and abilities

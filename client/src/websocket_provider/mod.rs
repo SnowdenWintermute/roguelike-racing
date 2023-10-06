@@ -70,6 +70,12 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
                                     log!("received full game update: {:#?}", update);
                                     game.update(move |game_state| *game_state = update)
                                 }
+                                GameServerUpdatePackets::AdventuringPartyCreated(update) => game
+                                    .update(move |game_state| {
+                                        if let Some(game) = game_state {
+                                            game.adventuring_parties.insert(update.id, update);
+                                        }
+                                    }),
                                 _ => log!("unknown binary packet"),
                             };
                         };
@@ -88,5 +94,5 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
         }
     });
 
-    view! { <div aria-hidden=true>{children()}</div>}
+    view! { <div aria-hidden=true>{children()}</div> }
 }

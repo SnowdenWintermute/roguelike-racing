@@ -17,9 +17,7 @@ pub fn game_setup_menu() -> impl IntoView {
 
     view! {
         <section class="w-full bg-slate-700 border border-slate-400 p-4 mb-4 flex justify-between">
-            <ButtonBasic on:click=leave_game>
-                "Leave Game"
-            </ButtonBasic>
+            <ButtonBasic on:click=leave_game>"Leave Game"</ButtonBasic>
             <ButtonBasic>"Ready"</ButtonBasic>
         </section>
     }

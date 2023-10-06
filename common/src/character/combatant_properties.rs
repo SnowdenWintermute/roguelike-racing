@@ -6,7 +6,7 @@ use crate::status_effects::StatusEffects;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum CombatantClass {
     Warrior,
     Mage,

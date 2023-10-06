@@ -10,6 +10,7 @@ pub mod player_input_handlers;
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RoguelikeRacerPlayer {
     pub actor_id: Option<usize>,
+    pub party_id: Option<u32>,
     pub username: String,
     pub character_ids: Option<Vec<u32>>,
     pub ready: bool,
@@ -19,6 +20,7 @@ impl RoguelikeRacerPlayer {
     pub fn new(actor_id: Option<usize>, username: String) -> Self {
         RoguelikeRacerPlayer {
             actor_id,
+            party_id: None,
             username,
             character_ids: None,
             ready: false,
@@ -56,9 +58,28 @@ impl RoguelikeRacerGame {
         number_of_players as u8
     }
 
-    pub fn add_adventuring_party(&mut self) {
+    pub fn add_adventuring_party(&mut self, name: String) -> u32 {
         let party_id = self.id_generator.get_next_entity_id();
-        let new_party = AdventuringParty::new(party_id);
+        let new_party = AdventuringParty::new(party_id, name);
         self.adventuring_parties.insert(party_id, new_party);
+        party_id
+    }
+
+    pub fn put_player_in_adventuring_party(&mut self, party_id: u32, username: String) {
+        // add them to the party
+        if let Some(party) = self.adventuring_parties.get_mut(&party_id) {
+            // remove them from partyless players list
+            if let Some(mut player_to_move) = self.partyless_players.remove(&username) {
+                player_to_move.party_id = Some(party_id);
+                party.players.insert(username, player_to_move);
+            } else {
+                println!("tried to put a player into party id {} but they weren't found in the list of partyless players", party_id);
+            }
+        } else {
+            println!(
+                "tried to put {} into party id {} but the party wasn't found in the current game",
+                &username, party_id
+            );
+        }
     }
 }

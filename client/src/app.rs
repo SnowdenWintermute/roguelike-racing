@@ -9,8 +9,6 @@ pub fn App() -> impl IntoView {
     provide_meta_context();
 
     view! {
-        // injects a stylesheet into the document <head>
-        // id=leptos means cargo-leptos will hot-reload this stylesheet
         <Stylesheet id="leptos" href="/pkg/leptos_start.css"/>
 
         // sets the document title
@@ -45,7 +43,5 @@ fn NotFound() -> impl IntoView {
         resp.set_status(actix_web::http::StatusCode::NOT_FOUND);
     }
 
-    view! {
-        <h1>"Not Found"</h1>
-    }
+    view! { <h1>"Not Found"</h1> }
 }

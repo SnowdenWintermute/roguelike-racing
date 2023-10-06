@@ -1,4 +1,8 @@
-use crate::game::RoguelikeRacerGame;
+use crate::{
+    adventuring_party::AdventuringParty,
+    character::{combatant_properties::CombatantClass, Character},
+    game::RoguelikeRacerGame,
+};
 use serde::{Deserialize, Serialize};
 use std::time::Instant;
 
@@ -46,14 +50,57 @@ impl RoguelikeRacerAppState {
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct PlayerAdventuringPartyChange {
+    pub username: String,
+    pub party_id: u32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct PlayerCharacterCreation {
+    pub party_id: u32,
+    pub username: String,
+    pub class: CombatantClass,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct PlayerCharacterClassSelection {
+    pub character_id: u32,
+    pub class: CombatantClass,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct PlayerCharacterNameChange {
+    pub character_id: u32,
+    pub name: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct PlayerCharacterDeletion {
+    pub party_id: u32,
+    pub username: String,
+    pub character_id: u32,
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub enum GameServerUpdatePackets {
+    // FULL STATE UPDATES
     FullUpdate(RoguelikeRacerAppState),
     GameList(ClientGameListState),
     GameFullUpdate(Option<RoguelikeRacerGame>),
-    GamePlayerJoined(String),
-    GamePlayerLeft(String),
     RoomFullUpdate(RoomState),
+    // ROOMS
     UserJoinedRoom(String),
     UserLeftRoom(String),
+    // GAME IN LOBBY
+    GamePlayerJoined(String),
+    GamePlayerLeft(String),
+    AdventuringPartyCreated(AdventuringParty),
+    AdventuringPartyRemoved(u32),
+    PlayerChangedAdventuringParty(PlayerAdventuringPartyChange),
+    CharacterCreation(PlayerCharacterCreation),
+    CharacterClassSelection(PlayerCharacterClassSelection),
+    CharacterNameChange(PlayerCharacterNameChange),
+    CharacterDeletion(PlayerCharacterDeletion),
+    PlayerToggledReady(String),
 }

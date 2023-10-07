@@ -4,6 +4,7 @@ use std::fmt;
 pub enum AppErrorTypes {
     InvalidInput,
     InsufficientResources,
+    ServerError,
 }
 
 #[derive(Debug)]
@@ -19,6 +20,7 @@ impl fmt::Display for AppError {
             AppErrorTypes::InsufficientResources => {
                 "Insufficient resources to perform the requested action"
             }
+            AppErrorTypes::ServerError => "A problem with the game server occurred",
         };
 
         write!(f, "{}", error_message)

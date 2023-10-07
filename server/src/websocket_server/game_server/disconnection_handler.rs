@@ -7,7 +7,9 @@ use rand::{rngs::ThreadRng, Rng};
 use std::collections::{HashMap, HashSet};
 use std::sync::atomic::Ordering;
 
-use crate::websocket_server::game_server::player_input_handlers::leave_game_handler::leave_game_handler;
+use crate::websocket_server::game_server::player_input_handlers::leave_game_handler::{
+    leave_game_handler, remove_player_from_game,
+};
 use crate::websocket_server::Disconnect;
 
 impl Handler<Disconnect> for GameServer {
@@ -24,7 +26,7 @@ impl Handler<Disconnect> for GameServer {
         let room_name_leaving = connected_user.unwrap().current_room_name.clone();
         let username = connected_user.unwrap().username.clone();
 
-        leave_game_handler(self, actor_id);
+        remove_player_from_game(self, actor_id);
         //
         let room_leaving = self.rooms.get_mut(&room_name_leaving);
         match room_leaving {

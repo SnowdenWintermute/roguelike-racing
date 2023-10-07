@@ -9,7 +9,7 @@ const CLIENT_TIMEOUT: Duration = Duration::from_secs(10);
 
 #[derive(Debug)]
 pub struct WebsocketActor {
-    pub id: usize,
+    pub id: u32,
     pub time_of_last_ping_received: Instant,
     pub game_server_actor_address: Addr<websocket_server::game_server::GameServer>,
 }

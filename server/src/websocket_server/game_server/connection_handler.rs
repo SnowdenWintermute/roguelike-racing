@@ -10,7 +10,7 @@ use rand::{self, Rng};
 use std::sync::atomic::Ordering;
 
 impl Handler<Connect> for GameServer {
-    type Result = usize;
+    type Result = u32;
     fn handle(&mut self, message: Connect, _: &mut Context<Self>) -> Self::Result {
         let Connect {
             actor_id,

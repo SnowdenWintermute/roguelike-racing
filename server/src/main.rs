@@ -19,7 +19,7 @@ async fn chat_route(
     let mut rng = rand::thread_rng();
     ws::start(
         WebsocketActor {
-            id: rng.gen::<usize>(),
+            id: rng.gen::<u32>(),
             time_of_last_ping_received: Instant::now(),
             game_server_actor_address: server.get_ref().clone(),
         },

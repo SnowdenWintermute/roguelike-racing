@@ -23,7 +23,7 @@ use crate::websocket_server::game_server::player_input_handlers::leave_game_hand
 
 #[derive(Debug)]
 pub struct ConnectedUser {
-    pub id: usize,
+    pub id: u32,
     pub actor_address: Recipient<AppMessage>,
     pub username: String,
     pub current_room_name: String,
@@ -31,7 +31,7 @@ pub struct ConnectedUser {
 }
 
 impl ConnectedUser {
-    pub fn new(id: usize, actor_address: Recipient<AppMessage>) -> Self {
+    pub fn new(id: u32, actor_address: Recipient<AppMessage>) -> Self {
         ConnectedUser {
             id,
             actor_address,
@@ -44,8 +44,8 @@ impl ConnectedUser {
 
 #[derive(Debug)]
 pub struct GameServer {
-    sessions: HashMap<usize, ConnectedUser>,
-    rooms: HashMap<String, HashSet<usize>>,
+    sessions: HashMap<u32, ConnectedUser>,
+    rooms: HashMap<String, HashSet<u32>>,
     games: HashMap<String, RoguelikeRacerGame>,
     visitor_count: Arc<AtomicUsize>,
 }
@@ -86,7 +86,6 @@ impl Handler<ClientBinaryMessage> for GameServer {
                 game_list_update_request_handler(self, message.actor_id)
             }
             Ok(PlayerInputs::CreateAdventuringParty(party_name)) => {
-                println!("{}", party_name);
                 adventuring_party_creation_request_handler(self, &message.actor_id, party_name);
             }
             _ => println! {"unhandled binary message\n {:#?}:",deserialized},

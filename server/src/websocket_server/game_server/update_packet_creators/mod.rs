@@ -19,7 +19,7 @@ impl GameServer {
         game_list
     }
 
-    pub fn create_game_full_update(&self, actor_id: usize) -> Option<RoguelikeRacerGame> {
+    pub fn create_game_full_update(&self, actor_id: u32) -> Option<RoguelikeRacerGame> {
         let connected_user = match self.sessions.get(&actor_id) {
             Some(user) => user,
             None => {
@@ -57,7 +57,7 @@ impl GameServer {
         current_game
     }
 
-    pub fn create_client_update_packet(&self, actor_id: usize) -> Option<GameServerUpdatePackets> {
+    pub fn create_client_update_packet(&self, actor_id: u32) -> Option<GameServerUpdatePackets> {
         let connected_user = match self.sessions.get(&actor_id) {
             Some(user) => user,
             None => {

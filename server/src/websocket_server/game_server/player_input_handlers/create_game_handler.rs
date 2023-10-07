@@ -6,7 +6,7 @@ use common::game::{RoguelikeRacerGame, RoguelikeRacerPlayer};
 
 pub fn create_game_handler(
     game_server: &mut GameServer,
-    actor_id: usize,
+    actor_id: u32,
     message_content: GameCreation,
 ) {
     println!("game creation request received");

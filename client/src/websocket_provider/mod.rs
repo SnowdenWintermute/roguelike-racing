@@ -78,6 +78,8 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
                                     }),
                                 _ => log!("unknown binary packet"),
                             };
+                        } else {
+                            println!("error deserializing")
                         };
                     } else if let Ok(txt) = e.data().dyn_into::<js_sys::JsString>() {
                         log!("message event, received Text: {:?}", txt);

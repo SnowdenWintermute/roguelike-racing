@@ -18,29 +18,29 @@ pub struct BinaryMessage {
 }
 
 #[derive(Message)]
-#[rtype(usize)]
+#[rtype(u32)]
 pub struct Connect {
-    pub actor_id: usize,
+    pub actor_id: u32,
     pub actor_address: Recipient<AppMessage>,
 }
 
 #[derive(Message)]
 #[rtype(result = "()")]
 pub struct Disconnect {
-    pub actor_id: usize,
+    pub actor_id: u32,
 }
 
 #[derive(Message)]
 #[rtype(result = "()")]
 pub struct ClientMessage {
-    pub actor_id: usize,
+    pub actor_id: u32,
     pub content: String,
 }
 
 #[derive(Message)]
 #[rtype(result = "()")]
 pub struct ClientBinaryMessage {
-    pub actor_id: usize,
+    pub actor_id: u32,
     pub content: Vec<u8>,
 }
 
@@ -53,6 +53,6 @@ impl actix::Message for ListRooms {
 #[derive(Message)]
 #[rtype(result = "()")]
 pub struct Join {
-    pub actor_id: usize,
+    pub actor_id: u32,
     pub room_name: String,
 }

@@ -5,7 +5,7 @@ use common::{
 
 use crate::websocket_server::game_server::GameServer;
 
-pub fn join_room_handler(game_server: &mut GameServer, room_name: &str, actor_id: usize) {
+pub fn join_room_handler(game_server: &mut GameServer, room_name: &str, actor_id: u32) {
     let connected_user = match game_server.sessions.get_mut(&actor_id) {
         Some(user) => user,
         None => {

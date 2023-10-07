@@ -6,7 +6,7 @@ use common::{
 
 use super::join_room_handler::join_room_handler;
 
-pub fn join_game_handler(game_server: &mut GameServer, actor_id: usize, game_name: String) {
+pub fn join_game_handler(game_server: &mut GameServer, actor_id: u32, game_name: String) {
     let game = match game_server.games.get_mut(&game_name) {
         Some(game) => game,
         None => {

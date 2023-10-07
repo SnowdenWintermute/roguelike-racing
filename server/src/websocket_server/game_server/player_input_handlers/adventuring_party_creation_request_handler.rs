@@ -4,7 +4,7 @@ use crate::websocket_server::game_server::GameServer;
 
 pub fn adventuring_party_creation_request_handler(
     game_server: &mut GameServer,
-    actor_id: &usize,
+    actor_id: &u32,
     party_name: String,
 ) {
     let connected_user = match game_server.sessions.get_mut(actor_id) {
@@ -60,10 +60,12 @@ pub fn adventuring_party_creation_request_handler(
         }
     };
 
+    println!("creating party: {:#?}", party.clone());
+
     // update the game room with the new party
     game_server.emit_packet(
         &current_game_name,
         &GameServerUpdatePackets::AdventuringPartyCreated(party.clone()),
         None,
-    )
+    );
 }

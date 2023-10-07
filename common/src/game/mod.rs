@@ -9,7 +9,7 @@ pub mod player_input_handlers;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RoguelikeRacerPlayer {
-    pub actor_id: Option<usize>,
+    pub actor_id: Option<u32>,
     pub party_id: Option<u32>,
     pub username: String,
     pub character_ids: Option<Vec<u32>>,
@@ -17,7 +17,7 @@ pub struct RoguelikeRacerPlayer {
 }
 
 impl RoguelikeRacerPlayer {
-    pub fn new(actor_id: Option<usize>, username: String) -> Self {
+    pub fn new(actor_id: Option<u32>, username: String) -> Self {
         RoguelikeRacerPlayer {
             actor_id,
             party_id: None,

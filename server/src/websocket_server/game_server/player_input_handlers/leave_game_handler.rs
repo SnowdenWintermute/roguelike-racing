@@ -7,7 +7,7 @@ use common::{
 
 use super::join_room_handler::join_room_handler;
 
-pub fn leave_game_handler(game_server: &mut GameServer, actor_id: usize) {
+pub fn leave_game_handler(game_server: &mut GameServer, actor_id: u32) {
     let connected_user = match game_server.sessions.get_mut(&actor_id) {
         Some(user) => user,
         None => {

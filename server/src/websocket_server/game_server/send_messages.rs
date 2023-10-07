@@ -29,9 +29,10 @@ impl GameServer {
         }
     }
 
-    pub fn send_packet(&self, packet: &GameServerUpdatePackets, actor_id: usize) {
+    pub fn send_packet(&self, packet: &GameServerUpdatePackets, actor_id: u32) {
         if let Some(connected_user) = self.sessions.get(&actor_id) {
             let serialized = serde_cbor::to_vec(&packet);
+
             match serialized {
                 Ok(bytes) => connected_user
                     .actor_address
@@ -43,12 +44,7 @@ impl GameServer {
         }
     }
 
-    pub fn emit_packet(
-        &self,
-        room: &str,
-        packet: &GameServerUpdatePackets,
-        skip_id: Option<usize>,
-    ) {
+    pub fn emit_packet(&self, room: &str, packet: &GameServerUpdatePackets, skip_id: Option<u32>) {
         if let Some(sessions) = self.rooms.get(room) {
             for actor_id in sessions {
                 if let Some(id_to_skip) = skip_id {
@@ -61,7 +57,7 @@ impl GameServer {
         }
     }
 
-    pub fn send_lobby_and_game_full_updates(&self, actor_id: usize) {
+    pub fn send_lobby_and_game_full_updates(&self, actor_id: u32) {
         let full_update = GameServer::create_client_update_packet(&self, actor_id)
             .expect("failed to create full client update");
         if let Some(connected_user) = self.sessions.get(&actor_id) {

@@ -13,10 +13,14 @@ pub fn leave_game_handler(game_server: &mut GameServer, actor_id: u32) {
     if let Ok(player_and_game) = remove_player_from_game(game_server, actor_id) {
         game_server.emit_packet(
             player_and_game.game_name.as_str(),
-            &GameServerUpdatePackets::GamePlayerLeft(player_and_game.username.clone()),
+            &GameServerUpdatePackets::UserLeftGame(player_and_game.username.clone()),
             Some(actor_id),
         );
         game_server.send_packet(&GameServerUpdatePackets::GameFullUpdate(None), actor_id);
+        game_server.send_packet(
+            &GameServerUpdatePackets::ClientAdventuringPartyId(None),
+            actor_id,
+        );
     } else {
         println!("error leaving game")
     }
@@ -46,24 +50,12 @@ pub fn remove_player_from_game(
         Some(game_name) => {
             match game_server.games.get_mut(game_name) {
                 Some(game) => {
-                    // remove them from game and delete their player characters
+                    // remove player from game
                     game.partyless_players
-                        .remove(&connected_user.username.to_string());
-                    for (_, party) in game.adventuring_parties.iter_mut() {
-                        let player_option =
-                            party.players.remove(&connected_user.username.to_string());
-                        if player_option.is_some() {
-                            let player = player_option.expect("is some");
-                            // delete their characters
-                            if player.character_ids.is_some() {
-                                for id in player.character_ids.expect("is some") {
-                                    party.player_characters.remove(&id);
-                                }
-                            };
-                        }
-                    }
+                        .remove(&connected_user.username.clone());
+                    game.remove_player_from_adventuring_party(connected_user.username.clone());
                     // if game empty remove it
-                    if game.get_number_of_players() == 0 {
+                    if game.get_number_of_players() < 1 {
                         game_server.games.remove(game_name);
                     }
                 }

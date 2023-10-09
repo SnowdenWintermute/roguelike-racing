@@ -21,6 +21,7 @@ pub fn join_game_handler(game_server: &mut GameServer, actor_id: u32, game_name:
             return;
         }
     };
+    let username = connected_user.username.clone();
 
     // @TODO
     // reject if game is full
@@ -53,4 +54,9 @@ pub fn join_game_handler(game_server: &mut GameServer, actor_id: u32, game_name:
         actor_id,
     );
     // and their roommates
+    game_server.emit_packet(
+        game_name.as_str(),
+        &GameServerUpdatePackets::UserJoinedGame(username),
+        Some(actor_id),
+    );
 }

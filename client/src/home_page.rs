@@ -7,9 +7,13 @@ use common::game::RoguelikeRacerGame;
 use common::packets::server_to_client::{ClientGameListState, RoomState};
 use leptos::*;
 
+#[derive(Clone)]
+pub struct ClientPartyId(pub Option<u32>);
+
 #[component]
 pub fn HomePage() -> impl IntoView {
     provide_context(create_rw_signal::<Option<RoguelikeRacerGame>>(None));
+    provide_context(create_rw_signal::<ClientPartyId>(ClientPartyId(None)));
     provide_context(create_rw_signal::<Option<AdventuringParty>>(None));
     provide_context(create_rw_signal(ClientGameListState::new()));
     provide_context(create_rw_signal(RoomState {
@@ -21,8 +25,8 @@ pub fn HomePage() -> impl IntoView {
 
     view! {
         <WebsocketProvider>
-            <Show when=move || { game.get().is_none() } fallback=|| view! { <GameSetup/> }>
-                <Lobby/>
+            <Show when=move || { game.get().is_some() } fallback=|| view! { <Lobby/> }>
+                <GameSetup/>
             </Show>
         </WebsocketProvider>
     }

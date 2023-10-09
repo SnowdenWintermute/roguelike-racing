@@ -67,4 +67,15 @@ impl AdventuringParty {
             .insert(new_character.entity_properties.id, new_character);
         Ok(new_character_id)
     }
+
+    pub fn remove_player_and_their_characters(&mut self, username: String) {
+        if let Some(player) = self.players.remove(&username) {
+            // delete their characters
+            if let Some(ids) = player.character_ids {
+                for id in ids {
+                    self.player_characters.remove(&id);
+                }
+            };
+        }
+    }
 }

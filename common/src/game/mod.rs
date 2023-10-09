@@ -53,8 +53,18 @@ impl RoguelikeRacerGame {
     pub fn get_number_of_players(&self) -> u8 {
         let mut number_of_players = self.partyless_players.len();
         for (_, party) in self.adventuring_parties.iter() {
+            println!(
+                "counting players in party {}, number: {}",
+                party.name.clone(),
+                party.players.len()
+            );
             number_of_players += party.players.len();
         }
+        println!(
+            "{} players in game {}",
+            number_of_players,
+            self.name.clone()
+        );
         number_of_players as u8
     }
 
@@ -80,6 +90,23 @@ impl RoguelikeRacerGame {
                 "tried to put {} into party id {} but the party wasn't found in the current game",
                 &username, party_id
             );
+        }
+    }
+
+    pub fn remove_player_from_adventuring_party(&mut self, username: String) {
+        for (id, party) in self.adventuring_parties.iter_mut() {
+            party.remove_player_and_their_characters(username.clone());
+        }
+
+        let mut party_ids_to_remove = Vec::new();
+        for (id, party) in &self.adventuring_parties {
+            if party.players.len() < 1 {
+                party_ids_to_remove.push(*id);
+            }
+        }
+
+        for id in party_ids_to_remove {
+            self.adventuring_parties.remove(&id);
         }
     }
 }

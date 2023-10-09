@@ -1,14 +1,18 @@
 pub mod send_client_input;
 use common::adventuring_party::AdventuringParty;
 use common::game::RoguelikeRacerGame;
+use common::game::RoguelikeRacerPlayer;
 use common::packets::server_to_client::ClientGameListState;
 use common::packets::server_to_client::GameServerUpdatePackets;
+use common::packets::server_to_client::PlayerAdventuringPartyChange;
 use common::packets::server_to_client::RoomState;
 use leptos::logging::log;
 use leptos::*;
 use wasm_bindgen::prelude::Closure;
 use wasm_bindgen::JsCast;
 use web_sys::{MessageEvent, WebSocket};
+
+use crate::home_page::ClientPartyId;
 
 #[component]
 pub fn websocket_provider(children: Children) -> impl IntoView {
@@ -18,6 +22,7 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
     let game_list = expect_context::<RwSignal<ClientGameListState>>();
     let room = expect_context::<RwSignal<RoomState>>();
     let game = expect_context::<RwSignal<Option<RoguelikeRacerGame>>>();
+    let party_id = expect_context::<RwSignal<ClientPartyId>>();
 
     create_effect(move |_| {
         let websocket = WebSocket::new("ws://127.0.0.1:8080/ws");
@@ -66,6 +71,26 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
                                     log!("user joined room: {:#?}", update);
                                     room.update(move |room_state| room_state.users.push(update))
                                 }
+                                GameServerUpdatePackets::UserJoinedGame(update) => {
+                                    game.update(move |game_option| {
+                                        if let Some(game) = game_option {
+                                            game.partyless_players.insert(
+                                                update.clone(),
+                                                RoguelikeRacerPlayer::new(None, update),
+                                            );
+                                        }
+                                    })
+                                }
+                                GameServerUpdatePackets::UserLeftGame(username) => {
+                                    game.update(move |game_option| {
+                                        if let Some(game) = game_option {
+                                            game.partyless_players.remove(&username.clone());
+                                            game.remove_player_from_adventuring_party(
+                                                username.clone(),
+                                            );
+                                        }
+                                    })
+                                }
                                 GameServerUpdatePackets::GameFullUpdate(update) => {
                                     log!("received full game update: {:#?}", update);
                                     game.update(move |game_state| *game_state = update)
@@ -73,9 +98,31 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
                                 GameServerUpdatePackets::AdventuringPartyCreated(update) => game
                                     .update(move |game_state| {
                                         if let Some(game) = game_state {
+                                            println!("adventuring party created in current game");
                                             game.adventuring_parties.insert(update.id, update);
                                         }
                                     }),
+                                GameServerUpdatePackets::AdventuringPartyRemoved(update) => game
+                                    .update(move |game_state| {
+                                        if let Some(game) = game_state {
+                                            println!("adventuring party removed from current game");
+                                            game.adventuring_parties.remove(&update);
+                                        };
+                                    }),
+                                GameServerUpdatePackets::ClientAdventuringPartyId(update) => {
+                                    party_id.update(move |id| {
+                                        id.0 = update;
+                                    })
+                                }
+                                GameServerUpdatePackets::PlayerChangedAdventuringParty(update) => {
+                                    game.update(move |game_state| {
+                                        println!(
+                                            "adventuring party change requested: {:#?}",
+                                            update
+                                        )
+                                    })
+                                }
+
                                 _ => log!("unknown binary packet"),
                             };
                         } else {

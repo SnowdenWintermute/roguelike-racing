@@ -62,6 +62,11 @@ pub fn adventuring_party_creation_request_handler(
 
     println!("creating party: {:#?}", party.clone());
 
+    // tell the client what party they are in
+    game_server.send_packet(
+        &GameServerUpdatePackets::ClientAdventuringPartyId(Some(party.id)),
+        *actor_id,
+    );
     // update the game room with the new party
     game_server.emit_packet(
         &current_game_name,

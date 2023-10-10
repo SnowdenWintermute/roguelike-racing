@@ -93,15 +93,21 @@ impl RoguelikeRacerGame {
         }
     }
 
-    pub fn remove_player_from_adventuring_party(&mut self, username: String) {
+    pub fn remove_player_from_adventuring_party(
+        &mut self,
+        username: String,
+        put_in_partyless_players: bool,
+    ) {
         for (id, party) in self.adventuring_parties.iter_mut() {
             let player_removed_option = party.remove_player_and_their_characters(username.clone());
-            match player_removed_option {
-                Some(player) => {
-                    self.partyless_players
-                        .insert(player.username.clone(), player);
+            if (put_in_partyless_players) {
+                match player_removed_option {
+                    Some(player) => {
+                        self.partyless_players
+                            .insert(player.username.clone(), player);
+                    }
+                    None => (),
                 }
-                None => (),
             }
         }
 

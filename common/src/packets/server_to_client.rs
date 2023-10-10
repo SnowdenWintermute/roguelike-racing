@@ -82,6 +82,12 @@ pub struct PlayerCharacterDeletion {
     pub character_id: u32,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct AdventuringPartyCreation {
+    pub party: AdventuringParty,
+    pub username_created_by: String,
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub enum GameServerUpdatePackets {
     // FULL STATE UPDATES
@@ -95,7 +101,7 @@ pub enum GameServerUpdatePackets {
     // GAME IN LOBBY
     UserJoinedGame(String),
     UserLeftGame(String),
-    AdventuringPartyCreated(AdventuringParty),
+    AdventuringPartyCreated(AdventuringPartyCreation),
     AdventuringPartyRemoved(u32),
     PlayerChangedAdventuringParty(PlayerAdventuringPartyChange),
     ClientAdventuringPartyId(Option<u32>),

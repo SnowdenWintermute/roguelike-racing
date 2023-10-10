@@ -53,7 +53,10 @@ pub fn remove_player_from_game(
                     // remove player from game
                     game.partyless_players
                         .remove(&connected_user.username.clone());
-                    game.remove_player_from_adventuring_party(connected_user.username.clone());
+                    game.remove_player_from_adventuring_party(
+                        connected_user.username.clone(),
+                        false,
+                    );
                     // if game empty remove it
                     if game.get_number_of_players() < 1 {
                         game_server.games.remove(game_name);

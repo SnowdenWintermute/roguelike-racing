@@ -22,7 +22,7 @@ impl GameServer {
         if let Some(current_game_name) = connected_user.current_game_name.clone() {
             match self.games.get_mut(&current_game_name) {
                 Some(game) => {
-                    game.remove_player_from_adventuring_party(username.clone());
+                    game.remove_player_from_adventuring_party(username.clone(), true);
                 }
                 None => {
                     println!("no game by that name was found");
@@ -32,10 +32,16 @@ impl GameServer {
                     });
                 }
             };
-            self.emit_packet(&current_game_name, &GameServerUpdatePackets::PlayerChangedAdventuringParty(PlayerAdventuringPartyChange{
-                username: username.clone(),
-                party_id:None
-            }), None);
+            self.emit_packet(
+                &current_game_name,
+                &GameServerUpdatePackets::PlayerChangedAdventuringParty(
+                    PlayerAdventuringPartyChange {
+                        username: username.clone(),
+                        party_id: None,
+                    },
+                ),
+                None,
+            );
             Ok(())
         } else {
             println!("playery tried to leave a party but they had no reference to a game name");
@@ -43,7 +49,7 @@ impl GameServer {
                 error_type: common::errors::AppErrorTypes::ServerError,
                 message: "player tried to leave a party but they had no reference to a game name"
                     .to_string(),
-            })
+            });
         }
     }
 }

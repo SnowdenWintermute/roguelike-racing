@@ -86,6 +86,7 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
                                             game.partyless_players.remove(&username.clone());
                                             game.remove_player_from_adventuring_party(
                                                 username.clone(),
+                                                false,
                                             );
                                         }
                                     })
@@ -98,7 +99,10 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
                                     .update(move |game_state| {
                                         if let Some(game) = game_state {
                                             println!("adventuring party created in current game");
-                                            game.adventuring_parties.insert(update.id, update);
+                                            game.partyless_players
+                                                .remove(&update.username_created_by);
+                                            game.adventuring_parties
+                                                .insert(update.party.id, update.party);
                                         }
                                     }),
                                 GameServerUpdatePackets::AdventuringPartyRemoved(update) => game
@@ -118,6 +122,7 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
                                         if let Some(game) = game_state {
                                             game.remove_player_from_adventuring_party(
                                                 update.username.clone(),
+                                                true,
                                             );
                                             if let Some(party_id) = update.party_id {
                                                 if let Some(party) =

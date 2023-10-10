@@ -7,7 +7,7 @@ pub mod id_generator;
 pub mod player_actions;
 pub mod player_input_handlers;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct RoguelikeRacerPlayer {
     pub actor_id: Option<u32>,
     pub party_id: Option<u32>,
@@ -95,7 +95,14 @@ impl RoguelikeRacerGame {
 
     pub fn remove_player_from_adventuring_party(&mut self, username: String) {
         for (id, party) in self.adventuring_parties.iter_mut() {
-            party.remove_player_and_their_characters(username.clone());
+            let player_removed_option = party.remove_player_and_their_characters(username.clone());
+            match player_removed_option {
+                Some(player) => {
+                    self.partyless_players
+                        .insert(player.username.clone(), player);
+                }
+                None => (),
+            }
         }
 
         let mut party_ids_to_remove = Vec::new();

@@ -25,7 +25,7 @@ pub enum MonsterAbilities {
     Thorns,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Monster {
     pub entity_properties: EntityProperties,
     pub combatant_properties: CombatantProperties,

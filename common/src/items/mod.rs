@@ -56,7 +56,7 @@ pub enum ConsumableTypes {
     Grenade,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct EquipmentProperties {
     pub equipment_type: EquipmentTypes,
     pub damage: u16,
@@ -67,7 +67,7 @@ pub struct EquipmentProperties {
     pub intelligence: u16,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct ConsumableProperties {
     pub consumable_type: ConsumableTypes,
     pub uses_remaining: u8,
@@ -77,13 +77,13 @@ pub struct ConsumableProperties {
     pub valid_targets: ValidTargets,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum ItemProperties {
     Consumable(ConsumableProperties),
     Equipment(EquipmentProperties),
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Item {
     pub entity_properties: EntityProperties,
     pub item_level: u8,

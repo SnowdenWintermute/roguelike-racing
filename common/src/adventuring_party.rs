@@ -10,13 +10,13 @@ use crate::errors::AppError;
 use crate::game::id_generator::IdGenerator;
 use crate::game::RoguelikeRacerPlayer;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct RoomsExplored {
     pub total: u16,
     pub on_current_floor: u16,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct AdventuringParty {
     pub id: u32,
     pub name: String,
@@ -68,14 +68,21 @@ impl AdventuringParty {
         Ok(new_character_id)
     }
 
-    pub fn remove_player_and_their_characters(&mut self, username: String) {
-        if let Some(player) = self.players.remove(&username) {
+    pub fn remove_player_and_their_characters(
+        &mut self,
+        username: String,
+    ) -> Option<RoguelikeRacerPlayer> {
+        if let Some(mut player) = self.players.remove(&username) {
             // delete their characters
-            if let Some(ids) = player.character_ids {
+            if let Some(ids) = player.character_ids.clone() {
                 for id in ids {
                     self.player_characters.remove(&id);
                 }
             };
+            player.character_ids = None;
+            Some(player)
+        } else {
+            None
         }
     }
 }

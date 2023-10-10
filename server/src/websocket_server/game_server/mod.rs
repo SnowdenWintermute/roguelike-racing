@@ -88,6 +88,9 @@ impl Handler<ClientBinaryMessage> for GameServer {
             Ok(PlayerInputs::CreateAdventuringParty(party_name)) => {
                 adventuring_party_creation_request_handler(self, &message.actor_id, party_name);
             }
+            Ok(PlayerInputs::LeaveAdventuringParty) => {
+                self.leave_adventuring_party_handler(message.actor_id);
+            }
             _ => println! {"unhandled binary message\n {:#?}:",deserialized},
         }
     }

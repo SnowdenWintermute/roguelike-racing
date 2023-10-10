@@ -13,7 +13,7 @@ pub mod abilities;
 pub mod combatant_properties;
 pub mod items;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Character {
     pub entity_properties: EntityProperties,
     pub combatant_properties: CombatantProperties,

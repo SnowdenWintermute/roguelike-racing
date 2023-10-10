@@ -16,8 +16,8 @@ pub fn character_and_party_selection() -> impl IntoView {
         None => RoguelikeRacerGame::new("".to_string()),
     };
 
-    let game_name = move || game().name;
-    let partyless_players = move || game().partyless_players;
+    let game_name = move || game().name.clone();
+    let partyless_players = move || game().partyless_players.clone();
     let adventuring_parties = move || game().adventuring_parties.clone();
 
     let (new_party_name, set_new_party_name) = create_signal("".to_string());

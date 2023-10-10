@@ -14,7 +14,7 @@ pub enum DungeonRoomTypes {
     Stairs,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct TreasureChest {
     pub is_opened: bool,
     pub is_locked: bool,
@@ -45,7 +45,7 @@ impl TreasureChest {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct DungeonRoom {
     pub room_type: DungeonRoomTypes,
     pub treasure_chest: Option<TreasureChest>,

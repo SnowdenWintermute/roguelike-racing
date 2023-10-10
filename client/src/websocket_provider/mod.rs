@@ -114,7 +114,23 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
                                     })
                                 }
                                 GameServerUpdatePackets::PlayerChangedAdventuringParty(update) => {
-                                    game.update(move |_game_state| {
+                                    game.update(move |game_state| {
+                                        if let Some(game) = game_state {
+                                            game.remove_player_from_adventuring_party(
+                                                update.username.clone(),
+                                            );
+                                            if let Some(party_id) = update.party_id {
+                                                if let Some(party) =
+                                                    game.adventuring_parties.get(&party_id)
+                                                {
+                                                    game.put_player_in_adventuring_party(
+                                                        party_id,
+                                                        update.username.clone(),
+                                                    );
+                                                }
+                                            };
+                                        }
+
                                         println!(
                                             "adventuring party change requested: {:#?}",
                                             update

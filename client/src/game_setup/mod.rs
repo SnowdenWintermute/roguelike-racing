@@ -7,6 +7,7 @@ use crate::{
 pub mod adventuring_party_lobby_card;
 pub mod character_and_party_selection;
 pub mod game_setup_menu;
+use common::game::RoguelikeRacerGame;
 use leptos::*;
 
 #[component]
@@ -20,7 +21,7 @@ pub fn game_setup() -> impl IntoView {
             // fallback=move || view! {""}>
             <GameSetupMenu/>
             <div class="w-full flex flex-1">
-                <CharacterAndPartySelection/>
+                <CharacterAndPartySelection />
                 <UserList/>
             </div>
             // </Show>

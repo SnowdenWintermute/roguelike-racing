@@ -14,7 +14,7 @@ pub enum CombatantClass {
     Monster,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct CombatantProperties {
     pub combatant_class: CombatantClass,
     pub hit_points: MaxAndCurrent<u16>,

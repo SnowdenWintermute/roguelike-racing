@@ -3,39 +3,25 @@ use crate::{
     game_setup::adventuring_party_lobby_card::AdventuringPartyLobbyCard, home_page::ClientPartyId,
     websocket_provider::send_client_input::send_client_input,
 };
-use common::{
-    adventuring_party::AdventuringParty,
-    character::{combatant_properties::CombatantClass, Character},
-    game::{player_actions::PlayerInputs, RoguelikeRacerGame},
-};
+use common::game::{player_actions::PlayerInputs, RoguelikeRacerGame};
 use leptos::{ev::SubmitEvent, *};
-use web_sys::{MouseEvent, WebSocket};
+use web_sys::WebSocket;
 
 #[component]
 pub fn character_and_party_selection() -> impl IntoView {
     let ws = expect_context::<ReadSignal<Option<WebSocket>>>();
-    let game = expect_context::<RwSignal<Option<RoguelikeRacerGame>>>();
     let party_id = expect_context::<RwSignal<ClientPartyId>>();
-    let game_name = move || {
-        game.get()
-            .expect("if this component is showing, a game should exist")
-            .name
+    let game = move || match expect_context::<RwSignal<Option<RoguelikeRacerGame>>>().get() {
+        Some(game) => game,
+        None => RoguelikeRacerGame::new("".to_string()),
     };
-    let partyless_players = move || game.get().expect("game should exist").partyless_players;
-    let adventuring_parties = move || {
-        game.get()
-            .expect("should be a game if viewing game component")
-            .adventuring_parties
-            .clone()
-    };
+
+    let game_name = move || game().name;
+    let partyless_players = move || game().partyless_players;
+    let adventuring_parties = move || game().adventuring_parties.clone();
 
     let (new_party_name, set_new_party_name) = create_signal("".to_string());
     let disabled = MaybeSignal::derive(move || new_party_name().len() < 1);
-
-    // let leave_game = move |e: MouseEvent| {
-    //     e.prevent_default();
-    //     send_client_input(ws, PlayerInputs::LeaveGame)
-    // };
 
     let create_party = move |e: SubmitEvent| {
         e.prevent_default();
@@ -45,7 +31,7 @@ pub fn character_and_party_selection() -> impl IntoView {
     view! {
         <section class="flex-1 p-4 mr-4 bg-slate-700 border border-slate-400" id="game_list">
             <h2>"Game: " {game_name}</h2>
-            <form class="flex" on:submit=create_party>
+            <form class="flex mb-2" on:submit=create_party>
                 <input
                     type="text"
                     class="bg-slate-700 border border-slate-400 h-10 p-4"
@@ -62,17 +48,19 @@ pub fn character_and_party_selection() -> impl IntoView {
             </form>
             <div>
                 <h3>"Players not yet in a party:"</h3>
-                <For each=partyless_players
-                key=|player| player.0.clone()
-                children=move |player| {
-                    view! {
-                        {player.0.clone()}
+                <ul class="list-none">
+                    <For each=partyless_players
+                    key=|player| player.0.clone()
+                    children=move |player| {
+                        view! {
+                            <li>{player.0.clone()}</li>
+                        }
                     }
-                }
-                    />
+                        />
+                </ul>
             </div>
             <div>
-                "Adventuring Parties"
+                <h3 class="mb-2">"Adventuring Parties"</h3>
                 <For
                     each=adventuring_parties
                     key=|party| party.1.id

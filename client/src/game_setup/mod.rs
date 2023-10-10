@@ -11,13 +11,19 @@ use leptos::*;
 
 #[component]
 pub fn game_setup() -> impl IntoView {
+    // let (is_client, set_is_client) = create_signal(false);
+    // create_effect(move |_| set_is_client(true));
+
     view! {
         <main class="h-screen w-screen p-4 bg-teal-950 text-zinc-300 flex flex-col">
+            // <Show when=move || is_client()
+            // fallback=move || view! {""}>
             <GameSetupMenu/>
             <div class="w-full flex flex-1">
                 <CharacterAndPartySelection/>
                 <UserList/>
             </div>
+            // </Show>
         </main>
     }
 }

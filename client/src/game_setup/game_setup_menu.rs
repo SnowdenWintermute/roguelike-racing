@@ -1,8 +1,8 @@
 use crate::{
-    common_components::button_basic::ButtonBasic, home_page::ClientPartyId,
+    common_components::button_basic::ButtonBasic,
     websocket_provider::send_client_input::send_client_input,
 };
-use common::game::{player_actions::PlayerInputs, RoguelikeRacerGame};
+use common::game::player_actions::PlayerInputs;
 use leptos::*;
 use web_sys::{MouseEvent, WebSocket};
 

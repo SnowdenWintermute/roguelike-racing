@@ -4,7 +4,6 @@ use common::game::RoguelikeRacerGame;
 use common::game::RoguelikeRacerPlayer;
 use common::packets::server_to_client::ClientGameListState;
 use common::packets::server_to_client::GameServerUpdatePackets;
-use common::packets::server_to_client::PlayerAdventuringPartyChange;
 use common::packets::server_to_client::RoomState;
 use leptos::logging::log;
 use leptos::*;
@@ -115,7 +114,7 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
                                     })
                                 }
                                 GameServerUpdatePackets::PlayerChangedAdventuringParty(update) => {
-                                    game.update(move |game_state| {
+                                    game.update(move |_game_state| {
                                         println!(
                                             "adventuring party change requested: {:#?}",
                                             update

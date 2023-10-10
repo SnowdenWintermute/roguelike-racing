@@ -26,8 +26,14 @@ impl Handler<Disconnect> for GameServer {
         let room_name_leaving = connected_user.unwrap().current_room_name.clone();
         let username = connected_user.unwrap().username.clone();
 
-        remove_player_from_game(self, actor_id);
-        //
+        if let Ok(player_and_game) = remove_player_from_game(self, actor_id) {
+            self.emit_packet(
+                player_and_game.game_name.as_str(),
+                &GameServerUpdatePackets::UserLeftGame(player_and_game.username.clone()),
+                Some(actor_id),
+            )
+        }
+
         let room_leaving = self.rooms.get_mut(&room_name_leaving);
         match room_leaving {
             Some(room) => {

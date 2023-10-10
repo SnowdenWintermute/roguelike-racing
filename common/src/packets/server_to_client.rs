@@ -53,7 +53,7 @@ impl RoguelikeRacerAppState {
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct PlayerAdventuringPartyChange {
     pub username: String,
-    pub party_id: u32,
+    pub party_id: Option<u32>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]

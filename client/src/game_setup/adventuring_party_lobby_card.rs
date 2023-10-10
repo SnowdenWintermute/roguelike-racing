@@ -1,28 +1,34 @@
 use common::{
     adventuring_party::AdventuringParty,
     character::{combatant_properties::CombatantClass, Character},
+    game::player_actions::PlayerInputs,
 };
 use leptos::*;
+use web_sys::WebSocket;
 
-use crate::home_page::ClientPartyId;
+use crate::{
+    common_components::button_basic::ButtonBasic, home_page::ClientPartyId,
+    websocket_provider::send_client_input::send_client_input,
+};
 
 #[component]
 pub fn adventuring_party_lobby_card(
     party: AdventuringParty,
     client_party_id: ClientPartyId,
 ) -> impl IntoView {
+    let ws = expect_context::<ReadSignal<Option<WebSocket>>>();
     let characters = party.player_characters;
     let is_own_party = client_party_id.0.unwrap_or(0) == party.id;
+
+    let leave_party = move |_| send_client_input(ws, PlayerInputs::LeaveAdventuringParty);
 
     view! {
         <div class="p-3 border border-slate-400 w-full mb-2">
             <h3 class="mb-2">"Party: "{party.name}</h3>
             <div>
-            {move || if is_own_party {
-                                         "This is your current party"
-                             }else {
-                                ""
-                             }}
+            <Show when=move || is_own_party fallback=||view!{<div/>}>
+                 <ButtonBasic on:click=leave_party>"Leave Party"</ButtonBasic>
+             </Show>
         </div>
             <div>
                 <For

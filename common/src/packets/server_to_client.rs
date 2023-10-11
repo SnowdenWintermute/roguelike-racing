@@ -1,6 +1,7 @@
 use crate::{
     adventuring_party::AdventuringParty,
     character::{combatant_properties::CombatantClass, Character},
+    errors::AppError,
     game::RoguelikeRacerGame,
 };
 use serde::{Deserialize, Serialize};
@@ -90,6 +91,8 @@ pub struct AdventuringPartyCreation {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum GameServerUpdatePackets {
+    // ERROR
+    Error(String),
     // FULL STATE UPDATES
     FullUpdate(RoguelikeRacerAppState),
     GameList(ClientGameListState),

@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
-use crate::adventuring_party::AdventuringParty;
 use crate::game::id_generator::IdGenerator;
+use crate::{adventuring_party::AdventuringParty, errors::AppError};
 use std::{collections::HashMap, hash::Hash, time::Instant};
 pub mod id_generator;
 pub mod player_actions;
@@ -75,22 +75,25 @@ impl RoguelikeRacerGame {
         party_id
     }
 
-    pub fn put_player_in_adventuring_party(&mut self, party_id: u32, username: String) {
-        // add them to the party
-        if let Some(party) = self.adventuring_parties.get_mut(&party_id) {
-            // remove them from partyless players list
-            if let Some(mut player_to_move) = self.partyless_players.remove(&username) {
-                player_to_move.party_id = Some(party_id);
-                party.players.insert(username, player_to_move);
-            } else {
-                println!("tried to put a player into party id {} but they weren't found in the list of partyless players", party_id);
-            }
-        } else {
-            println!(
-                "tried to put {} into party id {} but the party wasn't found in the current game",
-                &username, party_id
-            );
-        }
+    pub fn put_player_in_adventuring_party(
+        &mut self,
+        party_id: u32,
+        username: String,
+    ) -> Result<(), AppError> {
+        let party = self
+            .adventuring_parties
+            .get_mut(&party_id)
+            .ok_or(AppError {
+                error_type: crate::errors::AppErrorTypes::ServerError,
+                message: "no party with that name found".to_string(),
+            })?;
+        let mut player_to_move = self.partyless_players.remove(&username).ok_or(AppError{
+            error_type: crate::errors::AppErrorTypes::ServerError,
+            message: "tried to put a player into party id {} but they weren't found in the list of partyless players".to_string()
+        })?;
+        player_to_move.party_id = Some(party_id);
+        party.players.insert(username, player_to_move);
+        Ok(())
     }
 
     pub fn remove_player_from_adventuring_party(

@@ -1,4 +1,4 @@
-use crate::websocket_server::game_server::GameServer;
+use crate::websocket_server::game_server::{get_mut_user, GameServer};
 use common::errors::AppError;
 use common::game::player_actions::{GameCreation, PlayerInputs};
 use common::game::{RoguelikeRacerGame, RoguelikeRacerPlayer};
@@ -15,10 +15,7 @@ impl GameServer {
             password: _,
         } = &message_content;
 
-        let connected_user = self.sessions.get_mut(&actor_id).ok_or(AppError {
-            error_type: common::errors::AppErrorTypes::ServerError,
-            message: "Missing connected_user".to_string(),
-        })?;
+        let connected_user = get_mut_user(&mut self.sessions, actor_id)?;
         if connected_user.current_game_name.is_some() {
             return Err(AppError {
                 error_type: common::errors::AppErrorTypes::ServerError,

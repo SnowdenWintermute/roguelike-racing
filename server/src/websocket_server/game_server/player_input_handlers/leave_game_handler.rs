@@ -1,5 +1,4 @@
-use super::join_room_handler::join_room_handler;
-use crate::websocket_server::game_server::GameServer;
+use crate::websocket_server::game_server::{get_mut_user, GameServer};
 use common::{
     consts::MAIN_CHAT_ROOM,
     errors::AppError,
@@ -9,7 +8,7 @@ use common::{
 
 impl GameServer {
     pub fn leave_game_handler(&mut self, actor_id: u32) -> Result<(), AppError> {
-        join_room_handler(self, MAIN_CHAT_ROOM, actor_id)?;
+        self.join_room_handler(MAIN_CHAT_ROOM, actor_id)?;
         let player_and_game = self.remove_player_from_game(actor_id)?;
         self.emit_packet(
             player_and_game.game_name.as_str(),
@@ -27,10 +26,7 @@ impl GameServer {
         self: &mut GameServer,
         actor_id: u32,
     ) -> Result<PlayerRemovedFromGame, AppError> {
-        let connected_user = self.sessions.get_mut(&actor_id).ok_or(AppError {
-            error_type: common::errors::AppErrorTypes::ServerError,
-            message: "Tried to leave game but no user was found".to_string(),
-        })?;
+        let connected_user = get_mut_user(&mut self.sessions, actor_id)?;
         let game_name_leaving = connected_user.current_game_name.clone().ok_or(AppError {
             error_type: common::errors::AppErrorTypes::ServerError,
             message: "User missing reference to their current game".to_string(),

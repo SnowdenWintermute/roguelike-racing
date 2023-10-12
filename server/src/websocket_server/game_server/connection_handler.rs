@@ -1,9 +1,6 @@
 #![allow(dead_code)]
 use super::GameServer;
-use crate::websocket_server::{
-    game_server::{player_input_handlers::join_room_handler::join_room_handler, ConnectedUser},
-    Connect,
-};
+use crate::websocket_server::{game_server::ConnectedUser, Connect};
 use actix::{Context, Handler};
 use common::consts::MAIN_CHAT_ROOM;
 use rand::{self, Rng};
@@ -21,7 +18,7 @@ impl Handler<Connect> for GameServer {
         self.sessions.insert(actor_id, new_user_connection);
         println!("actor id {} connected", actor_id);
 
-        let result = join_room_handler(self, MAIN_CHAT_ROOM, actor_id);
+        let result = self.join_room_handler(MAIN_CHAT_ROOM, actor_id);
         if result.is_err() {
             eprintln!("{:#?}", result)
         }

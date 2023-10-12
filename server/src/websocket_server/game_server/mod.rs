@@ -1,6 +1,7 @@
 #![allow(dead_code, unused_imports)]
 use actix::prelude::*;
-use common::consts::MAIN_CHAT_ROOM;
+use common::consts::{self, MAIN_CHAT_ROOM};
+use common::errors::AppError;
 use common::game::player_actions::PlayerInputs;
 use common::game::RoguelikeRacerGame;
 use common::packets::server_to_client::GameServerUpdatePackets;
@@ -50,7 +51,6 @@ impl GameServer {
     pub fn new(visitor_count: Arc<AtomicUsize>) -> GameServer {
         let mut rooms = HashMap::new();
         rooms.insert(MAIN_CHAT_ROOM.to_owned(), HashSet::new());
-
         GameServer {
             sessions: HashMap::new(),
             rooms,
@@ -58,6 +58,26 @@ impl GameServer {
             visitor_count,
         }
     }
+}
+pub fn get_user<'a>(
+    sessions: &'a HashMap<u32, ConnectedUser>,
+    actor_id: u32,
+) -> Result<&'a ConnectedUser, AppError> {
+    let user = sessions.get(&actor_id).ok_or(AppError {
+        error_type: common::errors::AppErrorTypes::ServerError,
+        message: consts::error_messages::USER_NOT_FOUND.to_string(),
+    })?;
+    Ok(user)
+}
+pub fn get_mut_user<'a>(
+    sessions: &'a mut HashMap<u32, ConnectedUser>,
+    actor_id: u32,
+) -> Result<&'a mut ConnectedUser, AppError> {
+    let user = sessions.get_mut(&actor_id).ok_or(AppError {
+        error_type: common::errors::AppErrorTypes::ServerError,
+        message: consts::error_messages::USER_NOT_FOUND.to_string(),
+    })?;
+    Ok(user)
 }
 
 impl Actor for GameServer {
@@ -82,7 +102,7 @@ impl Handler<ClientBinaryMessage> for GameServer {
                 self.game_list_update_request_handler(message.actor_id)
             }
             Ok(PlayerInputs::CreateAdventuringParty(party_name)) => {
-                self.adventuring_party_creation_request_handler(&message.actor_id, party_name)
+                self.adventuring_party_creation_request_handler(message.actor_id, party_name)
             }
             Ok(PlayerInputs::LeaveAdventuringParty) => {
                 self.leave_adventuring_party_handler(message.actor_id)

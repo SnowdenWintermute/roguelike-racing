@@ -1,11 +1,9 @@
-use crate::websocket_server::game_server::GameServer;
+use crate::websocket_server::game_server::{get_mut_user, GameServer};
 use common::{
     errors::AppError,
     game::{player_actions::GameCreation, RoguelikeRacerPlayer},
     packets::server_to_client::GameServerUpdatePackets,
 };
-
-use super::join_room_handler::join_room_handler;
 
 impl GameServer {
     // @TODO
@@ -15,11 +13,7 @@ impl GameServer {
             error_type: common::errors::AppErrorTypes::ServerError,
             message: "No game by that name was found".to_string(),
         })?;
-        let connected_user = self.sessions.get_mut(&actor_id).ok_or(AppError {
-            error_type: common::errors::AppErrorTypes::ServerError,
-            message: "A socket's actor id pointed to a user that doesn't exist on the game server"
-                .to_string(),
-        })?;
+        let connected_user = get_mut_user(&mut self.sessions, actor_id)?;
         if connected_user.current_game_name.is_some() {
             return Err(AppError {
                 error_type: common::errors::AppErrorTypes::ServerError,
@@ -39,7 +33,7 @@ impl GameServer {
         game.partyless_players
             .insert(connected_user.username.to_string(), new_player);
         connected_user.current_game_name = Some(game_name.to_string());
-        join_room_handler(self, &game_name, actor_id)?;
+        self.join_room_handler(&game_name, actor_id)?;
 
         let game_update = self.create_game_full_update(actor_id)?;
         self.send_packet(

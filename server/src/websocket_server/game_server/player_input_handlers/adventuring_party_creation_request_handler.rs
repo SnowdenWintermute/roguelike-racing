@@ -1,18 +1,14 @@
-use crate::websocket_server::game_server::GameServer;
+use crate::websocket_server::game_server::{get_mut_user, GameServer};
 use common::errors::AppError;
 use common::packets::server_to_client::{AdventuringPartyCreation, GameServerUpdatePackets};
 
 impl GameServer {
     pub fn adventuring_party_creation_request_handler(
         &mut self,
-        actor_id: &u32,
+        actor_id: u32,
         party_name: String,
     ) -> Result<(), AppError> {
-        let connected_user = self.sessions.get_mut(actor_id).ok_or(AppError {
-            error_type: common::errors::AppErrorTypes::ServerError,
-            message: "No user found".to_string(),
-        })?;
-
+        let connected_user = get_mut_user(&mut self.sessions, actor_id)?;
         let username = connected_user.username.clone();
 
         let current_game_name = connected_user.current_game_name.clone().ok_or(AppError {
@@ -34,7 +30,7 @@ impl GameServer {
                 })?;
 
         let party_id = game.add_adventuring_party(party_name);
-        game.put_player_in_adventuring_party(party_id, connected_user.username.clone());
+        game.put_player_in_adventuring_party(party_id, connected_user.username.clone())?;
 
         let party = game.adventuring_parties.get(&party_id).ok_or(AppError {
             error_type: common::errors::AppErrorTypes::ServerError,
@@ -44,7 +40,7 @@ impl GameServer {
 
         self.send_packet(
             &GameServerUpdatePackets::ClientAdventuringPartyId(Some(party_id)),
-            *actor_id,
+            actor_id,
         )?;
         self.emit_packet(
             &current_game_name,

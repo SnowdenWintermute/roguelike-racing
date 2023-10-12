@@ -1,43 +1,44 @@
 use common::{
+    errors::AppError,
     game,
     packets::server_to_client::{GameServerUpdatePackets, RoomState},
 };
 
 use crate::websocket_server::game_server::GameServer;
 
-pub fn join_room_handler(game_server: &mut GameServer, room_name: &str, actor_id: u32) {
-    let connected_user = match game_server.sessions.get_mut(&actor_id) {
-        Some(user) => user,
-        None => {
-            println!("tried to join a room but no user was found with the provided actor_id");
-            return;
-        }
-    };
-
+pub fn join_room_handler(
+    game_server: &mut GameServer,
+    room_name: &str,
+    actor_id: u32,
+) -> Result<(), AppError> {
+    let connected_user = game_server.sessions.get_mut(&actor_id).ok_or(AppError {
+        error_type: common::errors::AppErrorTypes::ServerError,
+        message: "Tried to join a room but no user was found with the provided actor_id"
+            .to_string(),
+    })?;
     let username = connected_user.username.clone();
     let previous_room_name = connected_user.current_room_name.clone();
-    println!("previous_room_name: {}", previous_room_name);
     connected_user.current_room_name = room_name.to_string();
 
     // REMOVE THEM FROM THEIR PREVIOUS ROOM
     if previous_room_name != room_name {
-        let room_leaving = game_server.rooms.get_mut(&previous_room_name);
-        match room_leaving {
-            Some(room) => {
-                room.remove(&actor_id);
-                if room.len() < 1 {
-                    // if empty, delete the room
-                    game_server.rooms.remove(&previous_room_name);
-                } else {
-                    // UPDATE THEIR PREVIOUS ROOM MEMBERS
-                    game_server.emit_packet(
-                        &previous_room_name,
-                        &GameServerUpdatePackets::UserLeftRoom(username.clone()),
-                        None,
-                    );
-                }
-            }
-            None => println!("tried to remove a user from a room but no room was found"),
+        let room_leaving = game_server
+            .rooms
+            .get_mut(&previous_room_name)
+            .ok_or(AppError {
+                error_type: common::errors::AppErrorTypes::ServerError,
+                message: "Tried to remove a user from a room but no room was found".to_string(),
+            })?;
+        room_leaving.remove(&actor_id);
+        if room_leaving.len() < 1 {
+            game_server.rooms.remove(&previous_room_name);
+        } else {
+            // UPDATE THEIR PREVIOUS ROOM MEMBERS
+            game_server.emit_packet(
+                &previous_room_name,
+                &GameServerUpdatePackets::UserLeftRoom(username.clone()),
+                None,
+            );
         }
     }
 
@@ -76,5 +77,5 @@ pub fn join_room_handler(game_server: &mut GameServer, room_name: &str, actor_id
         &room_name,
         &GameServerUpdatePackets::UserJoinedRoom(username),
         Some(actor_id),
-    );
+    )
 }

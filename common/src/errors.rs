@@ -1,4 +1,5 @@
 use std::{
+    convert::Infallible,
     fmt,
     io::{self, Write},
 };
@@ -51,6 +52,15 @@ impl From<io::Error> for AppError {
         AppError {
             error_type: AppErrorTypes::IO,
             message: error.to_string(),
+        }
+    }
+}
+
+impl From<serde_cbor::Error> for AppError {
+    fn from(error: serde_cbor::Error) -> Self {
+        AppError {
+            error_type: AppErrorTypes::ServerError,
+            message: "Error serializing with serde_cbor".to_string(),
         }
     }
 }

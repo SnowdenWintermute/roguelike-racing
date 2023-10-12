@@ -1,4 +1,4 @@
-use common::packets::server_to_client::GameServerUpdatePackets;
+use common::{errors::AppError, packets::server_to_client::GameServerUpdatePackets};
 
 use super::GameServer;
 use crate::websocket_server::{AppMessage, MessageContent};
@@ -29,32 +29,42 @@ impl GameServer {
         }
     }
 
-    pub fn send_packet(&self, packet: &GameServerUpdatePackets, actor_id: u32) {
-        if let Some(connected_user) = self.sessions.get(&actor_id) {
-            let serialized = serde_cbor::to_vec(&packet);
+    pub fn send_packet(
+        &self,
+        packet: &GameServerUpdatePackets,
+        actor_id: u32,
+    ) -> Result<(), AppError> {
+        let connected_user = self.sessions.get(&actor_id).ok_or(AppError {
+            error_type: common::errors::AppErrorTypes::ServerError,
+            message: "tried to send a packet to a client but couldn't find any connected user with the provide actor_id" .to_string()
+        })?;
+        let serialized = serde_cbor::to_vec(&packet)?;
 
-            match serialized {
-                Ok(bytes) => connected_user
-                    .actor_address
-                    .do_send(AppMessage(MessageContent::Bytes(bytes))),
-                Err(_e) => println!("error serializing full update"),
-            }
-        } else {
-            println!("tried to send a packet to a client but couldn't find any connected user with the provide actor_id")
-        }
+        connected_user
+            .actor_address
+            .do_send(AppMessage(MessageContent::Bytes(serialized)));
+        Ok(())
     }
 
-    pub fn emit_packet(&self, room: &str, packet: &GameServerUpdatePackets, skip_id: Option<u32>) {
-        if let Some(sessions) = self.rooms.get(room) {
-            for actor_id in sessions {
-                if let Some(id_to_skip) = skip_id {
-                    if &id_to_skip == actor_id {
-                        continue;
-                    }
+    pub fn emit_packet(
+        &self,
+        room: &str,
+        packet: &GameServerUpdatePackets,
+        skip_id: Option<u32>,
+    ) -> Result<(), AppError> {
+        let sessions = self.rooms.get(room).ok_or(AppError {
+            error_type: common::errors::AppErrorTypes::ServerError,
+            message: "Tried to emit a message in a room that doesn't exist".to_string(),
+        })?;
+        for actor_id in sessions {
+            if let Some(id_to_skip) = skip_id {
+                if &id_to_skip == actor_id {
+                    continue;
                 }
-                self.send_packet(packet, *actor_id)
             }
+            let _ = self.send_packet(packet, *actor_id)?;
         }
+        Ok(())
     }
 
     pub fn send_lobby_and_game_full_updates(&self, actor_id: u32) {

@@ -58,6 +58,12 @@ pub struct PlayerAdventuringPartyChange {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct PlayerRemovedFromGame {
+    pub username: String,
+    pub game_name: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct PlayerCharacterCreation {
     pub party_id: u32,
     pub username: String,

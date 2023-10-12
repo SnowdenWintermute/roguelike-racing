@@ -1,8 +1,9 @@
-use common::packets::server_to_client::GameServerUpdatePackets;
-
 use crate::websocket_server::game_server::GameServer;
+use common::{errors::AppError, packets::server_to_client::GameServerUpdatePackets};
 
-pub fn game_list_update_request_handler(game_server: &mut GameServer, actor_id: u32) {
-    let game_list = game_server.create_game_list_update();
-    game_server.send_packet(&GameServerUpdatePackets::GameList(game_list), actor_id)
+impl GameServer {
+    pub fn game_list_update_request_handler(&mut self, actor_id: u32) -> Result<(), AppError> {
+        let game_list = self.create_game_list_update();
+        self.send_packet(&GameServerUpdatePackets::GameList(game_list), actor_id)
+    }
 }

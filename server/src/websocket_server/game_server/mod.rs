@@ -17,9 +17,7 @@ pub mod send_messages;
 pub mod update_packet_creators;
 use super::{AppMessage, ClientBinaryMessage, ClientMessage};
 use crate::websocket_server::game_server::player_input_handlers::create_game_handler::create_game_handler;
-use crate::websocket_server::game_server::player_input_handlers::game_list_update_request_handler::game_list_update_request_handler;
 use crate::websocket_server::game_server::player_input_handlers::join_game_handler::join_game_handler;
-use crate::websocket_server::game_server::player_input_handlers::leave_game_handler::leave_game_handler;
 
 #[derive(Debug)]
 pub struct ConnectedUser {
@@ -83,13 +81,9 @@ impl Handler<ClientBinaryMessage> for GameServer {
                 join_game_handler(self, message.actor_id, game_name);
                 Ok(())
             }
-            Ok(PlayerInputs::LeaveGame) => {
-                leave_game_handler(self, message.actor_id);
-                Ok(())
-            }
+            Ok(PlayerInputs::LeaveGame) => self.leave_game_handler(message.actor_id),
             Ok(PlayerInputs::RequestGameList) => {
-                game_list_update_request_handler(self, message.actor_id);
-                Ok(())
+                self.game_list_update_request_handler(message.actor_id)
             }
             Ok(PlayerInputs::CreateAdventuringParty(party_name)) => {
                 self.adventuring_party_creation_request_handler(&message.actor_id, party_name)
@@ -105,10 +99,13 @@ impl Handler<ClientBinaryMessage> for GameServer {
         match result {
             Err(app_error) => {
                 println!("{:#?}", app_error);
-                self.send_packet(
+                match self.send_packet(
                     &GameServerUpdatePackets::Error(app_error.message),
                     message.actor_id,
-                );
+                ) {
+                    Err(app_error) => eprint!("{:#?}", app_error),
+                    _ => (),
+                }
             }
             _ => (),
         }

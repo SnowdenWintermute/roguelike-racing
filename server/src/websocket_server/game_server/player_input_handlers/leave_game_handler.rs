@@ -15,8 +15,8 @@ impl GameServer {
             player_and_game.game_name.as_str(),
             &GameServerUpdatePackets::UserLeftGame(player_and_game.username.clone()),
             Some(actor_id),
-        );
-        self.send_packet(&GameServerUpdatePackets::GameFullUpdate(None), actor_id);
+        )?;
+        self.send_packet(&GameServerUpdatePackets::GameFullUpdate(None), actor_id)?;
         self.send_packet(
             &GameServerUpdatePackets::ClientAdventuringPartyId(None),
             actor_id,

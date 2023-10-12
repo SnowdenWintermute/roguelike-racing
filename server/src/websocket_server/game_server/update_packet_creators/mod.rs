@@ -1,4 +1,5 @@
 use super::GameServer;
+use common::errors::AppError;
 use common::game::RoguelikeRacerGame;
 use common::packets::server_to_client::{
     ClientGameListState, GameListEntry, GameServerUpdatePackets, RoguelikeRacerAppState, RoomState,
@@ -19,18 +20,30 @@ impl GameServer {
         game_list
     }
 
-    pub fn create_game_full_update(&self, actor_id: u32) -> Option<RoguelikeRacerGame> {
-        let connected_user = match self.sessions.get(&actor_id) {
-            Some(user) => user,
-            None => {
-                println!("tried to create an update packet for a user but user wasn't registered with the game server");
-                return None;
-            }
-        };
+    pub fn create_game_full_update(
+        &self,
+        actor_id: u32,
+    ) -> Result<Option<RoguelikeRacerGame>, AppError> {
+        let connected_user = self.sessions.get(&actor_id).ok_or(AppError {
+            error_type: common::errors::AppErrorTypes::ServerError,
+            message: "tried to create an update packet for a user but user wasn't registered with the game server".to_string()
+        })?;
 
         let current_game_name = connected_user.current_game_name.clone();
         let current_game_option = match current_game_name {
-            Some(game_name) => self.games.get(&game_name.to_string()).clone(),
+            Some(game_name) => {
+                let game = self
+                    .games
+                    .get(&game_name.to_string())
+                    .clone()
+                    .ok_or(AppError {
+                        error_type: common::errors::AppErrorTypes::ServerError,
+                        message:
+                            "User's current game reference pointed to a game that doesn't exist"
+                                .to_string(),
+                    })?;
+                Some(game)
+            }
             None => None,
         };
 
@@ -54,39 +67,39 @@ impl GameServer {
             None => (),
         }
 
-        current_game
+        Ok(current_game)
     }
 
-    pub fn create_client_update_packet(&self, actor_id: u32) -> Option<GameServerUpdatePackets> {
-        let connected_user = match self.sessions.get(&actor_id) {
-            Some(user) => user,
-            None => {
-                println!("tried to create an update packet for a user but user wasn't registered with the game server");
-                return None;
-            }
-        };
+    pub fn create_client_update_packet(
+        &self,
+        actor_id: u32,
+    ) -> Result<Option<GameServerUpdatePackets>, AppError> {
+        let connected_user = self.sessions.get(&actor_id).ok_or(AppError {
+            error_type: common::errors::AppErrorTypes::ServerError,
+            message: "tried to create an update packet for a user but user wasn't registered with the game server".to_string()
+        })?;
 
-        // GAME UPDATE
-        let current_game = self.create_game_full_update(actor_id);
+        let current_game = self.create_game_full_update(actor_id)?;
 
-        // ROOM UPDATE
         let room = self
             .rooms
             .get(&connected_user.current_room_name)
-            .expect("if a room is registered with a connected_user then it should exist");
+            .ok_or(AppError {
+                error_type: common::errors::AppErrorTypes::ServerError,
+                message: "if a room is registered with a connected_user then it should exist"
+                    .to_string(),
+            })?;
         let mut room_update = RoomState {
             room_name: connected_user.current_room_name.clone(),
             users: Vec::new(),
         };
 
         for actor_id in room.iter() {
-            if let Some(user) = self.sessions.get(actor_id) {
-                room_update.users.push(user.username.clone());
-            } else {
-                println!(
-                    "if their actor id is in a room, they should be registered with the game server",
-                    );
-            }
+            let user = self.sessions.get(actor_id).ok_or(AppError{
+                error_type:common::errors::AppErrorTypes::ServerError,
+                message:                    "While creating a list of usernames in a room, one of the actor ids in the room pointed to a connected user that doesn't exist".to_string()
+            })?;
+            room_update.users.push(user.username.clone());
         }
 
         // GAME LIST UPDATE
@@ -98,6 +111,6 @@ impl GameServer {
             current_game,
         };
 
-        Some(GameServerUpdatePackets::FullUpdate(full_update))
+        Ok(Some(GameServerUpdatePackets::FullUpdate(full_update)))
     }
 }

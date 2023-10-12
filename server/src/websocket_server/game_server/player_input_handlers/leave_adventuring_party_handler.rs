@@ -29,7 +29,7 @@ impl GameServer {
                 party_id: None,
             }),
             None,
-        );
+        )?;
 
         Ok(())
     }

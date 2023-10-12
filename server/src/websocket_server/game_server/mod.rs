@@ -16,8 +16,6 @@ pub mod player_input_handlers;
 pub mod send_messages;
 pub mod update_packet_creators;
 use super::{AppMessage, ClientBinaryMessage, ClientMessage};
-use crate::websocket_server::game_server::player_input_handlers::create_game_handler::create_game_handler;
-use crate::websocket_server::game_server::player_input_handlers::join_game_handler::join_game_handler;
 
 #[derive(Debug)]
 pub struct ConnectedUser {
@@ -74,12 +72,10 @@ impl Handler<ClientBinaryMessage> for GameServer {
         let deserialized: Result<PlayerInputs, _> = serde_cbor::from_slice(byte_slice);
         let result = match deserialized {
             Ok(PlayerInputs::CreateGame(game_creation_data)) => {
-                create_game_handler(self, message.actor_id, game_creation_data);
-                Ok(())
+                self.create_game_handler(message.actor_id, game_creation_data)
             }
             Ok(PlayerInputs::JoinGame(game_name)) => {
-                join_game_handler(self, message.actor_id, game_name);
-                Ok(())
+                self.join_game_handler(message.actor_id, game_name)
             }
             Ok(PlayerInputs::LeaveGame) => self.leave_game_handler(message.actor_id),
             Ok(PlayerInputs::RequestGameList) => {
@@ -103,7 +99,7 @@ impl Handler<ClientBinaryMessage> for GameServer {
                     &GameServerUpdatePackets::Error(app_error.message),
                     message.actor_id,
                 ) {
-                    Err(app_error) => eprint!("{:#?}", app_error),
+                    Err(app_error) => eprintln!("{:#?}", app_error),
                     _ => (),
                 }
             }

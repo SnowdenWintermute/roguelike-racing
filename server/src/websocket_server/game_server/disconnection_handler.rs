@@ -23,11 +23,14 @@ impl Handler<Disconnect> for GameServer {
         let username = connected_user.unwrap().username.clone();
 
         if let Ok(player_and_game) = self.remove_player_from_game(actor_id) {
-            self.emit_packet(
+            let result = self.emit_packet(
                 player_and_game.game_name.as_str(),
                 &GameServerUpdatePackets::UserLeftGame(player_and_game.username.clone()),
                 Some(actor_id),
             );
+            if result.is_err() {
+                eprintln!("{:#?}", result)
+            }
         };
 
         let room_leaving = self.rooms.get_mut(&room_name_leaving);
@@ -35,11 +38,14 @@ impl Handler<Disconnect> for GameServer {
             Some(room) => {
                 room.remove(&actor_id);
                 // UPDATE THEIR PREVIOUS ROOM MEMBERS
-                self.emit_packet(
+                let result = self.emit_packet(
                     &room_name_leaving,
                     &GameServerUpdatePackets::UserLeftRoom(username),
                     None,
                 );
+                if result.is_err() {
+                    eprintln!("{:#?}", result)
+                }
             }
             None => println!("tried to remove a user from a room but no room was found"),
         }

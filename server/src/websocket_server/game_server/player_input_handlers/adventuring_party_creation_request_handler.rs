@@ -45,7 +45,7 @@ impl GameServer {
         self.send_packet(
             &GameServerUpdatePackets::ClientAdventuringPartyId(Some(party_id)),
             *actor_id,
-        );
+        )?;
         self.emit_packet(
             &current_game_name,
             &GameServerUpdatePackets::AdventuringPartyCreated(AdventuringPartyCreation {
@@ -53,7 +53,6 @@ impl GameServer {
                 username_created_by: username,
             }),
             None,
-        );
-        Ok(())
+        )
     }
 }

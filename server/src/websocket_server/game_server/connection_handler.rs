@@ -21,10 +21,15 @@ impl Handler<Connect> for GameServer {
         self.sessions.insert(actor_id, new_user_connection);
         println!("actor id {} connected", actor_id);
 
-        join_room_handler(self, MAIN_CHAT_ROOM, actor_id);
+        let result = join_room_handler(self, MAIN_CHAT_ROOM, actor_id);
+        if result.is_err() {
+            eprintln!("{:#?}", result)
+        }
 
-        self.send_lobby_and_game_full_updates(actor_id);
-        println!("{:#?}", self);
+        let result = self.send_lobby_and_game_full_updates(actor_id);
+        if result.is_err() {
+            eprintln!("{:#?}", result)
+        }
 
         actor_id
     }

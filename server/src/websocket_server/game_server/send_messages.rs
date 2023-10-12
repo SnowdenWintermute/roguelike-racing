@@ -62,22 +62,21 @@ impl GameServer {
                     continue;
                 }
             }
-            let _ = self.send_packet(packet, *actor_id)?;
+            self.send_packet(packet, *actor_id)?;
         }
         Ok(())
     }
 
-    pub fn send_lobby_and_game_full_updates(&self, actor_id: u32) {
-        let full_update = GameServer::create_client_update_packet(&self, actor_id)
-            .expect("failed to create full client update");
-        if let Some(connected_user) = self.sessions.get(&actor_id) {
-            let serialized = serde_cbor::to_vec(&full_update);
-            match serialized {
-                Ok(bytes) => connected_user
-                    .actor_address
-                    .do_send(AppMessage(MessageContent::Bytes(bytes))),
-                Err(_e) => println!("error serializing full update"),
-            }
-        }
+    pub fn send_lobby_and_game_full_updates(&self, actor_id: u32) -> Result<(), AppError> {
+        let full_update = GameServer::create_client_update_packet(&self, actor_id)?;
+        let connected_user = self.sessions.get(&actor_id).ok_or(AppError {
+            error_type: common::errors::AppErrorTypes::ServerError,
+            message: "tried to send a packet to a client but couldn't find any connected user with the provide actor_id" .to_string()
+        })?;
+        let serialized = serde_cbor::to_vec(&full_update)?;
+        connected_user
+            .actor_address
+            .do_send(AppMessage(MessageContent::Bytes(serialized)));
+        Ok(())
     }
 }

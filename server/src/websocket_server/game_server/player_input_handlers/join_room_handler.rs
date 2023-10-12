@@ -38,7 +38,7 @@ pub fn join_room_handler(
                 &previous_room_name,
                 &GameServerUpdatePackets::UserLeftRoom(username.clone()),
                 None,
-            );
+            )?;
         }
     }
 
@@ -52,7 +52,7 @@ pub fn join_room_handler(
     let new_room_usernames = game_server
         .rooms
         .get(room_name)
-        .expect("this room should exist because we just created it or inserted a user into it")
+        .expect("This room should exist because we just created it or inserted a user into it")
         .into_iter()
         .filter_map(|id| {
             if let Some(connected_user) = game_server.sessions.get(id) {
@@ -70,7 +70,7 @@ pub fn join_room_handler(
             users: new_room_usernames,
         }),
         actor_id,
-    );
+    )?;
 
     // UPDATE THE NEW ROOM
     game_server.emit_packet(

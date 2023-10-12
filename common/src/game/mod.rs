@@ -102,10 +102,12 @@ impl RoguelikeRacerGame {
         put_in_partyless_players: bool,
     ) {
         for (id, party) in self.adventuring_parties.iter_mut() {
-            let player_removed_option = party.remove_player_and_their_characters(username.clone());
+            let mut player_removed_option =
+                party.remove_player_and_their_characters(username.clone());
             if (put_in_partyless_players) {
                 match player_removed_option {
-                    Some(player) => {
+                    Some(mut player) => {
+                        player.party_id = None;
                         self.partyless_players
                             .insert(player.username.clone(), player);
                     }
@@ -113,7 +115,7 @@ impl RoguelikeRacerGame {
                 }
             }
         }
-
+        // clean up empty parties
         let mut party_ids_to_remove = Vec::new();
         for (id, party) in &self.adventuring_parties {
             if party.players.len() < 1 {

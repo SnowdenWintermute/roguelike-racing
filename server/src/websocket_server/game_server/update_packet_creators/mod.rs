@@ -1,4 +1,4 @@
-use super::GameServer;
+use super::{get_user, GameServer};
 use common::errors::AppError;
 use common::game::RoguelikeRacerGame;
 use common::packets::server_to_client::{
@@ -24,11 +24,7 @@ impl GameServer {
         &self,
         actor_id: u32,
     ) -> Result<Option<RoguelikeRacerGame>, AppError> {
-        let connected_user = self.sessions.get(&actor_id).ok_or(AppError {
-            error_type: common::errors::AppErrorTypes::ServerError,
-            message: "tried to create an update packet for a user but user wasn't registered with the game server".to_string()
-        })?;
-
+        let connected_user = get_user(&self.sessions, actor_id)?;
         let current_game_name = connected_user.current_game_name.clone();
         let current_game_option = match current_game_name {
             Some(game_name) => {
@@ -71,14 +67,10 @@ impl GameServer {
     }
 
     pub fn create_client_update_packet(
-        &self,
+        &mut self,
         actor_id: u32,
     ) -> Result<Option<GameServerUpdatePackets>, AppError> {
-        let connected_user = self.sessions.get(&actor_id).ok_or(AppError {
-            error_type: common::errors::AppErrorTypes::ServerError,
-            message: "tried to create an update packet for a user but user wasn't registered with the game server".to_string()
-        })?;
-
+        let connected_user = get_user(&self.sessions, actor_id)?;
         let current_game = self.create_game_full_update(actor_id)?;
 
         let room = self
@@ -95,10 +87,7 @@ impl GameServer {
         };
 
         for actor_id in room.iter() {
-            let user = self.sessions.get(actor_id).ok_or(AppError{
-                error_type:common::errors::AppErrorTypes::ServerError,
-                message:                    "While creating a list of usernames in a room, one of the actor ids in the room pointed to a connected user that doesn't exist".to_string()
-            })?;
+            let user = get_user(&mut self.sessions, *actor_id)?;
             room_update.users.push(user.username.clone());
         }
 

@@ -1,32 +1,31 @@
 use common::{errors::AppError, packets::server_to_client::GameServerUpdatePackets};
 
-use super::GameServer;
+use super::{get_user, GameServer};
 use crate::websocket_server::{AppMessage, MessageContent};
 
 impl GameServer {
-    pub fn send_string_message(&self, room: &str, message: &str) {
+    pub fn send_string_message(&self, room: &str, message: &str) -> Result<(), AppError> {
         if let Some(sessions) = self.rooms.get(room) {
-            for id in sessions {
-                // optionally skip sending to same socket
-                if let Some(connected_user) = self.sessions.get(id) {
-                    connected_user
-                        .actor_address
-                        .do_send(AppMessage(MessageContent::Str(message.to_owned())));
-                }
+            for actor_id in sessions {
+                let connected_user = get_user(&self.sessions, *actor_id)?;
+                connected_user
+                    .actor_address
+                    .do_send(AppMessage(MessageContent::Str(message.to_owned())));
             }
         }
+        Ok(())
     }
 
-    pub fn send_byte_message(&self, room: &str, message: &Vec<u8>) {
+    pub fn send_byte_message(&self, room: &str, message: &Vec<u8>) -> Result<(), AppError> {
         if let Some(sessions) = self.rooms.get(room) {
-            for id in sessions {
-                if let Some(connected_user) = self.sessions.get(id) {
-                    connected_user
-                        .actor_address
-                        .do_send(AppMessage(MessageContent::Bytes(message.to_vec())));
-                }
+            for actor_id in sessions {
+                let connected_user = get_user(&self.sessions, *actor_id)?;
+                connected_user
+                    .actor_address
+                    .do_send(AppMessage(MessageContent::Bytes(message.to_vec())));
             }
         }
+        Ok(())
     }
 
     pub fn send_packet(
@@ -34,10 +33,7 @@ impl GameServer {
         packet: &GameServerUpdatePackets,
         actor_id: u32,
     ) -> Result<(), AppError> {
-        let connected_user = self.sessions.get(&actor_id).ok_or(AppError {
-            error_type: common::errors::AppErrorTypes::ServerError,
-            message: "tried to send a packet to a client but couldn't find any connected user with the provide actor_id" .to_string()
-        })?;
+        let connected_user = get_user(&self.sessions, actor_id)?;
         let serialized = serde_cbor::to_vec(&packet)?;
 
         connected_user
@@ -67,12 +63,9 @@ impl GameServer {
         Ok(())
     }
 
-    pub fn send_lobby_and_game_full_updates(&self, actor_id: u32) -> Result<(), AppError> {
-        let full_update = GameServer::create_client_update_packet(&self, actor_id)?;
-        let connected_user = self.sessions.get(&actor_id).ok_or(AppError {
-            error_type: common::errors::AppErrorTypes::ServerError,
-            message: "tried to send a packet to a client but couldn't find any connected user with the provide actor_id" .to_string()
-        })?;
+    pub fn send_lobby_and_game_full_updates(&mut self, actor_id: u32) -> Result<(), AppError> {
+        let full_update = GameServer::create_client_update_packet(self, actor_id)?;
+        let connected_user = get_user(&self.sessions, actor_id)?;
         let serialized = serde_cbor::to_vec(&full_update)?;
         connected_user
             .actor_address

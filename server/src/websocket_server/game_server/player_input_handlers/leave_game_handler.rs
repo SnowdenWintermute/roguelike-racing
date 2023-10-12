@@ -1,4 +1,4 @@
-use crate::websocket_server::game_server::{get_mut_user, GameServer};
+use crate::websocket_server::game_server::{get_mut_game, get_mut_user, GameServer};
 use common::{
     consts::MAIN_CHAT_ROOM,
     errors::AppError,
@@ -31,11 +31,7 @@ impl GameServer {
             error_type: common::errors::AppErrorTypes::ServerError,
             message: "User missing reference to their current game".to_string(),
         })?;
-        let game = self.games.get_mut(&game_name_leaving).ok_or(AppError {
-            error_type: common::errors::AppErrorTypes::ServerError,
-            message: "User's current game reference pointed to a game that doesn't exist"
-                .to_string(),
-        })?;
+        let game = get_mut_game(&mut self.games, &game_name_leaving)?;
         // remove player from game
         game.partyless_players
             .remove(&connected_user.username.clone());

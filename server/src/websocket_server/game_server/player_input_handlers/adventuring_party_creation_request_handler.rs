@@ -1,4 +1,4 @@
-use crate::websocket_server::game_server::{get_mut_user, GameServer};
+use crate::websocket_server::game_server::{get_mut_game, get_mut_user, GameServer};
 use common::errors::AppError;
 use common::packets::server_to_client::{AdventuringPartyCreation, GameServerUpdatePackets};
 
@@ -16,10 +16,7 @@ impl GameServer {
             message: "Missing reference to current game".to_string(),
         })?;
 
-        let game = self.games.get_mut(&current_game_name).ok_or(AppError {
-            error_type: common::errors::AppErrorTypes::ServerError,
-            message: "No game found".to_string(),
-        })?;
+        let game = get_mut_game(&mut self.games, &current_game_name)?;
 
         let _partyless_players =
             game.partyless_players

@@ -1,4 +1,4 @@
-use crate::websocket_server::game_server::{get_mut_user, GameServer};
+use crate::websocket_server::game_server::{get_mut_game, get_mut_user, GameServer};
 use common::{
     errors::AppError,
     game::{player_actions::GameCreation, RoguelikeRacerPlayer},
@@ -9,10 +9,7 @@ impl GameServer {
     // @TODO
     // reject if game is full (and define what that means)
     pub fn join_game_handler(&mut self, actor_id: u32, game_name: String) -> Result<(), AppError> {
-        let game = self.games.get_mut(&game_name).ok_or(AppError {
-            error_type: common::errors::AppErrorTypes::ServerError,
-            message: "No game by that name was found".to_string(),
-        })?;
+        let game = get_mut_game(&mut self.games, &game_name)?;
         let connected_user = get_mut_user(&mut self.sessions, actor_id)?;
         if connected_user.current_game_name.is_some() {
             return Err(AppError {

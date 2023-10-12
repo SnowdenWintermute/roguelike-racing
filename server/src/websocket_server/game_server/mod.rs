@@ -80,6 +80,17 @@ pub fn get_mut_user<'a>(
     Ok(user)
 }
 
+pub fn get_mut_game<'a>(
+    games: &'a mut HashMap<String, RoguelikeRacerGame>,
+    game_name: &'a str,
+) -> Result<&'a mut RoguelikeRacerGame, AppError> {
+    let game = games.get_mut(game_name).ok_or(AppError {
+        error_type: common::errors::AppErrorTypes::ServerError,
+        message: consts::error_messages::GAME_NOT_FOUND.to_string(),
+    })?;
+    Ok(game)
+}
+
 impl Actor for GameServer {
     type Context = Context<Self>;
 }

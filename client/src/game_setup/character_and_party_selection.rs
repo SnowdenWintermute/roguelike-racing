@@ -17,7 +17,7 @@ pub fn character_and_party_selection() -> impl IntoView {
     };
 
     let game_name = move || game().name.clone();
-    let partyless_players = move || game().partyless_players.clone();
+    let players = move || game().players.clone();
     let adventuring_parties = move || game().adventuring_parties.clone();
 
     let (new_party_name, set_new_party_name) = create_signal("".to_string());
@@ -49,11 +49,11 @@ pub fn character_and_party_selection() -> impl IntoView {
             <div>
                 <h3>"Players not yet in a party:"</h3>
                 <ul class="list-none">
-                    <For each=partyless_players
-                    key=|player| player.0.clone()
+                    <For each=players
+                    key=|player| player.1.username.clone()
                     children=move |player| {
                         view! {
-                            <li>{player.0.clone()}</li>
+                            <li>{player.1.username.clone()}</li>
                         }
                     }
                         />

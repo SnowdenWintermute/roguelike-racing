@@ -42,13 +42,8 @@ impl GameServer {
         // sanitize actor ids from players
         match current_game {
             Some(ref mut game) => {
-                for (_, player) in game.partyless_players.iter_mut() {
+                for (_, player) in game.players.iter_mut() {
                     player.actor_id = None;
-                }
-                for (_, party) in game.adventuring_parties.iter_mut() {
-                    for (_, player) in party.players.iter_mut() {
-                        player.actor_id = None;
-                    }
                 }
             }
             None => (),

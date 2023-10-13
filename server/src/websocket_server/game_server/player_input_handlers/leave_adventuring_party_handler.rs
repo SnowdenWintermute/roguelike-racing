@@ -1,4 +1,4 @@
-use crate::websocket_server::game_server::getters::{get_mut_game, get_mut_user};
+use crate::websocket_server::game_server::getters::{get_mut_game, get_mut_player, get_mut_user};
 use crate::websocket_server::game_server::GameServer;
 use common::app_consts::error_messages;
 use common::errors::AppError;
@@ -14,8 +14,9 @@ impl GameServer {
         })?;
 
         let game = get_mut_game(&mut self.games, &current_game_name)?;
-
-        game.remove_player_from_adventuring_party(username.clone(), true);
+        let player = get_mut_player(game, username.clone())?;
+        let username = player.username.clone();
+        game.remove_player_from_adventuring_party(username.clone())?;
 
         self.emit_packet(
             &current_game_name,

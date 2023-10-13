@@ -1,6 +1,10 @@
 use std::collections::HashMap;
 
-use common::{app_consts::error_messages, errors::AppError, game::RoguelikeRacerGame};
+use common::{
+    app_consts::error_messages,
+    errors::AppError,
+    game::{RoguelikeRacerGame, RoguelikeRacerPlayer},
+};
 
 use super::ConnectedUser;
 
@@ -45,4 +49,15 @@ pub fn get_mut_game<'a>(
         message: error_messages::GAME_NOT_FOUND.to_string(),
     })?;
     Ok(game)
+}
+
+pub fn get_mut_player<'a>(
+    game: &'a mut RoguelikeRacerGame,
+    username: String,
+) -> Result<&'a mut RoguelikeRacerPlayer, AppError> {
+    let player = game.players.get_mut(&username).ok_or(AppError {
+        error_type: common::errors::AppErrorTypes::ServerError,
+        message: error_messages::PLAYER_NOT_FOUND.to_string(),
+    })?;
+    Ok(player)
 }

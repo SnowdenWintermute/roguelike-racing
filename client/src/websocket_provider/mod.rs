@@ -73,7 +73,7 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
                                 GameServerUpdatePackets::UserJoinedGame(update) => {
                                     game.update(move |game_option| {
                                         if let Some(game) = game_option {
-                                            game.partyless_players.insert(
+                                            game.players.insert(
                                                 update.clone(),
                                                 RoguelikeRacerPlayer::new(None, update),
                                             );
@@ -83,10 +83,8 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
                                 GameServerUpdatePackets::UserLeftGame(username) => {
                                     game.update(move |game_option| {
                                         if let Some(game) = game_option {
-                                            game.partyless_players.remove(&username.clone());
                                             game.remove_player_from_adventuring_party(
                                                 username.clone(),
-                                                false,
                                             );
                                         }
                                     })
@@ -99,10 +97,14 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
                                     .update(move |game_state| {
                                         if let Some(game) = game_state {
                                             println!("adventuring party created in current game");
-                                            game.partyless_players
-                                                .remove(&update.username_created_by);
-                                            game.adventuring_parties
-                                                .insert(update.party.id, update.party);
+                                            game.add_adventuring_party(
+                                                update.party_name,
+                                                update.party_id,
+                                            );
+                                            let _ = game.put_player_in_adventuring_party(
+                                                update.party_id,
+                                                update.username_created_by.clone(),
+                                            );
                                         }
                                     }),
                                 GameServerUpdatePackets::AdventuringPartyRemoved(update) => game
@@ -120,15 +122,14 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
                                 GameServerUpdatePackets::PlayerChangedAdventuringParty(update) => {
                                     game.update(move |game_state| {
                                         if let Some(game) = game_state {
-                                            game.remove_player_from_adventuring_party(
+                                            let _ = game.remove_player_from_adventuring_party(
                                                 update.username.clone(),
-                                                true,
                                             );
                                             if let Some(party_id) = update.party_id {
-                                                if let Some(party) =
+                                                if let Some(_party) =
                                                     game.adventuring_parties.get(&party_id)
                                                 {
-                                                    game.put_player_in_adventuring_party(
+                                                    let _ = game.put_player_in_adventuring_party(
                                                         party_id,
                                                         update.username.clone(),
                                                     );

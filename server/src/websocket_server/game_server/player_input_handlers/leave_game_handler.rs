@@ -33,17 +33,16 @@ impl GameServer {
             error_type: common::errors::AppErrorTypes::ServerError,
             message: error_messages::MISSING_GAME_REFERENCE.to_string(),
         })?;
+
         let game = get_mut_game(&mut self.games, &game_name_leaving)?;
-        // remove player from game
-        game.partyless_players
-            .remove(&connected_user.username.clone());
-        game.remove_player_from_adventuring_party(connected_user.username.clone(), false);
-        // if game empty remove it
+        game.remove_player_from_adventuring_party(connected_user.username.clone())?;
+
+        game.players.remove(&connected_user.username.clone());
+
         if game.get_number_of_players() < 1 {
             self.games.remove(&game_name_leaving);
         }
 
-        // remove game name from user's current game slot
         connected_user.current_game_name = None;
         Ok(PlayerRemovedFromGame {
             username: connected_user.username.clone(),

@@ -1,4 +1,4 @@
-use crate::websocket_server::game_server::getters::{get_mut_game, get_mut_user};
+use crate::websocket_server::game_server::getters::{get_mut_game, get_mut_player, get_mut_user};
 use crate::websocket_server::game_server::GameServer;
 use common::app_consts::error_messages;
 use common::errors::AppError;
@@ -19,23 +19,18 @@ impl GameServer {
         })?;
 
         let game = get_mut_game(&mut self.games, &current_game_name)?;
+        let player = get_mut_player(game, connected_user.username.clone())?;
 
-        let _partyless_players =
-            game.partyless_players
-                .get(&connected_user.username)
-                .ok_or(AppError {
-                    error_type: common::errors::AppErrorTypes::ServerError,
-                    message: error_messages::ALREADY_IN_PARTY.to_string(),
-                })?;
+        if player.party_id.is_some() {
+            return Err(AppError {
+                error_type: common::errors::AppErrorTypes::InvalidInput,
+                message: error_messages::ALREADY_IN_PARTY.to_string(),
+            });
+        }
 
-        let party_id = game.add_adventuring_party(party_name);
+        let party_id = game.id_generator.get_next_entity_id();
+        game.add_adventuring_party(party_name.clone(), party_id);
         game.put_player_in_adventuring_party(party_id, connected_user.username.clone())?;
-
-        let party = game.adventuring_parties.get(&party_id).ok_or(AppError {
-            error_type: common::errors::AppErrorTypes::ServerError,
-            message: error_messages::PARTY_NOT_FOUND.to_string(),
-        })?;
-        let party_to_send = party.clone();
 
         self.send_packet(
             &GameServerUpdatePackets::ClientAdventuringPartyId(Some(party_id)),
@@ -44,7 +39,8 @@ impl GameServer {
         self.emit_packet(
             &current_game_name,
             &GameServerUpdatePackets::AdventuringPartyCreated(AdventuringPartyCreation {
-                party: party_to_send,
+                party_id,
+                party_name,
                 username_created_by: username,
             }),
             None,

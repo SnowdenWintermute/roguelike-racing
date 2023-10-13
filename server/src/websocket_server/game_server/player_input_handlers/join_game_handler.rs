@@ -29,7 +29,7 @@ impl GameServer {
 
         let new_player =
             RoguelikeRacerPlayer::new(Some(actor_id), connected_user.username.to_string());
-        game.partyless_players
+        game.players
             .insert(connected_user.username.to_string(), new_player);
         connected_user.current_game_name = Some(game_name.to_string());
         self.join_room_handler(&game_name, actor_id)?;

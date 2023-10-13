@@ -8,3 +8,4 @@ pub const ROOM_NOT_FOUND: &str = "No room found by that name";
 pub const PARTY_NOT_FOUND: &str = "No party found by that name";
 pub const PARTY_FULL: &str = "The selected party is currently full";
 pub const ALREADY_IN_PARTY: &str = "Leave your current party if you wish to create a new one";
+pub const PLAYER_NOT_FOUND: &str = "No player was found by that username";

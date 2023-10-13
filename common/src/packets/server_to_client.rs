@@ -91,7 +91,8 @@ pub struct PlayerCharacterDeletion {
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct AdventuringPartyCreation {
-    pub party: AdventuringParty,
+    pub party_id: u32,
+    pub party_name: String,
     pub username_created_by: String,
 }
 

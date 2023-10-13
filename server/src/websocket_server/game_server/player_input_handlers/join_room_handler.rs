@@ -10,14 +10,18 @@ impl GameServer {
         let connected_user = get_mut_user(&mut self.sessions, actor_id)?;
         let username = connected_user.username.clone();
         let previous_room_name = connected_user.current_room_name.clone();
+        println!("previous room name: {:#?}", previous_room_name);
         connected_user.current_room_name = room_name.to_string();
 
         // REMOVE THEM FROM THEIR PREVIOUS ROOM
         if previous_room_name != room_name {
-            let room_leaving = self.rooms.get_mut(&previous_room_name).ok_or(AppError {
-                error_type: common::errors::AppErrorTypes::ServerError,
-                message: error_messages::ROOM_NOT_FOUND.to_string(),
-            })?;
+            let room_leaving = self
+                .rooms
+                .get_mut(&previous_room_name)
+                .ok_or_else(|| AppError {
+                    error_type: common::errors::AppErrorTypes::ServerError,
+                    message: error_messages::ROOM_NOT_FOUND.to_string(),
+                })?;
             room_leaving.remove(&actor_id);
             if room_leaving.len() < 1 {
                 self.rooms.remove(&previous_room_name);
@@ -37,7 +41,7 @@ impl GameServer {
             .or_default()
             .insert(actor_id);
 
-        let room_joined = self.rooms.get(room_name).ok_or(AppError {
+        let room_joined = self.rooms.get(room_name).ok_or_else(|| AppError {
             error_type: common::errors::AppErrorTypes::ServerError,
             message: error_messages::ROOM_NOT_FOUND.to_string(),
         })?;

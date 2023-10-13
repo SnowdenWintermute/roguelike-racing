@@ -26,7 +26,7 @@ impl GameServer {
         packet: &GameServerUpdatePackets,
         skip_id: Option<u32>,
     ) -> Result<(), AppError> {
-        let sessions = self.rooms.get(room).ok_or(AppError {
+        let sessions = self.rooms.get(room).ok_or_else(||AppError {
             error_type: common::errors::AppErrorTypes::ServerError,
             message: error_messages::ROOM_NOT_FOUND.to_string(),
         })?;
@@ -42,7 +42,7 @@ impl GameServer {
     }
 
     pub fn send_string_message(&self, room: &str, message: &str) -> Result<(), AppError> {
-        let sessions = self.rooms.get(room).ok_or(AppError {
+        let sessions = self.rooms.get(room).ok_or_else(||AppError {
             error_type: common::errors::AppErrorTypes::ServerError,
             message: error_messages::ROOM_NOT_FOUND.to_string(),
         })?;
@@ -56,7 +56,7 @@ impl GameServer {
     }
 
     // pub fn send_byte_message(&self, room: &str, message: &Vec<u8>) -> Result<(), AppError> {
-    //     let sessions = self.rooms.get(room).ok_or(AppError {
+    //     let sessions = self.rooms.get(room).ok_or_else(||AppError {
     //         error_type: common::errors::AppErrorTypes::ServerError,
     //         message: common::consts::error_messages::ROOM_NOT_FOUND.to_string(),
     //     })?;

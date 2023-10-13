@@ -62,7 +62,7 @@ impl GameServer {
         let room = self
             .rooms
             .get(&connected_user.current_room_name)
-            .ok_or(AppError {
+            .ok_or_else(||AppError {
                 error_type: common::errors::AppErrorTypes::ServerError,
                 message: error_messages::ROOM_NOT_FOUND.to_string(),
             })?;

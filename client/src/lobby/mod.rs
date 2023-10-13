@@ -9,7 +9,7 @@ use leptos::*;
 #[component]
 pub fn lobby() -> impl IntoView {
     view! {
-        <main class="h-screen w-screen p-4 bg-teal-950 text-zinc-300 flex flex-col">
+        <main class="min-h-screen w-screen p-4 bg-teal-950 text-zinc-300 flex flex-col">
             <LobbyMenu/>
             <div class="w-full flex flex-1">
                 <GameList/>

@@ -6,6 +6,7 @@ use crate::{
 use common::game::{player_actions::PlayerInputs, RoguelikeRacerGame};
 use leptos::{ev::SubmitEvent, *};
 use web_sys::WebSocket;
+use leptos::logging::log;
 
 #[component]
 pub fn character_and_party_selection() -> impl IntoView {
@@ -49,14 +50,14 @@ pub fn character_and_party_selection() -> impl IntoView {
             <div>
                 <h3>"Players not yet in a party:"</h3>
                 <ul class="list-none">
-                    <For each=players
-                    key=|player| player.1.username.clone()
-                    children=move |player| {
-                        view! {
-                            <li>{player.1.username.clone()}</li>
-                        }
-                    }
-                        />
+                    <For
+                        each=players
+                        key=|player| (player.1.username.clone(), player.1.party_id.is_none())
+                        children=|player| player.1.party_id.is_none().then(move || 
+                                view! { <li>{player.1.username.clone()}</li> }
+                        )
+                    />
+
                 </ul>
             </div>
             <div>
@@ -65,9 +66,15 @@ pub fn character_and_party_selection() -> impl IntoView {
                     each=adventuring_parties
                     key=|party| party.1.id
                     children=move |party| {
-                        view! { <AdventuringPartyLobbyCard party=party.1 client_party_id=party_id.get() /> }
+                        view! {
+                            <AdventuringPartyLobbyCard
+                                party=party.1
+                                client_party_id=party_id.get()
+                            />
+                        }
                     }
                 />
+
             </div>
         </section>
     }

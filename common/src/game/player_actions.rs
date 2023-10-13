@@ -92,7 +92,7 @@ impl RoguelikeRacerGame {
         let adventuring_party = self
             .adventuring_parties
             .get_mut(&party_id)
-            .ok_or(AppError {
+            .ok_or_else(||AppError {
                 error_type: crate::errors::AppErrorTypes::InvalidInput,
                 message: error_messages::PARTY_NOT_FOUND.to_string(),
             })?;
@@ -100,7 +100,7 @@ impl RoguelikeRacerGame {
         let player_character = adventuring_party
             .player_characters
             .get_mut(&player_character_id)
-            .ok_or(AppError {
+            .ok_or_else(||AppError {
                 error_type: crate::errors::AppErrorTypes::InvalidInput,
                 message: "tried to process player input but couldn't find the player character"
                     .to_string(),

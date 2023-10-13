@@ -1,5 +1,6 @@
 pub mod send_client_input;
 use common::adventuring_party::AdventuringParty;
+use common::game::getters::get_mut_player;
 use common::game::RoguelikeRacerGame;
 use common::game::RoguelikeRacerPlayer;
 use common::packets::server_to_client::ClientGameListState;
@@ -134,13 +135,14 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
                                                         update.username.clone(),
                                                     );
                                                 }
+                                            } else {
+                                                if let Ok(player) =
+                                                    get_mut_player(game, update.username.clone())
+                                                {
+                                                    player.party_id = None;
+                                                };
                                             };
                                         }
-
-                                        println!(
-                                            "adventuring party change requested: {:#?}",
-                                            update
-                                        )
                                     })
                                 }
 

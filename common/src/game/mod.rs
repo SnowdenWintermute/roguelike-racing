@@ -71,12 +71,12 @@ impl RoguelikeRacerGame {
         let party = self
             .adventuring_parties
             .get_mut(&party_id)
-            .ok_or(AppError {
+            .ok_or_else(||AppError {
                 error_type: crate::errors::AppErrorTypes::ServerError,
                 message: error_messages::PARTY_NOT_FOUND.to_string(),
             })?;
 
-        let mut player_to_move = self.players.get_mut(&username).ok_or(AppError {
+        let mut player_to_move = self.players.get_mut(&username).ok_or_else(||AppError {
             error_type: crate::errors::AppErrorTypes::ServerError,
             message: error_messages::PLAYER_NOT_FOUND.to_string(),
         })?;
@@ -102,7 +102,7 @@ impl RoguelikeRacerGame {
         let mut party = self
             .adventuring_parties
             .get_mut(&party_id_leaving.expect("none check just above here"))
-            .ok_or(AppError {
+            .ok_or_else(||AppError {
                 error_type: crate::errors::AppErrorTypes::ServerError,
                 message: error_messages::PARTY_NOT_FOUND.to_string(),
             })?;

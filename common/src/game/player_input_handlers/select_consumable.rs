@@ -10,7 +10,7 @@ pub fn select_consumable(
         .inventory
         .items
         .get(inventory_slot as usize)
-        .ok_or(AppError {
+        .ok_or_else(||AppError {
             error_type: crate::errors::AppErrorTypes::InvalidInput,
             message: "Tried to select an item but no item found in the inventory slot".to_string(),
         })?;

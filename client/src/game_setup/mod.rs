@@ -15,15 +15,15 @@ pub fn game_setup() -> impl IntoView {
     // create_effect(move |_| set_is_client(true));
 
     view! {
-        <main class="h-screen w-screen p-4 bg-teal-950 text-zinc-300 flex flex-col">
+        <main class="min-h-screen w-screen p-4 bg-teal-950 text-zinc-300 flex flex-col">
             // <Show when=move || is_client()
             // fallback=move || view! {""}>
             <GameSetupMenu/>
             <div class="w-full flex flex-1">
-                <CharacterAndPartySelection />
+                <CharacterAndPartySelection/>
                 <UserList/>
             </div>
-            // </Show>
+        // </Show>
         </main>
     }
 }

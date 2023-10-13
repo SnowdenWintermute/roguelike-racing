@@ -7,12 +7,12 @@ pub fn open_treasure_chest(
     id_generator: &mut IdGenerator,
     adventuring_party: &mut AdventuringParty,
 ) -> Result<(), AppError> {
-    let current_room = adventuring_party.current_room.as_mut().ok_or(AppError {
+    let current_room = adventuring_party.current_room.as_mut().ok_or_else(||AppError {
         error_type: crate::errors::AppErrorTypes::InvalidInput,
         message: "tried to open a treasure chest but no dungeon room was found".to_string(),
     })?;
 
-    let treasure_chest = current_room.treasure_chest.as_mut().ok_or({
+    let treasure_chest = current_room.treasure_chest.as_mut().ok_or_else(||{
         AppError {
             error_type: crate::errors::AppErrorTypes::InvalidInput,
             message: "Tried to open a treasure chest but there was none".to_string(),

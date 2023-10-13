@@ -13,7 +13,7 @@ pub fn button_basic(
                 "{} {}",
                 "border border-slate-400 h-10 cursor-pointer pr-4 pl-4
         flex justify-center items-center disabled:opacity-50 disabled:cursor-auto",
-                extra_styles
+                extra_styles,
             )
 
             disabled=disabled

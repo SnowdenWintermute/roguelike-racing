@@ -1,10 +1,9 @@
+use crate::websocket_server::game_server::{getters::get_mut_user, GameServer};
 use common::{
+    app_consts::error_messages,
     errors::AppError,
-    game,
     packets::server_to_client::{GameServerUpdatePackets, RoomState},
 };
-
-use crate::websocket_server::game_server::{get_mut_user, GameServer};
 
 impl GameServer {
     pub fn join_room_handler(&mut self, room_name: &str, actor_id: u32) -> Result<(), AppError> {
@@ -17,7 +16,7 @@ impl GameServer {
         if previous_room_name != room_name {
             let room_leaving = self.rooms.get_mut(&previous_room_name).ok_or(AppError {
                 error_type: common::errors::AppErrorTypes::ServerError,
-                message: "Tried to remove a user from a room but no room was found".to_string(),
+                message: error_messages::ROOM_NOT_FOUND.to_string(),
             })?;
             room_leaving.remove(&actor_id);
             if room_leaving.len() < 1 {
@@ -38,10 +37,12 @@ impl GameServer {
             .or_default()
             .insert(actor_id);
 
-        let new_room_usernames = self
-            .rooms
-            .get(room_name)
-            .expect("This room should exist because we just created it or inserted a user into it")
+        let room_joined = self.rooms.get(room_name).ok_or(AppError {
+            error_type: common::errors::AppErrorTypes::ServerError,
+            message: error_messages::ROOM_NOT_FOUND.to_string(),
+        })?;
+
+        let usernames_in_joined_room = room_joined
             .into_iter()
             .filter_map(|id| {
                 if let Some(connected_user) = self.sessions.get(id) {
@@ -56,7 +57,7 @@ impl GameServer {
         self.send_packet(
             &GameServerUpdatePackets::RoomFullUpdate(RoomState {
                 room_name: room_name.to_string(),
-                users: new_room_usernames,
+                users: usernames_in_joined_room,
             }),
             actor_id,
         )?;

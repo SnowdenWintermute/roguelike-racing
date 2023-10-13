@@ -1,4 +1,5 @@
 use super::RoguelikeRacerGame;
+use crate::app_consts::error_messages;
 use crate::character::combatant_properties::CombatantClass;
 use crate::errors::AppError;
 use crate::game::player_input_handlers::{
@@ -93,7 +94,7 @@ impl RoguelikeRacerGame {
             .get_mut(&party_id)
             .ok_or(AppError {
                 error_type: crate::errors::AppErrorTypes::InvalidInput,
-                message: "tried to process player input but couldn't find their party".to_string(),
+                message: error_messages::PARTY_NOT_FOUND.to_string(),
             })?;
 
         let player_character = adventuring_party

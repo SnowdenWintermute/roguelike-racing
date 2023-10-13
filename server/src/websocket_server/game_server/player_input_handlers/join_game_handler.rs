@@ -1,7 +1,9 @@
-use crate::websocket_server::game_server::{get_mut_game, get_mut_user, GameServer};
+use crate::websocket_server::game_server::{
+    getters::{get_mut_game, get_mut_user},
+    GameServer,
+};
 use common::{
-    errors::AppError,
-    game::{player_actions::GameCreation, RoguelikeRacerPlayer},
+    app_consts::error_messages, errors::AppError, game::RoguelikeRacerPlayer,
     packets::server_to_client::GameServerUpdatePackets,
 };
 
@@ -13,14 +15,14 @@ impl GameServer {
         let connected_user = get_mut_user(&mut self.sessions, actor_id)?;
         if connected_user.current_game_name.is_some() {
             return Err(AppError {
-                error_type: common::errors::AppErrorTypes::ServerError,
-                message: "Leave your current game before joining another one".to_string(),
+                error_type: common::errors::AppErrorTypes::InvalidInput,
+                message: error_messages::ALREADY_IN_GAME.to_string(),
             });
         }
         if game.time_started.is_some() {
             return Err(AppError {
-                error_type: common::errors::AppErrorTypes::ServerError,
-                message: "Can't join a game that has already started".to_string(),
+                error_type: common::errors::AppErrorTypes::InvalidInput,
+                message: error_messages::GAME_HAS_STARTED.to_string(),
             });
         }
         let username = connected_user.username.clone();

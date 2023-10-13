@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{consts::CHARACTER_INVENTORY_DEFAULT_CAPACITY, items::Item};
+use crate::{app_consts::CHARACTER_INVENTORY_DEFAULT_CAPACITY, items::Item};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct CombatantEquipment {

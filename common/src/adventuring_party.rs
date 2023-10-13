@@ -1,14 +1,12 @@
-use std::collections::HashMap;
-use std::time::{Instant, SystemTime};
-
-use serde::{Deserialize, Serialize};
-
+use crate::app_consts::{error_messages, MAX_PARTY_SIZE};
 use crate::character::{combatant_properties::CombatantClass, Character};
-use crate::consts::MAX_PARTY_SIZE;
 use crate::dungeon_rooms::{DungeonRoom, DungeonRoomTypes};
 use crate::errors::AppError;
 use crate::game::id_generator::IdGenerator;
 use crate::game::RoguelikeRacerPlayer;
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::time::{Instant, SystemTime};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct RoomsExplored {
@@ -58,7 +56,7 @@ impl AdventuringParty {
         if self.player_characters.len() > MAX_PARTY_SIZE.into() {
             return Err(AppError {
                 error_type: crate::errors::AppErrorTypes::InvalidInput,
-                message: "failed to add a new character because doing so would exceed the maximum party size".to_string()
+                message: error_messages::PARTY_FULL.to_string(),
             });
         }
         let new_character = Character::new(id_generator, name, combatant_class);

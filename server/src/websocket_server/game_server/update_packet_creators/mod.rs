@@ -1,11 +1,11 @@
-use super::{get_user, GameServer};
+use super::getters::{get_game, get_user};
+use super::GameServer;
+use common::app_consts::error_messages;
 use common::errors::AppError;
 use common::game::RoguelikeRacerGame;
 use common::packets::server_to_client::{
-    ClientGameListState, GameListEntry, GameServerUpdatePackets, RoguelikeRacerAppState, RoomState,
+    ClientGameListState, GameListEntry, RoguelikeRacerAppState, RoomState,
 };
-use serde::{Deserialize, Serialize};
-use std::time::Instant;
 
 impl GameServer {
     pub fn create_game_list_update(&self) -> ClientGameListState {
@@ -28,23 +28,14 @@ impl GameServer {
         let current_game_name = connected_user.current_game_name.clone();
         let current_game_option = match current_game_name {
             Some(game_name) => {
-                let game = self
-                    .games
-                    .get(&game_name.to_string())
-                    .clone()
-                    .ok_or(AppError {
-                        error_type: common::errors::AppErrorTypes::ServerError,
-                        message:
-                            "User's current game reference pointed to a game that doesn't exist"
-                                .to_string(),
-                    })?;
-                Some(game)
+                let game = get_game(&self.games, game_name)?;
+                Some(game.clone())
             }
             None => None,
         };
 
         let mut current_game = match current_game_option {
-            Some(game) => Some(game.clone()),
+            Some(game) => Some(game),
             None => None,
         };
 
@@ -69,7 +60,7 @@ impl GameServer {
     pub fn create_client_update_packet(
         &mut self,
         actor_id: u32,
-    ) -> Result<Option<GameServerUpdatePackets>, AppError> {
+    ) -> Result<RoguelikeRacerAppState, AppError> {
         let connected_user = get_user(&self.sessions, actor_id)?;
         let current_game = self.create_game_full_update(actor_id)?;
 
@@ -78,8 +69,7 @@ impl GameServer {
             .get(&connected_user.current_room_name)
             .ok_or(AppError {
                 error_type: common::errors::AppErrorTypes::ServerError,
-                message: "if a room is registered with a connected_user then it should exist"
-                    .to_string(),
+                message: error_messages::ROOM_NOT_FOUND.to_string(),
             })?;
         let mut room_update = RoomState {
             room_name: connected_user.current_room_name.clone(),
@@ -91,7 +81,6 @@ impl GameServer {
             room_update.users.push(user.username.clone());
         }
 
-        // GAME LIST UPDATE
         let game_list = self.create_game_list_update();
 
         let full_update = RoguelikeRacerAppState {
@@ -100,6 +89,6 @@ impl GameServer {
             current_game,
         };
 
-        Ok(Some(GameServerUpdatePackets::FullUpdate(full_update)))
+        Ok(full_update)
     }
 }

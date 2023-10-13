@@ -1,4 +1,6 @@
-use crate::websocket_server::game_server::{get_mut_game, get_mut_user, GameServer};
+use crate::websocket_server::game_server::getters::{get_mut_game, get_mut_user};
+use crate::websocket_server::game_server::GameServer;
+use common::app_consts::error_messages;
 use common::errors::AppError;
 use common::packets::server_to_client::{AdventuringPartyCreation, GameServerUpdatePackets};
 
@@ -13,7 +15,7 @@ impl GameServer {
 
         let current_game_name = connected_user.current_game_name.clone().ok_or(AppError {
             error_type: common::errors::AppErrorTypes::ServerError,
-            message: "Missing reference to current game".to_string(),
+            message: error_messages::MISSING_GAME_REFERENCE.to_string(),
         })?;
 
         let game = get_mut_game(&mut self.games, &current_game_name)?;
@@ -23,7 +25,7 @@ impl GameServer {
                 .get(&connected_user.username)
                 .ok_or(AppError {
                     error_type: common::errors::AppErrorTypes::ServerError,
-                    message: "Leave your current party if you wish to create a new one".to_string(),
+                    message: error_messages::ALREADY_IN_PARTY.to_string(),
                 })?;
 
         let party_id = game.add_adventuring_party(party_name);
@@ -31,7 +33,7 @@ impl GameServer {
 
         let party = game.adventuring_parties.get(&party_id).ok_or(AppError {
             error_type: common::errors::AppErrorTypes::ServerError,
-            message: "Something went wrong while trying to create your new party".to_string(),
+            message: error_messages::PARTY_NOT_FOUND.to_string(),
         })?;
         let party_to_send = party.clone();
 

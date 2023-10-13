@@ -5,7 +5,6 @@ use actix_web::{
 use actix_web_actors::ws;
 use rand::Rng;
 use std::sync::atomic::{AtomicUsize, Ordering};
-use std::sync::Arc;
 use std::time::Instant;
 use websocket_server::websocket_actor::WebsocketActor;
 mod websocket_server;
@@ -37,17 +36,13 @@ async fn get_count(count: web::Data<AtomicUsize>) -> impl Responder {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
-    // set up applications state
-    let visitor_count = Arc::new(AtomicUsize::new(0));
     // start chat server actor
-    let game_server_actor_address =
-        websocket_server::game_server::GameServer::new(visitor_count.clone()).start();
+    let game_server_actor_address = websocket_server::game_server::GameServer::new().start();
 
     log::info!("starting HTTP server at http://localhost:8080");
 
     HttpServer::new(move || {
         App::new()
-            .app_data(web::Data::from(visitor_count.clone()))
             .app_data(web::Data::new(game_server_actor_address.clone()))
             .route("/count", web::get().to(get_count))
             .route("/ws", web::get().to(chat_route))

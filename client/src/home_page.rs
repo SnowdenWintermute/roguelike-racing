@@ -2,7 +2,7 @@ use crate::game_setup::GameSetup;
 use crate::lobby::Lobby;
 use crate::websocket_provider::WebsocketProvider;
 use common::adventuring_party::AdventuringParty;
-use common::consts::MAIN_CHAT_ROOM;
+use common::app_consts::MAIN_CHAT_ROOM;
 use common::game::RoguelikeRacerGame;
 use common::packets::server_to_client::{ClientGameListState, RoomState};
 use leptos::*;

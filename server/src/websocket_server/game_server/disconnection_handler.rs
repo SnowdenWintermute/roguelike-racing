@@ -1,12 +1,7 @@
 use super::GameServer;
 use crate::websocket_server::Disconnect;
-use actix::prelude::*;
 use actix::{Context, Handler};
-use common::game::RoguelikeRacerGame;
 use common::packets::server_to_client::GameServerUpdatePackets;
-use rand::{rngs::ThreadRng, Rng};
-use std::collections::{HashMap, HashSet};
-use std::sync::atomic::Ordering;
 
 impl Handler<Disconnect> for GameServer {
     type Result = ();

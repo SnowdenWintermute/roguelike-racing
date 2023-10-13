@@ -1,8 +1,10 @@
-use crate::websocket_server::game_server::{get_mut_game, get_mut_user, GameServer};
+use crate::websocket_server::game_server::{
+    getters::{get_mut_game, get_mut_user},
+    GameServer,
+};
 use common::{
-    consts::MAIN_CHAT_ROOM,
+    app_consts::{error_messages, MAIN_CHAT_ROOM},
     errors::AppError,
-    game::{player_actions::GameCreation, RoguelikeRacerPlayer},
     packets::server_to_client::{GameServerUpdatePackets, PlayerRemovedFromGame},
 };
 
@@ -29,7 +31,7 @@ impl GameServer {
         let connected_user = get_mut_user(&mut self.sessions, actor_id)?;
         let game_name_leaving = connected_user.current_game_name.clone().ok_or(AppError {
             error_type: common::errors::AppErrorTypes::ServerError,
-            message: "User missing reference to their current game".to_string(),
+            message: error_messages::MISSING_GAME_REFERENCE.to_string(),
         })?;
         let game = get_mut_game(&mut self.games, &game_name_leaving)?;
         // remove player from game

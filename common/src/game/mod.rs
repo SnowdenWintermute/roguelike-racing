@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 
+use crate::app_consts::error_messages;
 use crate::game::id_generator::IdGenerator;
 use crate::{adventuring_party::AdventuringParty, errors::AppError};
 use std::{collections::HashMap, hash::Hash, time::Instant};
@@ -53,18 +54,8 @@ impl RoguelikeRacerGame {
     pub fn get_number_of_players(&self) -> u8 {
         let mut number_of_players = self.partyless_players.len();
         for (_, party) in self.adventuring_parties.iter() {
-            println!(
-                "counting players in party {}, number: {}",
-                party.name.clone(),
-                party.players.len()
-            );
             number_of_players += party.players.len();
         }
-        println!(
-            "{} players in game {}",
-            number_of_players,
-            self.name.clone()
-        );
         number_of_players as u8
     }
 
@@ -85,7 +76,7 @@ impl RoguelikeRacerGame {
             .get_mut(&party_id)
             .ok_or(AppError {
                 error_type: crate::errors::AppErrorTypes::ServerError,
-                message: "no party with that name found".to_string(),
+                message: error_messages::PARTY_NOT_FOUND.to_string(),
             })?;
         let mut player_to_move = self.partyless_players.remove(&username).ok_or(AppError{
             error_type: crate::errors::AppErrorTypes::ServerError,

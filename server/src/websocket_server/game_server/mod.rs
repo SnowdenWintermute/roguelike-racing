@@ -1,17 +1,13 @@
-#![allow(dead_code, unused_imports)]
 use actix::prelude::*;
-use common::consts::{self, MAIN_CHAT_ROOM};
-use common::errors::AppError;
+use common::app_consts::MAIN_CHAT_ROOM;
 use common::game::player_actions::PlayerInputs;
 use common::game::RoguelikeRacerGame;
 use common::packets::server_to_client::GameServerUpdatePackets;
 use common::utils::generate_random_username;
-use rand::{self, rngs::ThreadRng, Rng};
 use std::collections::{HashMap, HashSet};
-use std::sync::atomic::AtomicUsize;
-use std::sync::Arc;
 pub mod connection_handler;
 pub mod disconnection_handler;
+pub mod getters;
 pub mod list_rooms_handler;
 pub mod player_input_handlers;
 pub mod send_messages;
@@ -21,17 +17,17 @@ use super::{AppMessage, ClientBinaryMessage, ClientMessage};
 #[derive(Debug)]
 pub struct ConnectedUser {
     pub id: u32,
-    pub actor_address: Recipient<AppMessage>,
+    pub websocket_actor: Recipient<AppMessage>,
     pub username: String,
     pub current_room_name: String,
     pub current_game_name: Option<String>,
 }
 
 impl ConnectedUser {
-    pub fn new(id: u32, actor_address: Recipient<AppMessage>) -> Self {
+    pub fn new(id: u32, websocket_actor: Recipient<AppMessage>) -> Self {
         ConnectedUser {
             id,
-            actor_address,
+            websocket_actor,
             username: generate_random_username(),
             current_room_name: MAIN_CHAT_ROOM.to_string(),
             current_game_name: None,
@@ -44,51 +40,18 @@ pub struct GameServer {
     sessions: HashMap<u32, ConnectedUser>,
     rooms: HashMap<String, HashSet<u32>>,
     games: HashMap<String, RoguelikeRacerGame>,
-    visitor_count: Arc<AtomicUsize>,
 }
 
 impl GameServer {
-    pub fn new(visitor_count: Arc<AtomicUsize>) -> GameServer {
+    pub fn new() -> GameServer {
         let mut rooms = HashMap::new();
         rooms.insert(MAIN_CHAT_ROOM.to_owned(), HashSet::new());
         GameServer {
             sessions: HashMap::new(),
             rooms,
             games: HashMap::new(),
-            visitor_count,
         }
     }
-}
-pub fn get_user<'a>(
-    sessions: &'a HashMap<u32, ConnectedUser>,
-    actor_id: u32,
-) -> Result<&'a ConnectedUser, AppError> {
-    let user = sessions.get(&actor_id).ok_or(AppError {
-        error_type: common::errors::AppErrorTypes::ServerError,
-        message: consts::error_messages::USER_NOT_FOUND.to_string(),
-    })?;
-    Ok(user)
-}
-pub fn get_mut_user<'a>(
-    sessions: &'a mut HashMap<u32, ConnectedUser>,
-    actor_id: u32,
-) -> Result<&'a mut ConnectedUser, AppError> {
-    let user = sessions.get_mut(&actor_id).ok_or(AppError {
-        error_type: common::errors::AppErrorTypes::ServerError,
-        message: consts::error_messages::USER_NOT_FOUND.to_string(),
-    })?;
-    Ok(user)
-}
-
-pub fn get_mut_game<'a>(
-    games: &'a mut HashMap<String, RoguelikeRacerGame>,
-    game_name: &'a str,
-) -> Result<&'a mut RoguelikeRacerGame, AppError> {
-    let game = games.get_mut(game_name).ok_or(AppError {
-        error_type: common::errors::AppErrorTypes::ServerError,
-        message: consts::error_messages::GAME_NOT_FOUND.to_string(),
-    })?;
-    Ok(game)
 }
 
 impl Actor for GameServer {
@@ -148,6 +111,9 @@ impl Handler<ClientMessage> for GameServer {
             .get(&message.actor_id)
             .expect("if we got a message from this id, the user should exist in our list")
             .current_room_name;
-        self.send_string_message(&room, message.content.as_str());
+        let result = self.send_string_message(&room, message.content.as_str());
+        if result.is_err() {
+            eprintln!("{:#?}", result);
+        }
     }
 }

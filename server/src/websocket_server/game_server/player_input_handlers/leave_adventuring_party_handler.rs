@@ -1,4 +1,6 @@
-use crate::websocket_server::game_server::{get_mut_game, get_mut_user, GameServer};
+use crate::websocket_server::game_server::getters::{get_mut_game, get_mut_user};
+use crate::websocket_server::game_server::GameServer;
+use common::app_consts::error_messages;
 use common::errors::AppError;
 use common::packets::server_to_client::{GameServerUpdatePackets, PlayerAdventuringPartyChange};
 
@@ -8,7 +10,7 @@ impl GameServer {
         let username = connected_user.username.clone();
         let current_game_name = connected_user.current_game_name.clone().ok_or(AppError {
             error_type: common::errors::AppErrorTypes::ServerError,
-            message: "Missing reference to current game".to_string(),
+            message: error_messages::MISSING_GAME_REFERENCE.to_string(),
         })?;
 
         let game = get_mut_game(&mut self.games, &current_game_name)?;

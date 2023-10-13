@@ -1,7 +1,9 @@
-use crate::websocket_server::game_server::{get_mut_user, GameServer};
+use crate::websocket_server::game_server::getters::get_mut_user;
+use crate::websocket_server::game_server::GameServer;
+use common::app_consts::error_messages;
 use common::errors::AppError;
-use common::game::player_actions::{GameCreation, PlayerInputs};
-use common::game::{RoguelikeRacerGame, RoguelikeRacerPlayer};
+use common::game::player_actions::GameCreation;
+use common::game::RoguelikeRacerGame;
 
 impl GameServer {
     pub fn create_game_handler(
@@ -9,7 +11,6 @@ impl GameServer {
         actor_id: u32,
         message_content: GameCreation,
     ) -> Result<(), AppError> {
-        println!("game creation request received");
         let GameCreation {
             name: game_name,
             password: _,
@@ -18,14 +19,14 @@ impl GameServer {
         let connected_user = get_mut_user(&mut self.sessions, actor_id)?;
         if connected_user.current_game_name.is_some() {
             return Err(AppError {
-                error_type: common::errors::AppErrorTypes::ServerError,
-                message: "leave your current game before creating one".to_string(),
+                error_type: common::errors::AppErrorTypes::InvalidInput,
+                message: error_messages::ALREADY_IN_GAME.to_string(),
             });
         }
         if self.games.get(game_name).is_some() {
             return Err(AppError {
-                error_type: common::errors::AppErrorTypes::ServerError,
-                message: "a game with name {} already exists".to_string(),
+                error_type: common::errors::AppErrorTypes::InvalidInput,
+                message: error_messages::GAME_ALREADY_EXISTS.to_string(),
             });
         }
 

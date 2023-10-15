@@ -2,7 +2,7 @@ use crate::{
     common_components::button_basic::ButtonBasic,
     websocket_provider::send_client_input::send_client_input,
 };
-use common::game::player_actions::{GameCreation, PlayerInputs};
+use common::packets::client_to_server::{GameCreation, PlayerInputs};
 use leptos::*;
 use web_sys::{MouseEvent, SubmitEvent, WebSocket};
 

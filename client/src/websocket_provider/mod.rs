@@ -90,7 +90,7 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
                                 GameServerUpdatePackets::UserLeftGame(username) => {
                                     game.update(move |game_option| {
                                         if let Some(game) = game_option {
-                                            game.remove_player_from_adventuring_party(
+                                            let _ = game.remove_player_from_adventuring_party(
                                                 username.clone(),
                                             );
                                         }

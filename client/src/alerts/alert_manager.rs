@@ -1,9 +1,8 @@
 use crate::alerts::{remove_alert, Alert};
-use leptos::{logging::log, *};
-use web_sys::MouseEvent;
+use leptos::*;
 
 #[component]
-pub fn AlertManager() -> impl IntoView {
+pub fn alert_manager() -> impl IntoView {
     let alerts = expect_context::<RwSignal<Vec<Alert>>>();
 
     view! {

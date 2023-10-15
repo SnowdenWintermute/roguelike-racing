@@ -8,6 +8,32 @@ use serde::{Deserialize, Serialize};
 use std::time::Instant;
 
 #[derive(Debug, Serialize, Deserialize)]
+pub enum GameServerUpdatePackets {
+    // ERROR
+    Error(String),
+    // FULL STATE UPDATES
+    FullUpdate(RoguelikeRacerAppState),
+    GameList(ClientGameListState),
+    GameFullUpdate(Option<RoguelikeRacerGame>),
+    RoomFullUpdate(RoomState),
+    // ROOMS
+    UserJoinedRoom(String),
+    UserLeftRoom(String),
+    // GAME IN LOBBY
+    UserJoinedGame(String),
+    UserLeftGame(String),
+    AdventuringPartyCreated(AdventuringPartyCreation),
+    AdventuringPartyRemoved(u32),
+    PlayerChangedAdventuringParty(PlayerAdventuringPartyChange),
+    ClientAdventuringPartyId(Option<u32>),
+    CharacterCreation(PlayerCharacterCreation),
+    CharacterClassSelection(PlayerCharacterClassSelection),
+    CharacterNameChange(PlayerCharacterNameChange),
+    CharacterDeletion(PlayerCharacterDeletion),
+    PlayerToggledReady(String),
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct RoomState {
     pub room_name: String,
     pub users: Vec<String>,
@@ -67,6 +93,7 @@ pub struct PlayerRemovedFromGame {
 pub struct PlayerCharacterCreation {
     pub party_id: u32,
     pub username: String,
+    pub character_name: String,
     pub class: CombatantClass,
 }
 
@@ -94,30 +121,4 @@ pub struct AdventuringPartyCreation {
     pub party_id: u32,
     pub party_name: String,
     pub username_created_by: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub enum GameServerUpdatePackets {
-    // ERROR
-    Error(String),
-    // FULL STATE UPDATES
-    FullUpdate(RoguelikeRacerAppState),
-    GameList(ClientGameListState),
-    GameFullUpdate(Option<RoguelikeRacerGame>),
-    RoomFullUpdate(RoomState),
-    // ROOMS
-    UserJoinedRoom(String),
-    UserLeftRoom(String),
-    // GAME IN LOBBY
-    UserJoinedGame(String),
-    UserLeftGame(String),
-    AdventuringPartyCreated(AdventuringPartyCreation),
-    AdventuringPartyRemoved(u32),
-    PlayerChangedAdventuringParty(PlayerAdventuringPartyChange),
-    ClientAdventuringPartyId(Option<u32>),
-    CharacterCreation(PlayerCharacterCreation),
-    CharacterClassSelection(PlayerCharacterClassSelection),
-    CharacterNameChange(PlayerCharacterNameChange),
-    CharacterDeletion(PlayerCharacterDeletion),
-    PlayerToggledReady(String),
 }

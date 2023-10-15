@@ -1,9 +1,8 @@
 use actix::prelude::*;
-use common::app_consts::MAIN_CHAT_ROOM;
-use common::game::player_actions::PlayerInputs;
 use common::game::RoguelikeRacerGame;
 use common::packets::server_to_client::GameServerUpdatePackets;
 use common::utils::generate_random_username;
+use common::{app_consts::MAIN_CHAT_ROOM, packets::client_to_server::PlayerInputs};
 use std::collections::{HashMap, HashSet};
 pub mod connection_handler;
 pub mod disconnection_handler;

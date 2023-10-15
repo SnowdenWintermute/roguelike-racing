@@ -3,7 +3,8 @@ use crate::{
     game_setup::adventuring_party_lobby_card::AdventuringPartyLobbyCard, home_page::ClientPartyId,
     websocket_provider::send_client_input::send_client_input,
 };
-use common::game::{player_actions::PlayerInputs, RoguelikeRacerGame};
+use common::game::{ RoguelikeRacerGame};
+use common::packets::client_to_server::PlayerInputs;
 use leptos::{ev::SubmitEvent, *};
 use web_sys::WebSocket;
 

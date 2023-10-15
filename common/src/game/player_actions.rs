@@ -6,77 +6,8 @@ use crate::game::player_input_handlers::{
     open_treasure_chest, select_consumable, use_selected_consumable,
 };
 use crate::items::EquipmentSlots;
+use crate::packets::client_to_server::{PlayerInputRequest, PlayerInputs};
 use serde::{Deserialize, Serialize};
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct PlayerInputRequest {
-    pub party_id: u32,
-    pub player_character_id: u32,
-    pub player_input: PlayerInputs,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct GameCreation {
-    pub name: String,
-    pub password: Option<String>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct CharacterCreation {
-    name: String,
-    class: CombatantClass,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct CharacterClassSelection {
-    character_id: u32,
-    class: CombatantClass,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct EquipItem {
-    item_slot: u8,
-    equipment_slot: EquipmentSlots,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub enum PlayerInputs {
-    // lobby
-    RequestGameList,
-    CreateGame(GameCreation),
-    JoinGame(String),
-    LeaveGame,
-    CreateAdventuringParty(String),
-    JoinAdventuringParty(u32),
-    LeaveAdventuringParty,
-    CreateCharacter(CharacterCreation),
-    ChangeCharacterClass(CharacterClassSelection),
-    DeselectCharacter,
-    ToggleReady,
-    // use items and abilities
-    SelectConsumable(u8),
-    UseSelectedConsumable,
-    SelectAbilitySlot(u8),
-    UseSelectedAbility,
-    ChangeTargetIds(Vec<u8>),
-    ClearConsumableAndAbilitySelections,
-    // manage equipment and items
-    UnequipEquipmentSlot(EquipmentSlots),
-    ShardInventorySlot(u8),
-    EquipInventoryItem(EquipItem),
-    // manage abilities
-    LevelUpAbilitySlot(u8),
-    // exploration
-    ToggleReadyToExplore,
-    ToggleReadyToGoDownStairs,
-    // treasure chests / monster loot
-    PickTreasureChestLock,
-    DisarmTrappedChest,
-    OpenTreasureChest,
-    TakeItemOnGround,
-    EquipItemOnGround,
-    ShardItemOnGround,
-}
 
 impl RoguelikeRacerGame {
     pub fn process_player_input(
@@ -89,18 +20,18 @@ impl RoguelikeRacerGame {
             player_input,
         } = player_input_request;
 
-        let adventuring_party = self
-            .adventuring_parties
-            .get_mut(&party_id)
-            .ok_or_else(||AppError {
-                error_type: crate::errors::AppErrorTypes::InvalidInput,
-                message: error_messages::PARTY_NOT_FOUND.to_string(),
-            })?;
+        let adventuring_party =
+            self.adventuring_parties
+                .get_mut(&party_id)
+                .ok_or_else(|| AppError {
+                    error_type: crate::errors::AppErrorTypes::InvalidInput,
+                    message: error_messages::PARTY_NOT_FOUND.to_string(),
+                })?;
 
         let player_character = adventuring_party
             .player_characters
             .get_mut(&player_character_id)
-            .ok_or_else(||AppError {
+            .ok_or_else(|| AppError {
                 error_type: crate::errors::AppErrorTypes::InvalidInput,
                 message: "tried to process player input but couldn't find the player character"
                     .to_string(),

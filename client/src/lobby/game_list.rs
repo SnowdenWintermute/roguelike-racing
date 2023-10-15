@@ -1,10 +1,9 @@
-use common::game::player_actions::PlayerInputs;
+use crate::common_components::button_basic::ButtonBasic;
+use crate::websocket_provider::send_client_input::send_client_input;
+use common::packets::client_to_server::PlayerInputs;
 use common::packets::server_to_client::{ClientGameListState, GameListEntry};
 use leptos::{logging::log, *};
 use web_sys::WebSocket;
-
-use crate::common_components::button_basic::ButtonBasic;
-use crate::websocket_provider::send_client_input::send_client_input;
 
 #[component]
 pub fn game_list() -> impl IntoView {

@@ -1,4 +1,4 @@
-use common::game::player_actions::PlayerInputs;
+use common::packets::client_to_server::PlayerInputs;
 use leptos::*;
 use web_sys::WebSocket;
 

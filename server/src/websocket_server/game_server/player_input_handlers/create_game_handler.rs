@@ -2,8 +2,8 @@ use crate::websocket_server::game_server::getters::get_mut_user;
 use crate::websocket_server::game_server::GameServer;
 use common::app_consts::error_messages;
 use common::errors::AppError;
-use common::game::player_actions::GameCreation;
 use common::game::RoguelikeRacerGame;
+use common::packets::client_to_server::GameCreation;
 
 impl GameServer {
     pub fn create_game_handler(

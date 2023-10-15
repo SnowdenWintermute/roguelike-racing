@@ -1,15 +1,14 @@
-use common::{
-    adventuring_party::AdventuringParty,
-    character::{combatant_properties::CombatantClass, Character},
-    game::{getters::get_mut_player, player_actions::PlayerInputs, RoguelikeRacerGame},
-};
-use leptos::*;
-use web_sys::WebSocket;
-
 use crate::{
     common_components::button_basic::ButtonBasic, home_page::ClientPartyId,
     websocket_provider::send_client_input::send_client_input,
 };
+use common::packets::client_to_server::{CharacterCreation, PlayerInputs};
+use common::{
+    adventuring_party::AdventuringParty,
+    character::{combatant_properties::CombatantClass, Character},
+};
+use leptos::*;
+use web_sys::{SubmitEvent, WebSocket};
 
 #[component]
 pub fn adventuring_party_lobby_card(
@@ -29,6 +28,11 @@ pub fn adventuring_party_lobby_card(
             <div>
                 <Show when=move || is_own_party fallback=|| view! { <div></div> }>
                     <ButtonBasic on:click=leave_party>"Leave Party"</ButtonBasic>
+                </Show>
+            </div>
+            <div>
+                <Show when=move || is_own_party fallback=|| view! { <div></div> }>
+                    <CharacterCreationMenu />
                 </Show>
             </div>
             <div>
@@ -67,6 +71,42 @@ pub fn adventuring_party_lobby_card(
 
             </div>
         </div>
+    }
+}
+
+#[component]
+pub fn character_creation_menu() -> impl IntoView {
+    let ws = expect_context::<ReadSignal<Option<WebSocket>>>();
+    let (character_name, set_character_name) = create_signal("".to_string());
+    let disabled = MaybeSignal::derive(move || character_name().len() < 1);
+
+    let create_character = move |e: SubmitEvent| {
+        e.prevent_default();
+        send_client_input(
+            ws,
+            PlayerInputs::CreateCharacter(CharacterCreation {
+                character_name: character_name(),
+                combatant_class: CombatantClass::Warrior,
+            }),
+        )
+    };
+
+    view! {
+            <form class="flex" on:submit=create_character>
+                <input
+                    type="text"
+                    class="bg-slate-700 border border-slate-400 h-10 p-4"
+                    on:input=move |ev| {
+                        set_character_name(event_target_value(&ev));
+                    }
+
+                    prop:value=character_name
+                    prop:placeholder="Enter a character name..."
+                />
+                <ButtonBasic disabled=disabled extra_styles="border-l-0 " button_type="submit">
+                    "Create Character"
+                </ButtonBasic>
+            </form>
     }
 }
 

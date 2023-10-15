@@ -538,6 +538,10 @@ video {
   position: static;
 }
 
+.absolute {
+  position: absolute;
+}
+
 .mb-2 {
   margin-bottom: 0.5rem;
 }
@@ -588,6 +592,22 @@ video {
 
 .flex-1 {
   flex: 1 1 0%;
+}
+
+@keyframes slide-left-appear-keyframes {
+  0% {
+    transform: translateX(-1rem);
+    opacity: 0%;
+  }
+
+  100% {
+    transform: translateX(0rem);
+    opacity: 100%;
+  }
+}
+
+.animate-slide-appear-from-left {
+  animation: slide-left-appear-keyframes .3s linear;
 }
 
 .cursor-pointer {
@@ -689,6 +709,10 @@ video {
   padding-right: 1rem;
 }
 
+.pr-2 {
+  padding-right: 0.5rem;
+}
+
 .text-slate-200 {
   --tw-text-opacity: 1;
   color: rgb(226 232 240 / var(--tw-text-opacity));
@@ -697,10 +721,6 @@ video {
 .text-zinc-300 {
   --tw-text-opacity: 1;
   color: rgb(212 212 216 / var(--tw-text-opacity));
-}
-
-.filter {
-  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
 .disabled\:cursor-auto:disabled {

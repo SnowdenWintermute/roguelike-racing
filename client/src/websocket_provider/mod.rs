@@ -1,4 +1,7 @@
 pub mod send_client_input;
+use crate::alerts;
+use crate::alerts::Alert;
+use crate::home_page::ClientPartyId;
 use common::adventuring_party::AdventuringParty;
 use common::game::getters::get_mut_player;
 use common::game::RoguelikeRacerGame;
@@ -12,11 +15,6 @@ use wasm_bindgen::prelude::Closure;
 use wasm_bindgen::JsCast;
 use web_sys::{MessageEvent, WebSocket};
 
-use crate::alerts;
-use crate::alerts::Alert;
-use crate::alerts::AlertType;
-use crate::home_page::ClientPartyId;
-
 #[component]
 pub fn websocket_provider(children: Children) -> impl IntoView {
     let (ws, set_ws) = create_signal::<Option<WebSocket>>(None);
@@ -27,7 +25,7 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
     let game = expect_context::<RwSignal<Option<RoguelikeRacerGame>>>();
     let party_id = expect_context::<RwSignal<ClientPartyId>>();
     let alerts = expect_context::<RwSignal<Vec<Alert>>>();
-    let last_alert_id = expect_context::<RwSignal<u32>>();
+    let mut last_alert_id: u32 = 0;
 
     create_effect(move |_| {
         let websocket = WebSocket::new("ws://127.0.0.1:8080/ws");
@@ -46,7 +44,7 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
                         if let Ok(data) = deserialized {
                             match data {
                                 GameServerUpdatePackets::Error(message) => {
-                                    alerts::set_alert(alerts, message.clone(), last_alert_id);
+                                    alerts::set_alert(alerts, message.clone(), &mut last_alert_id);
                                 }
                                 GameServerUpdatePackets::FullUpdate(update) => {
                                     game_list.update(move |game_list_state| {

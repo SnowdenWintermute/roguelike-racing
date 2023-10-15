@@ -6,7 +6,6 @@ use crate::{
 use common::game::{player_actions::PlayerInputs, RoguelikeRacerGame};
 use leptos::{ev::SubmitEvent, *};
 use web_sys::WebSocket;
-use leptos::logging::log;
 
 #[component]
 pub fn character_and_party_selection() -> impl IntoView {

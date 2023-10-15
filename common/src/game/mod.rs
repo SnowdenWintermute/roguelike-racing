@@ -4,7 +4,7 @@ use crate::{adventuring_party::AdventuringParty, errors::AppError};
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, hash::Hash, time::Instant};
 
-use self::getters::get_mut_player;
+use self::getters::{get_mut_party, get_mut_player};
 pub mod getters;
 pub mod id_generator;
 pub mod player_actions;
@@ -68,21 +68,12 @@ impl RoguelikeRacerGame {
         party_id: u32,
         username: String,
     ) -> Result<(), AppError> {
-        let party = self
-            .adventuring_parties
-            .get_mut(&party_id)
-            .ok_or_else(||AppError {
-                error_type: crate::errors::AppErrorTypes::ServerError,
-                message: error_messages::PARTY_NOT_FOUND.to_string(),
-            })?;
+        let party = get_mut_party(self, party_id)?;
+        party.player_usernames.insert(username.clone());
 
-        let mut player_to_move = self.players.get_mut(&username).ok_or_else(||AppError {
-            error_type: crate::errors::AppErrorTypes::ServerError,
-            message: error_messages::PLAYER_NOT_FOUND.to_string(),
-        })?;
-
+        let player_to_move = get_mut_player(self, username)?;
         player_to_move.party_id = Some(party_id);
-        party.player_usernames.insert(username);
+
         Ok(())
     }
 
@@ -99,13 +90,7 @@ impl RoguelikeRacerGame {
         player.party_id = None;
         let character_ids = player.character_ids.clone();
 
-        let mut party = self
-            .adventuring_parties
-            .get_mut(&party_id_leaving.expect("none check just above here"))
-            .ok_or_else(||AppError {
-                error_type: crate::errors::AppErrorTypes::ServerError,
-                message: error_messages::PARTY_NOT_FOUND.to_string(),
-            })?;
+        let party = get_mut_party(self, party_id_leaving.expect("none check just above here"))?;
 
         match &character_ids {
             Some(character_ids) => {

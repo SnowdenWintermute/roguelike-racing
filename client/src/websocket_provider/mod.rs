@@ -93,6 +93,7 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
                                             let _ = game.remove_player_from_adventuring_party(
                                                 username.clone(),
                                             );
+                                            game.players.remove(&username);
                                         }
                                     })
                                 }

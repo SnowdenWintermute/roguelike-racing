@@ -1,3 +1,5 @@
+use crate::alerts::alert_manager::AlertManager;
+use crate::alerts::Alert;
 use crate::game_setup::GameSetup;
 use crate::lobby::Lobby;
 use crate::websocket_provider::WebsocketProvider;
@@ -16,6 +18,8 @@ pub fn HomePage() -> impl IntoView {
     provide_context(create_rw_signal::<ClientPartyId>(ClientPartyId(None)));
     provide_context(create_rw_signal::<Option<AdventuringParty>>(None));
     provide_context(create_rw_signal(ClientGameListState::new()));
+    provide_context(create_rw_signal::<Vec<Alert>>(Vec::new()));
+    provide_context(create_rw_signal::<u32>(0)); // last alert id
     provide_context(create_rw_signal(RoomState {
         room_name: MAIN_CHAT_ROOM.to_string(),
         users: Vec::new(),
@@ -25,6 +29,7 @@ pub fn HomePage() -> impl IntoView {
 
     view! {
         <WebsocketProvider>
+            <AlertManager />
             <Show when=move || { game.get().is_some() } fallback=|| view! { <Lobby/> }>
                 <GameSetup/>
             </Show>

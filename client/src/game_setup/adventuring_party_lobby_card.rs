@@ -17,8 +17,8 @@ pub fn adventuring_party_lobby_card(
     client_party_id: ClientPartyId,
 ) -> impl IntoView {
     let ws = expect_context::<ReadSignal<Option<WebSocket>>>();
-    let game = expect_context::<RwSignal<Option<RoguelikeRacerGame>>>();
-    let characters = party.player_characters;
+    // let game = expect_context::<RwSignal<Option<RoguelikeRacerGame>>>();
+    // let characters = party.player_characters;
     let is_own_party = client_party_id.0.unwrap_or(0) == party.id;
 
     let leave_party = move |_| send_client_input(ws, PlayerInputs::LeaveAdventuringParty);

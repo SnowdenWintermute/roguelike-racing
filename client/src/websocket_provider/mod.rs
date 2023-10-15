@@ -12,6 +12,9 @@ use wasm_bindgen::prelude::Closure;
 use wasm_bindgen::JsCast;
 use web_sys::{MessageEvent, WebSocket};
 
+use crate::alerts;
+use crate::alerts::Alert;
+use crate::alerts::AlertType;
 use crate::home_page::ClientPartyId;
 
 #[component]
@@ -23,6 +26,8 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
     let room = expect_context::<RwSignal<RoomState>>();
     let game = expect_context::<RwSignal<Option<RoguelikeRacerGame>>>();
     let party_id = expect_context::<RwSignal<ClientPartyId>>();
+    let alerts = expect_context::<RwSignal<Vec<Alert>>>();
+    let last_alert_id = expect_context::<RwSignal<u32>>();
 
     create_effect(move |_| {
         let websocket = WebSocket::new("ws://127.0.0.1:8080/ws");
@@ -40,6 +45,9 @@ pub fn websocket_provider(children: Children) -> impl IntoView {
                         log!("line41: {:#?}", deserialized);
                         if let Ok(data) = deserialized {
                             match data {
+                                GameServerUpdatePackets::Error(message) => {
+                                    alerts::set_alert(alerts, message.clone(), last_alert_id);
+                                }
                                 GameServerUpdatePackets::FullUpdate(update) => {
                                     game_list.update(move |game_list_state| {
                                         *game_list_state = update.game_list

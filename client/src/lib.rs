@@ -1,4 +1,5 @@
 pub mod app;
+pub mod alerts;
 use cfg_if::cfg_if;
 pub mod common_components;
 pub mod game_setup;

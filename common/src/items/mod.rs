@@ -15,7 +15,7 @@ pub enum StatTypes {
     Intelligence,
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Clone, Serialize, Deserialize, Eq)]
 pub enum ItemCategories {
     Equipment,
     Consumable,
@@ -32,7 +32,7 @@ pub enum EquipmentSlots {
     Amulet,
 }
 
-#[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq)]
 pub enum EquipmentTypes {
     BodyArmor,
     Helmet,
@@ -43,7 +43,7 @@ pub enum EquipmentTypes {
     Shield,
 }
 
-#[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq)]
 pub enum ConsumableTypes {
     RoomFinder,
     RepairKit,
@@ -56,7 +56,7 @@ pub enum ConsumableTypes {
     Grenade,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct EquipmentProperties {
     pub equipment_type: EquipmentTypes,
     pub damage: u16,
@@ -67,7 +67,7 @@ pub struct EquipmentProperties {
     pub intelligence: u16,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct ConsumableProperties {
     pub consumable_type: ConsumableTypes,
     pub uses_remaining: u8,
@@ -77,13 +77,13 @@ pub struct ConsumableProperties {
     pub valid_targets: ValidTargets,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum ItemProperties {
     Consumable(ConsumableProperties),
     Equipment(EquipmentProperties),
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Item {
     pub entity_properties: EntityProperties,
     pub item_level: u8,

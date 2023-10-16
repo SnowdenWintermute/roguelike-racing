@@ -3,10 +3,9 @@ use crate::websocket_server::game_server::{
     GameServer,
 };
 use common::{
-    app_consts::MAX_PARTY_SIZE,
     errors::AppError,
     game::getters::{get_mut_party, get_mut_player},
-    packets::client_to_server::CharacterCreation,
+    packets::{client_to_server::CharacterCreation, server_to_client::GameServerUpdatePackets},
 };
 
 impl GameServer {
@@ -16,11 +15,15 @@ impl GameServer {
         character_creation: CharacterCreation,
     ) -> Result<(), AppError> {
         let user = get_user(&self.sessions, actor_id)?;
+        let username = user.username.clone();
         let current_game_name = user.current_game_name.clone().ok_or_else(|| AppError {
             error_type: common::errors::AppErrorTypes::ServerError,
             message: common::app_consts::error_messages::MISSING_GAME_REFERENCE.to_string(),
         })?;
         let game = get_mut_game(&mut self.games, &current_game_name)?;
+        let next_entity_id = game.id_generator.get_next_entity_id();
+        let game_name = game.name.clone();
+
         let player = get_mut_player(game, user.username.clone())?;
         let party_id = player.party_id.ok_or_else(|| AppError {
             error_type: common::errors::AppErrorTypes::ServerError,
@@ -28,18 +31,31 @@ impl GameServer {
         })?;
         let party = get_mut_party(game, party_id)?;
 
-        if party.player_characters.len() as u8 > MAX_PARTY_SIZE {
-            return Err(AppError {
-                error_type: common::errors::AppErrorTypes::InvalidInput,
-                message: common::app_consts::error_messages::PARTY_CHARACTER_LIMIT_REACHED
-                    .to_string(),
-            });
+        party.add_player_character(
+            next_entity_id,
+            character_creation.combatant_class.clone(),
+            &character_creation.character_name,
+        )?;
+
+        let player = get_mut_player(game, user.username.clone())?;
+        match &mut player.character_ids {
+            None => player.character_ids = Some(vec![next_entity_id]),
+            Some(ids) => ids.push(next_entity_id),
         }
 
-        // create a character object
-        // give it the id of it's player
-        // give the player a reference to the character
-        // update the game room
+        self.emit_packet(
+            &game_name,
+            &GameServerUpdatePackets::CharacterCreation(
+                common::packets::server_to_client::NewCharacterInParty {
+                    party_id,
+                    username,
+                    character_id: next_entity_id,
+                    character_name: character_creation.character_name.clone(),
+                    combatant_class: character_creation.combatant_class,
+                },
+            ),
+            None,
+        )?;
 
         Ok(())
     }

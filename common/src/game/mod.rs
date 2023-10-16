@@ -1,4 +1,5 @@
 use crate::app_consts::error_messages::{self, PLAYER_NOT_FOUND};
+use crate::character::Character;
 use crate::game::id_generator::IdGenerator;
 use crate::{adventuring_party::AdventuringParty, errors::AppError};
 use serde::{Deserialize, Serialize};
@@ -115,5 +116,28 @@ impl RoguelikeRacerGame {
             self.adventuring_parties.remove(&id);
         }
         Ok(())
+    }
+
+    pub fn get_player_characters(
+        &mut self,
+        username: String,
+    ) -> Result<HashMap<u32, Character>, AppError> {
+        let player = get_mut_player(self, username)?;
+        let party_id_option = player.party_id;
+        let character_ids = player.character_ids.clone();
+        let mut characters = HashMap::new();
+        if let Some(party_id) = party_id_option {
+            let party = get_mut_party(self, party_id)?;
+            let character_ids = match character_ids {
+                Some(ids) => ids,
+                None => Vec::new(),
+            };
+            for id in character_ids {
+                if let Some(character) = party.player_characters.get(&id) {
+                    characters.insert(id, character.clone());
+                }
+            }
+        }
+        Ok(characters)
     }
 }

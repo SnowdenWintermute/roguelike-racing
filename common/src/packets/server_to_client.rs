@@ -26,7 +26,7 @@ pub enum GameServerUpdatePackets {
     AdventuringPartyRemoved(u32),
     PlayerChangedAdventuringParty(PlayerAdventuringPartyChange),
     ClientAdventuringPartyId(Option<u32>),
-    CharacterCreation(PlayerCharacterCreation),
+    CharacterCreation(NewCharacterInParty),
     CharacterClassSelection(PlayerCharacterClassSelection),
     CharacterNameChange(PlayerCharacterNameChange),
     CharacterDeletion(PlayerCharacterDeletion),
@@ -90,11 +90,12 @@ pub struct PlayerRemovedFromGame {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct PlayerCharacterCreation {
+pub struct NewCharacterInParty {
     pub party_id: u32,
     pub username: String,
+    pub character_id: u32,
     pub character_name: String,
-    pub class: CombatantClass,
+    pub combatant_class: CombatantClass,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]

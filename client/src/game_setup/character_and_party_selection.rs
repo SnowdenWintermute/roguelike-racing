@@ -3,7 +3,7 @@ use crate::{
     game_setup::adventuring_party_lobby_card::AdventuringPartyLobbyCard, home_page::ClientPartyId,
     websocket_provider::send_client_input::send_client_input,
 };
-use common::game::{ RoguelikeRacerGame};
+use common::game::RoguelikeRacerGame;
 use common::packets::client_to_server::PlayerInputs;
 use leptos::{ev::SubmitEvent, *};
 use web_sys::WebSocket;
@@ -53,7 +53,7 @@ pub fn character_and_party_selection() -> impl IntoView {
                     <For
                         each=players
                         key=|player| (player.1.username.clone(), player.1.party_id.is_none())
-                        children=|player| player.1.party_id.is_none().then(move || 
+                        children=|player| player.1.party_id.is_none().then(move ||
                                 view! { <li>{player.1.username.clone()}</li> }
                         )
                     />
@@ -69,6 +69,7 @@ pub fn character_and_party_selection() -> impl IntoView {
                         view! {
                             <AdventuringPartyLobbyCard
                                 party=party.1
+                                game=game()
                                 client_party_id=party_id.get()
                             />
                         }

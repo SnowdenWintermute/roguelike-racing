@@ -2,6 +2,7 @@ use crate::app_consts::{error_messages, MAX_PARTY_SIZE};
 use crate::character::{combatant_properties::CombatantClass, Character};
 use crate::dungeon_rooms::{DungeonRoom, DungeonRoomTypes};
 use crate::errors::AppError;
+use crate::game::getters::get_mut_player;
 use crate::game::id_generator::IdGenerator;
 use crate::game::RoguelikeRacerPlayer;
 use serde::{Deserialize, Serialize};
@@ -49,20 +50,20 @@ impl AdventuringParty {
 
     pub fn add_player_character(
         &mut self,
-        id_generator: &mut IdGenerator,
+        id: u32,
         combatant_class: CombatantClass,
         name: &str,
-    ) -> Result<u32, AppError> {
+    ) -> Result<(), AppError> {
         if self.player_characters.len() > MAX_PARTY_SIZE.into() {
             return Err(AppError {
                 error_type: crate::errors::AppErrorTypes::InvalidInput,
                 message: error_messages::PARTY_FULL.to_string(),
             });
         }
-        let new_character = Character::new(id_generator, name, combatant_class);
+        let new_character = Character::new(id, name, combatant_class);
         let new_character_id = new_character.entity_properties.id;
         self.player_characters
             .insert(new_character.entity_properties.id, new_character);
-        Ok(new_character_id)
+        Ok(())
     }
 }

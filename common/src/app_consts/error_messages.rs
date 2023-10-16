@@ -14,3 +14,4 @@ pub const PLAYER_NOT_FOUND: &str = "No player was found by that username";
 pub const MISSING_PARTY_REFERENCE: &str = "No party was found with the provided id";
 pub const PARTY_CHARACTER_LIMIT_REACHED: &str =
     "Creating a character would exceed the maximum number allowed";
+pub const CHARACTER_NOT_FOUND: &str = "No character found with the provided id";

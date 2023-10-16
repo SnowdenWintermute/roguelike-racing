@@ -2,21 +2,21 @@ use serde::{Deserialize, Serialize};
 
 use crate::character::combatant_properties::CombatantClass;
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum TargetingScheme {
     Single,
     Area,
     CentralizedArea,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum ValidTargets {
     Opponent,
     AllyOrSelf,
     Any,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct CombatantAbility {
     pub ability_type: CombatantAbilities,
     pub class: Option<CombatantClass>,

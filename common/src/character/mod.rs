@@ -13,7 +13,7 @@ pub mod abilities;
 pub mod combatant_properties;
 pub mod items;
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Character {
     pub entity_properties: EntityProperties,
     pub combatant_properties: CombatantProperties,
@@ -24,7 +24,7 @@ pub struct Character {
 
 impl Character {
     pub fn new(
-        id_generator: &mut IdGenerator,
+        id: u32,
         name: &str,
         combatant_class: combatant_properties::CombatantClass,
     ) -> Character {
@@ -57,7 +57,7 @@ impl Character {
 
         Character {
             entity_properties: EntityProperties {
-                id: id_generator.get_next_entity_id(),
+                id,
                 name: name.to_owned(),
             },
             combatant_properties: CombatantProperties {

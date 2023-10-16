@@ -9,6 +9,7 @@ pub enum AppErrorTypes {
     InvalidInput,
     InsufficientResources,
     ServerError,
+    ClientError,
     IO,
 }
 
@@ -17,6 +18,7 @@ impl fmt::Display for AppErrorTypes {
         let as_string = match self {
             AppErrorTypes::InvalidInput => "Invalid Input",
             AppErrorTypes::ServerError => "Server Error",
+            AppErrorTypes::ClientError => "Client Error",
             AppErrorTypes::InsufficientResources => "InsufficientResources",
             AppErrorTypes::IO => "IO",
         };
@@ -39,6 +41,7 @@ impl fmt::Display for AppError {
             AppErrorTypes::InsufficientResources => {
                 "Insufficient resources to perform the requested action"
             }
+            AppErrorTypes::ClientError => "Client error",
             AppErrorTypes::ServerError => GENERIC_SERVER_ERROR_MESSAGE,
             AppErrorTypes::IO => GENERIC_SERVER_ERROR_MESSAGE,
         };

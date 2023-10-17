@@ -32,7 +32,7 @@ impl RoguelikeRacerPlayer {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct RoguelikeRacerGame {
     pub name: String,
     pub password: Option<String>,
@@ -96,7 +96,7 @@ impl RoguelikeRacerGame {
         match &character_ids {
             Some(character_ids) => {
                 for character_id in character_ids {
-                    party.player_characters.remove(&character_id);
+                    party.characters.remove(&character_id);
                 }
             }
             _ => (),
@@ -133,7 +133,7 @@ impl RoguelikeRacerGame {
                 None => Vec::new(),
             };
             for id in character_ids {
-                if let Some(character) = party.player_characters.get(&id) {
+                if let Some(character) = party.characters.get(&id) {
                     characters.insert(id, character.clone());
                 }
             }

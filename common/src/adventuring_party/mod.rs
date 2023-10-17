@@ -20,7 +20,7 @@ pub struct AdventuringParty {
     pub id: u32,
     pub name: String,
     pub player_usernames: HashSet<String>,
-    pub player_characters: HashMap<u32, Character>,
+    pub characters: HashMap<u32, Character>,
     pub active_player: Option<u32>,
     pub current_floor: u8,
     pub rooms_explored: RoomsExplored,
@@ -35,7 +35,7 @@ impl AdventuringParty {
             id,
             name,
             player_usernames: HashSet::new(),
-            player_characters: HashMap::new(),
+            characters: HashMap::new(),
             active_player: None,
             current_floor: 1,
             rooms_explored: RoomsExplored {
@@ -53,16 +53,18 @@ impl AdventuringParty {
         id: u32,
         combatant_class: CombatantClass,
         name: &str,
+        name_of_controlling_user: String,
     ) -> Result<(), AppError> {
-        if self.player_characters.len() > MAX_PARTY_SIZE.into() {
+        if self.characters.len() > MAX_PARTY_SIZE.into() {
+
             return Err(AppError {
                 error_type: crate::errors::AppErrorTypes::InvalidInput,
                 message: error_messages::PARTY_FULL.to_string(),
             });
         }
-        let new_character = Character::new(id, name, combatant_class);
+        let new_character = Character::new(id, name, combatant_class, name_of_controlling_user);
         let new_character_id = new_character.entity_properties.id;
-        self.player_characters
+        self.characters
             .insert(new_character.entity_properties.id, new_character);
         Ok(())
     }

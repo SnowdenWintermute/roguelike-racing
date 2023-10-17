@@ -5,6 +5,7 @@ use common::{
         AdventuringPartyCreation, NewCharacterInParty, PlayerAdventuringPartyChange,
     },
 };
+use leptos::logging::log;
 use leptos::*;
 
 pub fn handle_adventuring_party_created(
@@ -66,8 +67,10 @@ pub fn handle_character_creation(
                 character_creation.character_id,
                 character_creation.combatant_class.clone(),
                 &character_creation.character_name,
+                character_creation.username.clone(),
             )?;
 
+            log!("{:#?}", party);
             let player = get_mut_player(game, character_creation.username.clone())?;
             match &mut player.character_ids {
                 None => player.character_ids = Some(vec![character_creation.character_id]),

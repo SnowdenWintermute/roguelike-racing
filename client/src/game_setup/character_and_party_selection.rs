@@ -3,23 +3,30 @@ use crate::{
     game_setup::adventuring_party_lobby_card::AdventuringPartyLobbyCard, home_page::ClientPartyId,
     websocket_provider::send_client_input::send_client_input,
 };
-use common::game::RoguelikeRacerGame;
 use common::packets::client_to_server::PlayerInputs;
-use leptos::{ev::SubmitEvent, *};
+use common::{adventuring_party::AdventuringParty, game::RoguelikeRacerGame};
+use leptos::{ev::SubmitEvent, logging::log, *};
 use web_sys::WebSocket;
 
 #[component]
 pub fn character_and_party_selection() -> impl IntoView {
     let ws = expect_context::<ReadSignal<Option<WebSocket>>>();
     let party_id = expect_context::<RwSignal<ClientPartyId>>();
-    let game = move || match expect_context::<RwSignal<Option<RoguelikeRacerGame>>>().get() {
-        Some(game) => game,
-        None => RoguelikeRacerGame::new("".to_string()),
+    let game = expect_context::<RwSignal<Option<RoguelikeRacerGame>>>();
+
+    // let game_name = move || game().name.clone();
+    let players = move || game().unwrap_or_default().players.clone();
+    let adventuring_parties = move || {
+        let mut party_signals: Vec<RwSignal<AdventuringParty>> = Vec::new();
+        for (id, party) in game().unwrap_or_default().adventuring_parties.clone() {
+            party_signals.push(create_rw_signal(party))
+        }
+        party_signals
     };
 
-    let game_name = move || game().name.clone();
-    let players = move || game().players.clone();
-    let adventuring_parties = move || game().adventuring_parties.clone();
+    create_effect(move |_| {
+        log!("{:#?}", adventuring_parties());
+    });
 
     let (new_party_name, set_new_party_name) = create_signal("".to_string());
     let disabled = MaybeSignal::derive(move || new_party_name().len() < 1);
@@ -31,7 +38,7 @@ pub fn character_and_party_selection() -> impl IntoView {
 
     view! {
         <section class="flex-1 p-4 mr-4 bg-slate-700 border border-slate-400" id="game_list">
-            <h2>"Game: " {game_name}</h2>
+            <h2>"Game: " {game().unwrap_or_default().name}</h2>
             <form class="flex mb-2" on:submit=create_party>
                 <input
                     type="text"
@@ -64,13 +71,13 @@ pub fn character_and_party_selection() -> impl IntoView {
                 <h3 class="mb-2">"Adventuring Parties"</h3>
                 <For
                     each=adventuring_parties
-                    key=|party| party.1.id
+                    key=|party| party().id
                     children=move |party| {
                         view! {
                             <AdventuringPartyLobbyCard
-                                party=party.1
-                                game=game()
+                                party=party
                                 client_party_id=party_id.get()
+
                             />
                         }
                     }

@@ -35,6 +35,7 @@ impl GameServer {
             next_entity_id,
             character_creation.combatant_class.clone(),
             &character_creation.character_name,
+            username.clone(),
         )?;
 
         let player = get_mut_player(game, user.username.clone())?;
@@ -43,6 +44,7 @@ impl GameServer {
             Some(ids) => ids.push(next_entity_id),
         }
 
+        println!("{:#?}", game);
         self.emit_packet(
             &game_name,
             &GameServerUpdatePackets::CharacterCreation(

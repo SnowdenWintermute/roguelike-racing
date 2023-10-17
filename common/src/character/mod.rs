@@ -15,6 +15,7 @@ pub mod items;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Character {
+    pub name_of_controlling_user: String,
     pub entity_properties: EntityProperties,
     pub combatant_properties: CombatantProperties,
     pub inventory: CharacterInventory,
@@ -26,7 +27,7 @@ impl Character {
     pub fn new(
         id: u32,
         name: &str,
-        combatant_class: combatant_properties::CombatantClass,
+        combatant_class: combatant_properties::CombatantClass,name_of_controlling_user:String
     ) -> Character {
         let mut abilities = HashMap::<CombatantAbilities, CombatantAbility>::new();
         abilities.insert(
@@ -56,6 +57,7 @@ impl Character {
         }
 
         Character {
+            name_of_controlling_user,
             entity_properties: EntityProperties {
                 id,
                 name: name.to_owned(),

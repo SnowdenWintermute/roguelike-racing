@@ -29,7 +29,7 @@ impl RoguelikeRacerGame {
                 })?;
 
         let player_character = adventuring_party
-            .player_characters
+            .characters
             .get_mut(&player_character_id)
             .ok_or_else(|| AppError {
                 error_type: crate::errors::AppErrorTypes::InvalidInput,

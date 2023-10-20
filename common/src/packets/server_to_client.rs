@@ -33,7 +33,7 @@ pub enum GameServerUpdatePackets {
     PlayerToggledReady(String),
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Default)]
 pub struct RoomState {
     pub room_name: String,
     pub users: Vec<String>,

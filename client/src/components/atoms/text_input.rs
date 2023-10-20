@@ -21,7 +21,7 @@ pub fn text_input(props: &Props) -> Html {
 
     html!(
         <input
-        class="text-black block p-2 mb-2"
+        class="bg-slate-700 border border-slate-400 h-10 p-4"
         type="text" placeholder={props.name.clone()} name={props.name.clone()} onchange={on_change} />
     )
 }

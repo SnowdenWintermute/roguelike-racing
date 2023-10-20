@@ -1,1 +1,1 @@
-pub mod websocket_provider;
+pub mod websocket_manager;

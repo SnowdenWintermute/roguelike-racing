@@ -16,18 +16,26 @@ use web_sys::{SubmitEvent, WebSocket};
 
 #[component]
 pub fn adventuring_party_lobby_card(
-    party: RwSignal<AdventuringParty>,
+    party_memo: Memo<AdventuringParty>,
     client_party_id: ClientPartyId,
 ) -> impl IntoView {
     let ws = expect_context::<ReadSignal<Option<WebSocket>>>();
-    let game = expect_context::<RwSignal<Option<RoguelikeRacerGame>>>();
-    let is_own_party = client_party_id.0.unwrap_or(0) == party().id;
+
+    let character_memos = move || {
+        let mut character_memos = Vec::new();
+        let characters = party_memo().characters;
+        for (id, character) in characters {
+            character_memos.push(create_memo(move |_| character.clone()));
+        }
+        character_memos
+    };
+
+    let is_own_party = client_party_id.0.unwrap_or(0) == party_memo().id;
     let leave_party = move |_| send_client_input(ws, PlayerInputs::LeaveAdventuringParty);
-    let characters = move || party().characters;
 
     view! {
         <div class="p-3 border border-slate-400 w-full mb-2">
-            <h3 class="mb-2">"Party: " {party().name}</h3>
+            <h3 class="mb-2">"Party: " {move || party_memo().name.clone()}</h3>
             <div>
                 <Show when=move || is_own_party fallback=|| view! { <div></div> }>
                     <ButtonBasic on:click=leave_party>"Leave Party"</ButtonBasic>
@@ -40,15 +48,16 @@ pub fn adventuring_party_lobby_card(
             </div>
             <div>
                 <For
-                    each= move || party().characters
-                    key={move |character| (character.1.combatant_properties.combatant_class.clone()
-                                           , character.1.entity_properties.name.clone())}
+                    each=move || character_memos().clone()
+                    key={move |character| (character().combatant_properties.combatant_class.clone()
+                    ,character().entity_properties.name.clone())}
                     children=|character| {
                         view! {
                             <div class="">
                                 <div class="mb-2">{}</div>
                                 <div>"characters:"</div>
-                                    <CombatantClassDisplay character=character.1 />
+                                {move || character().entity_properties.name}
+                                    // <CombatantClassDisplay character=character() />
                             </div>
                         }
                     }

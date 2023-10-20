@@ -14,18 +14,18 @@ pub fn character_and_party_selection() -> impl IntoView {
     let party_id = expect_context::<RwSignal<ClientPartyId>>();
     let game = expect_context::<RwSignal<Option<RoguelikeRacerGame>>>();
 
-    // let game_name = move || game().name.clone();
     let players = move || game().unwrap_or_default().players.clone();
     let adventuring_parties = move || {
-        let mut party_signals: Vec<RwSignal<AdventuringParty>> = Vec::new();
-        for (id, party) in game().unwrap_or_default().adventuring_parties.clone() {
-            party_signals.push(create_rw_signal(party))
+        let mut party_memos = Vec::new();
+        let parties = move || game().unwrap_or_default().adventuring_parties;
+        for (id, party) in parties() {
+            party_memos.push(create_memo(move |_| party.clone()));
         }
-        party_signals
+        party_memos
     };
 
-    create_effect(move |_| {
-        log!("{:#?}", adventuring_parties());
+    create_effect(|_| {
+        // log!("{:#?}", adventuring_parties());
     });
 
     let (new_party_name, set_new_party_name) = create_signal("".to_string());
@@ -71,13 +71,12 @@ pub fn character_and_party_selection() -> impl IntoView {
                 <h3 class="mb-2">"Adventuring Parties"</h3>
                 <For
                     each=adventuring_parties
-                    key=|party| party().id
-                    children=move |party| {
+                    key=|party_memo| party_memo().id
+                    children=move |party_memo| {
                         view! {
                             <AdventuringPartyLobbyCard
-                                party=party
+                                party_memo=party_memo
                                 client_party_id=party_id.get()
-
                             />
                         }
                     }

@@ -21,7 +21,7 @@ pub enum ItemCategories {
     Consumable,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum EquipmentSlots {
     LeftHand,
     RightHand,

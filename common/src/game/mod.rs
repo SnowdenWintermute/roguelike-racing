@@ -32,7 +32,7 @@ impl RoguelikeRacerPlayer {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct RoguelikeRacerGame {
     pub name: String,
     pub password: Option<String>,

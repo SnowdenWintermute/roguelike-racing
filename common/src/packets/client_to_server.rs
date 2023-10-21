@@ -1,7 +1,7 @@
 use crate::{character::combatant_properties::CombatantClass, items::EquipmentSlots};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum PlayerInputs {
     // lobby
     RequestGameList,
@@ -47,7 +47,7 @@ pub struct PlayerInputRequest {
     pub player_input: PlayerInputs,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct GameCreation {
     pub name: String,
     pub password: Option<String>,
@@ -59,13 +59,13 @@ pub struct CharacterCreation {
     pub combatant_class: CombatantClass,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct CharacterClassSelection {
     character_id: u32,
     combatant_class: CombatantClass,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct EquipItem {
     item_slot: u8,
     equipment_slot: EquipmentSlots,

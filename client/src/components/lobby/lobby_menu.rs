@@ -14,7 +14,7 @@ use crate::{
 #[function_component(LobbyMenu)]
 pub fn lobby_menu() -> Html {
     let (websocket_state, _) = use_store::<WebsocketStore>();
-    let game_name = use_state(|| String::from(""));
+    let game_name = use_state(|| AttrValue::from(""));
 
     let handle_change = {
         let game_name = game_name.clone();
@@ -26,7 +26,7 @@ pub fn lobby_menu() -> Html {
         send_client_input(
             &websocket_state.websocket,
             PlayerInputs::CreateGame(GameCreation {
-                name: game_name.deref().clone(),
+                name: game_name.deref().clone().to_string(),
                 password: None,
             }),
         );
@@ -40,7 +40,7 @@ pub fn lobby_menu() -> Html {
     html!(
         <section class="w-full bg-slate-700 border border-slate-400 p-4 mb-4 flex justify-between">
             <form class="flex" onsubmit={create_game}>
-                <TextInput name="game name" handle_change={handle_change} />
+                <TextInput name="game name" placeholder="Game name..." handle_change={handle_change} />
                 <ButtonBasic disabled=false extra_styles="border-l-0 " button_type="submit" >
                     {"Create Game"}
                 </ButtonBasic>

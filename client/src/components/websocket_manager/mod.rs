@@ -1,3 +1,5 @@
+pub mod adventuring_party_update_handlers;
+pub mod lobby_update_handlers;
 pub mod send_client_input;
 use common::{errors::AppError, packets::server_to_client::GameServerUpdatePackets};
 use gloo::console::log;
@@ -8,7 +10,13 @@ use yew::prelude::*;
 use yewdux::prelude::use_store;
 
 use crate::{
-    components::alerts::set_alert,
+    components::{
+        alerts::set_alert,
+        websocket_manager::{
+            adventuring_party_update_handlers::handle_adventuring_party_created,
+            lobby_update_handlers::handle_user_left_room,
+        },
+    },
     store::{
         alert_store::AlertStore, game_store::GameStore, lobby_store::LobbyStore,
         websocket_store::WebsocketStore,
@@ -54,28 +62,32 @@ pub fn websocket_manager(props: &Props) -> Html {
                                         set_alert(cloned_alert_state, dispatch, message);
                                     }
                                     GameServerUpdatePackets::FullUpdate(update) => {
-                                        let dispatch = lobby_dispatch.clone();
-                                        dispatch.reduce_mut(|store| {
+                                        lobby_dispatch.clone().reduce_mut(|store| {
                                             store.game_list = update.game_list.games;
                                             store.room = update.room;
                                         });
                                     }
                                     GameServerUpdatePackets::RoomFullUpdate(update) => {
-                                        // room.update(move |room_state| *room_state = update)
+                                        lobby_dispatch.clone().reduce_mut(|store| {
+                                            store.room = update;
+                                        });
                                     }
                                     GameServerUpdatePackets::UserLeftRoom(username_leaving) => {
-                                        // handle_user_left_room(room, &username_leaving)
+                                        lobby_dispatch.clone().reduce_mut(|store| {
+                                            handle_user_left_room(store, &username_leaving)
+                                        })
                                     }
                                     GameServerUpdatePackets::UserJoinedRoom(update) => {
-                                        // room.update(move |room_state| room_state.users.push(update))
+                                        lobby_dispatch.clone().reduce_mut(|store| {
+                                            store.room.users.push(update);
+                                        })
                                     }
                                     GameServerUpdatePackets::GameList(update) => {
                                         let dispatch = lobby_dispatch.clone();
                                         dispatch.reduce_mut(|store| store.game_list = update.games);
                                     }
                                     GameServerUpdatePackets::GameFullUpdate(update) => {
-                                        let dispatch = game_dispatch.clone();
-                                        dispatch.reduce_mut(|store| {
+                                        game_dispatch.clone().reduce_mut(|store| {
                                             store.game = update;
                                         });
                                     }
@@ -87,9 +99,10 @@ pub fn websocket_manager(props: &Props) -> Html {
                                     }
                                     GameServerUpdatePackets::AdventuringPartyCreated(
                                         party_creation,
-                                    ) => {
-                                        // handle_adventuring_party_created(game, party_creation)?,
-                                    }
+                                    ) => game_dispatch.clone().reduce_mut(|store| {
+                                        let _ =
+                                            handle_adventuring_party_created(store, party_creation);
+                                    }),
                                     GameServerUpdatePackets::AdventuringPartyRemoved(party_id) => {
                                         // handle_adventuring_party_removed(game, party_id)
                                     }

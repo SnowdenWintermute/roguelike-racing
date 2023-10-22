@@ -1,7 +1,5 @@
-use std::num::ParseIntError;
-
 use crate::{components::alerts::remove_alert, store::alert_store::AlertStore};
-use gloo::console::log;
+use std::num::ParseIntError;
 use web_sys::HtmlElement;
 use yew::prelude::*;
 use yewdux::prelude::use_store;

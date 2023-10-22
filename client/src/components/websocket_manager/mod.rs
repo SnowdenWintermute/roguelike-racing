@@ -7,8 +7,12 @@ use web_sys::{MessageEvent, WebSocket};
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
-use crate::store::{
-    game_store::GameStore, lobby_store::LobbyStore, websocket_store::WebsocketStore,
+use crate::{
+    components::alerts::set_alert,
+    store::{
+        alert_store::AlertStore, game_store::GameStore, lobby_store::LobbyStore,
+        websocket_store::WebsocketStore,
+    },
 };
 
 #[derive(Properties, PartialEq)]
@@ -25,6 +29,7 @@ pub fn websocket_manager(props: &Props) -> Html {
     let (_, websocket_dispatch) = use_store::<WebsocketStore>();
     let (_, lobby_dispatch) = use_store::<LobbyStore>();
     let (_, game_dispatch) = use_store::<GameStore>();
+    let (alert_state, alert_dispatch) = use_store::<AlertStore>();
     let server_url = props.server_url.clone();
 
     use_effect_with((), move |_| {
@@ -44,11 +49,9 @@ pub fn websocket_manager(props: &Props) -> Html {
                             if let Ok(data) = deserialized {
                                 match data {
                                     GameServerUpdatePackets::Error(message) => {
-                                        // alerts::set_alert(
-                                        //     alerts,
-                                        //     message.clone(),
-                                        //     &mut last_alert_id,
-                                        // );
+                                        let dispatch = alert_dispatch.clone();
+                                        let cloned_alert_state = alert_state.clone();
+                                        set_alert(cloned_alert_state, dispatch, message);
                                     }
                                     GameServerUpdatePackets::FullUpdate(update) => {
                                         let dispatch = lobby_dispatch.clone();

@@ -1,6 +1,7 @@
 mod components;
 mod router;
 mod store;
+use crate::components::alerts::alert_manager::AlertManager;
 use crate::components::lobby::game_setup::GameSetup;
 use crate::components::lobby::Lobby;
 use crate::components::websocket_manager::WebsocketManager;
@@ -15,6 +16,7 @@ pub fn app() -> Html {
     html! {
         <div >
             <WebsocketManager server_url={"ws://127.0.0.1:8081/ws"} />
+            <AlertManager />
             if game_state.game.is_some() {
                 <GameSetup />
             } else {

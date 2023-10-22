@@ -5,10 +5,7 @@ use crate::{
     },
     store::websocket_store::WebsocketStore,
 };
-use common::packets::{
-    client_to_server::{GameCreation, PlayerInputs},
-    server_to_client::GameListEntry,
-};
+use common::packets::{client_to_server::PlayerInputs, server_to_client::GameListEntry};
 use yew::prelude::*;
 use yewdux::prelude::*;
 

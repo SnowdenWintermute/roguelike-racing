@@ -13,8 +13,10 @@ use crate::{
     components::{
         alerts::set_alert,
         websocket_manager::{
-            adventuring_party_update_handlers::handle_adventuring_party_created,
-            lobby_update_handlers::handle_user_left_room,
+            adventuring_party_update_handlers::{
+                handle_adventuring_party_created, handle_player_changed_adventuring_party,
+            },
+            lobby_update_handlers::{handle_user_joined_game, handle_user_left_room},
         },
     },
     store::{
@@ -22,6 +24,8 @@ use crate::{
         websocket_store::WebsocketStore,
     },
 };
+
+use self::lobby_update_handlers::handle_user_left_game;
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
@@ -91,11 +95,15 @@ pub fn websocket_manager(props: &Props) -> Html {
                                             store.game = update;
                                         });
                                     }
-                                    GameServerUpdatePackets::UserJoinedGame(update) => {
-                                        // handle_user_joined_game(game, update)
+                                    GameServerUpdatePackets::UserJoinedGame(username) => {
+                                        game_dispatch.clone().reduce_mut(|store| {
+                                            let _ = handle_user_joined_game(store, username);
+                                        })
                                     }
                                     GameServerUpdatePackets::UserLeftGame(username) => {
-                                        // handle_user_left_game(game, username)
+                                        game_dispatch.clone().reduce_mut(|store| {
+                                            let _ = handle_user_left_game(store, username);
+                                        })
                                     }
                                     GameServerUpdatePackets::AdventuringPartyCreated(
                                         party_creation,
@@ -103,20 +111,16 @@ pub fn websocket_manager(props: &Props) -> Html {
                                         let _ =
                                             handle_adventuring_party_created(store, party_creation);
                                     }),
-                                    GameServerUpdatePackets::AdventuringPartyRemoved(party_id) => {
-                                        // handle_adventuring_party_removed(game, party_id)
-                                    }
                                     GameServerUpdatePackets::ClientAdventuringPartyId(update) => {
-                                        // party_id.update(move |id| {
-                                        //     id.0 = update;
-                                        // })
+                                        game_dispatch.clone().reduce_mut(|store| {
+                                            store.current_party_id = update;
+                                        })
                                     }
                                     GameServerUpdatePackets::PlayerChangedAdventuringParty(
                                         update,
-                                    ) => {
-
-                                        // handle_player_changed_adventuring_party(game, update),
-                                    }
+                                    ) => game_dispatch.clone().reduce_mut(|store| {
+                                        handle_player_changed_adventuring_party(store, update)
+                                    }),
                                     GameServerUpdatePackets::CharacterCreation(
                                         character_in_party,
                                     ) => {

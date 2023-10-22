@@ -1,6 +1,9 @@
 use common::{
-    errors::AppError, game::RoguelikeRacerGame, packets::server_to_client::AdventuringPartyCreation,
+    errors::AppError,
+    game::{getters::get_mut_player, RoguelikeRacerGame},
+    packets::server_to_client::{AdventuringPartyCreation, PlayerAdventuringPartyChange},
 };
+use gloo::console::log;
 
 use crate::store::game_store::GameStore;
 
@@ -21,33 +24,26 @@ pub fn handle_adventuring_party_created(
     Ok(())
 }
 
-// pub fn handle_adventuring_party_removed(game: RwSignal<Option<RoguelikeRacerGame>>, party_id: u32) {
-//     game.update(move |game_state| {
-//         if let Some(game) = game_state {
-//             game.adventuring_parties.remove(&party_id);
-//         };
-//     })
-// }
-
-// pub fn handle_player_changed_adventuring_party(
-//     game: RwSignal<Option<RoguelikeRacerGame>>,
-//     update: PlayerAdventuringPartyChange,
-// ) {
-//     game.update(move |game_state| {
-//         if let Some(game) = game_state {
-//             let _ = game.remove_player_from_adventuring_party(update.username.clone());
-//             if let Some(party_id) = update.party_id {
-//                 if let Some(_party) = game.adventuring_parties.get(&party_id) {
-//                     let _ = game.put_player_in_adventuring_party(party_id, update.username.clone());
-//                 }
-//             } else {
-//                 if let Ok(player) = get_mut_player(game, update.username.clone()) {
-//                     player.party_id = None;
-//                 };
-//             };
-//         }
-//     })
-// }
+pub fn handle_player_changed_adventuring_party(
+    game_state: &mut GameStore,
+    update: PlayerAdventuringPartyChange,
+) -> Result<(), AppError> {
+    let game = game_state.game.as_mut().ok_or_else(|| AppError {
+        error_type: common::errors::AppErrorTypes::ClientError,
+        message: "Client error".to_string(),
+    })?;
+    let _ = game.remove_player_from_adventuring_party(update.username.clone());
+    if let Some(party_id) = update.party_id {
+        if let Some(_party) = game.adventuring_parties.get(&party_id) {
+            let _ = game.put_player_in_adventuring_party(party_id, update.username.clone());
+        }
+    } else {
+        if let Ok(player) = get_mut_player(game, update.username.clone()) {
+            player.party_id = None;
+        };
+    };
+    Ok(())
+}
 
 // pub fn handle_character_creation(
 //     game: RwSignal<Option<RoguelikeRacerGame>>,

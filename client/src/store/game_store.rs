@@ -4,4 +4,5 @@ use yewdux::prelude::*;
 #[derive(Store, Default, PartialEq, Clone)]
 pub struct GameStore {
     pub game: Option<RoguelikeRacerGame>,
+    pub current_party_id: Option<u32>,
 }

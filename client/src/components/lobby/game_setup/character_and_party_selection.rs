@@ -45,6 +45,12 @@ pub fn character_and_party_selection() -> Html {
                 <div>
                     <h3>{ "Players not yet in a party:" }</h3>
                     <ul class="list-none">
+                        {game.players.iter().map(|player|
+                            html!{
+                                if player.1.party_id.is_none() {
+                                    <li>{player.1.username.clone()}</li>
+                                }
+                            }).collect::<Html>()}
                         // <For
                         //     each=players
                         //     key=|player| (player.1.username.clone(), player.1.party_id.is_none())
@@ -57,7 +63,7 @@ pub fn character_and_party_selection() -> Html {
                 <div>
                     <h3 class="mb-2">{ "Adventuring Parties" }</h3>
                     {game.adventuring_parties.iter().map(|party|
-                        html!{<AdventuringPartyLobbyCard party={party.1.clone()} client_party_id={0} />}).collect::<Html>()}
+                        html!{<AdventuringPartyLobbyCard party={party.1.clone()} />}).collect::<Html>()}
                 </div>
             </section>
         ),

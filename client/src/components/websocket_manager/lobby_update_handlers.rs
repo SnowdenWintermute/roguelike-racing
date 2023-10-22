@@ -1,4 +1,6 @@
-use crate::store::lobby_store::LobbyStore;
+use common::{errors::AppError, game::RoguelikeRacerPlayer};
+
+use crate::store::{game_store::GameStore, lobby_store::LobbyStore};
 
 pub fn handle_user_left_room(lobby_state: &mut LobbyStore, username_leaving: &str) {
     for (index, username) in lobby_state.room.users.clone().iter().enumerate() {
@@ -6,4 +8,27 @@ pub fn handle_user_left_room(lobby_state: &mut LobbyStore, username_leaving: &st
             lobby_state.room.users.remove(index);
         }
     }
+}
+
+pub fn handle_user_joined_game(
+    game_state: &mut GameStore,
+    username: String,
+) -> Result<(), AppError> {
+    let game = game_state.game.as_mut().ok_or_else(|| AppError {
+        error_type: common::errors::AppErrorTypes::ClientError,
+        message: "Client error".to_string(),
+    })?;
+    game.players
+        .insert(username.clone(), RoguelikeRacerPlayer::new(None, username));
+    Ok(())
+}
+
+pub fn handle_user_left_game(game_state: &mut GameStore, username: String) -> Result<(), AppError> {
+    let game = game_state.game.as_mut().ok_or_else(|| AppError {
+        error_type: common::errors::AppErrorTypes::ClientError,
+        message: "Client error".to_string(),
+    })?;
+    let _ = &game.remove_player_from_adventuring_party(username.clone());
+    game.players.remove(&username);
+    Ok(())
 }

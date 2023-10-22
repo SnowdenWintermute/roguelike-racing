@@ -586,6 +586,22 @@ video {
   flex: 1 1 0%;
 }
 
+@keyframes slide-left-appear-keyframes {
+  0% {
+    transform: translateX(-1rem);
+    opacity: 0%;
+  }
+
+  100% {
+    transform: translateX(0rem);
+    opacity: 100%;
+  }
+}
+
+.animate-slide-appear-from-left {
+  animation: slide-left-appear-keyframes .3s linear;
+}
+
 .cursor-pointer {
   cursor: pointer;
 }
@@ -596,6 +612,10 @@ video {
 
 .flex-col {
   flex-direction: column;
+}
+
+.flex-col-reverse {
+  flex-direction: column-reverse;
 }
 
 .items-center {
@@ -670,12 +690,12 @@ video {
   background-color: rgb(4 47 46 / var(--tw-bg-opacity));
 }
 
-.p-4 {
-  padding: 1rem;
-}
-
 .p-3 {
   padding: 0.75rem;
+}
+
+.p-4 {
+  padding: 1rem;
 }
 
 .pl-2 {
@@ -686,12 +706,12 @@ video {
   padding-left: 1rem;
 }
 
-.pr-4 {
-  padding-right: 1rem;
-}
-
 .pr-2 {
   padding-right: 0.5rem;
+}
+
+.pr-4 {
+  padding-right: 1rem;
 }
 
 .font-extrabold {

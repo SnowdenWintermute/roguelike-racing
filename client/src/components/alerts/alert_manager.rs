@@ -19,20 +19,8 @@ pub fn alert_manager() -> Html {
                 .collect::<Vec<&str>>()[1]
                 .to_string()
                 .parse();
-            // log!(format!("id: {}", id));
             if let Ok(id) = id {
-                log!("removing alert ", id);
-                let mut indices_to_remove = Vec::new();
-                for (index, alert) in store.alerts.iter().enumerate() {
-                    if alert.id == id.clone() {
-                        indices_to_remove.push(index);
-                        break;
-                    }
-                }
-
-                for index in indices_to_remove {
-                    store.alerts.remove(index);
-                }
+                remove_alert(store, id);
             }
         })
     });
@@ -43,7 +31,7 @@ pub fn alert_manager() -> Html {
     });
 
     html!(
-        <ul class="absolute p-3 list-none">
+        <ul class="absolute p-3 list-none flex flex-col-reverse">
             {alert_state.alerts.iter().map(|alert|
                 html!{
                     <li>

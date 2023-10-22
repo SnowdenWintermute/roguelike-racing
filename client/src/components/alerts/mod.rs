@@ -26,6 +26,7 @@ pub fn set_alert<'a>(
     message: String,
 ) {
     let dispatch = alert_dispatch.clone();
+    let mut id = 0;
     dispatch.reduce_mut(|store| {
         let new_alert = Alert {
             message,
@@ -33,49 +34,29 @@ pub fn set_alert<'a>(
             id: store.last_alert_id.clone(),
         };
         store.alerts.push(new_alert);
+        id = store.last_alert_id.clone();
         store.last_alert_id += 1;
     });
-    let id = alert_state.last_alert_id.clone();
-    // let deletion_timeout = gloo::timers::callback::Timeout::new(4000, move || {
-    //     let dispatch = alert_dispatch.clone();
-    //     dispatch.reduce_mut(|store| {
-    //         let mut indices_to_remove = Vec::new();
-    //         for (index, alert) in alert_state.alerts.iter().enumerate() {
-    //             if alert.id == id.clone() {
-    //                 indices_to_remove.push(index);
-    //                 break;
-    //             }
-    //         }
 
-    //         for index in indices_to_remove {
-    //             store.alerts.remove(index);
-    //         }
-    //         log!("removed ", store.last_alert_id.clone())
-    //     })
-    // })
-    // .forget();
-
-    //         set_timeout(
-    //             move || {
-    //                 alerts.update(move |alert_state| {
-    //                     remove_alert(alert_state, id.clone());
-    //                 });
-    //             },
-    //             std::time::Duration::from_secs(5),
-    //         );
-    //     });
+    let _deletion_timeout = gloo::timers::callback::Timeout::new(4000, move || {
+        dispatch.reduce_mut(|store| {
+            remove_alert(store, id);
+        })
+    })
+    .forget();
 }
 
-pub fn remove_alert(alert_state: Rc<AlertStore>, alert_dispatch: Dispatch<AlertStore>, id: u32) {
+pub fn remove_alert(alert_state: &mut AlertStore, id: u32) {
     let mut indices_to_remove = Vec::new();
     for (index, alert) in alert_state.alerts.iter().enumerate() {
         if alert.id == id.clone() {
+            log!("removing id after timeout: ", id.clone());
             indices_to_remove.push(index);
             break;
         }
     }
 
     for index in indices_to_remove {
-        alert_dispatch.reduce_mut(|store| store.alerts.remove(index));
+        alert_state.alerts.remove(index);
     }
 }

@@ -1,18 +1,13 @@
+use crate::store::game_store::GameStore;
 use common::{
     app_consts::error_messages,
     errors::AppError,
-    game::{
-        getters::{get_mut_party, get_mut_player},
-        RoguelikeRacerGame,
-    },
+    game::getters::{get_mut_party, get_mut_player},
     packets::server_to_client::{
         AdventuringPartyCreation, NewCharacterInParty, PlayerAdventuringPartyChange,
         PlayerCharacterDeletion,
     },
 };
-use gloo::console::log;
-
-use crate::store::game_store::GameStore;
 
 pub fn handle_adventuring_party_created(
     game_state: &mut GameStore,

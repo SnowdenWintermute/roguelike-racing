@@ -1,5 +1,3 @@
-use std::ops::Deref;
-
 use crate::{
     components::{
         common_components::molocules::text_submit::TextSubmit,
@@ -8,10 +6,8 @@ use crate::{
     },
     store::{game_store::GameStore, websocket_store::WebsocketStore},
 };
-use common::{
-    errors::AppError,
-    packets::{client_to_server::PlayerInputs, server_to_client::AdventuringPartyCreation},
-};
+use common::{errors::AppError, packets::client_to_server::PlayerInputs};
+use std::ops::Deref;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 

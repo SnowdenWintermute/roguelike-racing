@@ -1,13 +1,3 @@
-use std::{collections::HashMap, hash::Hash};
-
-use common::{
-    adventuring_party::AdventuringParty, character::Character,
-    packets::client_to_server::PlayerInputs,
-};
-use gloo::console::log;
-use yew::prelude::*;
-use yewdux::prelude::use_store;
-
 use crate::{
     components::{
         common_components::atoms::button_basic::ButtonBasic,
@@ -19,6 +9,13 @@ use crate::{
     },
     store::{game_store::GameStore, websocket_store::WebsocketStore},
 };
+use common::{
+    adventuring_party::AdventuringParty, character::Character,
+    packets::client_to_server::PlayerInputs,
+};
+use std::collections::HashMap;
+use yew::prelude::*;
+use yewdux::prelude::use_store;
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
@@ -48,7 +45,6 @@ pub fn adventuring_party_lobby_card(props: &Props) -> Html {
 
     let mut characters_by_username: HashMap<String, Vec<Character>> = HashMap::new();
     for username in &props.party.player_usernames {
-        log!(username);
         let mut characters: Vec<Character> = Vec::new();
         for character in &props.party.characters {
             if username == &character.1.name_of_controlling_user {
@@ -58,7 +54,6 @@ pub fn adventuring_party_lobby_card(props: &Props) -> Html {
         characters_by_username.insert(username.clone(), characters.clone());
     }
 
-    log!(format!("{:#?}", characters_by_username));
     html!(
         <div class="p-3 border border-slate-400 w-full mb-2">
             <h3 class="mb-2">{ "Party: "  }{props.party.name.clone()}</h3>

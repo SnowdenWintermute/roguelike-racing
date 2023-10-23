@@ -1,6 +1,7 @@
 pub mod adventuring_party_update_handlers;
 pub mod lobby_update_handlers;
 pub mod send_client_input;
+use self::lobby_update_handlers::handle_user_left_game;
 use crate::{
     components::{
         alerts::set_alert,
@@ -25,11 +26,8 @@ use web_sys::{MessageEvent, WebSocket};
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
-use self::lobby_update_handlers::handle_user_left_game;
-
 #[derive(Properties, PartialEq)]
 pub struct Props {
-    // pub children: Html,
     pub server_url: String,
 }
 
@@ -41,7 +39,7 @@ pub fn websocket_manager(props: &Props) -> Html {
     let (_, websocket_dispatch) = use_store::<WebsocketStore>();
     let (_, lobby_dispatch) = use_store::<LobbyStore>();
     let (_, game_dispatch) = use_store::<GameStore>();
-    let (alert_state, alert_dispatch) = use_store::<AlertStore>();
+    let (_, alert_dispatch) = use_store::<AlertStore>();
     let server_url = props.server_url.clone();
 
     use_effect_with((), move |_| {
@@ -62,8 +60,7 @@ pub fn websocket_manager(props: &Props) -> Html {
                                 match data {
                                     GameServerUpdatePackets::Error(message) => {
                                         let dispatch = alert_dispatch.clone();
-                                        let cloned_alert_state = alert_state.clone();
-                                        set_alert(cloned_alert_state, dispatch, message);
+                                        set_alert(dispatch, message);
                                     }
                                     GameServerUpdatePackets::FullUpdate(update) => {
                                         lobby_dispatch.clone().reduce_mut(|store| {
@@ -148,11 +145,8 @@ pub fn websocket_manager(props: &Props) -> Html {
                     match result {
                         Err(app_error) => {
                             log!("unhandled error");
-                            // alerts::set_alert(
-                            //     alerts,
-                            //     app_error.message.clone(),
-                            //     &mut last_alert_id,
-                            // );
+                            let dispatch = alert_dispatch.clone();
+                            set_alert(dispatch, app_error.message);
                         }
                         Ok(()) => (),
                     };

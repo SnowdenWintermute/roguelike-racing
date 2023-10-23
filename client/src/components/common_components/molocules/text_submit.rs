@@ -32,7 +32,7 @@ pub fn text_submit(props: &Props) -> Html {
     };
 
     html!(
-        <form class="flex mb-2" onsubmit={handle_submit} >
+        <form class="flex" onsubmit={handle_submit} >
             <TextInput
                 name={props.input_name.clone()}
                 placeholder={props.input_placeholder.clone()}

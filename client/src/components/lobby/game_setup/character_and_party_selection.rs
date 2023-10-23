@@ -34,7 +34,8 @@ pub fn character_and_party_selection() -> Html {
     match game {
         Ok(game) => html!(
             <section class="flex-1 p-4 mr-4 bg-slate-700 border border-slate-400" id="game_list">
-                <h2>{"Game: "} {game.name}</h2>
+                <div class="mb-2" >
+                    <h2>{"Game: "} {game.name}</h2>
                     <TextSubmit
                         input_name={"new adventuring party name"}
                         input_placeholder={"New party name..."}
@@ -42,6 +43,7 @@ pub fn character_and_party_selection() -> Html {
                         submit_disabled={false}
                         submit_handler_callback={create_party}
                     />
+                </div>
                 <div>
                     <h3>{ "Players not yet in a party:" }</h3>
                     <ul class="list-none">
@@ -51,13 +53,6 @@ pub fn character_and_party_selection() -> Html {
                                     <li>{player.1.username.clone()}</li>
                                 }
                             }).collect::<Html>()}
-                        // <For
-                        //     each=players
-                        //     key=|player| (player.1.username.clone(), player.1.party_id.is_none())
-                        //     children=|player| player.1.party_id.is_none().then(move ||
-                        //             view! { <li>{player.1.username.clone()}</li> }
-                        //     )
-                        // />
                     </ul>
                 </div>
                 <div>
@@ -67,7 +62,7 @@ pub fn character_and_party_selection() -> Html {
                 </div>
             </section>
         ),
-        Err(err) => html! {
+        Err(_err) => html! {
             <h1>
                 {"no game found"}
             </h1>

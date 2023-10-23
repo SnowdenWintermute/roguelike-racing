@@ -3,6 +3,7 @@ use super::items::CombatantEquipment;
 use crate::character::CombatantAbility;
 use crate::primatives::MaxAndCurrent;
 use crate::status_effects::StatusEffects;
+use core::fmt;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -12,6 +13,17 @@ pub enum CombatantClass {
     Mage,
     Rogue,
     Monster,
+}
+
+impl fmt::Display for CombatantClass {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            CombatantClass::Warrior => write!(f, "Warrior"),
+            CombatantClass::Mage => write!(f, "Mage"),
+            CombatantClass::Rogue => write!(f, "Rogue"),
+            CombatantClass::Monster => write!(f, "Monster"),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]

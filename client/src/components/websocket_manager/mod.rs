@@ -1,20 +1,13 @@
 pub mod adventuring_party_update_handlers;
 pub mod lobby_update_handlers;
 pub mod send_client_input;
-use common::{errors::AppError, packets::server_to_client::GameServerUpdatePackets};
-use gloo::console::log;
-use wasm_bindgen::prelude::Closure;
-use wasm_bindgen::JsCast;
-use web_sys::{MessageEvent, WebSocket};
-use yew::prelude::*;
-use yewdux::prelude::use_store;
-
 use crate::{
     components::{
         alerts::set_alert,
         websocket_manager::{
             adventuring_party_update_handlers::{
-                handle_adventuring_party_created, handle_player_changed_adventuring_party,
+                handle_adventuring_party_created, handle_character_creation,
+                handle_player_changed_adventuring_party,
             },
             lobby_update_handlers::{handle_user_joined_game, handle_user_left_room},
         },
@@ -24,6 +17,13 @@ use crate::{
         websocket_store::WebsocketStore,
     },
 };
+use common::{errors::AppError, packets::server_to_client::GameServerUpdatePackets};
+use gloo::console::log;
+use wasm_bindgen::prelude::Closure;
+use wasm_bindgen::JsCast;
+use web_sys::{MessageEvent, WebSocket};
+use yew::prelude::*;
+use yewdux::prelude::use_store;
 
 use self::lobby_update_handlers::handle_user_left_game;
 
@@ -123,9 +123,10 @@ pub fn websocket_manager(props: &Props) -> Html {
                                     }),
                                     GameServerUpdatePackets::CharacterCreation(
                                         character_in_party,
-                                    ) => {
-                                        // handle_character_creation(game, character_in_party)?
-                                    }
+                                    ) => game_dispatch.clone().reduce_mut(|store| {
+                                        let _ =
+                                            handle_character_creation(store, character_in_party);
+                                    }),
                                     _ => {
                                         log!(format!("unhandled packet: {:#?}", data))
                                     }

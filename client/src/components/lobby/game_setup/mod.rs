@@ -1,5 +1,6 @@
 pub mod adventuring_party_lobby_card;
 pub mod character_and_party_selection;
+pub mod character_creation_menu;
 pub mod game_setup_menu;
 use yew::prelude::*;
 

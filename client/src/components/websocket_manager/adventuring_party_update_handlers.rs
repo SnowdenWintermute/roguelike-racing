@@ -1,4 +1,5 @@
 use common::{
+    app_consts::error_messages,
     errors::AppError,
     game::{
         getters::{get_mut_party, get_mut_player},
@@ -6,6 +7,7 @@ use common::{
     },
     packets::server_to_client::{
         AdventuringPartyCreation, NewCharacterInParty, PlayerAdventuringPartyChange,
+        PlayerCharacterDeletion,
     },
 };
 use gloo::console::log;
@@ -71,5 +73,33 @@ pub fn handle_character_creation(
         None => player.character_ids = Some(vec![character_creation.character_id]),
         Some(ids) => ids.push(character_creation.character_id),
     }
+    Ok(())
+}
+
+pub fn handle_character_deletion(
+    game_state: &mut GameStore,
+    character_deletion: PlayerCharacterDeletion,
+) -> Result<(), AppError> {
+    let game = game_state.game.as_mut().ok_or_else(|| AppError {
+        error_type: common::errors::AppErrorTypes::ClientError,
+        message: "Client error".to_string(),
+    })?;
+    let party = get_mut_party(game, character_deletion.party_id)?;
+    party.characters.remove(&character_deletion.character_id);
+    let player = get_mut_player(game, character_deletion.username.clone())?;
+    let player_character_ids_option = player.character_ids.clone();
+    let mut player_character_ids = player_character_ids_option.ok_or_else(|| AppError {
+        error_type: common::errors::AppErrorTypes::ServerError,
+        message: error_messages::PLAYER_HAS_NO_CHARACTERS.to_string(),
+    })?;
+    player_character_ids.remove(character_deletion.character_id as usize);
+
+    let player = get_mut_player(game, character_deletion.username.clone())?;
+    if player_character_ids.len() > 1 {
+        player.character_ids = Some(player_character_ids);
+    } else {
+        player.character_ids = None
+    }
+
     Ok(())
 }

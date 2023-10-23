@@ -7,7 +7,7 @@ use crate::{
         websocket_manager::{
             adventuring_party_update_handlers::{
                 handle_adventuring_party_created, handle_character_creation,
-                handle_player_changed_adventuring_party,
+                handle_character_deletion, handle_player_changed_adventuring_party,
             },
             lobby_update_handlers::{handle_user_joined_game, handle_user_left_room},
         },
@@ -126,6 +126,12 @@ pub fn websocket_manager(props: &Props) -> Html {
                                     ) => game_dispatch.clone().reduce_mut(|store| {
                                         let _ =
                                             handle_character_creation(store, character_in_party);
+                                    }),
+                                    GameServerUpdatePackets::CharacterDeletion(
+                                        character_deletion,
+                                    ) => game_dispatch.clone().reduce_mut(|store| {
+                                        let _ =
+                                            handle_character_deletion(store, character_deletion);
                                     }),
                                     _ => {
                                         log!(format!("unhandled packet: {:#?}", data))

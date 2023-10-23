@@ -15,3 +15,6 @@ pub const MISSING_PARTY_REFERENCE: &str = "No party was found with the provided 
 pub const PARTY_CHARACTER_LIMIT_REACHED: &str =
     "Creating a character would exceed the maximum number allowed";
 pub const CHARACTER_NOT_FOUND: &str = "No character found with the provided id";
+pub const PLAYER_HAS_NO_CHARACTERS: &str = "No characters are owned by that player";
+pub const CHARACTER_NOT_OWNED: &str =
+    "A character with the provided id was not found in the player's list of owned characters";

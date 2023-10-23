@@ -56,7 +56,6 @@ impl AdventuringParty {
         name_of_controlling_user: String,
     ) -> Result<(), AppError> {
         if self.characters.len() > MAX_PARTY_SIZE.into() {
-
             return Err(AppError {
                 error_type: crate::errors::AppErrorTypes::InvalidInput,
                 message: error_messages::PARTY_FULL.to_string(),

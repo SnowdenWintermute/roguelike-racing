@@ -1,6 +1,7 @@
-pub mod adventuring_party_creation_request_handler;
-pub mod character_creation_request_handler;
+pub mod create_adventuring_party_handler;
+pub mod create_character_handler;
 pub mod create_game_handler;
+pub mod delete_character_handler;
 pub mod game_list_update_request_handler;
 pub mod join_game_handler;
 pub mod join_party_handler;

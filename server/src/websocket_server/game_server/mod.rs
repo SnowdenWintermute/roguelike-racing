@@ -75,7 +75,7 @@ impl Handler<ClientBinaryMessage> for GameServer {
                 self.game_list_update_request_handler(message.actor_id)
             }
             Ok(PlayerInputs::CreateAdventuringParty(party_name)) => {
-                self.adventuring_party_creation_request_handler(message.actor_id, party_name)
+                self.create_adventuring_party_handler(message.actor_id, party_name)
             }
             Ok(PlayerInputs::LeaveAdventuringParty) => {
                 self.leave_adventuring_party_handler(message.actor_id)
@@ -84,7 +84,10 @@ impl Handler<ClientBinaryMessage> for GameServer {
                 self.join_party_handler(message.actor_id, party_id)
             }
             Ok(PlayerInputs::CreateCharacter(character_creation)) => {
-                self.character_creation_request_handler(message.actor_id, character_creation)
+                self.create_character_handler(message.actor_id, character_creation)
+            }
+            Ok(PlayerInputs::DeleteCharacter(id)) => {
+                self.delete_character_handler(message.actor_id, id)
             }
             _ => {
                 println! {"unhandled binary message\n {:#?}:",deserialized};

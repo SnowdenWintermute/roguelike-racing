@@ -13,7 +13,7 @@ pub enum PlayerInputs {
     LeaveAdventuringParty,
     CreateCharacter(CharacterCreation),
     ChangeCharacterClass(CharacterClassSelection),
-    DeselectCharacter,
+    DeleteCharacter(u32),
     ToggleReady,
     // use items and abilities
     SelectConsumable(u8),

@@ -80,6 +80,9 @@ impl Handler<ClientBinaryMessage> for GameServer {
             Ok(PlayerInputs::LeaveAdventuringParty) => {
                 self.leave_adventuring_party_handler(message.actor_id)
             }
+            Ok(PlayerInputs::JoinAdventuringParty(party_id)) => {
+                self.join_party_handler(message.actor_id, party_id)
+            }
             Ok(PlayerInputs::CreateCharacter(character_creation)) => {
                 self.character_creation_request_handler(message.actor_id, character_creation)
             }

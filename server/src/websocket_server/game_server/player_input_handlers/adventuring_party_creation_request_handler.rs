@@ -14,10 +14,14 @@ impl GameServer {
         let connected_user = get_mut_user(&mut self.sessions, actor_id)?;
         let username = connected_user.username.clone();
 
-        let current_game_name = connected_user.current_game_name.clone().ok_or_else(||AppError {
-            error_type: common::errors::AppErrorTypes::ServerError,
-            message: error_messages::MISSING_GAME_REFERENCE.to_string(),
-        })?;
+        let current_game_name =
+            connected_user
+                .current_game_name
+                .clone()
+                .ok_or_else(|| AppError {
+                    error_type: common::errors::AppErrorTypes::ServerError,
+                    message: error_messages::MISSING_GAME_REFERENCE.to_string(),
+                })?;
 
         let game = get_mut_game(&mut self.games, &current_game_name)?;
         let player = get_mut_player(game, connected_user.username.clone())?;

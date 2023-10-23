@@ -28,7 +28,7 @@ pub fn character_creation_menu() -> Html {
     };
 
     html!(
-        <div>
+        <div class="mb-2">
             <TextSubmit
                 input_name={"character name"}
                 input_placeholder={"Character name..."}

@@ -35,7 +35,7 @@ pub fn character_and_party_selection() -> Html {
         Ok(game) => html!(
             <section class="flex-1 p-4 mr-4 bg-slate-700 border border-slate-400" id="game_list">
                 <div class="mb-2" >
-                    <h2>{"Game: "} {game.name}</h2>
+                    <h2 class="mb-2" >{"Game: "} {game.name}</h2>
                     <TextSubmit
                         input_name={"new adventuring party name"}
                         input_placeholder={"New party name..."}

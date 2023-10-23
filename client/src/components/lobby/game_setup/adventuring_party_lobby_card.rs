@@ -4,13 +4,17 @@ use common::{
     adventuring_party::AdventuringParty, character::Character,
     packets::client_to_server::PlayerInputs,
 };
+use gloo::console::log;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
 use crate::{
     components::{
         common_components::atoms::button_basic::ButtonBasic,
-        lobby::game_setup::character_creation_menu::CharacterCreationMenu,
+        lobby::game_setup::{
+            character_creation_menu::CharacterCreationMenu,
+            character_lobby_card::CharacterLobbyCard,
+        },
         websocket_manager::send_client_input::send_client_input,
     },
     store::{game_store::GameStore, websocket_store::WebsocketStore},
@@ -33,17 +37,28 @@ pub fn adventuring_party_lobby_card(props: &Props) -> Html {
         )
     });
 
+    let (websocket_state, _) = use_store::<WebsocketStore>();
+    let party_id = props.party.id;
+    let join_party = Callback::from(move |_| {
+        send_client_input(
+            &websocket_state.websocket,
+            PlayerInputs::JoinAdventuringParty(party_id),
+        )
+    });
+
     let mut characters_by_username: HashMap<String, Vec<Character>> = HashMap::new();
     for username in &props.party.player_usernames {
+        log!(username);
         let mut characters: Vec<Character> = Vec::new();
         for character in &props.party.characters {
             if username == &character.1.name_of_controlling_user {
                 characters.push(character.1.clone());
             }
-            characters_by_username.insert(username.clone(), characters.clone());
         }
+        characters_by_username.insert(username.clone(), characters.clone());
     }
 
+    log!(format!("{:#?}", characters_by_username));
     html!(
         <div class="p-3 border border-slate-400 w-full mb-2">
             <h3 class="mb-2">{ "Party: "  }{props.party.name.clone()}</h3>
@@ -54,6 +69,10 @@ pub fn adventuring_party_lobby_card(props: &Props) -> Html {
                     </div>
                     <CharacterCreationMenu />
                     }
+            } else {
+                    <div class="mb-2">
+                        <ButtonBasic onclick={join_party} >{ "Join Party" }</ButtonBasic>
+                    </div>
             }
             {characters_by_username.iter().map(|username_with_characters|
                 html!{
@@ -63,7 +82,7 @@ pub fn adventuring_party_lobby_card(props: &Props) -> Html {
                         {"No characters yet..."}
                     } else {
                         {username_with_characters.1.iter().map(|character|
-                            html!(<div>{format!("{}", character.combatant_properties.combatant_class)}</div>)
+                            html!(<CharacterLobbyCard character={character.clone()} />)
                          ).collect::<Html>()}
                     }
                     </div>

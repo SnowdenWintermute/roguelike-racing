@@ -62,6 +62,11 @@ pub fn websocket_manager(props: &Props) -> Html {
                                         let dispatch = alert_dispatch.clone();
                                         set_alert(dispatch, message);
                                     }
+                                    GameServerUpdatePackets::ClientUserName(username) => {
+                                        lobby_dispatch.clone().reduce_mut(|store| {
+                                            store.username = username;
+                                        })
+                                    }
                                     GameServerUpdatePackets::FullUpdate(update) => {
                                         lobby_dispatch.clone().reduce_mut(|store| {
                                             store.game_list = update.game_list.games;

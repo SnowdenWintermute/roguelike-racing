@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use crate::websocket_server::game_server::{
     getters::{get_mut_game, get_user},
     GameServer,
@@ -40,8 +42,14 @@ impl GameServer {
 
         let player = get_mut_player(game, user.username.clone())?;
         match &mut player.character_ids {
-            None => player.character_ids = Some(vec![next_entity_id]),
-            Some(ids) => ids.push(next_entity_id),
+            None => {
+                let mut new_ids = HashSet::new();
+                new_ids.insert(next_entity_id);
+                player.character_ids = Some(new_ids);
+            }
+            Some(ids) => {
+                ids.insert(next_entity_id);
+            }
         }
 
         println!("{:#?}", game);

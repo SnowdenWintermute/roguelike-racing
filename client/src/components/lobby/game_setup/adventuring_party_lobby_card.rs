@@ -7,7 +7,7 @@ use crate::{
         },
         websocket_manager::send_client_input::send_client_input,
     },
-    store::{game_store::GameStore, websocket_store::WebsocketStore},
+    store::{game_store::GameStore, lobby_store::LobbyStore, websocket_store::WebsocketStore},
 };
 use common::{
     adventuring_party::AdventuringParty, character::Character,
@@ -26,6 +26,7 @@ pub struct Props {
 pub fn adventuring_party_lobby_card(props: &Props) -> Html {
     let (websocket_state, _) = use_store::<WebsocketStore>();
     let (game_state, _) = use_store::<GameStore>();
+    let (lobby_state, _) = use_store::<LobbyStore>();
 
     let leave_party = Callback::from(move |_| {
         send_client_input(
@@ -77,7 +78,9 @@ pub fn adventuring_party_lobby_card(props: &Props) -> Html {
                         {"No characters yet..."}
                     } else {
                         {username_with_characters.1.iter().map(|character|
-                            html!(<CharacterLobbyCard character={character.clone()} />)
+                            html!(
+                                <CharacterLobbyCard character={character.clone()}
+                                  owned_by_self={username_with_characters.0 == &lobby_state.username} />)
                          ).collect::<Html>()}
                     }
                     </div>

@@ -43,9 +43,10 @@ impl GameServer {
 
         if player_character_ids.contains(&character_id) {
             party.characters.remove(&character_id);
-            player_character_ids.remove(character_id as usize);
+            player_character_ids.remove(&character_id);
+
             let player = get_mut_player(game, username.clone())?;
-            if player_character_ids.len() > 1 {
+            if player_character_ids.len() >= 1 {
                 player.character_ids = Some(player_character_ids);
             } else {
                 player.character_ids = None

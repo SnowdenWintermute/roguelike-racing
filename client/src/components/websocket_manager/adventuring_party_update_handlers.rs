@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use crate::store::game_store::GameStore;
 use common::{
     app_consts::error_messages,
@@ -65,9 +67,16 @@ pub fn handle_character_creation(
 
     let player = get_mut_player(game, character_creation.username.clone())?;
     match &mut player.character_ids {
-        None => player.character_ids = Some(vec![character_creation.character_id]),
-        Some(ids) => ids.push(character_creation.character_id),
+        None => {
+            let mut new_ids = HashSet::new();
+            new_ids.insert(character_creation.character_id);
+            player.character_ids = Some(new_ids);
+        }
+        Some(ids) => {
+            ids.insert(character_creation.character_id);
+        }
     }
+
     Ok(())
 }
 
@@ -87,7 +96,8 @@ pub fn handle_character_deletion(
         error_type: common::errors::AppErrorTypes::ServerError,
         message: error_messages::PLAYER_HAS_NO_CHARACTERS.to_string(),
     })?;
-    player_character_ids.remove(character_deletion.character_id as usize);
+
+    player_character_ids.remove(&character_deletion.character_id);
 
     let player = get_mut_player(game, character_deletion.username.clone())?;
     if player_character_ids.len() > 1 {

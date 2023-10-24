@@ -10,7 +10,7 @@ use websocket_server::websocket_actor::WebsocketActor;
 mod websocket_server;
 
 /// Entry point for our websocket route
-async fn chat_route(
+async fn game_server_route(
     req: HttpRequest,
     stream: web::Payload,
     server: web::Data<Addr<websocket_server::game_server::GameServer>>,
@@ -45,7 +45,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(web::Data::new(game_server_actor_address.clone()))
             .route("/count", web::get().to(get_count))
-            .route("/ws", web::get().to(chat_route))
+            .route("/ws", web::get().to(game_server_route))
             .wrap(Logger::default())
     })
     .workers(1)

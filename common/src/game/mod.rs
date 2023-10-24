@@ -3,7 +3,7 @@ use crate::character::Character;
 use crate::game::id_generator::IdGenerator;
 use crate::{adventuring_party::AdventuringParty, errors::AppError};
 use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, hash::Hash, time::Instant};
+use std::{collections::HashMap, collections::HashSet, hash::Hash, time::Instant};
 
 use self::getters::{get_mut_party, get_mut_player};
 pub mod getters;
@@ -16,7 +16,7 @@ pub struct RoguelikeRacerPlayer {
     pub actor_id: Option<u32>,
     pub party_id: Option<u32>,
     pub username: String,
-    pub character_ids: Option<Vec<u32>>,
+    pub character_ids: Option<HashSet<u32>>,
     pub ready: bool,
 }
 
@@ -130,7 +130,7 @@ impl RoguelikeRacerGame {
             let party = get_mut_party(self, party_id)?;
             let character_ids = match character_ids {
                 Some(ids) => ids,
-                None => Vec::new(),
+                None => HashSet::new(),
             };
             for id in character_ids {
                 if let Some(character) = party.characters.get(&id) {

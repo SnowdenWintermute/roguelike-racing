@@ -8,12 +8,13 @@ use crate::{
         common_components::atoms::{button_basic::ButtonBasic, text_input::TextInput},
         websocket_manager::send_client_input::send_client_input,
     },
-    store::websocket_store::WebsocketStore,
+    store::{lobby_store::LobbyStore, websocket_store::WebsocketStore},
 };
 
 #[function_component(LobbyMenu)]
 pub fn lobby_menu() -> Html {
     let (websocket_state, _) = use_store::<WebsocketStore>();
+    let (lobby_state, _) = use_store::<LobbyStore>();
     let game_name = use_state(|| AttrValue::from(""));
 
     let handle_change = {
@@ -39,15 +40,23 @@ pub fn lobby_menu() -> Html {
 
     html!(
         <section class="w-full bg-slate-700 border border-slate-400 p-4 mb-4 flex justify-between">
-            <form class="flex" onsubmit={create_game}>
-                <TextInput name="game name" placeholder="Game name..." handle_change={handle_change} />
-                <ButtonBasic disabled=false extra_styles="border-l-0 " button_type="submit" >
-                    {"Create Game"}
-                </ButtonBasic>
-            </form>
+            <div class="flex">
+                <form class="flex mr-2" onsubmit={create_game}>
+                    <TextInput name="game name" placeholder="Game name..." handle_change={handle_change} />
+                    <ButtonBasic disabled=false extra_styles="border-l-0 " button_type="submit" >
+                        {"Create Game"}
+                    </ButtonBasic>
+                </form>
                 <ButtonBasic disabled=false button_type="button" onclick={refresh_game_list} >
                     {"Refresh List"}
                 </ButtonBasic>
+            </div>
+            <div class="border border-slate-400 rounded-full h-10 w-10 flex justify-center items-center" >
+                <span class="text-lg font-bold">
+                    if lobby_state.username.clone().chars().collect::<Vec<char>>().len() > 0 {
+                    {lobby_state.username.clone().chars().next().unwrap().to_uppercase()}}
+                </span>
+            </div>
         </section>
     )
 }

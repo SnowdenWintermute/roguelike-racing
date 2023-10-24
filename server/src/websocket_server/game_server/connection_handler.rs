@@ -1,4 +1,3 @@
-#![allow(dead_code)]
 use super::GameServer;
 use crate::websocket_server::{game_server::ConnectedUser, Connect};
 use actix::{Context, Handler};
@@ -13,6 +12,7 @@ impl Handler<Connect> for GameServer {
         } = message;
 
         let new_user_connection = ConnectedUser::new(actor_id, actor_address);
+        let username = new_user_connection.username.clone();
         self.sessions.insert(actor_id, new_user_connection);
         println!("actor id {} connected", actor_id);
 
@@ -34,6 +34,8 @@ impl Handler<Connect> for GameServer {
                 eprintln!("{:#?}", e)
             }
         }
+
+        let _ = self.send_packet(&GameServerUpdatePackets::ClientUserName(username), actor_id);
 
         actor_id
     }

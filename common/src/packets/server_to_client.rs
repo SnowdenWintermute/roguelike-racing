@@ -11,6 +11,8 @@ use std::time::Instant;
 pub enum GameServerUpdatePackets {
     // ERROR
     Error(String),
+    // USER
+    ClientUserName(String),
     // FULL STATE UPDATES
     FullUpdate(RoguelikeRacerAppState),
     GameList(ClientGameListState),

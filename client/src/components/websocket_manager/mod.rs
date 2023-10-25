@@ -10,7 +10,9 @@ use crate::{
                 handle_adventuring_party_created, handle_character_creation,
                 handle_character_deletion, handle_player_changed_adventuring_party,
             },
-            lobby_update_handlers::{handle_user_joined_game, handle_user_left_room},
+            lobby_update_handlers::{
+                handle_player_toggled_ready, handle_user_joined_game, handle_user_left_room,
+            },
         },
     },
     store::{
@@ -135,6 +137,11 @@ pub fn websocket_manager(props: &Props) -> Html {
                                         let _ =
                                             handle_character_deletion(store, character_deletion);
                                     }),
+                                    GameServerUpdatePackets::PlayerToggledReady(username) => {
+                                        game_dispatch.clone().reduce_mut(|store| {
+                                            let _ = handle_player_toggled_ready(store, username);
+                                        })
+                                    }
                                     _ => {
                                         log!(format!("unhandled packet: {:#?}", data))
                                     }

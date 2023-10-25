@@ -17,7 +17,6 @@ pub struct RoguelikeRacerPlayer {
     pub party_id: Option<u32>,
     pub username: String,
     pub character_ids: Option<HashSet<u32>>,
-    pub ready: bool,
 }
 
 impl RoguelikeRacerPlayer {
@@ -27,7 +26,6 @@ impl RoguelikeRacerPlayer {
             party_id: None,
             username,
             character_ids: None,
-            ready: false,
         }
     }
 }
@@ -37,6 +35,7 @@ pub struct RoguelikeRacerGame {
     pub name: String,
     pub password: Option<String>,
     pub players: HashMap<String, RoguelikeRacerPlayer>,
+    pub players_readied: HashSet<String>,
     pub adventuring_parties: HashMap<u32, AdventuringParty>,
     pub time_started: Option<u64>,
     pub id_generator: IdGenerator,
@@ -48,6 +47,7 @@ impl RoguelikeRacerGame {
             name: game_name,
             password: None,
             players: HashMap::new(),
+            players_readied: HashSet::new(),
             adventuring_parties: HashMap::new(),
             time_started: None,
             id_generator: IdGenerator::new(),

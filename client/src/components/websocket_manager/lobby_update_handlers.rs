@@ -1,4 +1,7 @@
-use common::{errors::AppError, game::RoguelikeRacerPlayer};
+use common::{
+    errors::AppError,
+    game::{getters::get_mut_player, RoguelikeRacerPlayer},
+};
 
 use crate::store::{game_store::GameStore, lobby_store::LobbyStore};
 
@@ -30,5 +33,22 @@ pub fn handle_user_left_game(game_state: &mut GameStore, username: String) -> Re
     })?;
     let _ = &game.remove_player_from_adventuring_party(username.clone());
     game.players.remove(&username);
+    Ok(())
+}
+
+pub fn handle_player_toggled_ready(
+    game_state: &mut GameStore,
+    username: String,
+) -> Result<(), AppError> {
+    let game = game_state.game.as_mut().ok_or_else(|| AppError {
+        error_type: common::errors::AppErrorTypes::ClientError,
+        message: "Client error".to_string(),
+    })?;
+    if game.players_readied.contains(&username) {
+        game.players_readied.remove(&username);
+    } else {
+        game.players_readied.insert(username.clone());
+    }
+
     Ok(())
 }

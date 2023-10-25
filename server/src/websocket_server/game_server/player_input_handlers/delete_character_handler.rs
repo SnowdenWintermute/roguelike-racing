@@ -41,6 +41,7 @@ impl GameServer {
             message: error_messages::PLAYER_HAS_NO_CHARACTERS.to_string(),
         })?;
 
+        let mut should_unready_player = false;
         if player_character_ids.contains(&character_id) {
             party.characters.remove(&character_id);
             player_character_ids.remove(&character_id);
@@ -49,6 +50,7 @@ impl GameServer {
             if player_character_ids.len() >= 1 {
                 player.character_ids = Some(player_character_ids);
             } else {
+                should_unready_player = true;
                 player.character_ids = None
             }
         } else {
@@ -56,6 +58,17 @@ impl GameServer {
                 error_type: common::errors::AppErrorTypes::ServerError,
                 message: error_messages::CHARACTER_NOT_OWNED.to_string(),
             });
+        }
+
+        if should_unready_player {
+            let was_ready = game.players_readied.remove(&username);
+            if was_ready {
+                self.emit_packet(
+                    &game_name,
+                    &GameServerUpdatePackets::PlayerToggledReady(username.clone()),
+                    None,
+                )?;
+            }
         }
 
         self.emit_packet(

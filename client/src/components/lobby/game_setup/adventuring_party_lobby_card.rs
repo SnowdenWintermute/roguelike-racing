@@ -10,7 +10,7 @@ use crate::{
     store::{game_store::GameStore, lobby_store::LobbyStore, websocket_store::WebsocketStore},
 };
 use common::{
-    adventuring_party::AdventuringParty, character::Character,
+    adventuring_party::AdventuringParty, character::Character, errors::AppError,
     packets::client_to_server::PlayerInputs,
 };
 use std::collections::HashMap;
@@ -27,6 +27,10 @@ pub fn adventuring_party_lobby_card(props: &Props) -> Html {
     let (websocket_state, _) = use_store::<WebsocketStore>();
     let (game_state, _) = use_store::<GameStore>();
     let (lobby_state, _) = use_store::<LobbyStore>();
+    let game = game_state.game.clone().ok_or(AppError {
+        error_type: common::errors::AppErrorTypes::ClientError,
+        message: "Displaying game setup but no game found".to_string(),
+    });
 
     let leave_party = Callback::from(move |_| {
         send_client_input(
@@ -55,38 +59,51 @@ pub fn adventuring_party_lobby_card(props: &Props) -> Html {
         characters_by_username.insert(username.clone(), characters.clone());
     }
 
-    html!(
-        <div class="p-3 border border-slate-400 w-full mb-2">
-            <h3 class="mb-2">{ "Party: "  }{props.party.name.clone()}</h3>
-            if let Some(current_party_id) = game_state.current_party_id {
-                if current_party_id == props.party.id {
-                    <div class="mb-2">
-                        <ButtonBasic onclick={leave_party} >{ "Leave Party" }</ButtonBasic>
-                    </div>
-                    <CharacterCreationMenu />
-                    }
-            } else {
-                    <div class="mb-2">
-                        <ButtonBasic onclick={join_party} >{ "Join Party" }</ButtonBasic>
-                    </div>
-            }
-            {characters_by_username.iter().map(|username_with_characters|
-                html!{
-                    <div>
-                    {username_with_characters.0}{": "}
-                    if username_with_characters.1.len() < 1 {
-                        {"No characters yet..."}
-                    } else {
-                        {username_with_characters.1.iter().map(|character|
-                            html!(
-                                <CharacterLobbyCard character={character.clone()}
-                                  owned_by_self={username_with_characters.0 == &lobby_state.username} />)
-                         ).collect::<Html>()}
-                    }
-                    </div>
-                }).collect::<Html>()}
-            <div>
+    match game {
+        Ok(game) => html!(
+            <div class="p-3 border border-slate-400 w-full mb-2">
+                <h3 class="mb-2">{ "Party: "  }{props.party.name.clone()}</h3>
+                if let Some(current_party_id) = game_state.current_party_id {
+                    if current_party_id == props.party.id {
+                        <div class="mb-2">
+                            <ButtonBasic onclick={leave_party} >{ "Leave Party" }</ButtonBasic>
+                        </div>
+                        <CharacterCreationMenu />
+                        }
+                } else {
+                        <div class="mb-2">
+                            <ButtonBasic onclick={join_party} >{ "Join Party" }</ButtonBasic>
+                        </div>
+                }
+                {characters_by_username.iter().map(|username_with_characters|{
+                    let is_ready = game.players_readied.contains(username_with_characters.0);
+                    let ready_style = match is_ready  {
+                            true => "bg-green-700",
+                            false => ""
+                        };
+
+                    html!{
+                        <div class={ready_style}>
+                        {username_with_characters.0}{": "}
+                        if username_with_characters.1.len() < 1 {
+                            {"No characters yet..."}
+                        } else {
+                            {username_with_characters.1.iter().map(|character|
+                                html!(
+                                    <CharacterLobbyCard character={character.clone()}
+                                      owned_by_self={username_with_characters.0 == &lobby_state.username} />)
+                             ).collect::<Html>()}
+                        }
+                        </div>
+                    }}).collect::<Html>()}
+                <div>
+                </div>
             </div>
+        ),
+        Err(_) => html!(
+        <div>
+            {"No game found"}
         </div>
-    )
+        ),
+    }
 }

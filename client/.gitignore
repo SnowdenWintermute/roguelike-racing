@@ -1,2 +1,4 @@
 /target
 tailwind.css
+node_modules
+/node_modules

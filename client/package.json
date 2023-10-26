@@ -1,0 +1,17 @@
+{
+  "name": "client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cypress:firefox": "env-cmd -f .env.test.local cypress open --e2e --browser firefox"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^13.3.3",
+    "env-cmd": "^10.1.0",
+    "typescript": "^5.2.2"
+  }
+}

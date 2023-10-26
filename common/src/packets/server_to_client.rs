@@ -33,6 +33,7 @@ pub enum GameServerUpdatePackets {
     CharacterNameChange(PlayerCharacterNameChange),
     CharacterDeletion(PlayerCharacterDeletion),
     PlayerToggledReady(String),
+    GameStarted(u128),
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Default)]
@@ -45,7 +46,7 @@ pub struct RoomState {
 pub struct GameListEntry {
     pub game_name: String,
     pub number_of_users: u8,
-    pub time_started: Option<u64>,
+    pub time_started: Option<u128>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]

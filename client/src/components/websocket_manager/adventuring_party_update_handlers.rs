@@ -39,13 +39,9 @@ pub fn handle_player_changed_adventuring_party(
     let _ = game.remove_player_from_adventuring_party(update.username.clone());
     if let Some(party_id) = update.party_id {
         if let Some(_party) = game.adventuring_parties.get(&party_id) {
-            let _ = game.put_player_in_adventuring_party(party_id, update.username.clone());
+            return game.put_player_in_adventuring_party(party_id, update.username.clone());
         }
-    } else {
-        if let Ok(player) = get_mut_player(game, update.username.clone()) {
-            player.party_id = None;
-        };
-    };
+    }
     Ok(())
 }
 

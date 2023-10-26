@@ -37,7 +37,7 @@ pub struct RoguelikeRacerGame {
     pub players: HashMap<String, RoguelikeRacerPlayer>,
     pub players_readied: HashSet<String>,
     pub adventuring_parties: HashMap<u32, AdventuringParty>,
-    pub time_started: Option<u64>,
+    pub time_started: Option<u128>,
     pub id_generator: IdGenerator,
 }
 
@@ -87,9 +87,9 @@ impl RoguelikeRacerGame {
             return Ok(());
         }
         let party_id_leaving = player.party_id;
+        let character_ids = player.character_ids.clone();
         player.character_ids = None;
         player.party_id = None;
-        let character_ids = player.character_ids.clone();
 
         let party = get_mut_party(self, party_id_leaving.expect("none check just above here"))?;
 

@@ -11,7 +11,8 @@ use crate::{
                 handle_character_deletion, handle_player_changed_adventuring_party,
             },
             lobby_update_handlers::{
-                handle_player_toggled_ready, handle_user_joined_game, handle_user_left_room,
+                handle_game_started, handle_player_toggled_ready, handle_user_joined_game,
+                handle_user_left_room,
             },
         },
     },
@@ -59,6 +60,7 @@ pub fn websocket_manager(props: &Props) -> Html {
                             let deserialized: Result<GameServerUpdatePackets, _> =
                                 serde_cbor::from_slice(byte_slice);
                             if let Ok(data) = deserialized {
+                                // log!(format!("{:#?}", data));
                                 match data {
                                     GameServerUpdatePackets::Error(message) => {
                                         let dispatch = alert_dispatch.clone();
@@ -101,19 +103,18 @@ pub fn websocket_manager(props: &Props) -> Html {
                                     }
                                     GameServerUpdatePackets::UserJoinedGame(username) => {
                                         game_dispatch.clone().reduce_mut(|store| {
-                                            let _ = handle_user_joined_game(store, username);
+                                            handle_user_joined_game(store, username)
                                         })
                                     }
                                     GameServerUpdatePackets::UserLeftGame(username) => {
                                         game_dispatch.clone().reduce_mut(|store| {
-                                            let _ = handle_user_left_game(store, username);
+                                            handle_user_left_game(store, username)
                                         })
                                     }
                                     GameServerUpdatePackets::AdventuringPartyCreated(
                                         party_creation,
                                     ) => game_dispatch.clone().reduce_mut(|store| {
-                                        let _ =
-                                            handle_adventuring_party_created(store, party_creation);
+                                        handle_adventuring_party_created(store, party_creation)
                                     }),
                                     GameServerUpdatePackets::ClientAdventuringPartyId(update) => {
                                         game_dispatch.clone().reduce_mut(|store| {
@@ -140,6 +141,11 @@ pub fn websocket_manager(props: &Props) -> Html {
                                     GameServerUpdatePackets::PlayerToggledReady(username) => {
                                         game_dispatch.clone().reduce_mut(|store| {
                                             let _ = handle_player_toggled_ready(store, username);
+                                        })
+                                    }
+                                    GameServerUpdatePackets::GameStarted(timestamp) => {
+                                        game_dispatch.clone().reduce_mut(move |store| {
+                                            handle_game_started(store, timestamp)
                                         })
                                     }
                                     _ => {

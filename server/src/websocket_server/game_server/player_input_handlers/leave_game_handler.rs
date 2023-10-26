@@ -46,6 +46,8 @@ impl GameServer {
         game.remove_player_from_adventuring_party(connected_user.username.clone())?;
 
         game.players.remove(&connected_user.username.clone());
+        game.players_readied
+            .remove(&connected_user.username.clone());
 
         if game.get_number_of_players() < 1 {
             self.games.remove(&game_name_leaving);

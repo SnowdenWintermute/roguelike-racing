@@ -13,7 +13,6 @@ use common::{
     adventuring_party::AdventuringParty, character::Character, errors::AppError,
     packets::client_to_server::PlayerInputs,
 };
-use std::collections::HashMap;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
@@ -48,7 +47,8 @@ pub fn adventuring_party_lobby_card(props: &Props) -> Html {
         )
     });
 
-    let mut characters_by_username: HashMap<String, Vec<Character>> = HashMap::new();
+    // let mut characters_by_username: HashMap<String, Vec<Character>> = HashMap::new();
+    let mut characters_by_username: Vec<(String, Vec<Character>)> = vec![];
     for username in &props.party.player_usernames {
         let mut characters: Vec<Character> = Vec::new();
         for character in &props.party.characters {
@@ -56,8 +56,9 @@ pub fn adventuring_party_lobby_card(props: &Props) -> Html {
                 characters.push(character.1.clone());
             }
         }
-        characters_by_username.insert(username.clone(), characters.clone());
+        characters_by_username.push((username.clone(), characters.clone()));
     }
+    characters_by_username.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap());
 
     match game {
         Ok(game) => html!(
@@ -76,22 +77,22 @@ pub fn adventuring_party_lobby_card(props: &Props) -> Html {
                         </div>
                 }
                 {characters_by_username.iter().map(|username_with_characters|{
-                    let is_ready = game.players_readied.contains(username_with_characters.0);
+                    let is_ready = game.players_readied.contains(&username_with_characters.0);
                     let ready_style = match is_ready  {
-                            true => "bg-green-700",
+                            true => "bg-green-800",
                             false => ""
                         };
 
                     html!{
                         <div class={ready_style}>
-                        {username_with_characters.0}{": "}
+                        {username_with_characters.0.clone()}{": "}
                         if username_with_characters.1.len() < 1 {
                             {"No characters yet..."}
                         } else {
                             {username_with_characters.1.iter().map(|character|
                                 html!(
                                     <CharacterLobbyCard character={character.clone()}
-                                      owned_by_self={username_with_characters.0 == &lobby_state.username} />)
+                                      owned_by_self={username_with_characters.0 == lobby_state.username} />)
                              ).collect::<Html>()}
                         }
                         </div>

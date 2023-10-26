@@ -50,6 +50,9 @@ pub fn lobby_menu() -> Html {
                 <ButtonBasic disabled=false button_type="button" onclick={refresh_game_list} >
                     {"Refresh List"}
                 </ButtonBasic>
+                // <svg class="fill-red-500 border border-red-500 flex h-10" >
+                //     <use href="public/img/logo.svg#logo" />
+                // </svg>
             </div>
             <div class="border border-slate-400 rounded-full h-10 w-10 flex justify-center items-center" >
                 <span class="text-lg font-bold">

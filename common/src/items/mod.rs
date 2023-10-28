@@ -1,80 +1,22 @@
 #![allow(dead_code)]
-use crate::character::abilities::{TargetingScheme, ValidTargets};
+pub mod consumables;
+pub mod equipment;
+use self::consumables::ConsumableProperties;
+use self::equipment::EquipmentProperties;
+use crate::combatants::abilities::{TargetingScheme, ValidTargets};
 use crate::game::id_generator::IdGenerator;
 use crate::primatives::{EntityProperties, MaxAndCurrent};
 use rand::prelude::*;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use strum_macros::EnumIter;
 mod generate_consumable_properties;
 mod generate_equipment_properties;
-
-#[derive(Debug, EnumIter, Clone, Copy)]
-pub enum StatTypes {
-    Dexterity,
-    Strength,
-    Intelligence,
-}
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize, Eq)]
 pub enum ItemCategories {
     Equipment,
     Consumable,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub enum EquipmentSlots {
-    LeftHand,
-    RightHand,
-    Head,
-    Body,
-    LeftRing,
-    RightRing,
-    Amulet,
-}
-
-#[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq)]
-pub enum EquipmentTypes {
-    BodyArmor,
-    Helmet,
-    Ring,
-    Amulet,
-    OneHandedWeapon,
-    TwoHandedWeapon,
-    Shield,
-}
-
-#[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq)]
-pub enum ConsumableTypes {
-    RoomFinder,
-    RepairKit,
-    UpgradeKit,
-    SmokeBomb,
-    MilkDrink,
-    FruitDrink,
-    MonsterScanner,
-    Antidote,
-    Grenade,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub struct EquipmentProperties {
-    pub equipment_type: EquipmentTypes,
-    pub damage: u16,
-    pub armor_class: u16,
-    pub durability: Option<MaxAndCurrent<u16>>,
-    pub dexterity: u16,
-    pub strength: u16,
-    pub intelligence: u16,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub struct ConsumableProperties {
-    pub consumable_type: ConsumableTypes,
-    pub uses_remaining: u8,
-    pub combat_use_only: bool,
-    pub requires_combat_turn: bool,
-    pub targeting_schemes: Vec<TargetingScheme>,
-    pub valid_targets: ValidTargets,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]

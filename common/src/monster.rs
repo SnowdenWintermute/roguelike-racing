@@ -1,13 +1,10 @@
 #![allow(dead_code)]
-use std::collections::HashMap;
-
-use serde::{Deserialize, Serialize};
-use strum_macros::EnumIter;
-
-use crate::character::combatant_properties::CombatantProperties;
-use crate::character::items::CombatantEquipment;
+use crate::combatants::{CombatantClass, CombatantProperties};
 use crate::game::id_generator::IdGenerator;
 use crate::primatives::{EntityProperties, MaxAndCurrent};
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use strum_macros::EnumIter;
 
 #[derive(Debug, EnumIter, Clone, Copy, PartialEq)]
 pub enum MonsterTraits {
@@ -38,17 +35,7 @@ impl Monster {
                 id: id_generator.get_next_entity_id(),
                 name: "some monster name".to_string(),
             },
-            combatant_properties: CombatantProperties {
-                combatant_class: crate::character::combatant_properties::CombatantClass::Monster,
-                abilities: HashMap::new(),
-                status_effects: Vec::new(),
-                hit_points: MaxAndCurrent::new(10, 10),
-                mana: MaxAndCurrent::new(10, 10),
-                equipment: CombatantEquipment::new(),
-                selected_item_slot: None,
-                selected_ability_slot: None,
-                target_ids: None,
-            },
+            combatant_properties: CombatantProperties::new(CombatantClass::Monster, HashMap::new()),
         }
     }
 }

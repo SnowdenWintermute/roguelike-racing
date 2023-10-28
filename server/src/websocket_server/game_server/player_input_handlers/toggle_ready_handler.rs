@@ -1,7 +1,5 @@
 use common::{
-    app_consts::error_messages,
-    errors::AppError,
-    game::getters::{get_mut_party, get_mut_player},
+    app_consts::error_messages, errors::AppError, game::getters::get_mut_player,
     packets::server_to_client::GameServerUpdatePackets,
 };
 use std::time::{SystemTime, UNIX_EPOCH};

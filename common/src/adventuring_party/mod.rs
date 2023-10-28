@@ -1,5 +1,6 @@
 use crate::app_consts::{error_messages, MAX_PARTY_SIZE};
-use crate::character::{combatant_properties::CombatantClass, Character};
+use crate::character::Character;
+use crate::combatants::CombatantClass;
 use crate::dungeon_rooms::{DungeonRoom, DungeonRoomTypes};
 use crate::errors::AppError;
 use crate::game::getters::get_mut_player;

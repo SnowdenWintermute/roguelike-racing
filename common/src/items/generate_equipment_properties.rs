@@ -1,6 +1,7 @@
-use crate::primatives::MaxAndCurrent;
+use std::collections::HashMap;
 
-use super::{EquipmentProperties, EquipmentTypes, Item, ItemProperties, StatTypes};
+use super::{equipment::EquipmentTypes, EquipmentProperties, Item, ItemProperties};
+use crate::{combatants::CombatAttributes, primatives::MaxAndCurrent};
 use rand::prelude::*;
 use strum::IntoEnumIterator;
 
@@ -9,8 +10,8 @@ impl Item {
         let mut rng = rand::thread_rng();
         let equipment_types: Vec<_> = EquipmentTypes::iter().collect();
         let equipment_type = *equipment_types.choose(&mut rand::thread_rng()).unwrap();
-        let stat_types: Vec<_> = StatTypes::iter().collect();
-        let bonus_stat_type = *stat_types.choose(&mut rand::thread_rng()).unwrap();
+        let attribute_types: Vec<_> = CombatAttributes::iter().collect();
+        let bonus_attribute_type = *attribute_types.choose(&mut rand::thread_rng()).unwrap();
 
         // DETERMINE BASE STATS
         let durability = rng.gen_range(1..=level) * 5;
@@ -26,11 +27,8 @@ impl Item {
             _ => (),
         };
 
-        // DETERMINE BONUS STATS
-        let mut dexterity = 0;
-        let mut strength = 0;
-        let mut intelligence = 0;
-        let mut bonus_stat_amount = 0;
+        let mut attributes = HashMap::new();
+        let mut bonus_stat_amount;
 
         match equipment_type {
             EquipmentTypes::Ring | EquipmentTypes::Amulet | EquipmentTypes::TwoHandedWeapon => {
@@ -39,11 +37,7 @@ impl Item {
             _ => bonus_stat_amount = rng.gen_range(1..level),
         };
 
-        match bonus_stat_type {
-            StatTypes::Dexterity => dexterity = bonus_stat_amount,
-            StatTypes::Strength => strength = bonus_stat_amount,
-            StatTypes::Intelligence => intelligence = bonus_stat_amount,
-        };
+        attributes.insert(bonus_attribute_type, bonus_stat_amount);
 
         let equipment_properties = EquipmentProperties {
             equipment_type,
@@ -51,11 +45,7 @@ impl Item {
                 max: durability,
                 current: durability,
             }),
-            armor_class,
-            damage,
-            dexterity,
-            intelligence,
-            strength,
+            attributes,
         };
 
         ItemProperties::Equipment(equipment_properties)

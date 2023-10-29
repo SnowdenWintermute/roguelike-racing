@@ -3,6 +3,8 @@ use self::inventory::CharacterInventory;
 use crate::combatants::abilities::{CombatantAbilities, CombatantAbility};
 use crate::combatants::{CombatAttributes, CombatantClass, CombatantProperties};
 use crate::game::id_generator::IdGenerator;
+use crate::items::equipment::EquipmentProperties;
+use crate::items::{self, Item, ItemCategories};
 use crate::primatives::{EntityProperties, MaxAndCurrent};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -52,7 +54,7 @@ impl Character {
             CombatantClass::Monster => {}
         }
 
-        Character {
+        let mut character = Character {
             name_of_controlling_user,
             entity_properties: EntityProperties {
                 id,
@@ -62,6 +64,41 @@ impl Character {
             inventory: CharacterInventory::new(),
             unspent_ability_points: 1,
             actions_taken: 0,
-        }
+        };
+
+        character
+            .combatant_properties
+            .inherent_attributes
+            .insert(CombatAttributes::Damage, 4);
+
+        let mut starting_weapon_properties = EquipmentProperties {
+            equipment_type: crate::items::equipment::EquipmentTypes::OneHandedWeapon,
+            durability: Some(MaxAndCurrent {
+                max: 10,
+                current: 10,
+            }),
+            attributes: HashMap::new(),
+        };
+
+        starting_weapon_properties
+            .attributes
+            .insert(CombatAttributes::Damage, 1);
+
+        let starting_weapon = Item {
+            entity_properties: EntityProperties {
+                id: 420,
+                name: "starting weapon".to_string(),
+            },
+            item_level: 1,
+            item_category: ItemCategories::Equipment,
+            item_properties: items::ItemProperties::Equipment(starting_weapon_properties),
+        };
+
+        character.combatant_properties.equipment.insert(
+            crate::items::equipment::EquipmentSlots::RightHand,
+            starting_weapon,
+        );
+
+        character
     }
 }

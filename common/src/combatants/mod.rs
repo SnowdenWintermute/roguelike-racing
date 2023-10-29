@@ -72,4 +72,31 @@ impl CombatantProperties {
             target_ids: None,
         }
     }
+
+    pub fn get_total_attributes(&mut self) -> HashMap<CombatAttributes, u16> {
+        let mut total_attributes = HashMap::new();
+        add_attributes_to_accumulator(&self.inherent_attributes, &mut total_attributes);
+
+        for (slot, item) in self.equipment.clone() {
+            match item.item_properties {
+                crate::items::ItemProperties::Consumable(_) => (),
+                crate::items::ItemProperties::Equipment(equipment) => {
+                    add_attributes_to_accumulator(&equipment.attributes, &mut total_attributes)
+                }
+            }
+        }
+
+        total_attributes
+    }
+}
+
+pub fn add_attributes_to_accumulator(
+    attr: &HashMap<CombatAttributes, u16>,
+    acc: &mut HashMap<CombatAttributes, u16>,
+) {
+    for (attribute, number) in attr {
+        acc.entry(*attribute)
+            .and_modify(|v| *v += number)
+            .or_insert(*number);
+    }
 }

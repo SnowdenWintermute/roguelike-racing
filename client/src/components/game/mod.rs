@@ -1,13 +1,16 @@
 pub mod action_menu;
 pub mod combat_log;
+pub mod combatant_detail_tab;
 pub mod dungeon_room;
-use yew::prelude::*;
-use yewdux::prelude::use_store;
-
+pub mod tabbed_display;
 use crate::{
-    components::game::{action_menu::ActionMenu, combat_log::CombatLog, dungeon_room::DungeonRoom},
+    components::game::{
+        action_menu::ActionMenu, dungeon_room::DungeonRoom, tabbed_display::TabbedDisplay,
+    },
     store::game_store::GameStore,
 };
+use yew::prelude::*;
+use yewdux::prelude::use_store;
 
 #[function_component(Game)]
 pub fn game() -> Html {
@@ -22,7 +25,7 @@ pub fn game() -> Html {
             <DungeonRoom game={game} party_id={game_state.current_party_id.expect("must have party id")} />
             <div class="flex h-1/2 max-h-[453px]" >
                 <ActionMenu />
-                <CombatLog />
+                <TabbedDisplay />
             </div>
         </main>
     )

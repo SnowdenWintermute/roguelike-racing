@@ -47,19 +47,19 @@ pub fn combatant(props: &Props) -> Html {
         None => "",
     };
     let styles = format!(
-        "border border-slate-400 p-2 mb-2 max-w-fit {}",
+        "border border-slate-400 p-2 mb-2 last:mb-0 max-w-fit {}",
         selected_style
     );
 
     html!(
-        <ButtonBlank styles={styles} onclick={handle_click} >
-            <div>
+        <ButtonBlank styles={styles} onclick={handle_click} id={format!("combatant-{}", id)} >
+            <div class="pointer-events-none">
             {"entity id: "}{id}
             </div>
-            <div class="text-green-700" >
+            <div class="text-green-700 pointer-events-none" >
             {"hp: "}{combatant_properties.hit_points.current}{" / "}{combatant_properties.hit_points.max}
             </div>
-            <div class="text-blue-700" >
+            <div class="text-blue-700 pointer-events-none" >
             {"hp: "}{combatant_properties.mana.current}{" / "}{combatant_properties.mana.max}
             </div>
         </ButtonBlank>

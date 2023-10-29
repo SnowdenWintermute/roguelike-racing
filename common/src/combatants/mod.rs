@@ -6,6 +6,7 @@ use crate::{items::equipment::EquipmentSlots, primatives::MaxAndCurrent};
 use core::fmt;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 pub mod abilities;
 
@@ -37,6 +38,20 @@ pub enum CombatAttributes {
     Intelligence,
     Vitality,
     Resilience,
+}
+
+impl fmt::Display for CombatAttributes {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            CombatAttributes::Damage => write!(f, "Damage"),
+            CombatAttributes::ArmorClass => write!(f, "Armor Class"),
+            CombatAttributes::Dexterity => write!(f, "Dexterity"),
+            CombatAttributes::Strength => write!(f, "Strength"),
+            CombatAttributes::Intelligence => write!(f, "Intelligence"),
+            CombatAttributes::Vitality => write!(f, "Vitality"),
+            CombatAttributes::Resilience => write!(f, "Resilience"),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -75,6 +90,10 @@ impl CombatantProperties {
 
     pub fn get_total_attributes(&mut self) -> HashMap<CombatAttributes, u16> {
         let mut total_attributes = HashMap::new();
+        for attribute in CombatAttributes::iter() {
+            total_attributes.insert(attribute, 0);
+        }
+
         add_attributes_to_accumulator(&self.inherent_attributes, &mut total_attributes);
 
         for (slot, item) in self.equipment.clone() {

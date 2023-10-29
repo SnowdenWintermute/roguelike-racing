@@ -28,6 +28,7 @@ pub fn button_blank(props: &Props) -> Html {
             onclick={button_onclick}
             disabled={props.disabled}
             type={props.button_type.clone()}
+            id={props.id.clone()}
         >
             {props.children.clone()}
         </button>

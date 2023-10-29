@@ -32,7 +32,7 @@ pub fn dungeon_room(props: &Props) -> Html {
 
     html!(
         <section class="w-full h-[50%] border border-slate-400 bg-slate-700 mb-4 overflow-y-auto" >
-            <div class="p-2" >
+            <div class="p-2 flex flex-col" >
                 {characters.iter().map(|(_id, character)|
                     html!{<Combatant
                         entity_properties={character.entity_properties.clone()}

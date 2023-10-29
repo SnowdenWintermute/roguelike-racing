@@ -19,16 +19,7 @@ use yewdux::prelude::*;
 pub fn app() -> Html {
     let (game_state, _) = use_store::<GameStore>();
     let game = game_state.game.clone();
-    let keyup_listener_state = use_state(|| None::<EventListener>);
     let click_listener_state = use_state(|| None::<EventListener>);
-    //
-    use_effect_with((), move |_| {
-        let listener = EventListener::new(&window(), "keyup", |event| {
-            let event = event.dyn_ref::<web_sys::KeyboardEvent>().unwrap_throw();
-            log!(&format!("{}", event.key()))
-        });
-        keyup_listener_state.set(Some(listener));
-    });
 
     use_effect_with((), move |_| {
         let listener = EventListener::new(&window(), "click", |event| {

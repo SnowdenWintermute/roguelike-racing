@@ -9,16 +9,30 @@ use crate::{
     },
     store::game_store::GameStore,
 };
+use gloo::events::EventListener;
+use gloo_utils::window;
+use wasm_bindgen::{JsCast, UnwrapThrowExt};
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
 #[function_component(Game)]
 pub fn game() -> Html {
-    let (game_state, _) = use_store::<GameStore>();
+    let (game_state, game_dispatch) = use_store::<GameStore>();
     let game = game_state
         .game
         .clone()
         .expect("component only shown if game exists");
+    let keyup_listener_state = use_state(|| None::<EventListener>);
+
+    use_effect_with((), move |_| {
+        let listener = EventListener::new(&window(), "keyup", move |event| {
+            let event = event.dyn_ref::<web_sys::KeyboardEvent>().unwrap_throw();
+            if event.key() == "Escape" {
+                game_dispatch.reduce_mut(|store| store.detailed_entity = None);
+            }
+        });
+        keyup_listener_state.set(Some(listener));
+    });
 
     html!(
         <main class="h-screen w-screen p-4 bg-gray-600 text-zinc-300 flex flex-col">

@@ -22,7 +22,7 @@ pub fn tabbed_display() -> Html {
     }
 
     html!(
-        <section class="flex-grow-[2] border border-slate-400 bg-slate-700">
+        <section class="p-2 flex-grow border border-slate-400 bg-slate-700">
             {displayed_tab}
         </section>
     )

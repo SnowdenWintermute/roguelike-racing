@@ -24,6 +24,14 @@ pub fn game() -> Html {
         .clone()
         .expect("component only shown if game exists");
 
+    let party_id = game_state.current_party_id.expect("must have party id");
+
+    let party = game
+        .adventuring_parties
+        .get(&party_id)
+        .expect("must have a party id")
+        .clone();
+
     let click_listener_state = use_state(|| None::<EventListener>);
     let cloned_dispatch = game_dispatch.clone();
     use_effect_with((), move |_| {
@@ -56,9 +64,9 @@ pub fn game() -> Html {
 
     html!(
         <main class="h-screen w-screen p-4 bg-gray-600 text-zinc-300 flex flex-col">
-            <DungeonRoom game={game} party_id={game_state.current_party_id.expect("must have party id")} />
+            <DungeonRoom game={game} party_id={party_id} />
             <div class="flex h-1/2 max-h-[453px]" >
-                <ActionMenu />
+                <ActionMenu adventuring_party={party.clone()} />
                 <TabbedDisplay />
             </div>
         </main>

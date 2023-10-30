@@ -40,7 +40,7 @@ pub struct CustomFormData {}
 #[function_component(WebsocketManager)]
 pub fn websocket_manager(props: &Props) -> Html {
     let (_, websocket_dispatch) = use_store::<WebsocketStore>();
-    let (_, lobby_dispatch) = use_store::<LobbyStore>();
+    let (lobby_state, lobby_dispatch) = use_store::<LobbyStore>();
     let (_, game_dispatch) = use_store::<GameStore>();
     let (_, alert_dispatch) = use_store::<AlertStore>();
     let server_url = props.server_url.clone();
@@ -144,8 +144,13 @@ pub fn websocket_manager(props: &Props) -> Html {
                                         })
                                     }
                                     GameServerUpdatePackets::GameStarted(timestamp) => {
+                                        let cloned_lobby_state = lobby_state.clone();
                                         game_dispatch.clone().reduce_mut(move |store| {
-                                            handle_game_started(store, timestamp)
+                                            handle_game_started(
+                                                store,
+                                                timestamp,
+                                                cloned_lobby_state,
+                                            )
                                         })
                                     }
                                     _ => {

@@ -29,7 +29,14 @@ pub fn action_menu(props: &Props) -> Html {
             new_actions = MenuTypes::get_menu(new_menus, None, None, None, None);
         } else if game_state.viewing_inventory {
             new_menus.push(MenuTypes::InventoryOpen);
-            // new_actions = MenuTypes::get_menu(new_menus, None, None, None, None);
+            let focused_character = party.characters.get(&game_state.focused_character_id);
+            if let Some(character) = focused_character {
+                let mut ids = Vec::new();
+                for item in &character.inventory.items {
+                    ids.push(item.entity_properties.id);
+                }
+                new_actions = MenuTypes::get_menu(new_menus, Some(ids), None, None, None);
+            }
         } else if game_state.viewing_skill_level_up_menu {
             new_menus.push(MenuTypes::LevelUpAbilities)
         } else if game_state.viewing_attribute_point_assignment_menu {

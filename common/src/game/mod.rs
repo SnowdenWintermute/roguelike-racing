@@ -3,6 +3,7 @@ use crate::character::Character;
 use crate::game::id_generator::IdGenerator;
 use crate::{adventuring_party::AdventuringParty, errors::AppError};
 use serde::{Deserialize, Serialize};
+use std::time::{SystemTime, UNIX_EPOCH};
 use std::{collections::HashMap, collections::HashSet, hash::Hash, time::Instant};
 
 use self::getters::{get_mut_party, get_mut_player};
@@ -139,5 +140,18 @@ impl RoguelikeRacerGame {
             }
         }
         Ok(characters)
+    }
+
+    pub fn start(&mut self) {
+        self.time_started = Some(
+            SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .expect("time went backwards")
+                .as_millis(),
+        );
+
+        // for party in &self.adventuring_parties {
+
+        // }
     }
 }

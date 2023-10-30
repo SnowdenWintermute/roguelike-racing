@@ -1,6 +1,9 @@
 #![allow(dead_code, unused)]
 
-use common::combatants::{abilities::CombatantAbilities, CombatAttributes};
+use common::{
+    combatants::{abilities::CombatantAbilities, CombatAttributes},
+    items::Item,
+};
 pub enum MenuTypes {
     InCombat,
     OutOfCombat,
@@ -18,7 +21,7 @@ pub enum GameActions {
     SetInventoryOpen(bool),
     ToggleInventoryOpen,
     UseAutoinjector,
-    SelectInventorySlot(u16),
+    SelectItem(u32),
     OpenTreasureChest,
     TakeItem,
     // Item Selected
@@ -36,7 +39,7 @@ pub enum GameActions {
 impl MenuTypes {
     pub fn get_menu(
         menu_types: Vec<MenuTypes>,
-        num_items_in_inventory: Option<u16>,
+        item_ids_in_inventory: Option<Vec<u32>>,
         all_abilities: Option<Vec<CombatantAbilities>>,
         combat_useable_abilities: Option<Vec<CombatantAbilities>>,
         non_combat_usable_abilities: Option<Vec<CombatantAbilities>>,
@@ -78,9 +81,9 @@ impl MenuTypes {
                 }
                 MenuTypes::InventoryOpen => {
                     menu_items.push(GameActions::ToggleInventoryOpen);
-                    if let Some(num) = num_items_in_inventory {
-                        for i in 0..=num {
-                            menu_items.push(GameActions::SelectInventorySlot(i))
+                    if let Some(item_ids) = &item_ids_in_inventory {
+                        for id in item_ids {
+                            menu_items.push(GameActions::SelectItem(*id))
                         }
                     }
                 }

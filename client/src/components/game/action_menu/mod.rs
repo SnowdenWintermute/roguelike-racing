@@ -1,8 +1,9 @@
 pub mod available_actions;
 pub mod generate_action_menu_handlers;
 pub mod generate_action_menu_items;
-use std::ops::Deref;
-
+use gloo_utils::window;
+use wasm_bindgen::{JsCast, UnwrapThrowExt};
+mod generate_button_text;
 use crate::{
     components::{
         common_components::atoms::button_blank::ButtonBlank,
@@ -11,6 +12,8 @@ use crate::{
     store::{game_store::GameStore, websocket_store::WebsocketStore},
 };
 use common::adventuring_party::AdventuringParty;
+use gloo::events::EventListener;
+use std::ops::Deref;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
@@ -24,7 +27,8 @@ pub fn action_menu(props: &Props) -> Html {
     let (game_state, game_dispatch) = use_store::<GameStore>();
     let (websocket_state, _) = use_store::<WebsocketStore>();
     let actions_state = use_state(|| Vec::<GameActions>::new());
-    let handlers_state = use_state(|| Vec::<fn()>::new());
+    let handlers_state = use_state(|| Vec::new());
+    let viewing_inventory = game_state.viewing_inventory.clone();
 
     let party = props.adventuring_party.clone();
     let cloned_actions_state = actions_state.clone();
@@ -42,37 +46,29 @@ pub fn action_menu(props: &Props) -> Html {
         cloned_handlers_state.set(new_handlers);
     });
 
+    let keyup_listener_state = use_state(|| None::<EventListener>);
+    let cloned_handlers = handlers_state.clone();
+    use_effect_with(actions_state.len(), move |_| {
+        let listener = EventListener::new(&window(), "keyup", move |event| {
+            let event = event.dyn_ref::<web_sys::KeyboardEvent>().unwrap_throw();
+            for i in 0..=6 {
+                let key = (i + 1).to_string();
+                if event.key() == key {
+                    cloned_handlers[i]()
+                }
+            }
+        });
+        keyup_listener_state.set(Some(listener));
+    });
+
     html!(
         <section class="w-1/3 max-w-[733px] border border-slate-400 bg-slate-700 mr-4 overflow-y-auto">
         {actions_state.deref().iter().enumerate().map(|(i, action)| {
-        let button_text = match action {
-            GameActions::ToggleReadyToExplore => "Ready to explore",
-            GameActions::SetInventoryOpen(open_status) => {
-               if *open_status {
-                   "Open inventory"
-               } else {
-                   "Close inventory"
-               }
-            },
-            GameActions::ToggleInventoryOpen => "Inventory",
-            GameActions::UseAutoinjector => "Use autoinjector",
-            GameActions::SelectItem(_id) => "Use Item",
-            GameActions::OpenTreasureChest => "Open treasure chest",
-            GameActions::TakeItem => "Pick up item",
-            GameActions::UseItem => "Use",
-            GameActions::DropItem => "Drop",
-            GameActions::ShardItem => "Convert to shard",
-            GameActions::Attack => "Attack",
-            GameActions::UseAbility(_name) => "Use ability",
-            GameActions::LevelUpAbility(_name) => "Level up ability",
-            GameActions::SetAssignAttributePointsMenuOpen(_open_status) => "Assign attributes",
-            GameActions::AssignAttributePoint(_attribute) => "Increase attribute",
-        };
+        let button_text = generate_button_text::generate_button_text(&action);
         let cloned_handlers = handlers_state.clone();
-        let handler =
-    Callback::from(move |_| {
-        cloned_handlers[0]()
-    });
+        let handler = Callback::from(move |_| {
+            cloned_handlers[i]()
+        });
 
           html!(
               <ButtonBlank class="h-10 w-full border-b border-slate-400 flex items-center hover:bg-slate-950"
@@ -82,6 +78,12 @@ pub fn action_menu(props: &Props) -> Html {
               </ButtonBlank>
               )
           }).collect::<Html>() }
+        <div>{"Inventory is open: "}{if viewing_inventory {
+            "true"
+        } else {
+            "false"
+        }
+        }</div>
         </section>
     )
 }

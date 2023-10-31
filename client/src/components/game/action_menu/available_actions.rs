@@ -15,7 +15,7 @@ pub enum MenuTypes {
     UnopenedChest,
 }
 
-#[derive(Hash, Eq, PartialEq)]
+#[derive(Hash, Eq, PartialEq, Clone)]
 pub enum GameActions {
     ToggleReadyToExplore,
     SetInventoryOpen(bool),

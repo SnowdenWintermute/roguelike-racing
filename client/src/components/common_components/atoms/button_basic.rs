@@ -19,7 +19,7 @@ pub struct Props {
 pub fn button_basic(props: &Props) -> Html {
     html!(
         <ButtonBlank
-            styles={
+            class={
                 format!(
                     "{} {}",
                     "border border-slate-400 h-10 cursor-pointer pr-4 pl-4

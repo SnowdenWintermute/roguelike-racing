@@ -7,7 +7,7 @@ use crate::{
     components::game::{
         action_menu::ActionMenu, dungeon_room::DungeonRoom, tabbed_display::TabbedDisplay,
     },
-    store::game_store::GameStore,
+    store::{game_store::GameStore, lobby_store::LobbyStore},
 };
 use gloo::{console::log, events::EventListener};
 use gloo_utils::window;
@@ -19,10 +19,16 @@ use yewdux::prelude::use_store;
 #[function_component(Game)]
 pub fn game() -> Html {
     let (game_state, game_dispatch) = use_store::<GameStore>();
+    let (lobby_state, _) = use_store::<LobbyStore>();
     let game = game_state
         .game
         .clone()
         .expect("component only shown if game exists");
+    let player = game
+        .players
+        .get(&lobby_state.username)
+        .expect("a player should exist by the username stored on the client")
+        .clone();
 
     let party_id = game_state.current_party_id.expect("must have party id");
 
@@ -40,7 +46,6 @@ pub fn game() -> Html {
             let target = event.target();
             if let Some(target) = target {
                 let element = target.unchecked_into::<HtmlElement>();
-                log!(&format!("{:#?}", element.id()));
                 let id_tag = element.id().split("-").collect::<Vec<&str>>()[0].to_string();
                 if id_tag != "combatant".to_string() {
                     cloned_dispatch.reduce_mut(|store| store.detailed_entity = None);
@@ -60,6 +65,17 @@ pub fn game() -> Html {
             }
         });
         keyup_listener_state.set(Some(listener));
+    });
+
+    let cloned_dispatch = game_dispatch.clone();
+    use_effect_with((), move |_| {
+        cloned_dispatch.reduce_mut(|game_state| {
+            if let Some(ids) = &player.character_ids {
+                let mut character_ids_vec = Vec::from_iter(ids);
+                character_ids_vec.sort();
+                game_state.focused_character_id = *character_ids_vec[0];
+            }
+        })
     });
 
     html!(

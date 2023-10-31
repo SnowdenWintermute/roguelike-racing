@@ -50,6 +50,10 @@ impl Character {
                     CombatantAbilityNames::ArmorBreak,
                     CombatantAbility::new(&CombatantAbilityNames::ArmorBreak),
                 );
+                abilities.insert(
+                    CombatantAbilityNames::Heal,
+                    CombatantAbility::new(&CombatantAbilityNames::Heal),
+                );
             }
             CombatantClass::Monster => {}
         }

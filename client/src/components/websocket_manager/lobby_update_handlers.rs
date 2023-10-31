@@ -1,6 +1,5 @@
 use crate::store::{game_store::GameStore, lobby_store::LobbyStore};
 use common::{errors::AppError, game::RoguelikeRacerPlayer};
-use std::rc::Rc;
 
 pub fn handle_user_left_room(lobby_state: &mut LobbyStore, username_leaving: &str) {
     for (index, username) in lobby_state.room.users.clone().iter().enumerate() {
@@ -51,32 +50,12 @@ pub fn handle_player_toggled_ready(
     Ok(())
 }
 
-pub fn handle_game_started(
-    game_state: &mut GameStore,
-    timestamp: u128,
-    lobby_state: Rc<LobbyStore>,
-) -> Result<(), AppError> {
+pub fn handle_game_started(game_state: &mut GameStore, timestamp: u128) -> Result<(), AppError> {
     let game = game_state.game.as_mut().ok_or_else(|| AppError {
         error_type: common::errors::AppErrorTypes::ClientError,
         message: "Client error".to_string(),
     })?;
     game.time_started = Some(timestamp);
-    let party_id = game_state
-        .current_party_id
-        .expect("game should only be starting if user has a party id");
-    let party = game
-        .adventuring_parties
-        .get(&party_id)
-        .expect("a game should only be started if a party exists");
-    let player = game
-        .players
-        .get(&lobby_state.username)
-        .expect("a player should exist by the username stored on the client");
-    if let Some(ids) = &player.character_ids {
-        let mut character_ids_vec = Vec::from_iter(ids);
-        character_ids_vec.sort();
-        game_state.focused_character_id = *character_ids_vec[0];
-    }
 
     Ok(())
 }

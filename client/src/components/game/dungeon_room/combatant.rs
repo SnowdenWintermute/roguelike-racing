@@ -52,7 +52,7 @@ pub fn combatant(props: &Props) -> Html {
     );
 
     html!(
-        <ButtonBlank styles={styles} onclick={handle_click} id={format!("combatant-{}", id)} >
+        <ButtonBlank class={styles} onclick={handle_click} id={format!("combatant-{}", id)} >
             <div class="pointer-events-none">
             {"entity id: "}{id}
             </div>

@@ -9,7 +9,7 @@ pub struct Props {
     #[prop_or(false)]
     pub disabled: bool,
     #[prop_or_default]
-    pub styles: String,
+    pub class: String,
     #[prop_or("button".to_string())]
     pub button_type: String,
     pub children: Html,
@@ -24,7 +24,7 @@ pub fn button_blank(props: &Props) -> Html {
 
     html!(
         <button
-            class={props.styles.clone()}
+            class={props.class.clone()}
             onclick={button_onclick}
             disabled={props.disabled}
             type={props.button_type.clone()}

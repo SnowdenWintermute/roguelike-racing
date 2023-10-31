@@ -1,7 +1,7 @@
 pub mod available_actions;
+pub mod generate_action_menu_items;
 use crate::{
-    components::game::action_menu::available_actions::{GameActions, MenuTypes},
-    store::game_store::GameStore,
+    components::game::action_menu::available_actions::GameActions, store::game_store::GameStore,
 };
 use common::adventuring_party::AdventuringParty;
 use yew::prelude::*;
@@ -14,49 +14,13 @@ pub struct Props {
 
 #[function_component(ActionMenu)]
 pub fn action_menu(props: &Props) -> Html {
-    let (game_state, game_dispatch) = use_store::<GameStore>();
+    let (game_state, _) = use_store::<GameStore>();
     let actions_state = use_state(|| Vec::<GameActions>::new());
 
     let party = props.adventuring_party.clone();
     use_effect_with((), move |_| {
-        let mut new_menus: Vec<MenuTypes> = Vec::new();
-        let mut new_actions: Vec<GameActions> = Vec::new();
-        if game_state.viewing_items_on_ground {
-            new_menus.push(MenuTypes::ItemsOnGround);
-            new_actions = MenuTypes::get_menu(new_menus, None, None, None, None);
-        } else if game_state.selected_item.is_some() {
-            new_menus.push(MenuTypes::ItemSelected);
-            new_actions = MenuTypes::get_menu(new_menus, None, None, None, None);
-        } else if game_state.viewing_inventory {
-            new_menus.push(MenuTypes::InventoryOpen);
-            let focused_character = party.characters.get(&game_state.focused_character_id);
-            if let Some(character) = focused_character {
-                let mut ids = Vec::new();
-                for item in &character.inventory.items {
-                    ids.push(item.entity_properties.id);
-                }
-                new_actions = MenuTypes::get_menu(new_menus, Some(ids), None, None, None);
-            }
-        } else if game_state.viewing_skill_level_up_menu {
-            new_menus.push(MenuTypes::LevelUpAbilities)
-        } else if game_state.viewing_attribute_point_assignment_menu {
-            new_menus.push(MenuTypes::AttributePointAssignment)
-        } else if party.current_room.monsters.is_none()
-            && !game_state.viewing_inventory
-            && !game_state.viewing_items_on_ground
-            && game_state.selected_item.is_none()
-        {
-            new_menus.push(MenuTypes::OutOfCombat);
-            if party.current_room.treasure_chest.is_some() {
-                new_menus.push(MenuTypes::UnopenedChest);
-            }
-            if party.current_room.items.is_some() {
-                new_menus.push(MenuTypes::ItemsOnGround);
-            }
-        } else {
-            new_menus.push(MenuTypes::InCombat)
-        }
-
+        let new_actions =
+            generate_action_menu_items::generate_action_menu_items(game_state, &party);
         actions_state.set(new_actions);
     });
 

@@ -1,7 +1,7 @@
 #![allow(dead_code, unused)]
 
 use common::{
-    combatants::{abilities::CombatantAbilities, CombatAttributes},
+    combatants::{abilities::CombatantAbilityNames, CombatAttributes},
     items::Item,
 };
 pub enum MenuTypes {
@@ -30,19 +30,17 @@ pub enum GameActions {
     ShardItem,
     // InCombat
     Attack,
-    UseAbility(CombatantAbilities),
-    LevelUpAbility(CombatantAbilities),
+    UseAbility(CombatantAbilityNames),
+    LevelUpAbility(CombatantAbilityNames),
     SetAssignAttributePointsMenuOpen(bool),
     AssignAttributePoint(CombatAttributes),
 }
 
 impl MenuTypes {
     pub fn get_menu(
-        menu_types: Vec<MenuTypes>,
+        menu_types: &Vec<MenuTypes>,
         item_ids_in_inventory: Option<Vec<u32>>,
-        all_abilities: Option<Vec<CombatantAbilities>>,
-        combat_useable_abilities: Option<Vec<CombatantAbilities>>,
-        non_combat_usable_abilities: Option<Vec<CombatantAbilities>>,
+        abilities: Option<Vec<CombatantAbilityNames>>,
     ) -> Vec<GameActions> {
         let mut menu_items: Vec<GameActions> = Vec::new();
 
@@ -52,11 +50,7 @@ impl MenuTypes {
                     menu_items.push(GameActions::ToggleReadyToExplore);
                     menu_items.push(GameActions::UseAutoinjector);
                     menu_items.push(GameActions::ToggleInventoryOpen);
-                    if let Some(abilities) = non_combat_usable_abilities.clone() {
-                        for ability in abilities {
-                            menu_items.push(GameActions::UseAbility(ability))
-                        }
-                    }
+                    add_abilities_to_menu(&abilities, &mut menu_items);
                     menu_items.push(GameActions::SetAssignAttributePointsMenuOpen(true))
                 }
                 MenuTypes::UnopenedChest => menu_items.push(GameActions::OpenTreasureChest),
@@ -64,20 +58,12 @@ impl MenuTypes {
                 MenuTypes::InCombat => {
                     menu_items.push(GameActions::Attack);
                     menu_items.push(GameActions::UseAutoinjector);
-                    if let Some(abilities) = combat_useable_abilities.clone() {
-                        for ability in abilities {
-                            menu_items.push(GameActions::UseAbility(ability))
-                        }
-                    }
+                    add_abilities_to_menu(&abilities, &mut menu_items);
                     menu_items.push(GameActions::ToggleInventoryOpen);
                 }
                 MenuTypes::LevelUpAbilities => {
                     menu_items.push(GameActions::SetAssignAttributePointsMenuOpen(true));
-                    if let Some(abilities) = all_abilities.clone() {
-                        for ability in abilities {
-                            menu_items.push(GameActions::LevelUpAbility(ability))
-                        }
-                    }
+                    add_abilities_to_menu(&abilities, &mut menu_items);
                 }
                 MenuTypes::InventoryOpen => {
                     menu_items.push(GameActions::ToggleInventoryOpen);
@@ -99,5 +85,16 @@ impl MenuTypes {
         }
 
         menu_items
+    }
+}
+
+fn add_abilities_to_menu(
+    ability_names: &Option<Vec<CombatantAbilityNames>>,
+    menu_items: &mut Vec<GameActions>,
+) {
+    if let Some(names) = ability_names.clone() {
+        for ability_name in names {
+            menu_items.push(GameActions::UseAbility(ability_name))
+        }
     }
 }

@@ -16,15 +16,22 @@ pub enum ValidTargets {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum AbilityUsableContext {
+    All,
+    InCombat,
+    OutOfCombat,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct CombatantAbility {
-    pub ability_type: CombatantAbilities,
+    pub ability_type: CombatantAbilityNames,
     pub class: Option<CombatantClass>,
     pub level: u8,
     pub mana_cost: u8,
     pub mana_cost_level_multiplier: u8,
     pub shard_cost: u8,
     pub requires_combat_turn: bool,
-    pub combat_use_only: bool,
+    pub usable_context: AbilityUsableContext,
     pub targeting_schemes: Vec<TargetingScheme>,
     pub valid_targets: ValidTargets,
 }
@@ -32,14 +39,14 @@ pub struct CombatantAbility {
 impl Default for CombatantAbility {
     fn default() -> CombatantAbility {
         CombatantAbility {
-            ability_type: CombatantAbilities::Attack,
+            ability_type: CombatantAbilityNames::Attack,
             class: None,
             level: 0,
             mana_cost: 0,
             mana_cost_level_multiplier: 1,
             shard_cost: 0,
             requires_combat_turn: true,
-            combat_use_only: true,
+            usable_context: AbilityUsableContext::InCombat,
             targeting_schemes: vec![TargetingScheme::Single],
             valid_targets: ValidTargets::Opponent,
         }
@@ -47,38 +54,46 @@ impl Default for CombatantAbility {
 }
 
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Serialize, Deserialize)]
-pub enum CombatantAbilities {
+pub enum CombatantAbilityNames {
     Attack,
     HeatLance,
     ArmorBreak,
     ShootArrow,
+    Heal,
 }
 
-impl CombatantAbilities {
-    pub fn new(&self) -> CombatantAbility {
-        match self {
-            CombatantAbilities::Attack => CombatantAbility {
-                ability_type: CombatantAbilities::Attack,
+impl CombatantAbility {
+    pub fn new(name: &CombatantAbilityNames) -> CombatantAbility {
+        match name {
+            CombatantAbilityNames::Attack => CombatantAbility {
+                ability_type: CombatantAbilityNames::Attack,
                 class: None,
                 level: 1,
                 ..Default::default()
             },
-            CombatantAbilities::HeatLance => CombatantAbility {
-                ability_type: CombatantAbilities::HeatLance,
+            CombatantAbilityNames::HeatLance => CombatantAbility {
+                ability_type: CombatantAbilityNames::HeatLance,
                 class: Some(CombatantClass::Mage),
                 mana_cost: 1,
                 ..Default::default()
             },
-            CombatantAbilities::ArmorBreak => CombatantAbility {
-                ability_type: CombatantAbilities::ArmorBreak,
+            CombatantAbilityNames::ArmorBreak => CombatantAbility {
+                ability_type: CombatantAbilityNames::ArmorBreak,
                 class: Some(CombatantClass::Warrior),
                 mana_cost: 1,
                 ..Default::default()
             },
-            CombatantAbilities::ShootArrow => CombatantAbility {
-                ability_type: CombatantAbilities::ShootArrow,
+            CombatantAbilityNames::ShootArrow => CombatantAbility {
+                ability_type: CombatantAbilityNames::ShootArrow,
                 class: Some(CombatantClass::Rogue),
                 shard_cost: 1,
+                ..Default::default()
+            },
+            CombatantAbilityNames::Heal => CombatantAbility {
+                ability_type: CombatantAbilityNames::Heal,
+                class: Some(CombatantClass::Warrior),
+                mana_cost: 1,
+                usable_context: AbilityUsableContext::OutOfCombat,
                 ..Default::default()
             },
         }

@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 use self::inventory::CharacterInventory;
-use crate::combatants::abilities::{CombatantAbilities, CombatantAbility};
+use crate::combatants::abilities::{CombatantAbility, CombatantAbilityNames};
 use crate::combatants::{CombatAttributes, CombatantClass, CombatantProperties};
 use crate::game::id_generator::IdGenerator;
 use crate::items::equipment::EquipmentProperties;
@@ -27,28 +27,28 @@ impl Character {
         combatant_class: CombatantClass,
         name_of_controlling_user: String,
     ) -> Character {
-        let mut abilities = HashMap::<CombatantAbilities, CombatantAbility>::new();
+        let mut abilities = HashMap::<CombatantAbilityNames, CombatantAbility>::new();
         abilities.insert(
-            CombatantAbilities::Attack,
-            CombatantAbilities::new(&CombatantAbilities::Attack),
+            CombatantAbilityNames::Attack,
+            CombatantAbility::new(&CombatantAbilityNames::Attack),
         );
         match combatant_class {
             CombatantClass::Mage => {
                 abilities.insert(
-                    CombatantAbilities::HeatLance,
-                    CombatantAbilities::new(&CombatantAbilities::HeatLance),
+                    CombatantAbilityNames::HeatLance,
+                    CombatantAbility::new(&CombatantAbilityNames::HeatLance),
                 );
             }
             CombatantClass::Rogue => {
                 abilities.insert(
-                    CombatantAbilities::ShootArrow,
-                    CombatantAbilities::new(&CombatantAbilities::ShootArrow),
+                    CombatantAbilityNames::ShootArrow,
+                    CombatantAbility::new(&CombatantAbilityNames::ShootArrow),
                 );
             }
             CombatantClass::Warrior => {
                 abilities.insert(
-                    CombatantAbilities::ArmorBreak,
-                    CombatantAbilities::new(&CombatantAbilities::ArmorBreak),
+                    CombatantAbilityNames::ArmorBreak,
+                    CombatantAbility::new(&CombatantAbilityNames::ArmorBreak),
                 );
             }
             CombatantClass::Monster => {}

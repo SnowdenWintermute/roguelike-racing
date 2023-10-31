@@ -1,4 +1,4 @@
-use crate::combatants::abilities::{CombatantAbilities, CombatantAbility};
+use crate::combatants::abilities::{CombatantAbility, CombatantAbilityNames};
 use crate::combatants::CombatantProperties;
 use crate::errors::AppError;
 use crate::items::consumables::ConsumableTypes;
@@ -14,7 +14,7 @@ pub enum CombatAction<'a> {
 
 #[derive(Debug)]
 pub enum CombatActionTypes {
-    AbilityUsed(CombatantAbilities),
+    AbilityUsed(CombatantAbilityNames),
     ItemUsed(ConsumableTypes),
 }
 

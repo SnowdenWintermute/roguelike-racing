@@ -1,5 +1,5 @@
-use self::abilities::CombatantAbilities;
 use self::abilities::CombatantAbility;
+use self::abilities::CombatantAbilityNames;
 use crate::items::Item;
 use crate::status_effects::StatusEffects;
 use crate::{items::equipment::EquipmentSlots, primatives::MaxAndCurrent};
@@ -62,7 +62,7 @@ pub struct CombatantProperties {
     pub mana: MaxAndCurrent<u16>,
     pub status_effects: Vec<StatusEffects>,
     pub equipment: HashMap<EquipmentSlots, Item>,
-    pub abilities: HashMap<CombatantAbilities, CombatantAbility>,
+    pub abilities: HashMap<CombatantAbilityNames, CombatantAbility>,
     // pub traits: HashSet<CombatantTraits>
     pub target_ids: Option<Vec<u32>>,
     pub selected_ability_slot: Option<u8>,
@@ -72,7 +72,7 @@ pub struct CombatantProperties {
 impl CombatantProperties {
     pub fn new(
         combatant_class: CombatantClass,
-        abilities: HashMap<CombatantAbilities, CombatantAbility>,
+        abilities: HashMap<CombatantAbilityNames, CombatantAbility>,
     ) -> CombatantProperties {
         CombatantProperties {
             combatant_class,

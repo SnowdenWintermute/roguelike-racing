@@ -1,0 +1,46 @@
+Arguments: 
+  /usr/bin/node /usr/bin/yarn cypress open
+
+PATH: 
+  /home/mike/.cargo/bin:/home/mike/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  20.7.0
+
+Platform: 
+  linux x64
+
+Trace: 
+  SyntaxError: /home/mike/projects/roguelike-racing/client/package.json: Expected ',' or '}' after property value in JSON at position 166
+      at JSON.parse (<anonymous>)
+      at /usr/lib/node_modules/yarn/lib/cli.js:1629:59
+      at Generator.next (<anonymous>)
+      at step (/usr/lib/node_modules/yarn/lib/cli.js:310:30)
+      at /usr/lib/node_modules/yarn/lib/cli.js:321:13
+
+npm manifest: 
+  {
+    "name": "client",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.html",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+      "cypress:firefox": "env-cmd -f .env.test.local cypress open --e2e --browser firefox",
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+      "@types/jest": "^29.5.6",
+      "cypress": "^13.3.3"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

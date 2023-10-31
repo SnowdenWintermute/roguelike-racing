@@ -1,5 +1,6 @@
 use crate::app_consts::{error_messages, MAX_PARTY_SIZE};
-use crate::character::{combatant_properties::CombatantClass, Character};
+use crate::character::Character;
+use crate::combatants::CombatantClass;
 use crate::dungeon_rooms::{DungeonRoom, DungeonRoomTypes};
 use crate::errors::AppError;
 use crate::game::getters::get_mut_player;
@@ -9,22 +10,22 @@ use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
 use std::time::{Instant, SystemTime};
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct RoomsExplored {
     pub total: u16,
     pub on_current_floor: u16,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct AdventuringParty {
     pub id: u32,
     pub name: String,
     pub player_usernames: HashSet<String>,
     pub characters: HashMap<u32, Character>,
-    pub active_player: Option<u32>,
+    pub active_combatant_id: Option<u32>,
     pub current_floor: u8,
     pub rooms_explored: RoomsExplored,
-    pub current_room: Option<DungeonRoom>,
+    pub current_room: DungeonRoom,
     pub time_of_wipe: Option<u64>,
     pub time_of_escape: Option<u64>,
 }
@@ -36,13 +37,18 @@ impl AdventuringParty {
             name,
             player_usernames: HashSet::new(),
             characters: HashMap::new(),
-            active_player: None,
+            active_combatant_id: None,
             current_floor: 1,
             rooms_explored: RoomsExplored {
-                total: 0,
-                on_current_floor: 0,
+                total: 1,
+                on_current_floor: 1,
             },
-            current_room: None,
+            current_room: DungeonRoom {
+                room_type: DungeonRoomTypes::Empty,
+                treasure_chest: None,
+                items: None,
+                monsters: None,
+            },
             time_of_wipe: None,
             time_of_escape: None,
         }

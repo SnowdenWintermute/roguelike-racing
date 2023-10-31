@@ -1,4 +1,4 @@
-use crate::{character::combatant_properties::CombatantClass, items::EquipmentSlots};
+use crate::{combatants::CombatantClass, items::equipment::EquipmentSlots};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

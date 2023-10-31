@@ -6,7 +6,7 @@ use crate::{
     store::websocket_store::WebsocketStore,
 };
 use common::{
-    character::combatant_properties::CombatantClass,
+    combatants::CombatantClass,
     packets::client_to_server::{CharacterCreation, PlayerInputs},
 };
 use std::ops::Deref;

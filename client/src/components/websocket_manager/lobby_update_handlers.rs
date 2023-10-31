@@ -56,5 +56,6 @@ pub fn handle_game_started(game_state: &mut GameStore, timestamp: u128) -> Resul
         message: "Client error".to_string(),
     })?;
     game.time_started = Some(timestamp);
+
     Ok(())
 }

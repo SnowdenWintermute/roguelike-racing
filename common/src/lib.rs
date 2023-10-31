@@ -1,9 +1,9 @@
 #![allow(unused)]
 pub mod adventuring_party;
-
 pub mod app_consts;
 pub mod character;
 pub mod combat;
+pub mod combatants;
 pub mod dungeon_rooms;
 pub mod errors;
 pub mod game;

@@ -1,9 +1,11 @@
 use yew::prelude::*;
 
+use crate::components::common_components::atoms::button_blank::ButtonBlank;
+
 #[derive(Properties, PartialEq)]
 pub struct Props {
-    #[prop_or(Callback::from(|_|()))]
-    pub onclick: Callback<()>,
+    #[prop_or(Callback::from(|_e: MouseEvent|()))]
+    pub onclick: Callback<MouseEvent>,
     #[prop_or(false)]
     pub disabled: bool,
     #[prop_or_default]
@@ -15,25 +17,21 @@ pub struct Props {
 
 #[function_component(ButtonBasic)]
 pub fn button_basic(props: &Props) -> Html {
-    let onclick = props.onclick.clone();
-    let button_onclick = Callback::from(move |_| {
-        onclick.emit(());
-    });
-
     html!(
-        <button
-            class={format!(
-                "{} {}",
-                "border border-slate-400 h-10 cursor-pointer pr-4 pl-4
-                flex justify-center items-center disabled:opacity-50 disabled:cursor-auto",
-                props.extra_styles.clone(),
-            )}
-            onclick={button_onclick}
+        <ButtonBlank
+            class={
+                format!(
+                    "{} {}",
+                    "border border-slate-400 h-10 cursor-pointer pr-4 pl-4
+                    flex justify-center items-center disabled:opacity-50 disabled:cursor-auto",
+                    props.extra_styles.clone(),
+                )
+            }
+            onclick={props.onclick.clone()}
             disabled={props.disabled}
-            type={props.button_type.clone()}
+            button_type={props.button_type.clone()}
         >
             {props.children.clone()}
-        </button>
-
+        </ButtonBlank>
     )
 }

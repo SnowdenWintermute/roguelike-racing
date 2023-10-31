@@ -1,11 +1,9 @@
 use super::RoguelikeRacerGame;
 use crate::app_consts::error_messages;
-use crate::character::combatant_properties::CombatantClass;
 use crate::errors::AppError;
 use crate::game::player_input_handlers::{
     open_treasure_chest, select_consumable, use_selected_consumable,
 };
-use crate::items::EquipmentSlots;
 use crate::packets::client_to_server::{PlayerInputRequest, PlayerInputs};
 use serde::{Deserialize, Serialize};
 

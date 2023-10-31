@@ -1,4 +1,6 @@
 #![allow(dead_code)]
+use core::fmt;
+
 use crate::game::id_generator::IdGenerator;
 use crate::items::Item;
 use crate::monster::Monster;
@@ -7,14 +9,26 @@ use serde::{Deserialize, Serialize};
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
-#[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq)]
 pub enum DungeonRoomTypes {
     MonsterLair,
     Treasure,
     Stairs,
+    Empty,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+impl fmt::Display for DungeonRoomTypes {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            DungeonRoomTypes::MonsterLair => write!(f, "Monster Lair"),
+            DungeonRoomTypes::Treasure => write!(f, "Treasure Room"),
+            DungeonRoomTypes::Stairs => write!(f, "Staircase"),
+            DungeonRoomTypes::Empty => write!(f, "Empty"),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct TreasureChest {
     pub is_opened: bool,
     pub is_locked: bool,
@@ -45,7 +59,7 @@ impl TreasureChest {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct DungeonRoom {
     pub room_type: DungeonRoomTypes,
     pub treasure_chest: Option<TreasureChest>,

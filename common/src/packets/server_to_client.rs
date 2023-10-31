@@ -1,8 +1,6 @@
 use crate::{
-    adventuring_party::AdventuringParty,
-    character::{combatant_properties::CombatantClass, Character},
-    errors::AppError,
-    game::RoguelikeRacerGame,
+    adventuring_party::AdventuringParty, character::Character, combatants::CombatantClass,
+    errors::AppError, game::RoguelikeRacerGame,
 };
 use serde::{Deserialize, Serialize};
 use std::time::Instant;

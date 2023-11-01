@@ -1,15 +1,17 @@
-pub mod action_menu;
-pub mod combat_log;
-pub mod combatant_detail_tab;
-pub mod dungeon_room;
-pub mod tabbed_display;
+mod action_menu;
+mod character_sheet;
+mod combat_log;
+mod combatant_detail_tab;
+mod dungeon_room;
+mod tabbed_display;
 use crate::{
     components::game::{
-        action_menu::ActionMenu, dungeon_room::DungeonRoom, tabbed_display::TabbedDisplay,
+        action_menu::ActionMenu, character_sheet::CharacterSheet, dungeon_room::DungeonRoom,
+        tabbed_display::TabbedDisplay,
     },
     store::{game_store::GameStore, lobby_store::LobbyStore},
 };
-use gloo::{console::log, events::EventListener};
+use gloo::events::EventListener;
 use gloo_utils::window;
 use wasm_bindgen::{JsCast, UnwrapThrowExt};
 use web_sys::HtmlElement;
@@ -78,9 +80,16 @@ pub fn game() -> Html {
         })
     });
 
+    let focused_character = party.characters.get(&game_state.focused_character_id);
+
     html!(
         <main class="h-screen w-screen p-4 bg-gray-600 text-zinc-300 flex flex-col">
-            <DungeonRoom game={game} party_id={party_id} />
+            <div class="h-1/2 flex mb-4" >
+                <DungeonRoom game={game} party_id={party_id} />
+                if game_state.viewing_inventory && focused_character.is_some(){
+                    <CharacterSheet character={focused_character.as_deref().expect("is_some checked").clone()} />
+                }
+            </div>
             <div class="flex h-1/2 max-h-[453px]" >
                 <ActionMenu adventuring_party={party.clone()} />
                 <TabbedDisplay />

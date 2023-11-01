@@ -47,19 +47,19 @@ impl MenuTypes {
         for menu_type in menu_types {
             match menu_type {
                 MenuTypes::OutOfCombat => {
+                    menu_items.push(GameActions::ToggleInventoryOpen);
                     menu_items.push(GameActions::ToggleReadyToExplore);
                     menu_items.push(GameActions::UseAutoinjector);
-                    menu_items.push(GameActions::ToggleInventoryOpen);
                     add_abilities_to_menu(&abilities, &mut menu_items);
                     menu_items.push(GameActions::SetAssignAttributePointsMenuOpen(true))
                 }
                 MenuTypes::UnopenedChest => menu_items.push(GameActions::OpenTreasureChest),
                 MenuTypes::ItemsOnGround => menu_items.push(GameActions::TakeItem),
                 MenuTypes::InCombat => {
+                    menu_items.push(GameActions::ToggleInventoryOpen);
                     menu_items.push(GameActions::Attack);
                     menu_items.push(GameActions::UseAutoinjector);
                     add_abilities_to_menu(&abilities, &mut menu_items);
-                    menu_items.push(GameActions::ToggleInventoryOpen);
                 }
                 MenuTypes::LevelUpAbilities => {
                     menu_items.push(GameActions::SetAssignAttributePointsMenuOpen(true));

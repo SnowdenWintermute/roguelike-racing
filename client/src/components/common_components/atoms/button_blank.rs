@@ -4,7 +4,7 @@ use yew::prelude::*;
 pub struct Props {
     #[prop_or_default]
     pub id: String,
-    #[prop_or(Callback::from(|e:MouseEvent|()))]
+    #[prop_or(Callback::from(|_e:MouseEvent|()))]
     pub onclick: Callback<MouseEvent>,
     #[prop_or(false)]
     pub disabled: bool,

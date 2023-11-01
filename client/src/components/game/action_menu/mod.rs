@@ -1,6 +1,6 @@
-pub mod available_actions;
-pub mod generate_action_menu_handlers;
-pub mod generate_action_menu_items;
+mod available_actions;
+mod generate_action_menu_handlers;
+mod generate_action_menu_items;
 use gloo_utils::window;
 use wasm_bindgen::{JsCast, UnwrapThrowExt};
 mod generate_button_text;
@@ -33,25 +33,37 @@ pub fn action_menu(props: &Props) -> Html {
     let party = props.adventuring_party.clone();
     let cloned_actions_state = actions_state.clone();
     let cloned_handlers_state = handlers_state.clone();
-    use_effect_with(game_state.focused_character_id, move |_| {
-        let new_actions =
-            generate_action_menu_items::generate_action_menu_items(game_state, &party);
-        cloned_actions_state.set(new_actions.clone());
+    use_effect_with(
+        (
+            game_state.focused_character_id,
+            game_state.viewing_inventory,
+            game_state.selected_item.is_some(),
+            game_state.viewing_items_on_ground,
+            game_state.viewing_skill_level_up_menu,
+            game_state.viewing_attribute_point_assignment_menu,
+            party.current_room.monsters.is_some(),
+        ),
+        move |_| {
+            let new_actions =
+                generate_action_menu_items::generate_action_menu_items(game_state, &party);
+            cloned_actions_state.set(new_actions.clone());
 
-        let new_handlers = generate_action_menu_handlers::generate_action_menu_handlers(
-            new_actions,
-            game_dispatch,
-            websocket_state,
-        );
-        cloned_handlers_state.set(new_handlers);
-    });
+            let new_handlers = generate_action_menu_handlers::generate_action_menu_handlers(
+                new_actions,
+                game_dispatch,
+                websocket_state,
+            );
+            cloned_handlers_state.set(new_handlers);
+        },
+    );
 
     let keyup_listener_state = use_state(|| None::<EventListener>);
     let cloned_handlers = handlers_state.clone();
-    use_effect_with(actions_state.len(), move |_| {
+    let num_actions = actions_state.len();
+    use_effect_with(num_actions, move |_| {
         let listener = EventListener::new(&window(), "keyup", move |event| {
             let event = event.dyn_ref::<web_sys::KeyboardEvent>().unwrap_throw();
-            for i in 0..=6 {
+            for i in 0..num_actions {
                 let key = (i + 1).to_string();
                 if event.key() == key {
                     cloned_handlers[i]()

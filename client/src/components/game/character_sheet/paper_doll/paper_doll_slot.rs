@@ -1,7 +1,7 @@
+use crate::store::game_store::{DetailableEntities, GameStore};
 use common::items::Item;
 use yew::prelude::*;
 use yewdux::prelude::{use_store, Dispatch};
-use crate::store::game_store::{DetailableEntities, GameStore};
 
 #[derive(Properties, Eq, PartialEq)]
 pub struct Props {
@@ -62,13 +62,23 @@ pub fn paper_doll_slot(props: &Props) -> Html {
         let cloned_dispatch = cloned_dispatch.clone();
         set_item_hovered(cloned_dispatch, None)
     });
+    let cloned_dispatch = game_dispatch.clone();
+    let cloned_item_option = props.item_option.clone();
+    let handle_click = Callback::from(move |_| {
+        let cloned_dispatch = cloned_dispatch.clone();
+        cloned_dispatch.reduce_mut(|store| {
+            store.selected_item = cloned_item_option.clone();
+        })
+    });
 
     html!(
         <button class={class}
             onmouseenter={handle_mouse_over_item}
             onmouseleave={handle_mouse_leave_item}
             onfocus={handle_focus_item}
-            onblur={handle_blur_item} >
+            onblur={handle_blur_item}
+            onclick={handle_click}
+            >
             {item_display}
         </button>
     )

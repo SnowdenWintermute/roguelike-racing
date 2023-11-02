@@ -30,3 +30,17 @@ pub fn get_mut_party<'a>(
         })?;
     Ok(party)
 }
+
+pub fn get_party<'a>(
+    game: &'a RoguelikeRacerGame,
+    party_id: u32,
+) -> Result<&'a AdventuringParty, AppError> {
+    let party = game
+        .adventuring_parties
+        .get(&party_id)
+        .ok_or_else(|| AppError {
+            error_type: crate::errors::AppErrorTypes::ServerError,
+            message: error_messages::PARTY_NOT_FOUND.to_string(),
+        })?;
+    Ok(party)
+}

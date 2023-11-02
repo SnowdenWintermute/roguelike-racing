@@ -18,3 +18,5 @@ pub const CHARACTER_NOT_FOUND: &str = "No character found with the provided id";
 pub const PLAYER_HAS_NO_CHARACTERS: &str = "No characters are owned by that player";
 pub const CHARACTER_NOT_OWNED: &str =
     "A character with the provided id was not found in the player's list of owned characters";
+pub const INVALID_ITEM_ID: &str =
+    "No item with the provided id was found in the currently focused player's posession";

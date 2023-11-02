@@ -103,6 +103,31 @@ impl Character {
             starting_weapon,
         );
 
+        let mut other_weapon_properties = EquipmentProperties {
+            equipment_type: crate::items::equipment::EquipmentTypes::OneHandedWeapon,
+            durability: Some(MaxAndCurrent {
+                max: 12,
+                current: 10,
+            }),
+            attributes: HashMap::new(),
+        };
+
+        other_weapon_properties
+            .attributes
+            .insert(CombatAttributes::ArmorClass, 1);
+
+        let starting_wep_in_inv = Item {
+            entity_properties: EntityProperties {
+                id: 421,
+                name: "inventory weapon".to_string(),
+            },
+            item_level: 1,
+            item_category: ItemCategories::Equipment,
+            item_properties: items::ItemProperties::Equipment(other_weapon_properties),
+        };
+
+        character.inventory.items.push(starting_wep_in_inv);
+
         character
     }
 }

@@ -3,6 +3,7 @@ use crate::store::game_store::GameStore;
 use common::adventuring_party::AdventuringParty;
 use common::combatants::abilities::AbilityUsableContext;
 use common::combatants::abilities::CombatantAbilityNames;
+use gloo::console::log;
 use std::rc::Rc;
 
 pub fn generate_action_menu_items(
@@ -16,7 +17,13 @@ pub fn generate_action_menu_items(
         menu_items.push(MenuTypes::ItemsOnGround);
         new_actions = MenuTypes::get_menu(&menu_items, None, None);
     } else if game_state.selected_item.is_some() {
-        menu_items.push(MenuTypes::ItemSelected);
+        let id = game_state
+            .selected_item
+            .clone()
+            .expect("is_some checked")
+            .entity_properties
+            .id;
+        menu_items.push(MenuTypes::ItemSelected(id));
         new_actions = MenuTypes::get_menu(&menu_items, None, None);
     } else if game_state.viewing_inventory {
         menu_items.push(MenuTypes::InventoryOpen);

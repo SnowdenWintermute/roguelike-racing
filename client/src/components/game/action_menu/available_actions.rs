@@ -4,13 +4,14 @@ use common::{
     combatants::{abilities::CombatantAbilityNames, CombatAttributes},
     items::Item,
 };
+use gloo::console::log;
 pub enum MenuTypes {
     InCombat,
     OutOfCombat,
     LevelUpAbilities,
     AttributePointAssignment,
     InventoryOpen,
-    ItemSelected,
+    ItemSelected(u32),
     ItemsOnGround,
     UnopenedChest,
 }
@@ -25,9 +26,10 @@ pub enum GameActions {
     OpenTreasureChest,
     TakeItem,
     // Item Selected
-    UseItem,
-    DropItem,
-    ShardItem,
+    UseItem(u32),
+    DropItem(u32),
+    ShardItem(u32),
+    DeselectItem,
     // InCombat
     Attack,
     UseAbility(CombatantAbilityNames),
@@ -73,10 +75,11 @@ impl MenuTypes {
                         }
                     }
                 }
-                MenuTypes::ItemSelected => {
-                    menu_items.push(GameActions::UseItem);
-                    menu_items.push(GameActions::ShardItem);
-                    menu_items.push(GameActions::DropItem);
+                MenuTypes::ItemSelected(id) => {
+                    menu_items.push(GameActions::UseItem(*id));
+                    menu_items.push(GameActions::ShardItem(*id));
+                    menu_items.push(GameActions::DropItem(*id));
+                    menu_items.push(GameActions::DeselectItem);
                 }
                 MenuTypes::AttributePointAssignment => {
                     menu_items.push(GameActions::SetAssignAttributePointsMenuOpen(false));

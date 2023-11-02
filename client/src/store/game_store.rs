@@ -23,11 +23,11 @@ pub struct GameStore {
     pub current_party_id: Option<u32>,
     pub detailed_entity: Option<DetailableEntities>,
     pub hovered_entity: Option<DetailableEntities>,
+    pub selected_item: Option<Item>,
     pub focused_character_id: u32,
     pub viewing_skill_level_up_menu: bool,
     pub viewing_attribute_point_assignment_menu: bool,
     pub viewing_inventory: bool,
     pub selecting_injection_type: bool,
     pub viewing_items_on_ground: bool,
-    pub selected_item: Option<Item>,
 }

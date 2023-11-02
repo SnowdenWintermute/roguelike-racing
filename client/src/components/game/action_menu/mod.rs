@@ -1,6 +1,7 @@
 mod available_actions;
 mod generate_action_menu_handlers;
 mod generate_action_menu_items;
+mod get_character_owned_item_by_id;
 use gloo_utils::window;
 use wasm_bindgen::{JsCast, UnwrapThrowExt};
 mod generate_button_text;
@@ -33,6 +34,7 @@ pub fn action_menu(props: &Props) -> Html {
     let party = props.adventuring_party.clone();
     let cloned_actions_state = actions_state.clone();
     let cloned_handlers_state = handlers_state.clone();
+    let cloned_game_state = game_state.clone();
     use_effect_with(
         (
             game_state.focused_character_id,
@@ -44,13 +46,17 @@ pub fn action_menu(props: &Props) -> Html {
             party.current_room.monsters.is_some(),
         ),
         move |_| {
-            let new_actions =
-                generate_action_menu_items::generate_action_menu_items(game_state, &party);
+            let re_cloned_game_state = cloned_game_state.clone();
+            let new_actions = generate_action_menu_items::generate_action_menu_items(
+                re_cloned_game_state,
+                &party,
+            );
             cloned_actions_state.set(new_actions.clone());
 
             let new_handlers = generate_action_menu_handlers::generate_action_menu_handlers(
                 new_actions,
                 game_dispatch,
+                cloned_game_state,
                 websocket_state,
             );
             cloned_handlers_state.set(new_handlers);
@@ -76,7 +82,8 @@ pub fn action_menu(props: &Props) -> Html {
     html!(
         <section class="w-1/3 max-w-[733px] border border-slate-400 bg-slate-700 mr-4 overflow-y-auto">
         {actions_state.deref().iter().enumerate().map(|(i, action)| {
-        let button_text = generate_button_text::generate_button_text(&action);
+        let cloned_game_state = game_state.clone();
+        let button_text = generate_button_text::generate_button_text(&action, cloned_game_state);
         let cloned_handlers = handlers_state.clone();
         let handler = Callback::from(move |_| {
             cloned_handlers[i]()

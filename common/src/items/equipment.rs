@@ -17,13 +17,38 @@ pub enum EquipmentSlots {
 
 #[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq)]
 pub enum EquipmentTypes {
-    BodyArmor,
-    Helmet,
+    BodyArmor(ArmorTypes),
+    Helmet(ArmorTypes),
     Ring,
     Amulet,
-    OneHandedWeapon,
-    TwoHandedWeapon,
-    Shield,
+    OneHandedWeapon(WeaponTypes),
+    TwoHandedWeapon(WeaponTypes),
+    Shield(ShieldTypes),
+}
+
+#[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq, Default)]
+pub enum WeaponTypes {
+    #[default]
+    Blunt,
+    Slashing,
+    Piercing,
+}
+
+#[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq, Default)]
+pub enum ShieldTypes {
+    #[default]
+    Buckler,
+    Kite,
+    Tower,
+}
+
+#[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq, Default)]
+pub enum ArmorTypes {
+    #[default]
+    Cloth,
+    Leather,
+    Chain,
+    Plate,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -31,4 +56,5 @@ pub struct EquipmentProperties {
     pub equipment_type: EquipmentTypes,
     pub durability: Option<MaxAndCurrent<u16>>,
     pub attributes: HashMap<CombatAttributes, u16>,
+    pub requirements: HashMap<CombatAttributes, u16>,
 }

@@ -38,6 +38,13 @@ pub enum CombatAttributes {
     Intelligence,
     Vitality,
     Resilience,
+    Accuracy,
+    Focus,
+    Evasion,
+    Obscurity,
+    Hp,
+    Mp,
+    ArmorPenetration,
 }
 
 impl fmt::Display for CombatAttributes {
@@ -50,6 +57,13 @@ impl fmt::Display for CombatAttributes {
             CombatAttributes::Intelligence => write!(f, "Intelligence"),
             CombatAttributes::Vitality => write!(f, "Vitality"),
             CombatAttributes::Resilience => write!(f, "Resilience"),
+            CombatAttributes::Accuracy => write!(f, "Accuracy"),
+            CombatAttributes::Focus => write!(f, "Focus"),
+            CombatAttributes::Evasion => write!(f, "Evasion"),
+            CombatAttributes::Obscurity => write!(f, "Obscurity"),
+            CombatAttributes::Hp => write!(f, "HP"),
+            CombatAttributes::Mp => write!(f, "MP"),
+            CombatAttributes::ArmorPenetration => write!(f, "Armor Penetration"),
         }
     }
 }

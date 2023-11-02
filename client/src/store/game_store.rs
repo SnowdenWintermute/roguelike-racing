@@ -22,6 +22,7 @@ pub struct GameStore {
     pub game: Option<RoguelikeRacerGame>,
     pub current_party_id: Option<u32>,
     pub detailed_entity: Option<DetailableEntities>,
+    pub hovered_entity: Option<DetailableEntities>,
     pub focused_character_id: u32,
     pub viewing_skill_level_up_menu: bool,
     pub viewing_attribute_point_assignment_menu: bool,

@@ -39,7 +39,7 @@ async fn main() -> std::io::Result<()> {
     // start chat server actor
     let game_server_actor_address = websocket_server::game_server::GameServer::new().start();
 
-    log::info!("starting HTTP server at http://localhost:8081");
+    log::info!("starting HTTP server at http://localhost:8082");
 
     HttpServer::new(move || {
         App::new()
@@ -49,7 +49,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(Logger::default())
     })
     .workers(1)
-    .bind(("127.0.0.1", 8081))?
+    .bind(("127.0.0.1", 8082))?
     .run()
     .await
 }

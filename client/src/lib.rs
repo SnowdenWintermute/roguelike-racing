@@ -17,7 +17,7 @@ pub fn app() -> Html {
 
     html! {
         <div >
-            <WebsocketManager server_url={"ws://127.0.0.1:8081/ws"} />
+            <WebsocketManager server_url={"ws://127.0.0.1:8082/ws"} />
             <AlertManager />
             if game_state.game.is_some() && game.unwrap().time_started.is_some() {
                 <Game />

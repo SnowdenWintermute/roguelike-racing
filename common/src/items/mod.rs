@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 pub mod affixes;
+pub mod armors;
 pub mod consumables;
 pub mod equipment;
 pub mod equipment_base_items;

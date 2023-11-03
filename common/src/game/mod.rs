@@ -1,6 +1,7 @@
 use crate::app_consts::error_messages::{self, PLAYER_NOT_FOUND};
 use crate::character::Character;
 use crate::game::id_generator::IdGenerator;
+use crate::items::Item;
 use crate::{adventuring_party::AdventuringParty, errors::AppError};
 use serde::{Deserialize, Serialize};
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -44,6 +45,10 @@ pub struct RoguelikeRacerGame {
 
 impl RoguelikeRacerGame {
     pub fn new(game_name: String) -> RoguelikeRacerGame {
+        for i in 1..10 {
+            let base_item = Item::generate_base_item(i);
+            println!("{:#?}", base_item);
+        }
         RoguelikeRacerGame {
             name: game_name,
             password: None,

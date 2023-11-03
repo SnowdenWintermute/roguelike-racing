@@ -4,6 +4,11 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use strum_macros::EnumIter;
 
+use super::{
+    armors::{ArmorCategories, Armors},
+    weapons::PhysicalDamageTypes,
+};
+
 #[derive(Debug, Serialize, Deserialize, Clone, Hash, Eq, PartialEq)]
 pub enum EquipmentSlots {
     LeftHand,
@@ -17,21 +22,14 @@ pub enum EquipmentSlots {
 
 #[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq)]
 pub enum EquipmentTypes {
-    BodyArmor(ArmorTypes),
-    Helmet(ArmorTypes),
+    BodyArmor(Armors, ArmorCategories),
+    Helmet(ArmorCategories),
     Ring,
     Amulet,
-    OneHandedWeapon(WeaponTypes),
-    TwoHandedWeapon(WeaponTypes),
+    OneHandedWeapon(PhysicalDamageTypes),
+    TwoHandedWeapon(PhysicalDamageTypes),
+    RangedWeapon(PhysicalDamageTypes),
     Shield(ShieldTypes),
-}
-
-#[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq, Default)]
-pub enum WeaponTypes {
-    #[default]
-    Blunt,
-    Slashing,
-    Piercing,
 }
 
 #[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq, Default)]
@@ -42,19 +40,10 @@ pub enum ShieldTypes {
     Tower,
 }
 
-#[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq, Default)]
-pub enum ArmorTypes {
-    #[default]
-    Cloth,
-    Leather,
-    Chain,
-    Plate,
-}
-
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct EquipmentProperties {
     pub equipment_type: EquipmentTypes,
-    pub durability: Option<MaxAndCurrent<u16>>,
+    pub durability: Option<MaxAndCurrent<u8>>,
     pub attributes: HashMap<CombatAttributes, u16>,
     pub requirements: HashMap<CombatAttributes, u16>,
 }

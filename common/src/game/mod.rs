@@ -1,4 +1,5 @@
 use crate::app_consts::error_messages::{self, PLAYER_NOT_FOUND};
+use crate::app_consts::DEEPEST_FLOOR;
 use crate::character::Character;
 use crate::game::id_generator::IdGenerator;
 use crate::items::Item;
@@ -45,9 +46,9 @@ pub struct RoguelikeRacerGame {
 
 impl RoguelikeRacerGame {
     pub fn new(game_name: String) -> RoguelikeRacerGame {
-        for i in 1..10 {
+        for i in 1..=DEEPEST_FLOOR {
             let base_item = Item::generate_base_item(i);
-            println!("{:#?}", base_item);
+            println!("level {} generated {:#?}", i, base_item);
         }
         RoguelikeRacerGame {
             name: game_name,

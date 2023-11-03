@@ -23,3 +23,14 @@ pub enum UpOrDown {
     Up,
     Down,
 }
+
+pub struct Range<T> {
+    pub min: T,
+    pub max: T,
+}
+
+impl<T> Range<T> {
+    pub fn new(min: T, max: T) -> Range<T> {
+        Range { min, max }
+    }
+}

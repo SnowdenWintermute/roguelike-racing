@@ -1,22 +1,14 @@
+use core::panic;
+use crate::items::equipment::EquipmentTypes;
 use once_cell::sync::Lazy;
 use rand::prelude::*;
 use std::{collections::HashMap, default};
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
-
 use super::{
-    armors::{Armors, ARMOR_BY_LEVEL},
+    armors::{ArmorCategories, Armors, ARMOR_BY_LEVEL},
     Item,
 };
-
-#[derive(EnumIter)]
-pub enum EquipmentCategories {
-    Armor,
-    Jewelry,
-    MeleeWeapon,
-    RangedWeapon,
-    Shield,
-}
 
 #[derive(Debug)]
 pub enum BaseItem {
@@ -28,9 +20,9 @@ pub enum BaseItem {
 }
 
 impl Item {
-    pub fn generate_base_item(level: u16) -> BaseItem {
+    pub fn generate_base_item(level: u8) -> BaseItem {
         let mut rng = rand::thread_rng();
-        let categories: Vec<EquipmentCategories> = EquipmentCategories::iter().collect();
+        let categories: Vec<EquipmentTypes> = EquipmentTypes::iter().collect();
         let category = categories.choose(&mut rand::thread_rng()).unwrap();
         match category {
             // EquipmentCategories::Armor => {
@@ -45,9 +37,9 @@ impl Item {
                     .choose(&mut rand::thread_rng())
                     // .clone()
                     .unwrap())
-                };
-
-                BaseItem::Armor(Armors::Rags)
+                } else {
+                    panic!("tried to generate an armor but no possible base items were found")
+                }
             }
             // EquipmentCategories::Jewelry => {
 
@@ -59,27 +51,3 @@ impl Item {
     }
 }
 
-pub enum Weapons {
-    Club,
-    Mace,
-    Morningstar,
-    WarHammer,
-    Stick,
-    Staff,
-    Maul,
-    ShortSword,
-    Sabre,
-    Blade,
-    BroadSword,
-    BastardSword,
-    TwoHandedSword,
-    Katana,
-    GreatAxe,
-    Spear,
-    Pike,
-    ShortBow,
-    HuntersBow,
-    LongBow,
-    CompositeBow,
-    WarBow,
-}

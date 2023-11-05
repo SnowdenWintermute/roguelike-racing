@@ -1,6 +1,6 @@
 use super::{
     body_armor::{body_armor_generation_templates::BODY_ARMORS_BY_LEVEL, BodyArmors},
-    headgear::HeadGears,
+    headgear::{headgear_generation_templates::HEADGEARS_BY_LEVEL, HeadGears},
     Item,
 };
 use crate::items::equipment::EquipmentTypes;
@@ -30,14 +30,19 @@ impl Item {
             // EquipmentCategories::Armor => {
             // }
             _ =>{
-                let possible_base_armors_option = BODY_ARMORS_BY_LEVEL
+                let possible_base_armors_option = HEADGEARS_BY_LEVEL
                     .get(&level);
                 if possible_base_armors_option.is_some() {
                     let possible_base_armors = possible_base_armors_option.unwrap();
-                return BaseItem::Armor(*possible_base_armors
-                    .choose(&mut rand::thread_rng())
-                    // .clone()
-                    .unwrap())
+                return BaseItem::HeadGear(HeadGears::Ribbon)
+                // let possible_base_armors_option = BODY_ARMORS_BY_LEVEL
+                //     .get(&level);
+                // if possible_base_armors_option.is_some() {
+                //     let possible_base_armors = possible_base_armors_option.unwrap();
+                // return BaseItem::Armor(*possible_base_armors
+                //     .choose(&mut rand::thread_rng())
+                //     // .clone()
+                //     .unwrap())
                 } else {
                     panic!("tried to generate an armor but no possible base items were found")
                 }

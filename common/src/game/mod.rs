@@ -58,11 +58,12 @@ impl RoguelikeRacerGame {
 
         for i in 1..=DEEPEST_FLOOR {
             for _ in 0..5 {
-                let item = Item::generate(&mut game.id_generator, i);
+                let level = DEEPEST_FLOOR;
+                let item = Item::generate(&mut game.id_generator, level);
                 match item.item_properties {
                     crate::items::ItemProperties::Consumable(_) => (),
                     crate::items::ItemProperties::Equipment(equipment_properties) => {
-                        println!("level {}:  {}", i, equipment_properties.equipment_type);
+                        println!("level {}:  {}", level, equipment_properties.equipment_type);
                         if let Some(base_ac) = equipment_properties.base_ac {
                             println!("Base AC: {}", base_ac)
                         }

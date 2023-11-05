@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use strum_macros::EnumIter;
 
+use super::headgear::HeadGears;
 use super::{
     body_armor::{ArmorCategories, BodyArmors},
     weapons::PhysicalDamageTypes,
@@ -25,7 +26,7 @@ pub enum EquipmentSlots {
 #[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq)]
 pub enum EquipmentTypes {
     BodyArmor(BodyArmors, ArmorCategories),
-    HeadGear(ArmorCategories),
+    HeadGear(HeadGears, ArmorCategories),
     Ring,
     Amulet,
     OneHandedWeapon(PhysicalDamageTypes),
@@ -40,7 +41,7 @@ impl fmt::Display for EquipmentTypes {
             EquipmentTypes::BodyArmor(base_armor, category) => {
                 write!(f, "{base_armor} ({category})")
             }
-            EquipmentTypes::HeadGear(_) => write!(f, ""),
+            EquipmentTypes::HeadGear(_, _) => write!(f, ""),
             EquipmentTypes::Ring => write!(f, ""),
             EquipmentTypes::Amulet => write!(f, ""),
             EquipmentTypes::OneHandedWeapon(_) => write!(f, ""),

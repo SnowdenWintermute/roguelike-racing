@@ -1,4 +1,4 @@
-mod headgear_generation_templates;
+pub mod headgear_generation_templates;
 pub mod headgear_possible_affixes;
 use super::affixes::{PrefixTypes, SuffixTypes};
 use crate::{app_consts::DEEPEST_FLOOR, combatants::CombatAttributes, primatives::Range};

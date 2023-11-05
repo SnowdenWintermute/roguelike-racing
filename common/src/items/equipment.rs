@@ -1,6 +1,6 @@
-use crate::combatants::CombatAttributes;
 use crate::items::affixes::Affix;
 use crate::primatives::MaxAndCurrent;
+use crate::{combatants::CombatAttributes, primatives::Range};
 use core::fmt;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -64,7 +64,7 @@ pub struct EquipmentProperties {
     pub equipment_type: EquipmentTypes,
     pub durability: Option<MaxAndCurrent<u8>>,
     pub base_ac: Option<u8>,
-    pub base_damage: Option<u8>,
+    pub base_damage: Option<Range<u8>>,
     pub attributes: HashMap<CombatAttributes, u16>,
     pub affixes: Vec<Affix>,
     pub requirements: HashMap<CombatAttributes, u8>,

@@ -24,7 +24,7 @@ pub enum UpOrDown {
     Down,
 }
 
-#[derive(Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
 pub struct Range<T> {
     pub min: T,
     pub max: T,

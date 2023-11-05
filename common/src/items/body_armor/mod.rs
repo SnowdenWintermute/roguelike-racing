@@ -1,7 +1,12 @@
 pub mod body_armor_generation_templates;
 pub mod body_armor_possible_affixes;
-pub mod body_armors_by_level;
-use super::affixes::{PrefixTypes, SuffixTypes};
+use super::{
+    affixes::{PrefixTypes, SuffixTypes},
+    item_generation_template_properties::{
+        ItemGenerationTemplate, ItemGenerationTemplateAffixModifiers,
+        ItemGenerationTemplateProperties,
+    },
+};
 use crate::{app_consts::DEEPEST_FLOOR, combatants::CombatAttributes, primatives::Range};
 use core::fmt;
 use once_cell::sync::Lazy;
@@ -80,21 +85,14 @@ impl fmt::Display for BodyArmors {
     }
 }
 
-pub trait ItemGenerationTemplate {
-    fn get_level_range(&self) -> &Range<u8>;
-}
-
 pub struct ArmorGenerationTemplate {
-    pub level_range: Range<u8>,
     pub category: ArmorCategories,
-    pub ac_range: Range<u8>,
-    pub max_durability: u8,
-    pub requirements: HashMap<CombatAttributes, u8>,
+    pub template_properties: ItemGenerationTemplateProperties,
 }
 
 impl ItemGenerationTemplate for ArmorGenerationTemplate {
     fn get_level_range(&self) -> &Range<u8> {
-        &self.level_range
+        &self.template_properties.level_range
     }
 }
 
@@ -105,13 +103,18 @@ impl ArmorGenerationTemplate {
         max_durability: u8,
         category: ArmorCategories,
         requirements: HashMap<CombatAttributes, u8>,
+        affix_modifiers: Option<ItemGenerationTemplateAffixModifiers>,
     ) -> ArmorGenerationTemplate {
         ArmorGenerationTemplate {
-            level_range,
-            ac_range,
-            max_durability,
+            template_properties: ItemGenerationTemplateProperties {
+                level_range,
+                ac_range: Some(ac_range),
+                damage: None,
+                max_durability,
+                requirements,
+                affix_modifiers,
+            },
             category,
-            requirements,
         }
     }
 }

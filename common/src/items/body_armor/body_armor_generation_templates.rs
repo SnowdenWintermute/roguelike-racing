@@ -1,5 +1,7 @@
 use super::{ArmorCategories, ArmorGenerationTemplate, BodyArmors};
-use crate::{combatants::CombatAttributes, primatives::Range};
+use crate::{
+    combatants::CombatAttributes, items::items_by_level::items_by_level, primatives::Range,
+};
 use once_cell::sync::Lazy;
 use std::collections::HashMap;
 use strum::IntoEnumIterator;
@@ -19,6 +21,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                     6,
                     ArmorCategories::Cloth,
                     requirements,
+                    None,
                 ),
                 BodyArmors::Cape => ArmorGenerationTemplate::new(
                     Range::new(1, 4),
@@ -26,6 +29,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                     12,
                     ArmorCategories::Cloth,
                     requirements,
+                    None,
                 ),
                 BodyArmors::Cloak => ArmorGenerationTemplate::new(
                     Range::new(3, 7),
@@ -33,6 +37,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                     18,
                     ArmorCategories::Cloth,
                     requirements,
+                    None,
                 ),
                 BodyArmors::Robe => {
                     requirements.insert(CombatAttributes::Intelligence, 5);
@@ -42,6 +47,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         24,
                         ArmorCategories::Cloth,
                         requirements,
+                        None,
                     )
                 }
                 BodyArmors::Kevlar => {
@@ -52,6 +58,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         30,
                         ArmorCategories::Cloth,
                         requirements,
+                        None,
                     )
                 }
                 BodyArmors::LeatherArmor => {
@@ -62,6 +69,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         8,
                         ArmorCategories::Leather,
                         requirements,
+                        None,
                     )
                 }
                 BodyArmors::HardLeatherArmor => {
@@ -72,6 +80,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         15,
                         ArmorCategories::Leather,
                         requirements,
+                        None,
                     )
                 }
                 BodyArmors::StuddedLeatherArmor => {
@@ -82,6 +91,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         24,
                         ArmorCategories::Leather,
                         requirements,
+                        None,
                     )
                 }
                 BodyArmors::DemonsaurArmor => {
@@ -92,6 +102,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         40,
                         ArmorCategories::Leather,
                         requirements,
+                        None,
                     )
                 }
                 BodyArmors::RingMail => {
@@ -103,6 +114,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         12,
                         ArmorCategories::Mail,
                         requirements,
+                        None,
                     )
                 }
                 BodyArmors::ChainMail => {
@@ -115,6 +127,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         18,
                         ArmorCategories::Mail,
                         requirements,
+                        None,
                     )
                 }
                 BodyArmors::ScaleMail => {
@@ -126,6 +139,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         24,
                         ArmorCategories::Mail,
                         requirements,
+                        None,
                     )
                 }
                 BodyArmors::SplintMail => {
@@ -137,6 +151,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         30,
                         ArmorCategories::Mail,
                         requirements,
+                        None,
                     )
                 }
                 BodyArmors::OhmushellMail => {
@@ -149,6 +164,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         50,
                         ArmorCategories::Mail,
                         requirements,
+                        None,
                     )
                 }
                 BodyArmors::BreastPlate => {
@@ -159,6 +175,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         18,
                         ArmorCategories::Plate,
                         requirements,
+                        None,
                     )
                 }
                 BodyArmors::FieldPlate => {
@@ -169,6 +186,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         24,
                         ArmorCategories::Plate,
                         requirements,
+                        None,
                     )
                 }
                 BodyArmors::GothicPlate => {
@@ -179,6 +197,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         30,
                         ArmorCategories::Plate,
                         requirements,
+                        None,
                     )
                 }
                 BodyArmors::FullPlate => {
@@ -189,6 +208,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         50,
                         ArmorCategories::Plate,
                         requirements,
+                        None,
                     )
                 }
                 BodyArmors::ShardPlate => {
@@ -199,6 +219,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         80,
                         ArmorCategories::Plate,
                         requirements,
+                        None,
                     )
                 }
             };
@@ -208,3 +229,9 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
         }
         m
     });
+
+pub static BODY_ARMORS_BY_LEVEL: Lazy<HashMap<u8, Vec<BodyArmors>>> = Lazy::new(|| {
+    let templates: Vec<(&BodyArmors, &ArmorGenerationTemplate)> =
+        BODY_ARMOR_GENERATION_TEMPLATES.iter().collect();
+    items_by_level(templates)
+});

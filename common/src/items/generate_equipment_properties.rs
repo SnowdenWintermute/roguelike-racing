@@ -13,7 +13,10 @@ use super::{
     generate_equipment_durability::generate_equipment_durability,
     select_random_affix_types::select_random_affix_types,
 };
-use crate::{combatants::CombatAttributes, primatives::MaxAndCurrent};
+use crate::{
+    combatants::CombatAttributes,
+    primatives::{MaxAndCurrent, Range},
+};
 use rand::{seq::SliceRandom, Rng};
 use std::collections::{HashMap, HashSet};
 use strum::IntoEnumIterator;
@@ -24,7 +27,7 @@ pub fn generate_equipment_properties(
     requirements: &HashMap<CombatAttributes, u8>,
     max_durability: u8,
     base_ac: Option<u8>,
-    base_damage: Option<u8>,
+    base_damage: Option<Range<u8>>,
     possible_prefixes: &Vec<&(PrefixTypes, u8)>,
     possible_suffixes: &Vec<&(SuffixTypes, u8)>,
     num_prefixes: u8,

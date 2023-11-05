@@ -9,6 +9,7 @@ pub mod generate_equipment_attributes;
 mod generate_equipment_durability;
 pub mod generate_equipment_properties_by_base_item;
 pub mod headgear;
+pub mod item_generation_template_properties;
 pub mod items_by_level;
 mod select_random_affix_types;
 mod weapons;

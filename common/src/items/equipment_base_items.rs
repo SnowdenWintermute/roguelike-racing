@@ -1,5 +1,6 @@
 use super::{
-    body_armor::{body_armors_by_level::BODY_ARMORS_BY_LEVEL, BodyArmors},
+    body_armor::{body_armor_generation_templates::BODY_ARMORS_BY_LEVEL, BodyArmors},
+    headgear::HeadGears,
     Item,
 };
 use crate::items::equipment::EquipmentTypes;
@@ -13,7 +14,7 @@ use strum_macros::EnumIter;
 #[derive(Debug)]
 pub enum BaseItem {
     Armor(BodyArmors),
-    Helm,
+    HeadGear(HeadGears),
     Jewelry,
     MeleeWeapon,
     RangedWeapon,

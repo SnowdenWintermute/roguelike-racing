@@ -33,15 +33,17 @@ pub fn generate_equipment_properties_by_base_item(level: u8) -> EquipmentPropert
                 BODY_ARMOR_POSSIBLE_PREFIXES_AND_TIERS.iter().collect();
             let possible_suffixes: Vec<&(SuffixTypes, u8)> =
                 BODY_ARMOR_POSSIBLE_SUFFIXES_AND_TIERS.iter().collect();
-            let base_ac = rand::thread_rng()
-                .gen_range(generation_template.ac_range.min..=generation_template.ac_range.max);
+            let base_ac = match &generation_template.template_properties.ac_range {
+                Some(ac_range) => Some(rand::thread_rng().gen_range(ac_range.min..=ac_range.max)),
+                None => None,
+            };
 
             generate_equipment_properties(
                 equipment_type,
                 level,
-                &generation_template.requirements,
-                generation_template.max_durability,
-                Some(base_ac),
+                &generation_template.template_properties.requirements,
+                generation_template.template_properties.max_durability,
+                base_ac,
                 None,
                 &possible_prefixes,
                 &possible_suffixes,
@@ -53,6 +55,6 @@ pub fn generate_equipment_properties_by_base_item(level: u8) -> EquipmentPropert
         BaseItem::MeleeWeapon => todo!(),
         BaseItem::RangedWeapon => todo!(),
         BaseItem::Shield => todo!(),
-        BaseItem::Helm => todo!(),
+        BaseItem::HeadGear(base_headgear) => todo!(),
     }
 }

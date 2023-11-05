@@ -4,46 +4,164 @@ use once_cell::sync::Lazy;
 use rand::Rng;
 use std::collections::HashMap;
 
-pub fn generate_equipment_attributes(affixes: Vec<Affix>) -> HashMap<CombatAttributes, u16> {
+struct AttributeValueCreationTemplate {
+    attribute: CombatAttributes,
+    min: f32,
+    max: f32,
+}
+
+impl AttributeValueCreationTemplate {
+    pub fn new(attribute: CombatAttributes, min: f32, max: f32) -> AttributeValueCreationTemplate {
+        AttributeValueCreationTemplate {
+            attribute,
+            min,
+            max,
+        }
+    }
+}
+
+pub fn generate_equipment_attributes(affixes: &Vec<Affix>) -> HashMap<CombatAttributes, u16> {
     let mut attributes: HashMap<CombatAttributes, u16> = HashMap::new();
 
     for affix in affixes {
+        let mut attribute_templates = vec![];
         match affix {
             Affix::Prefix(prefix_type, tier) => {
-                let tier = tier as f32;
-                let mut min_value;
-                let mut max_value;
-                let mut attribute: CombatAttributes;
+                let tier = *tier as f32;
                 match prefix_type {
                     PrefixTypes::Mp => {
-                        attribute = CombatAttributes::Mp;
-                        min_value = tier;
-                        max_value = tier * 2.0;
+                        attribute_templates.push(AttributeValueCreationTemplate::new(
+                            CombatAttributes::Mp,
+                            tier,
+                            tier * 2.0,
+                        ));
                     }
-                    PrefixTypes::ArmorClass => todo!(),
-                    PrefixTypes::Accuracy => todo!(),
-                    PrefixTypes::PercentDamage => todo!(),
-                    PrefixTypes::LifeSteal => todo!(),
-                    PrefixTypes::Resilience => todo!(),
-                    PrefixTypes::Evasion => todo!(),
-                    PrefixTypes::Obscurity => todo!(),
-                    PrefixTypes::ArmorPenetration => todo!(),
+                    PrefixTypes::ArmorClass => {
+                        attribute_templates.push(AttributeValueCreationTemplate::new(
+                            CombatAttributes::ArmorClass,
+                            tier,
+                            tier * 2.0,
+                        ));
+                    }
+                    PrefixTypes::Accuracy => {
+                        attribute_templates.push(AttributeValueCreationTemplate::new(
+                            CombatAttributes::Accuracy,
+                            tier,
+                            tier * 2.0,
+                        ));
+                    }
+                    PrefixTypes::PercentDamage => (),
+                    PrefixTypes::LifeSteal => (),
+                    PrefixTypes::Resilience => {
+                        attribute_templates.push(AttributeValueCreationTemplate::new(
+                            CombatAttributes::Resilience,
+                            tier,
+                            tier * 2.0,
+                        ));
+                    }
+                    PrefixTypes::Evasion => {
+                        attribute_templates.push(AttributeValueCreationTemplate::new(
+                            CombatAttributes::Evasion,
+                            tier,
+                            tier * 2.0,
+                        ));
+                    }
+                    PrefixTypes::Obscurity => {
+                        attribute_templates.push(AttributeValueCreationTemplate::new(
+                            CombatAttributes::Obscurity,
+                            tier,
+                            tier * 2.0,
+                        ));
+                    }
+                    PrefixTypes::ArmorPenetration => {
+                        attribute_templates.push(AttributeValueCreationTemplate::new(
+                            CombatAttributes::ArmorPenetration,
+                            tier,
+                            tier * 2.0,
+                        ));
+                    }
                 }
-                let attribute_value = rand::thread_rng()
-                    .gen_range(min_value.round() as u16..=max_value.round() as u16);
-                attributes.insert(attribute, attribute_value);
             }
-            Affix::Suffix(suffix_type, tier) => match suffix_type {
-                SuffixTypes::Strength => todo!(),
-                SuffixTypes::Intelligence => todo!(),
-                SuffixTypes::Dexterity => todo!(),
-                SuffixTypes::Vitality => todo!(),
-                SuffixTypes::AllBase => todo!(),
-                SuffixTypes::Hp => todo!(),
-                SuffixTypes::Focus => todo!(),
-                SuffixTypes::Damage => todo!(),
-                SuffixTypes::Durability => todo!(),
-            },
+            Affix::Suffix(suffix_type, tier) => {
+                let tier = *tier as f32;
+                match suffix_type {
+                    SuffixTypes::Strength => {
+                        attribute_templates.push(AttributeValueCreationTemplate::new(
+                            CombatAttributes::Strength,
+                            tier,
+                            tier * 2.0,
+                        ));
+                    }
+                    SuffixTypes::Intelligence => {
+                        attribute_templates.push(AttributeValueCreationTemplate::new(
+                            CombatAttributes::Intelligence,
+                            tier,
+                            tier * 2.0,
+                        ));
+                    }
+                    SuffixTypes::Dexterity => {
+                        attribute_templates.push(AttributeValueCreationTemplate::new(
+                            CombatAttributes::Dexterity,
+                            tier,
+                            tier * 2.0,
+                        ));
+                    }
+                    SuffixTypes::Vitality => {
+                        attribute_templates.push(AttributeValueCreationTemplate::new(
+                            CombatAttributes::Vitality,
+                            tier,
+                            tier * 2.0,
+                        ));
+                    }
+                    SuffixTypes::AllBase => {
+                        // calculate this one in place because making it into templates would cause
+                        // each stat to be rolled seperately
+                        let min = tier / 2.0;
+                        let max = tier * 1.0;
+                        let attribute_value =
+                            rand::thread_rng().gen_range(min.round() as u16..=max.round() as u16);
+                        attributes.insert(CombatAttributes::Strength, attribute_value);
+                        attributes.insert(CombatAttributes::Dexterity, attribute_value);
+                        attributes.insert(CombatAttributes::Intelligence, attribute_value);
+                        attributes.insert(CombatAttributes::Vitality, attribute_value);
+                        attributes.insert(CombatAttributes::Resilience, attribute_value);
+                    }
+                    SuffixTypes::Hp => {
+                        attribute_templates.push(AttributeValueCreationTemplate::new(
+                            CombatAttributes::Hp,
+                            tier,
+                            tier * 2.0,
+                        ));
+                    }
+                    SuffixTypes::Focus => {
+                        attribute_templates.push(AttributeValueCreationTemplate::new(
+                            CombatAttributes::Focus,
+                            tier,
+                            tier * 2.0,
+                        ));
+                    }
+                    SuffixTypes::Damage => {
+                        attribute_templates.push(AttributeValueCreationTemplate::new(
+                            CombatAttributes::Damage,
+                            tier,
+                            tier * 2.0,
+                        ));
+                    }
+                    SuffixTypes::Durability => (),
+                }
+            }
+        }
+
+        for template in attribute_templates {
+            let attribute_value = rand::thread_rng()
+                .gen_range(template.min.round() as u16..=template.max.round() as u16);
+            println!(
+                "attribute template min: {} max: {}",
+                template.min.round(),
+                template.max.round()
+            );
+            println!("attr value generated: {}", attribute_value);
+            attributes.insert(template.attribute, attribute_value);
         }
     }
 

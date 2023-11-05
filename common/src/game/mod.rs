@@ -46,11 +46,7 @@ pub struct RoguelikeRacerGame {
 
 impl RoguelikeRacerGame {
     pub fn new(game_name: String) -> RoguelikeRacerGame {
-        for i in 1..=DEEPEST_FLOOR {
-            let base_item = Item::generate_base_item(i);
-            println!("level {} generated {:#?}", i, base_item);
-        }
-        RoguelikeRacerGame {
+        let mut game = RoguelikeRacerGame {
             name: game_name,
             password: None,
             players: HashMap::new(),
@@ -58,7 +54,22 @@ impl RoguelikeRacerGame {
             adventuring_parties: HashMap::new(),
             time_started: None,
             id_generator: IdGenerator::new(),
+        };
+
+        for i in 1..=DEEPEST_FLOOR {
+            let item = Item::generate(&mut game.id_generator, i);
+            match item.item_properties {
+                crate::items::ItemProperties::Consumable(_) => (),
+                crate::items::ItemProperties::Equipment(equipment_properties) => {
+                    println!(
+                        "level {} generated {:?} {:?}",
+                        i, equipment_properties.affixes, equipment_properties.attributes
+                    );
+                }
+            }
         }
+
+        game
     }
 
     pub fn get_number_of_players(&self) -> u8 {

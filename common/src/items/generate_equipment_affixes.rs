@@ -7,8 +7,8 @@ pub fn generate_equipment_affixes(
     level: u8,
 ) -> Vec<Affix> {
     let mut affixes: Vec<Affix> = Vec::new();
-    let max_tier_modifier: f32 = level as f32 / 100.00;
-    let min_tier_modifier: f32 = level as f32 / 200.00;
+    let max_tier_modifier: f32 = 1.0;
+    let min_tier_modifier: f32 = 0.5;
 
     for prefix_and_max_tier in prefixes_and_max_tiers {
         let min_tier = prefix_and_max_tier.1 as f32 * min_tier_modifier;

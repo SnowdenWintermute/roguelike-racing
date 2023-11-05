@@ -1,11 +1,12 @@
 use crate::combatants::CombatAttributes;
+use crate::items::affixes::Affix;
 use crate::primatives::MaxAndCurrent;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use strum_macros::EnumIter;
 
 use super::{
-    armors::{ArmorCategories, Armors},
+    body_armor::{ArmorCategories, BodyArmors},
     weapons::PhysicalDamageTypes,
 };
 
@@ -22,7 +23,7 @@ pub enum EquipmentSlots {
 
 #[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq)]
 pub enum EquipmentTypes {
-    BodyArmor(Armors, ArmorCategories),
+    BodyArmor(BodyArmors, ArmorCategories),
     Helmet(ArmorCategories),
     Ring,
     Amulet,
@@ -45,5 +46,6 @@ pub struct EquipmentProperties {
     pub equipment_type: EquipmentTypes,
     pub durability: Option<MaxAndCurrent<u8>>,
     pub attributes: HashMap<CombatAttributes, u16>,
+    pub affixes: Vec<Affix>,
     pub requirements: HashMap<CombatAttributes, u16>,
 }

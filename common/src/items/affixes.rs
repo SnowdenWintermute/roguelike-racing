@@ -1,13 +1,14 @@
 use once_cell::sync::Lazy;
+use serde::{Deserialize, Serialize};
 use strum_macros::EnumIter;
 
-#[derive(PartialEq, Eq, Clone)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone)]
 pub enum Affix {
     Prefix(PrefixTypes, u8),
     Suffix(SuffixTypes, u8),
 }
 
-#[derive(EnumIter, PartialEq, Eq, Clone, Hash)]
+#[derive(Serialize, Deserialize, Debug, EnumIter, PartialEq, Eq, Clone, Hash)]
 pub enum PrefixTypes {
     Mp,
     ArmorClass,
@@ -20,7 +21,7 @@ pub enum PrefixTypes {
     ArmorPenetration,
 }
 
-#[derive(EnumIter, PartialEq, Eq, Clone, Hash)]
+#[derive(Serialize, Deserialize, Debug, EnumIter, PartialEq, Eq, Clone, Hash)]
 pub enum SuffixTypes {
     Strength,
     Intelligence,

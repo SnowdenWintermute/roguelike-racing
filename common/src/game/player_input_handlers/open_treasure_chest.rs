@@ -24,7 +24,7 @@ pub fn open_treasure_chest(
 
     current_room.items.as_mut().unwrap().push(Item::generate(
         id_generator,
-        adventuring_party.current_floor as u16,
+        adventuring_party.current_floor,
     ));
 
     Ok(())

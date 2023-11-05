@@ -21,7 +21,7 @@ use strum::IntoEnumIterator;
 pub fn generate_equipment_properties(
     equipment_type: EquipmentTypes,
     level: u8,
-    requirements: &HashMap<CombatAttributes, u16>,
+    requirements: &HashMap<CombatAttributes, u8>,
     max_durability: u8,
     base_ac: Option<u8>,
     base_damage: Option<u8>,

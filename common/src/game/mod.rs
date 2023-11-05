@@ -82,8 +82,16 @@ impl RoguelikeRacerGame {
                                 }
                             }
                         }
-                        for (attribute, value) in equipment_properties.attributes {
-                            println!("{:?}:{}", attribute, value)
+                        if equipment_properties.attributes.len() > 0 {
+                            for (attribute, value) in equipment_properties.attributes {
+                                println!("{:?}:{}", attribute, value)
+                            }
+                        }
+                        if equipment_properties.requirements.len() > 0 {
+                            println!("Requirements: ");
+                            for (attribute, value) in equipment_properties.requirements {
+                                println!("{:?}:{}", attribute, value)
+                            }
                         }
                         println!("")
                         // println!(

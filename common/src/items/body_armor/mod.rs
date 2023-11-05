@@ -80,12 +80,22 @@ impl fmt::Display for BodyArmors {
     }
 }
 
+pub trait ItemGenerationTemplate {
+    fn get_level_range(&self) -> &Range<u8>;
+}
+
 pub struct ArmorGenerationTemplate {
     pub level_range: Range<u8>,
     pub category: ArmorCategories,
     pub ac_range: Range<u8>,
     pub max_durability: u8,
-    pub requirements: HashMap<CombatAttributes, u16>,
+    pub requirements: HashMap<CombatAttributes, u8>,
+}
+
+impl ItemGenerationTemplate for ArmorGenerationTemplate {
+    fn get_level_range(&self) -> &Range<u8> {
+        &self.level_range
+    }
 }
 
 impl ArmorGenerationTemplate {
@@ -94,7 +104,7 @@ impl ArmorGenerationTemplate {
         ac_range: Range<u8>,
         max_durability: u8,
         category: ArmorCategories,
-        requirements: HashMap<CombatAttributes, u16>,
+        requirements: HashMap<CombatAttributes, u8>,
     ) -> ArmorGenerationTemplate {
         ArmorGenerationTemplate {
             level_range,

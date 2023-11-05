@@ -1,69 +1,49 @@
 use super::{
-    equipment::EquipmentTypes, equipment_base_items::BaseItem,
-    generate_armor_properties::generate_armor_properties, EquipmentProperties, Item,
-    ItemProperties,
+    affixes::{Affix, PrefixTypes, SuffixTypes},
+    body_armor::{
+        body_armor_generation_templates::BODY_ARMOR_GENERATION_TEMPLATES,
+        body_armor_possible_affixes::{
+            BODY_ARMOR_POSSIBLE_PREFIXES_AND_TIERS, BODY_ARMOR_POSSIBLE_SUFFIXES_AND_TIERS,
+        },
+        BodyArmors,
+    },
+    equipment::{EquipmentProperties, EquipmentTypes},
+    generate_equipment_affixes::generate_equipment_affixes,
+    generate_equipment_attributes::{self, generate_equipment_attributes},
+    generate_equipment_durability::generate_equipment_durability,
+    select_random_affix_types::select_random_affix_types,
 };
 use crate::{combatants::CombatAttributes, primatives::MaxAndCurrent};
-use rand::prelude::*;
-use std::collections::HashMap;
+use rand::{seq::SliceRandom, Rng};
+use std::collections::{HashMap, HashSet};
 use strum::IntoEnumIterator;
 
-pub fn generate_equipment_properties(level: u8) -> EquipmentProperties {
-    // GEN BASE ITEM
-    let base_item = Item::generate_base_item(level);
-    //
-    let properties = generate_armor_properties(super::body_armor::BodyArmors::Rags, level);
-    properties
-    //
-    // match base_item {
-    //     BaseItem::Armor(base_armor) => {
-    //         let properties = generate_armor_properties(base_armor, level);
-    //     }
-    //     BaseItem::Jewelry => todo!(),
-    //     BaseItem::MeleeWeapon => todo!(),
-    //     BaseItem::RangedWeapon => todo!(),
-    //     BaseItem::Shield => todo!(),
-    // }
-    // let mut rng = rand::thread_rng();
-    // let equipment_types: Vec<_> = EquipmentTypes::iter().collect();
-    // let equipment_type = *equipment_types.choose(&mut rand::thread_rng()).unwrap();
-    // let attribute_types: Vec<_> = CombatAttributes::iter().collect();
-    // let bonus_attribute_type = *attribute_types.choose(&mut rand::thread_rng()).unwrap();
+pub fn generate_equipment_properties(
+    equipment_type: EquipmentTypes,
+    level: u8,
+    requirements: &HashMap<CombatAttributes, u16>,
+    max_durability: u8,
+    base_ac: Option<u8>,
+    base_damage: Option<u8>,
+    possible_prefixes: &Vec<&(PrefixTypes, u8)>,
+    possible_suffixes: &Vec<&(SuffixTypes, u8)>,
+    num_prefixes: u8,
+    num_suffixes: u8,
+) -> EquipmentProperties {
+    let requirements = requirements.clone();
+    let durability = generate_equipment_durability(max_durability);
+    let prefix_types_and_tiers = select_random_affix_types(&possible_prefixes, num_prefixes);
+    let suffix_types_and_tiers = select_random_affix_types(&possible_suffixes, num_suffixes);
+    let affixes = generate_equipment_affixes(prefix_types_and_tiers, suffix_types_and_tiers, level);
+    let attributes = generate_equipment_attributes(&affixes);
 
-    // // DETERMINE BASE STATS
-    // let durability = rng.gen_range(1..=level) * 5;
-    // let mut armor_class = 0;
-    // let mut damage = 0;
-    // match equipment_type {
-    //     EquipmentTypes::Helmet | EquipmentTypes::Shield => {
-    //         armor_class = rng.gen_range(1..=level)
-    //     }
-    //     EquipmentTypes::BodyArmor => armor_class = rng.gen_range(level..=level * 2),
-    //     EquipmentTypes::OneHandedWeapon => damage = rng.gen_range(1..=level),
-    //     EquipmentTypes::TwoHandedWeapon => damage = rng.gen_range(level..=level * 2),
-    //     _ => (),
-    // };
-
-    // let mut attributes = HashMap::new();
-    // let mut bonus_stat_amount;
-
-    // match equipment_type {
-    //     EquipmentTypes::Ring | EquipmentTypes::Amulet | EquipmentTypes::TwoHandedWeapon => {
-    //         bonus_stat_amount = rng.gen_range(level..level * 2)
-    //     }
-    //     _ => bonus_stat_amount = rng.gen_range(1..level),
-    // };
-
-    // attributes.insert(bonus_attribute_type, bonus_stat_amount);
-
-    // let equipment_properties = EquipmentProperties {
-    //     equipment_type,
-    //     durability: Some(MaxAndCurrent {
-    //         max: durability,
-    //         current: durability,
-    //     }),
-    //     attributes,
-    // };
-
-    // ItemProperties::Equipment(equipment_properties)
+    EquipmentProperties {
+        equipment_type,
+        durability,
+        base_ac,
+        base_damage,
+        attributes,
+        requirements,
+        affixes,
+    }
 }

@@ -57,14 +57,40 @@ impl RoguelikeRacerGame {
         };
 
         for i in 1..=DEEPEST_FLOOR {
-            let item = Item::generate(&mut game.id_generator, i);
-            match item.item_properties {
-                crate::items::ItemProperties::Consumable(_) => (),
-                crate::items::ItemProperties::Equipment(equipment_properties) => {
-                    println!(
-                        "level {} generated {:?} {:?}",
-                        i, equipment_properties.affixes, equipment_properties.attributes
-                    );
+            for _ in 0..5 {
+                let item = Item::generate(&mut game.id_generator, i);
+                match item.item_properties {
+                    crate::items::ItemProperties::Consumable(_) => (),
+                    crate::items::ItemProperties::Equipment(equipment_properties) => {
+                        println!("level {}:  {}", i, equipment_properties.equipment_type);
+                        if let Some(base_ac) = equipment_properties.base_ac {
+                            println!("Base AC: {}", base_ac)
+                        }
+                        if let Some(base_damage) = equipment_properties.base_damage {
+                            println!("Base AC: {}", base_damage)
+                        }
+                        if let Some(durability) = equipment_properties.durability {
+                            println!("Durability: {}/{}", durability.current, durability.max)
+                        }
+                        for affix in equipment_properties.affixes {
+                            match affix {
+                                crate::items::affixes::Affix::Prefix(prefix_type, tier) => {
+                                    println!("Prefix: {:?} Tier: {}", prefix_type, tier)
+                                }
+                                crate::items::affixes::Affix::Suffix(suffix_type, tier) => {
+                                    println!("Suffix: {:?} Tier: {}", suffix_type, tier)
+                                }
+                            }
+                        }
+                        for (attribute, value) in equipment_properties.attributes {
+                            println!("{:?}:{}", attribute, value)
+                        }
+                        println!("")
+                        // println!(
+                        //     "level {} generated {:?} {:?}",
+                        //     i, equipment_properties.affixes, equipment_properties.attributes
+                        // );
+                    }
                 }
             }
         }

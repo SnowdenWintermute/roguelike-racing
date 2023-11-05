@@ -155,12 +155,6 @@ pub fn generate_equipment_attributes(affixes: &Vec<Affix>) -> HashMap<CombatAttr
         for template in attribute_templates {
             let attribute_value = rand::thread_rng()
                 .gen_range(template.min.round() as u16..=template.max.round() as u16);
-            println!(
-                "attribute template min: {} max: {}",
-                template.min.round(),
-                template.max.round()
-            );
-            println!("attr value generated: {}", attribute_value);
             attributes.insert(template.attribute, attribute_value);
         }
     }

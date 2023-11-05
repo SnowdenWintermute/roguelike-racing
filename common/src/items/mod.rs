@@ -4,16 +4,15 @@ pub mod body_armor;
 pub mod consumables;
 pub mod equipment;
 pub mod equipment_base_items;
-pub mod generate_armor_properties;
 mod generate_equipment_affixes;
 pub mod generate_equipment_attributes;
 mod generate_equipment_durability;
+pub mod generate_equipment_properties_by_base_item;
 mod select_random_affix_types;
 mod weapons;
 use self::consumables::ConsumableProperties;
 use self::equipment::EquipmentProperties;
-use self::generate_armor_properties::generate_armor_properties;
-use self::generate_equipment_properties::generate_equipment_properties;
+use self::generate_equipment_properties_by_base_item::generate_equipment_properties_by_base_item;
 use crate::combatants::abilities::{TargetingScheme, ValidTargets};
 use crate::game::id_generator::IdGenerator;
 use crate::primatives::{EntityProperties, MaxAndCurrent};
@@ -61,7 +60,7 @@ impl Item {
         //     ItemCategories::Equipment => (),
         // };
         //
-        let equipment_properties = generate_equipment_properties(level);
+        let equipment_properties = generate_equipment_properties_by_base_item(level);
 
         Item {
             entity_properties: EntityProperties {

@@ -1,6 +1,7 @@
 use crate::combatants::CombatAttributes;
 use crate::items::affixes::Affix;
 use crate::primatives::MaxAndCurrent;
+use core::fmt;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use strum_macros::EnumIter;
@@ -33,6 +34,23 @@ pub enum EquipmentTypes {
     Shield(ShieldTypes),
 }
 
+impl fmt::Display for EquipmentTypes {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            EquipmentTypes::BodyArmor(base_armor, category) => {
+                write!(f, "{base_armor} ({category})")
+            }
+            EquipmentTypes::Helmet(_) => write!(f, ""),
+            EquipmentTypes::Ring => write!(f, ""),
+            EquipmentTypes::Amulet => write!(f, ""),
+            EquipmentTypes::OneHandedWeapon(_) => write!(f, ""),
+            EquipmentTypes::TwoHandedWeapon(_) => write!(f, ""),
+            EquipmentTypes::RangedWeapon(_) => write!(f, ""),
+            EquipmentTypes::Shield(_) => write!(f, ""),
+        }
+    }
+}
+
 #[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq, Default)]
 pub enum ShieldTypes {
     #[default]
@@ -45,6 +63,8 @@ pub enum ShieldTypes {
 pub struct EquipmentProperties {
     pub equipment_type: EquipmentTypes,
     pub durability: Option<MaxAndCurrent<u8>>,
+    pub base_ac: Option<u8>,
+    pub base_damage: Option<u8>,
     pub attributes: HashMap<CombatAttributes, u16>,
     pub affixes: Vec<Affix>,
     pub requirements: HashMap<CombatAttributes, u16>,

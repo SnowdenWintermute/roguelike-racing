@@ -1,3 +1,6 @@
+use super::body_armor::{ArmorCategories, BodyArmors};
+use super::headgear::HeadGears;
+use super::one_handed_melee_weapons::DamageTypes;
 use crate::items::affixes::Affix;
 use crate::primatives::MaxAndCurrent;
 use crate::{combatants::CombatAttributes, primatives::Range};
@@ -5,12 +8,6 @@ use core::fmt;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use strum_macros::EnumIter;
-
-use super::headgear::HeadGears;
-use super::{
-    body_armor::{ArmorCategories, BodyArmors},
-    weapons::PhysicalDamageTypes,
-};
 
 #[derive(Debug, Serialize, Deserialize, Clone, Hash, Eq, PartialEq)]
 pub enum EquipmentSlots {
@@ -29,9 +26,9 @@ pub enum EquipmentTypes {
     HeadGear(HeadGears, ArmorCategories),
     Ring,
     Amulet,
-    OneHandedWeapon(PhysicalDamageTypes),
-    TwoHandedWeapon(PhysicalDamageTypes),
-    RangedWeapon(PhysicalDamageTypes),
+    OneHandedWeapon(DamageTypes),
+    TwoHandedWeapon(DamageTypes),
+    RangedWeapon(DamageTypes),
     Shield(ShieldTypes),
 }
 

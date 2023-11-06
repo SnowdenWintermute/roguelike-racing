@@ -11,6 +11,7 @@ pub mod generate_equipment_properties_by_base_item;
 pub mod headgear;
 pub mod item_generation_template_properties;
 pub mod items_by_level;
+pub mod one_handed_melee_weapons;
 mod select_random_affix_types;
 mod weapons;
 use self::consumables::ConsumableProperties;

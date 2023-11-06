@@ -84,8 +84,9 @@ pub fn generate_equipment_properties_by_base_item(level: u8) -> EquipmentPropert
             )
         }
         BaseItem::Jewelry => todo!(),
-        BaseItem::MeleeWeapon => todo!(),
-        BaseItem::RangedWeapon => todo!(),
         BaseItem::Shield => todo!(),
+        BaseItem::OneHandedMeleeWeapon => todo!(),
+        BaseItem::TwoHandedMeleeWeapon => todo!(),
+        BaseItem::TwoHandedRangedWeapon => todo!(),
     }
 }

@@ -16,8 +16,9 @@ pub enum BaseItem {
     Armor(BodyArmors),
     HeadGear(HeadGears),
     Jewelry,
-    MeleeWeapon,
-    RangedWeapon,
+    OneHandedMeleeWeapon,
+    TwoHandedMeleeWeapon,
+    TwoHandedRangedWeapon,
     Shield,
 }
 

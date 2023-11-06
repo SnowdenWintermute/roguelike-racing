@@ -54,7 +54,12 @@ pub static HEADGEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGeneratio
                     requirements,
                     Some(ItemGenerationTemplateAffixModifiers::new(
                         None,
-                        None,
+                        Some(vec![
+                            SuffixTypes::Strength,
+                            SuffixTypes::Dexterity,
+                            SuffixTypes::Vitality,
+                            SuffixTypes::Durability,
+                        ]),
                         None,
                         Some(vec![(SuffixTypes::AllBase, 4)]),
                     )),

@@ -5,18 +5,26 @@ pub fn select_random_affix_types<T: Clone + PartialEq>(
     possible_affix_types_with_tiers: &Vec<&(T, u8)>,
     num_affixes: u8,
     affix_overrides: &Option<Vec<(T, u8)>>,
+    affix_exclusions: &Option<Vec<T>>,
 ) -> Vec<(T, u8)> {
     let mut affix_types_to_return = Vec::new();
     if num_affixes < 1 {
         return affix_types_to_return;
     }
     let mut remaining_affixes_with_tiers = possible_affix_types_with_tiers.clone();
+    // remove excluded affixes
+    if let Some(exclusions) = affix_exclusions {
+        remaining_affixes_with_tiers
+            .retain(|affix_and_tier| !exclusions.contains(&affix_and_tier.0));
+    }
+
     for i in 0..num_affixes {
         // this shouldn't happen if we don't allow items with a higher number of prefixes than the
         // number of prefix types, but just in case we'll exit early
         if remaining_affixes_with_tiers.len() < 1 {
             break;
         }
+
         let random_affix_index =
             rand::thread_rng().gen_range(0..remaining_affixes_with_tiers.len());
         let mut affix_type_and_max_tier = remaining_affixes_with_tiers

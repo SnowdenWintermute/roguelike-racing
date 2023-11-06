@@ -1,6 +1,6 @@
 use super::body_armor::{ArmorCategories, BodyArmors};
 use super::headgear::HeadGears;
-use super::one_handed_melee_weapons::DamageTypes;
+use super::one_handed_melee_weapons::{DamageCategories, DamageTypes, OneHandedMeleeWeapons};
 use crate::items::affixes::Affix;
 use crate::primatives::MaxAndCurrent;
 use crate::{combatants::CombatAttributes, primatives::Range};
@@ -20,15 +20,15 @@ pub enum EquipmentSlots {
     Amulet,
 }
 
-#[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq)]
+#[derive(Debug, EnumIter, Clone, PartialEq, Serialize, Deserialize, Eq)]
 pub enum EquipmentTypes {
     BodyArmor(BodyArmors, ArmorCategories),
     HeadGear(HeadGears, ArmorCategories),
     Ring,
     Amulet,
-    OneHandedWeapon(DamageTypes),
-    TwoHandedWeapon(DamageTypes),
-    RangedWeapon(DamageTypes),
+    OneHandedWeapon(OneHandedMeleeWeapons, Vec<DamageCategories>),
+    TwoHandedWeapon(DamageCategories),
+    RangedWeapon(DamageCategories),
     Shield(ShieldTypes),
 }
 
@@ -41,7 +41,7 @@ impl fmt::Display for EquipmentTypes {
             EquipmentTypes::HeadGear(_, _) => write!(f, ""),
             EquipmentTypes::Ring => write!(f, ""),
             EquipmentTypes::Amulet => write!(f, ""),
-            EquipmentTypes::OneHandedWeapon(_) => write!(f, ""),
+            EquipmentTypes::OneHandedWeapon(_, _) => write!(f, ""),
             EquipmentTypes::TwoHandedWeapon(_) => write!(f, ""),
             EquipmentTypes::RangedWeapon(_) => write!(f, ""),
             EquipmentTypes::Shield(_) => write!(f, ""),

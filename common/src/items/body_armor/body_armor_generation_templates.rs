@@ -231,7 +231,11 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
     });
 
 pub static BODY_ARMORS_BY_LEVEL: Lazy<HashMap<u8, Vec<BodyArmors>>> = Lazy::new(|| {
-    let templates: Vec<(&BodyArmors, &ArmorGenerationTemplate)> =
-        BODY_ARMOR_GENERATION_TEMPLATES.iter().collect();
-    items_by_level(templates)
+    let items_and_level_ranges: Vec<(&BodyArmors, &Range<u8>)> = BODY_ARMOR_GENERATION_TEMPLATES
+        .iter()
+        .collect::<Vec<(&BodyArmors, &ArmorGenerationTemplate)>>()
+        .iter()
+        .map(|template| (template.0, &template.1.template_properties.level_range))
+        .collect::<Vec<(&BodyArmors, &Range<u8>)>>();
+    items_by_level(items_and_level_ranges)
 });

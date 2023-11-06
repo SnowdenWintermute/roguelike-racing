@@ -4,7 +4,9 @@ use crate::{
     items::{
         affixes::{PrefixTypes, SuffixTypes},
         body_armor::{ArmorCategories, ArmorGenerationTemplate},
-        item_generation_template_properties::ItemGenerationTemplateAffixModifiers,
+        item_generation_template_properties::{
+            ItemGenerationTemplateAffixModifiers, ItemGenerationTemplateProperties,
+        },
         items_by_level::items_by_level,
     },
     primatives::Range,
@@ -177,7 +179,11 @@ pub static HEADGEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGeneratio
     });
 
 pub static HEADGEARS_BY_LEVEL: Lazy<HashMap<u8, Vec<HeadGears>>> = Lazy::new(|| {
-    let templates: Vec<(&HeadGears, &ArmorGenerationTemplate)> =
-        HEADGEAR_GENERATION_TEMPLATES.iter().collect();
-    items_by_level(templates)
+    let items_and_level_ranges: Vec<(&HeadGears, &Range<u8>)> = HEADGEAR_GENERATION_TEMPLATES
+        .iter()
+        .collect::<Vec<(&HeadGears, &ArmorGenerationTemplate)>>()
+        .iter()
+        .map(|template| (template.0, &template.1.template_properties.level_range))
+        .collect::<Vec<(&HeadGears, &Range<u8>)>>();
+    items_by_level(items_and_level_ranges)
 });

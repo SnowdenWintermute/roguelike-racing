@@ -1,3 +1,4 @@
+pub mod one_handed_melee_weapon_generation_templates;
 use super::{
     affixes::{PrefixTypes, SuffixTypes},
     item_generation_template_properties::{
@@ -13,14 +14,23 @@ use std::collections::HashMap;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
+#[derive(Serialize, Deserialize, Hash, Eq, PartialEq, Copy, Clone, Debug)]
 pub enum DamageCategories {
+    Direct(DamageTypes),
     Physical(DamageTypes),
     Magical(DamageTypes),
+}
+
+impl Default for DamageCategories {
+    fn default() -> DamageCategories {
+        DamageCategories::Direct(DamageTypes::Pure)
+    }
 }
 
 #[derive(Serialize, Deserialize, EnumIter, Hash, Eq, PartialEq, Copy, Clone, Debug, Default)]
 pub enum DamageTypes {
     #[default]
+    Pure,
     Slashing,
     Blunt,
     Piercing,
@@ -37,6 +47,7 @@ pub enum DamageTypes {
 impl fmt::Display for DamageTypes {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
+            DamageTypes::Pure => write!(f, "Pure"),
             DamageTypes::Slashing => write!(f, "Slashing"),
             DamageTypes::Blunt => write!(f, "Blunt"),
             DamageTypes::Piercing => write!(f, "Piercing"),
@@ -55,19 +66,44 @@ impl fmt::Display for DamageTypes {
 #[derive(Serialize, Deserialize, Default, EnumIter, Hash, Eq, PartialEq, Copy, Clone, Debug)]
 pub enum OneHandedMeleeWeapons {
     #[default]
-    Club,
+    // BLUNT
+    Stick,
+    Mace,
+    Morningstar,
+    WarHammer,
+    // SLASHING
+    ShortSword,
+    Blade,
+    RuneSword,
+    BroadSword,
+    BastardSword,
+    // PIERCING
+    Dagger,
+    Rapier,
+    ShortSpear,
 }
 
 impl fmt::Display for OneHandedMeleeWeapons {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            OneHandedMeleeWeapons::Club => todo!(),
+            OneHandedMeleeWeapons::Mace => write!(f, "Mace"),
+            OneHandedMeleeWeapons::Morningstar => write!(f, "Morning Star"),
+            OneHandedMeleeWeapons::WarHammer => write!(f, "War Hammer"),
+            OneHandedMeleeWeapons::ShortSword => write!(f, "Short Sword"),
+            OneHandedMeleeWeapons::Blade => write!(f, "Blade"),
+            OneHandedMeleeWeapons::BroadSword => write!(f, "Broad Sword"),
+            OneHandedMeleeWeapons::BastardSword => write!(f, "Bastard Sword"),
+            OneHandedMeleeWeapons::Stick => write!(f, "Stick"),
+            OneHandedMeleeWeapons::RuneSword => write!(f, "Rune Sword"),
+            OneHandedMeleeWeapons::Dagger => write!(f, "Dagger"),
+            OneHandedMeleeWeapons::Rapier => write!(f, "Rapier"),
+            OneHandedMeleeWeapons::ShortSpear => write!(f, "Short Spear"),
         }
     }
 }
 
 pub struct WeaponGenerationTemplate {
-    pub damage_classification: DamageCategories,
+    pub damage_classifications: Vec<DamageCategories>,
     pub template_properties: ItemGenerationTemplateProperties,
 }
 
@@ -82,7 +118,7 @@ impl WeaponGenerationTemplate {
         level_range: Range<u8>,
         damage: Range<u8>,
         max_durability: u8,
-        damage_classification: DamageCategories,
+        damage_classifications: Vec<DamageCategories>,
         requirements: HashMap<CombatAttributes, u8>,
         affix_modifiers: Option<ItemGenerationTemplateAffixModifiers>,
     ) -> WeaponGenerationTemplate {
@@ -95,7 +131,7 @@ impl WeaponGenerationTemplate {
                 requirements,
                 affix_modifiers,
             },
-            damage_classification,
+            damage_classifications,
         }
     }
 }

@@ -1,6 +1,7 @@
 use super::{
     body_armor::{body_armor_generation_templates::BODY_ARMORS_BY_LEVEL, BodyArmors},
     headgear::{headgear_generation_templates::HEADGEARS_BY_LEVEL, HeadGears},
+    one_handed_melee_weapons::OneHandedMeleeWeapons,
     Item,
 };
 use crate::items::equipment::EquipmentTypes;
@@ -16,7 +17,7 @@ pub enum BaseItem {
     Armor(BodyArmors),
     HeadGear(HeadGears),
     Jewelry,
-    OneHandedMeleeWeapon,
+    OneHandedMeleeWeapon(OneHandedMeleeWeapons),
     TwoHandedMeleeWeapon,
     TwoHandedRangedWeapon,
     Shield,
@@ -35,7 +36,8 @@ impl Item {
                     .get(&level);
                 if possible_base_armors_option.is_some() {
                     let possible_base_armors = possible_base_armors_option.unwrap();
-                return BaseItem::HeadGear(HeadGears::Ribbon)
+                // return BaseItem::HeadGear(HeadGears::Ribbon)
+                return BaseItem::OneHandedMeleeWeapon(OneHandedMeleeWeapons::RuneSword)
                 // let possible_base_armors_option = BODY_ARMORS_BY_LEVEL
                 //     .get(&level);
                 // if possible_base_armors_option.is_some() {

@@ -67,9 +67,9 @@ impl RoguelikeRacerGame {
                         if let Some(base_ac) = equipment_properties.base_ac {
                             println!("Base AC: {}", base_ac)
                         }
-                        // if let Some(base_damage) = equipment_properties.base_damage {
-                        //     println!("Base AC: {}", base_damage)
-                        // }
+                        if let Some(base_damage) = equipment_properties.base_damage {
+                            println!("Base Damage: {:?}", base_damage)
+                        }
                         if let Some(durability) = equipment_properties.durability {
                             println!("Durability: {}/{}", durability.current, durability.max)
                         }

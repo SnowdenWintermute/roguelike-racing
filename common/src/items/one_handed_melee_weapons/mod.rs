@@ -1,4 +1,5 @@
 pub mod one_handed_melee_weapon_generation_templates;
+pub mod one_handed_melee_weapons_possible_affixes;
 use super::{
     affixes::{PrefixTypes, SuffixTypes},
     item_generation_template_properties::{
@@ -15,15 +16,15 @@ use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
 #[derive(Serialize, Deserialize, Hash, Eq, PartialEq, Copy, Clone, Debug)]
-pub enum DamageCategories {
+pub enum DamageClassifications {
     Direct(DamageTypes),
     Physical(DamageTypes),
     Magical(DamageTypes),
 }
 
-impl Default for DamageCategories {
-    fn default() -> DamageCategories {
-        DamageCategories::Direct(DamageTypes::Pure)
+impl Default for DamageClassifications {
+    fn default() -> DamageClassifications {
+        DamageClassifications::Direct(DamageTypes::Pure)
     }
 }
 
@@ -66,21 +67,24 @@ impl fmt::Display for DamageTypes {
 #[derive(Serialize, Deserialize, Default, EnumIter, Hash, Eq, PartialEq, Copy, Clone, Debug)]
 pub enum OneHandedMeleeWeapons {
     #[default]
-    // BLUNT
+    // PHYSICAL BLUNT
     Stick,
     Mace,
     Morningstar,
     WarHammer,
-    // SLASHING
+    // PHYSICAL SLASHING
     ShortSword,
     Blade,
-    RuneSword,
     BroadSword,
     BastardSword,
-    // PIERCING
+    // PHYSICAL PIERCING
     Dagger,
     Rapier,
     ShortSpear,
+    // PHYSICAL ELEMENTAL
+    RuneSword,
+    // MAGICAL SLASHING
+    EtherBlade,
 }
 
 impl fmt::Display for OneHandedMeleeWeapons {
@@ -98,12 +102,14 @@ impl fmt::Display for OneHandedMeleeWeapons {
             OneHandedMeleeWeapons::Dagger => write!(f, "Dagger"),
             OneHandedMeleeWeapons::Rapier => write!(f, "Rapier"),
             OneHandedMeleeWeapons::ShortSpear => write!(f, "Short Spear"),
+            OneHandedMeleeWeapons::EtherBlade => write!(f, "Ether Blade"),
         }
     }
 }
 
 pub struct WeaponGenerationTemplate {
-    pub damage_classifications: Vec<DamageCategories>,
+    pub possbile_damage_classifications: Vec<DamageClassifications>,
+    pub num_damage_classifications: u8,
     pub template_properties: ItemGenerationTemplateProperties,
 }
 
@@ -118,7 +124,8 @@ impl WeaponGenerationTemplate {
         level_range: Range<u8>,
         damage: Range<u8>,
         max_durability: u8,
-        damage_classifications: Vec<DamageCategories>,
+        possbile_damage_classifications: Vec<DamageClassifications>,
+        num_damage_classifications: u8,
         requirements: HashMap<CombatAttributes, u8>,
         affix_modifiers: Option<ItemGenerationTemplateAffixModifiers>,
     ) -> WeaponGenerationTemplate {
@@ -131,7 +138,8 @@ impl WeaponGenerationTemplate {
                 requirements,
                 affix_modifiers,
             },
-            damage_classifications,
+            possbile_damage_classifications,
+            num_damage_classifications,
         }
     }
 }

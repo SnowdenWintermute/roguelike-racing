@@ -9,10 +9,18 @@ use super::{
     equipment::EquipmentTypes,
     equipment_base_items::BaseItem,
     generate_equipment_properties::generate_equipment_properties,
+    generate_weapon_damage_classifications::generate_weapon_damage_classifications,
     headgear::{
         headgear_generation_templates::HEADGEAR_GENERATION_TEMPLATES,
         headgear_possible_affixes::{
             HEADGEAR_POSSIBLE_PREFIXES_AND_TIERS, HEADGEAR_POSSIBLE_SUFFIXES_AND_TIERS,
+        },
+    },
+    one_handed_melee_weapons::{
+        one_handed_melee_weapon_generation_templates::ONE_HANDED_MELEE_WEAPON_GENERATION_TEMPLATES,
+        one_handed_melee_weapons_possible_affixes::{
+            ONE_HANDED_MELEE_WEAPONS_POSSIBLE_PREFIXES_AND_TIERS,
+            ONE_HANDED_MELEE_WEAPONS_POSSIBLE_SUFFIXES_AND_TIERS,
         },
     },
     EquipmentProperties, Item, ItemProperties,
@@ -49,7 +57,7 @@ pub fn generate_equipment_properties_by_base_item(level: u8) -> EquipmentPropert
                 level,
                 &generation_template.template_properties,
                 base_ac,
-                None,
+                &None,
                 &possible_prefixes,
                 &possible_suffixes,
                 num_prefixes,
@@ -76,7 +84,7 @@ pub fn generate_equipment_properties_by_base_item(level: u8) -> EquipmentPropert
                 level,
                 &generation_template.template_properties,
                 base_ac,
-                None,
+                &None,
                 &possible_prefixes,
                 &possible_suffixes,
                 num_prefixes,
@@ -85,7 +93,40 @@ pub fn generate_equipment_properties_by_base_item(level: u8) -> EquipmentPropert
         }
         BaseItem::Jewelry => todo!(),
         BaseItem::Shield => todo!(),
-        BaseItem::OneHandedMeleeWeapon => todo!(),
+        BaseItem::OneHandedMeleeWeapon(item_type) => {
+            let generation_template = ONE_HANDED_MELEE_WEAPON_GENERATION_TEMPLATES
+                .get(&item_type)
+                .expect("a generation template should exist for each base armor type");
+            let possible_prefixes: Vec<&(PrefixTypes, u8)> =
+                ONE_HANDED_MELEE_WEAPONS_POSSIBLE_PREFIXES_AND_TIERS
+                    .iter()
+                    .collect();
+            let possible_suffixes: Vec<&(SuffixTypes, u8)> =
+                ONE_HANDED_MELEE_WEAPONS_POSSIBLE_SUFFIXES_AND_TIERS
+                    .iter()
+                    .collect();
+
+            // mak e afunction to generate the options for damage classifications from the template
+            let damage_classifications = generate_weapon_damage_classifications(
+                &generation_template.possbile_damage_classifications,
+                generation_template.num_damage_classifications,
+            );
+
+            let equipment_type =
+                EquipmentTypes::OneHandedMeleeWeapon(item_type, damage_classifications);
+
+            generate_equipment_properties(
+                equipment_type,
+                level,
+                &generation_template.template_properties,
+                None,
+                &generation_template.template_properties.damage,
+                &possible_prefixes,
+                &possible_suffixes,
+                num_prefixes,
+                num_suffixes,
+            )
+        }
         BaseItem::TwoHandedMeleeWeapon => todo!(),
         BaseItem::TwoHandedRangedWeapon => todo!(),
     }

@@ -30,8 +30,8 @@ use self::{
 };
 use super::{
     affixes::{PrefixTypes, SuffixTypes},
-    armor::ArmorProperties,
-    weapons::WeaponProperties,
+    armor_properties::ArmorProperties,
+    weapon_properties::WeaponProperties,
     EquipmentProperties, EquipmentTypes,
 };
 use crate::{combatants::CombatAttributes, items::Item, primatives::MaxAndCurrent};

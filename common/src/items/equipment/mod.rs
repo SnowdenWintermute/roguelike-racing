@@ -1,16 +1,22 @@
 pub mod affixes;
-pub mod armor;
+pub mod armor_properties;
 pub mod body_armors;
 pub mod equipment_generation;
 pub mod head_gears;
 pub mod one_handed_melee_weapons;
-pub mod weapons;
+pub mod shield_properties;
+pub mod two_handed_melee_weapons;
+pub mod two_handed_ranged_weapons;
+pub mod weapon_properties;
+pub mod shields;
 use self::affixes::Affix;
-use self::armor::ArmorProperties;
+use self::armor_properties::ArmorProperties;
 use self::body_armors::BodyArmors;
 use self::head_gears::HeadGears;
 use self::one_handed_melee_weapons::OneHandedMeleeWeapons;
-use self::weapons::WeaponProperties;
+use self::two_handed_melee_weapons::TwoHandedMeleeWeapons;
+use self::two_handed_ranged_weapons::TwoHandedRangedWeapons;
+use self::weapon_properties::WeaponProperties;
 use crate::primatives::MaxAndCurrent;
 use crate::{combatants::CombatAttributes, primatives::Range};
 use core::fmt;
@@ -36,9 +42,9 @@ pub enum EquipmentTypes {
     Ring,
     Amulet,
     OneHandedMeleeWeapon(OneHandedMeleeWeapons, WeaponProperties),
-    TwoHandedWeapon(),
-    RangedWeapon(),
-    Shield(ShieldTypes),
+    TwoHandedMeleeWeapon(TwoHandedMeleeWeapons, WeaponProperties),
+    TwoHandedRangedWeapon(TwoHandedRangedWeapons, WeaponProperties),
+    Shield,
 }
 
 impl fmt::Display for EquipmentTypes {
@@ -55,9 +61,9 @@ impl fmt::Display for EquipmentTypes {
             EquipmentTypes::OneHandedMeleeWeapon(base_item, damage_classifications) => {
                 write!(f, "{base_item} {:?}", damage_classifications)
             }
-            EquipmentTypes::TwoHandedWeapon() => write!(f, ""),
-            EquipmentTypes::RangedWeapon() => write!(f, ""),
-            EquipmentTypes::Shield(_) => write!(f, ""),
+            EquipmentTypes::TwoHandedMeleeWeapon(..) => write!(f, ""),
+            EquipmentTypes::TwoHandedRangedWeapon(..) => write!(f, ""),
+            EquipmentTypes::Shield => write!(f, ""),
         }
     }
 }
@@ -69,14 +75,6 @@ pub enum EquipmentTraits {
     ArmorClassPercentage(u8),
     DamagePercentage(u8),
     RandomDamageTypeSelection,
-}
-
-#[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq, Default)]
-pub enum ShieldTypes {
-    #[default]
-    Buckler,
-    Kite,
-    Tower,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]

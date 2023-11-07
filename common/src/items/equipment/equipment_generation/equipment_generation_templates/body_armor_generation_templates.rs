@@ -2,7 +2,7 @@ use super::ArmorGenerationTemplate;
 use crate::{
     combatants::CombatAttributes,
     items::{
-        equipment::{armor::ArmorCategories, body_armors::BodyArmors},
+        equipment::{armor_properties::ArmorCategories, body_armors::BodyArmors},
         items_by_level::items_by_level,
     },
     primatives::Range,

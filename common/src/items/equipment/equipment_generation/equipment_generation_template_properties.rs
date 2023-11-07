@@ -73,7 +73,3 @@ impl EquipmentGenerationTemplateProperties {
         }
     }
 }
-
-pub trait EquipmentGenerationTemplate {
-    fn get_level_range(&self) -> &Range<u8>;
-}

@@ -1,20 +1,12 @@
-// use crate::items::equipment::equipment_generation::Wea
-use crate::{
-    combatants::CombatAttributes,
-    items::{
-        equipment::{
-            one_handed_melee_weapons::OneHandedMeleeWeapons,
-            weapons::{DamageClassifications, DamageTypes},
-        },
-        items_by_level::items_by_level,
-    },
-    primatives::Range,
-};
+use super::WeaponGenerationTemplate;
+use crate::combatants::CombatAttributes;
+use crate::items::equipment::one_handed_melee_weapons::OneHandedMeleeWeapons;
+use crate::items::equipment::weapon_properties::{DamageClassifications, DamageTypes};
+use crate::items::items_by_level::items_by_level;
+use crate::primatives::Range;
 use once_cell::sync::Lazy;
 use std::collections::HashMap;
 use strum::IntoEnumIterator;
-
-use super::WeaponGenerationTemplate;
 
 pub static ONE_HANDED_MELEE_WEAPON_GENERATION_TEMPLATES: Lazy<
     HashMap<OneHandedMeleeWeapons, WeaponGenerationTemplate>,

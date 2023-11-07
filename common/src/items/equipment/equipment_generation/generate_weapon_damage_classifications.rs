@@ -1,4 +1,4 @@
-use crate::items::equipment::weapons::DamageClassifications;
+use crate::items::equipment::weapon_properties::DamageClassifications;
 use rand::Rng;
 
 pub fn generate_weapon_damage_classifications(

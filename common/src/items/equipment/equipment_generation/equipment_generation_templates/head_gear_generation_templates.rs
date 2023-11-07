@@ -3,7 +3,7 @@ use crate::{
     combatants::CombatAttributes,
     items::{
         equipment::{
-            affixes::SuffixTypes, armor::ArmorCategories,
+            affixes::SuffixTypes, armor_properties::ArmorCategories,
             equipment_generation::equipment_generation_template_properties::EquipmentGenerationTemplateAffixModifiers,
             head_gears::HeadGears,
         },

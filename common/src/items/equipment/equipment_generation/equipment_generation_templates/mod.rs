@@ -1,10 +1,12 @@
 use super::equipment_generation_template_properties::{
-    EquipmentGenerationTemplate, EquipmentGenerationTemplateAffixModifiers,
-    EquipmentGenerationTemplateProperties,
+    EquipmentGenerationTemplateAffixModifiers, EquipmentGenerationTemplateProperties,
 };
 use crate::{
     combatants::CombatAttributes,
-    items::equipment::{armor::ArmorCategories, weapons::DamageClassifications, EquipmentTraits},
+    items::equipment::{
+        armor_properties::ArmorCategories, shield_properties::ShieldSizes,
+        weapon_properties::DamageClassifications, EquipmentTraits,
+    },
     primatives::Range,
 };
 use std::collections::HashMap;
@@ -14,6 +16,12 @@ pub mod head_gear_generation_templates;
 pub mod head_gear_possible_affixes;
 pub mod one_handed_melee_weapon_generation_templates;
 pub mod one_handed_melee_weapon_possible_affixes;
+pub mod shield_generation_templates;
+pub mod shield_possible_affixes;
+pub mod two_handed_melee_weapon_generation_templates;
+pub mod two_handed_melee_weapon_possible_affixes;
+pub mod two_handed_ranged_weapon_generation_templates;
+pub mod two_handed_ranged_weapon_possible_affixes;
 
 pub struct ArmorGenerationTemplate {
     pub category: ArmorCategories,
@@ -74,6 +82,37 @@ impl WeaponGenerationTemplate {
             possbile_damage_classifications,
             num_damage_classifications,
             damage,
+        }
+    }
+}
+
+pub struct ShieldGenerationTemplate {
+    pub size: ShieldSizes,
+    pub armor_class: u8,
+    pub template_properties: EquipmentGenerationTemplateProperties,
+}
+
+impl ShieldGenerationTemplate {
+    pub fn new(
+        level_range: Range<u8>,
+        damage: Range<u8>,
+        max_durability: u8,
+        size: ShieldSizes,
+        armor_class: u8,
+        requirements: HashMap<CombatAttributes, u8>,
+        affix_modifiers: Option<EquipmentGenerationTemplateAffixModifiers>,
+        traits: Option<Vec<EquipmentTraits>>,
+    ) -> ShieldGenerationTemplate {
+        ShieldGenerationTemplate {
+            size,
+            armor_class,
+            template_properties: EquipmentGenerationTemplateProperties {
+                level_range,
+                max_durability,
+                requirements,
+                affix_modifiers,
+                traits,
+            },
         }
     }
 }

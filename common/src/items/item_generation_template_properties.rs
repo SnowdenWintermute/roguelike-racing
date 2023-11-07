@@ -3,6 +3,8 @@ use crate::items::affixes::{PrefixTypes, SuffixTypes};
 use crate::primatives::Range;
 use std::collections::HashMap;
 
+use super::equipment::EquipmentTraits;
+
 pub struct ItemGenerationTemplateAffixModifiers {
     pub prefix_exclusions: Option<Vec<PrefixTypes>>,
     pub suffix_exclusions: Option<Vec<SuffixTypes>>,
@@ -35,11 +37,10 @@ impl ItemGenerationTemplateAffixModifiers {
 
 pub struct ItemGenerationTemplateProperties {
     pub level_range: Range<u8>,
-    pub ac_range: Option<Range<u8>>,
-    pub damage: Option<Range<u8>>,
     pub max_durability: u8,
     pub requirements: HashMap<CombatAttributes, u8>,
     pub affix_modifiers: Option<ItemGenerationTemplateAffixModifiers>,
+    pub traits: Option<Vec<EquipmentTraits>>,
 }
 
 impl ItemGenerationTemplateProperties {

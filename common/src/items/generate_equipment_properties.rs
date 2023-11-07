@@ -11,6 +11,7 @@ use super::{
     generate_equipment_affixes::generate_equipment_affixes,
     generate_equipment_attributes::{self, generate_equipment_attributes},
     generate_equipment_durability::generate_equipment_durability,
+    generate_equipment_traits::generate_equipment_traits,
     item_generation_template_properties::ItemGenerationTemplateProperties,
     select_random_affix_types::select_random_affix_types,
 };
@@ -26,8 +27,6 @@ pub fn generate_equipment_properties(
     equipment_type: EquipmentTypes,
     level: u8,
     template_properties: &ItemGenerationTemplateProperties,
-    base_ac: Option<u8>,
-    base_damage: &Option<Range<u8>>,
     possible_prefixes: &Vec<&(PrefixTypes, u8)>,
     possible_suffixes: &Vec<&(SuffixTypes, u8)>,
     num_prefixes: u8,
@@ -49,15 +48,15 @@ pub fn generate_equipment_properties(
         &affix_modifiers.suffix_exclusions,
     );
     let affixes = generate_equipment_affixes(prefix_types_and_tiers, suffix_types_and_tiers, level);
+    let traits = generate_equipment_traits(&affixes);
     let attributes = generate_equipment_attributes(&affixes);
 
     EquipmentProperties {
         equipment_type,
         durability,
-        base_ac,
-        base_damage: base_damage.clone(),
         attributes,
         requirements,
         affixes,
+        traits,
     }
 }

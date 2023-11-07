@@ -64,12 +64,12 @@ impl RoguelikeRacerGame {
                     crate::items::ItemProperties::Consumable(_) => (),
                     crate::items::ItemProperties::Equipment(equipment_properties) => {
                         println!("level {}:  {}", level, equipment_properties.equipment_type);
-                        if let Some(base_ac) = equipment_properties.base_ac {
-                            println!("Base AC: {}", base_ac)
-                        }
-                        if let Some(base_damage) = equipment_properties.base_damage {
-                            println!("Base Damage: {:?}", base_damage)
-                        }
+                        // if let Some(base_ac) = equipment_properties.base_ac {
+                        //     println!("Base AC: {}", base_ac)
+                        // }
+                        // if let Some(base_damage) = equipment_properties.base_damage {
+                        //     println!("Base Damage: {:?}", base_damage)
+                        // }
                         if let Some(durability) = equipment_properties.durability {
                             println!("Durability: {}/{}", durability.current, durability.max)
                         }
@@ -92,6 +92,11 @@ impl RoguelikeRacerGame {
                             println!("Requirements: ");
                             for (attribute, value) in equipment_properties.requirements {
                                 println!("{:?}:{}", attribute, value)
+                            }
+                        }
+                        if let Some(traits) = equipment_properties.traits {
+                            for item in traits {
+                                println!("{:?}", item);
                             }
                         }
                         println!("")

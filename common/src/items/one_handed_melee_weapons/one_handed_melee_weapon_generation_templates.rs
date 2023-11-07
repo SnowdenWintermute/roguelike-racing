@@ -24,6 +24,7 @@ pub static ONE_HANDED_MELEE_WEAPON_GENERATION_TEMPLATES: Lazy<
                 1,
                 requirements,
                 None,
+                None,
             ),
             OneHandedMeleeWeapons::Mace => WeaponGenerationTemplate::new(
                 Range::new(2, 6),
@@ -32,6 +33,7 @@ pub static ONE_HANDED_MELEE_WEAPON_GENERATION_TEMPLATES: Lazy<
                 vec![DamageClassifications::Physical(DamageTypes::Blunt)],
                 1,
                 requirements,
+                None,
                 None,
             ),
             OneHandedMeleeWeapons::Morningstar => WeaponGenerationTemplate::new(
@@ -42,6 +44,7 @@ pub static ONE_HANDED_MELEE_WEAPON_GENERATION_TEMPLATES: Lazy<
                 1,
                 requirements,
                 None,
+                None,
             ),
             OneHandedMeleeWeapons::WarHammer => WeaponGenerationTemplate::new(
                 Range::new(8, 10),
@@ -50,6 +53,7 @@ pub static ONE_HANDED_MELEE_WEAPON_GENERATION_TEMPLATES: Lazy<
                 vec![DamageClassifications::Physical(DamageTypes::Blunt)],
                 1,
                 requirements,
+                None,
                 None,
             ),
             OneHandedMeleeWeapons::ShortSword => WeaponGenerationTemplate::new(
@@ -60,6 +64,7 @@ pub static ONE_HANDED_MELEE_WEAPON_GENERATION_TEMPLATES: Lazy<
                 1,
                 requirements,
                 None,
+                None,
             ),
             OneHandedMeleeWeapons::Blade => WeaponGenerationTemplate::new(
                 Range::new(3, 5),
@@ -69,6 +74,7 @@ pub static ONE_HANDED_MELEE_WEAPON_GENERATION_TEMPLATES: Lazy<
                 1,
                 requirements,
                 None,
+                None,
             ),
             OneHandedMeleeWeapons::BroadSword => WeaponGenerationTemplate::new(
                 Range::new(5, 8),
@@ -77,6 +83,7 @@ pub static ONE_HANDED_MELEE_WEAPON_GENERATION_TEMPLATES: Lazy<
                 vec![DamageClassifications::Physical(DamageTypes::Slashing)],
                 1,
                 requirements,
+                None,
                 None,
             ),
             OneHandedMeleeWeapons::BastardSword => WeaponGenerationTemplate::new(
@@ -90,6 +97,7 @@ pub static ONE_HANDED_MELEE_WEAPON_GENERATION_TEMPLATES: Lazy<
                 2,
                 requirements,
                 None,
+                None,
             ),
             OneHandedMeleeWeapons::Dagger => WeaponGenerationTemplate::new(
                 Range::new(1, 3),
@@ -98,6 +106,7 @@ pub static ONE_HANDED_MELEE_WEAPON_GENERATION_TEMPLATES: Lazy<
                 vec![DamageClassifications::Physical(DamageTypes::Piercing)],
                 1,
                 requirements,
+                None,
                 None,
             ),
             OneHandedMeleeWeapons::Rapier => WeaponGenerationTemplate::new(
@@ -108,6 +117,7 @@ pub static ONE_HANDED_MELEE_WEAPON_GENERATION_TEMPLATES: Lazy<
                 1,
                 requirements,
                 None,
+                None,
             ),
             OneHandedMeleeWeapons::ShortSpear => WeaponGenerationTemplate::new(
                 Range::new(6, 9),
@@ -116,6 +126,7 @@ pub static ONE_HANDED_MELEE_WEAPON_GENERATION_TEMPLATES: Lazy<
                 vec![DamageClassifications::Physical(DamageTypes::Piercing)],
                 1,
                 requirements,
+                None,
                 None,
             ),
             OneHandedMeleeWeapons::RuneSword => WeaponGenerationTemplate::new(
@@ -133,6 +144,7 @@ pub static ONE_HANDED_MELEE_WEAPON_GENERATION_TEMPLATES: Lazy<
                 1,
                 requirements,
                 None,
+                None,
             ),
             OneHandedMeleeWeapons::EtherBlade => WeaponGenerationTemplate::new(
                 Range::new(5, 8),
@@ -141,6 +153,7 @@ pub static ONE_HANDED_MELEE_WEAPON_GENERATION_TEMPLATES: Lazy<
                 vec![DamageClassifications::Magical(DamageTypes::Slashing)],
                 1,
                 requirements,
+                None,
                 None,
             ),
         };

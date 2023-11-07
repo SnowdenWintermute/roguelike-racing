@@ -2,6 +2,7 @@ pub mod one_handed_melee_weapon_generation_templates;
 pub mod one_handed_melee_weapons_possible_affixes;
 use super::{
     affixes::{PrefixTypes, SuffixTypes},
+    equipment::EquipmentTraits,
     item_generation_template_properties::{
         ItemGenerationTemplate, ItemGenerationTemplateAffixModifiers,
         ItemGenerationTemplateProperties,
@@ -14,6 +15,24 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
+
+#[derive(Serialize, Deserialize, Eq, PartialEq, Clone, Debug, Default)]
+pub struct WeaponProperties {
+    pub damage_classifications: Vec<DamageClassifications>,
+    pub damage: Range<u8>,
+}
+
+impl WeaponProperties {
+    pub fn new(
+        damage_classifications: Vec<DamageClassifications>,
+        damage: Range<u8>,
+    ) -> WeaponProperties {
+        WeaponProperties {
+            damage_classifications,
+            damage,
+        }
+    }
+}
 
 #[derive(Serialize, Deserialize, Hash, Eq, PartialEq, Copy, Clone, Debug)]
 pub enum DamageClassifications {
@@ -110,6 +129,7 @@ impl fmt::Display for OneHandedMeleeWeapons {
 pub struct WeaponGenerationTemplate {
     pub possbile_damage_classifications: Vec<DamageClassifications>,
     pub num_damage_classifications: u8,
+    pub damage: Range<u8>,
     pub template_properties: ItemGenerationTemplateProperties,
 }
 
@@ -128,18 +148,19 @@ impl WeaponGenerationTemplate {
         num_damage_classifications: u8,
         requirements: HashMap<CombatAttributes, u8>,
         affix_modifiers: Option<ItemGenerationTemplateAffixModifiers>,
+        traits: Option<Vec<EquipmentTraits>>,
     ) -> WeaponGenerationTemplate {
         WeaponGenerationTemplate {
             template_properties: ItemGenerationTemplateProperties {
                 level_range,
-                ac_range: None,
-                damage: Some(damage),
                 max_durability,
                 requirements,
                 affix_modifiers,
+                traits,
             },
             possbile_damage_classifications,
             num_damage_classifications,
+            damage,
         }
     }
 }

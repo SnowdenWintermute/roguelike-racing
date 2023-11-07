@@ -1,6 +1,8 @@
-use super::body_armor::{ArmorCategories, BodyArmors};
+use super::body_armor::{ArmorCategories, ArmorProperties, BodyArmors};
 use super::headgear::HeadGears;
-use super::one_handed_melee_weapons::{DamageClassifications, DamageTypes, OneHandedMeleeWeapons};
+use super::one_handed_melee_weapons::{
+    DamageClassifications, DamageTypes, OneHandedMeleeWeapons, WeaponProperties,
+};
 use crate::items::affixes::Affix;
 use crate::primatives::MaxAndCurrent;
 use crate::{combatants::CombatAttributes, primatives::Range};
@@ -22,11 +24,11 @@ pub enum EquipmentSlots {
 
 #[derive(Debug, EnumIter, Clone, PartialEq, Serialize, Deserialize, Eq)]
 pub enum EquipmentTypes {
-    BodyArmor(BodyArmors, ArmorCategories),
-    HeadGear(HeadGears, ArmorCategories),
+    BodyArmor(BodyArmors, ArmorProperties),
+    HeadGear(HeadGears, ArmorProperties),
     Ring,
     Amulet,
-    OneHandedMeleeWeapon(OneHandedMeleeWeapons, Vec<DamageClassifications>),
+    OneHandedMeleeWeapon(OneHandedMeleeWeapons, WeaponProperties),
     TwoHandedWeapon(DamageClassifications),
     RangedWeapon(DamageClassifications),
     Shield(ShieldTypes),
@@ -35,10 +37,12 @@ pub enum EquipmentTypes {
 impl fmt::Display for EquipmentTypes {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            EquipmentTypes::BodyArmor(base_armor, category) => {
-                write!(f, "{base_armor} ({category})")
+            EquipmentTypes::BodyArmor(base_item, properties) => {
+                write!(f, "{} ({})", base_item, properties.armor_category)
             }
-            EquipmentTypes::HeadGear(_, _) => write!(f, ""),
+            EquipmentTypes::HeadGear(base_item, properties) => {
+                write!(f, "{}, ({})", base_item, properties.armor_category)
+            }
             EquipmentTypes::Ring => write!(f, ""),
             EquipmentTypes::Amulet => write!(f, ""),
             EquipmentTypes::OneHandedMeleeWeapon(base_item, damage_classifications) => {
@@ -49,6 +53,15 @@ impl fmt::Display for EquipmentTypes {
             EquipmentTypes::Shield(_) => write!(f, ""),
         }
     }
+}
+
+#[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq)]
+pub enum EquipmentTraits {
+    LifeStealPercentage(u8),
+    DurabilityBonus(u8),
+    ArmorClassPercentage(u8),
+    DamagePercentage(u8),
+    RandomDamageTypeSelection,
 }
 
 #[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq, Default)]
@@ -63,9 +76,8 @@ pub enum ShieldTypes {
 pub struct EquipmentProperties {
     pub equipment_type: EquipmentTypes,
     pub durability: Option<MaxAndCurrent<u8>>,
-    pub base_ac: Option<u8>,
-    pub base_damage: Option<Range<u8>>,
     pub attributes: HashMap<CombatAttributes, u16>,
     pub affixes: Vec<Affix>,
     pub requirements: HashMap<CombatAttributes, u8>,
+    pub traits: Option<Vec<EquipmentTraits>>,
 }

@@ -37,7 +37,7 @@ impl Item {
                 if possible_base_armors_option.is_some() {
                     let possible_base_armors = possible_base_armors_option.unwrap();
                 // return BaseItem::HeadGear(HeadGears::Ribbon)
-                return BaseItem::OneHandedMeleeWeapon(OneHandedMeleeWeapons::RuneSword)
+                return BaseItem::OneHandedMeleeWeapon(OneHandedMeleeWeapons::BastardSword)
                 // let possible_base_armors_option = BODY_ARMORS_BY_LEVEL
                 //     .get(&level);
                 // if possible_base_armors_option.is_some() {

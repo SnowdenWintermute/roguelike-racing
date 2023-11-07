@@ -8,6 +8,7 @@ mod generate_equipment_affixes;
 pub mod generate_equipment_attributes;
 mod generate_equipment_durability;
 pub mod generate_equipment_properties_by_base_item;
+pub mod generate_equipment_traits;
 pub mod generate_weapon_damage_classifications;
 pub mod headgear;
 pub mod item_generation_template_properties;

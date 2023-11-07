@@ -22,6 +22,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                     ArmorCategories::Cloth,
                     requirements,
                     None,
+                    None,
                 ),
                 BodyArmors::Cape => ArmorGenerationTemplate::new(
                     Range::new(1, 4),
@@ -30,6 +31,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                     ArmorCategories::Cloth,
                     requirements,
                     None,
+                    None,
                 ),
                 BodyArmors::Cloak => ArmorGenerationTemplate::new(
                     Range::new(3, 7),
@@ -37,6 +39,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                     18,
                     ArmorCategories::Cloth,
                     requirements,
+                    None,
                     None,
                 ),
                 BodyArmors::Robe => {
@@ -47,6 +50,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         24,
                         ArmorCategories::Cloth,
                         requirements,
+                        None,
                         None,
                     )
                 }
@@ -59,6 +63,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         ArmorCategories::Cloth,
                         requirements,
                         None,
+                        None,
                     )
                 }
                 BodyArmors::LeatherArmor => {
@@ -69,6 +74,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         8,
                         ArmorCategories::Leather,
                         requirements,
+                        None,
                         None,
                     )
                 }
@@ -81,6 +87,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         ArmorCategories::Leather,
                         requirements,
                         None,
+                        None,
                     )
                 }
                 BodyArmors::StuddedLeatherArmor => {
@@ -91,6 +98,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         24,
                         ArmorCategories::Leather,
                         requirements,
+                        None,
                         None,
                     )
                 }
@@ -103,6 +111,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         ArmorCategories::Leather,
                         requirements,
                         None,
+                        None,
                     )
                 }
                 BodyArmors::RingMail => {
@@ -114,6 +123,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         12,
                         ArmorCategories::Mail,
                         requirements,
+                        None,
                         None,
                     )
                 }
@@ -128,6 +138,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         ArmorCategories::Mail,
                         requirements,
                         None,
+                        None,
                     )
                 }
                 BodyArmors::ScaleMail => {
@@ -140,6 +151,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         ArmorCategories::Mail,
                         requirements,
                         None,
+                        None,
                     )
                 }
                 BodyArmors::SplintMail => {
@@ -151,6 +163,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         30,
                         ArmorCategories::Mail,
                         requirements,
+                        None,
                         None,
                     )
                 }
@@ -165,6 +178,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         ArmorCategories::Mail,
                         requirements,
                         None,
+                        None,
                     )
                 }
                 BodyArmors::BreastPlate => {
@@ -175,6 +189,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         18,
                         ArmorCategories::Plate,
                         requirements,
+                        None,
                         None,
                     )
                 }
@@ -187,6 +202,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         ArmorCategories::Plate,
                         requirements,
                         None,
+                        None,
                     )
                 }
                 BodyArmors::GothicPlate => {
@@ -197,6 +213,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         30,
                         ArmorCategories::Plate,
                         requirements,
+                        None,
                         None,
                     )
                 }
@@ -209,6 +226,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         ArmorCategories::Plate,
                         requirements,
                         None,
+                        None,
                     )
                 }
                 BodyArmors::ShardPlate => {
@@ -219,6 +237,7 @@ pub static BODY_ARMOR_GENERATION_TEMPLATES: Lazy<HashMap<BodyArmors, ArmorGenera
                         80,
                         ArmorCategories::Plate,
                         requirements,
+                        None,
                         None,
                     )
                 }

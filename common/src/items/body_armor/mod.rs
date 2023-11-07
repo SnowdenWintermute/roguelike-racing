@@ -2,6 +2,7 @@ pub mod body_armor_generation_templates;
 pub mod body_armor_possible_affixes;
 use super::{
     affixes::{PrefixTypes, SuffixTypes},
+    equipment::EquipmentTraits,
     item_generation_template_properties::{
         ItemGenerationTemplate, ItemGenerationTemplateAffixModifiers,
         ItemGenerationTemplateProperties,
@@ -15,7 +16,22 @@ use std::collections::HashMap;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
-#[derive(Serialize, Deserialize, EnumIter, Hash, Eq, PartialEq, Copy, Clone, Debug, Default)]
+#[derive(Serialize, Deserialize, Eq, PartialEq, Clone, Debug, Default)]
+pub struct ArmorProperties {
+    pub armor_category: ArmorCategories,
+    pub armor_class: u8,
+}
+
+impl ArmorProperties {
+    pub fn new(armor_category: ArmorCategories, armor_class: u8) -> ArmorProperties {
+        ArmorProperties {
+            armor_category,
+            armor_class,
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, EnumIter, Eq, PartialEq, Copy, Clone, Debug, Default)]
 pub enum ArmorCategories {
     #[default]
     Cloth,
@@ -87,6 +103,7 @@ impl fmt::Display for BodyArmors {
 
 pub struct ArmorGenerationTemplate {
     pub category: ArmorCategories,
+    pub ac_range: Range<u8>,
     pub template_properties: ItemGenerationTemplateProperties,
 }
 
@@ -104,16 +121,17 @@ impl ArmorGenerationTemplate {
         category: ArmorCategories,
         requirements: HashMap<CombatAttributes, u8>,
         affix_modifiers: Option<ItemGenerationTemplateAffixModifiers>,
+        traits: Option<Vec<EquipmentTraits>>,
     ) -> ArmorGenerationTemplate {
         ArmorGenerationTemplate {
             template_properties: ItemGenerationTemplateProperties {
                 level_range,
-                ac_range: Some(ac_range),
-                damage: None,
                 max_durability,
                 requirements,
                 affix_modifiers,
+                traits,
             },
+            ac_range,
             category,
         }
     }

@@ -31,6 +31,7 @@ pub static HEADGEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGeneratio
                     ArmorCategories::Cloth,
                     requirements,
                     None,
+                    None,
                 ),
                 HeadGears::Bandana => ArmorGenerationTemplate::new(
                     Range::new(2, 4),
@@ -39,6 +40,7 @@ pub static HEADGEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGeneratio
                     ArmorCategories::Cloth,
                     requirements,
                     None,
+                    None,
                 ),
                 HeadGears::PaddedCap => ArmorGenerationTemplate::new(
                     Range::new(3, 6),
@@ -46,6 +48,7 @@ pub static HEADGEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGeneratio
                     20,
                     ArmorCategories::Cloth,
                     requirements,
+                    None,
                     None,
                 ),
                 HeadGears::Ribbon => ArmorGenerationTemplate::new(
@@ -65,6 +68,7 @@ pub static HEADGEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGeneratio
                         None,
                         Some(vec![(SuffixTypes::AllBase, 4)]),
                     )),
+                    None,
                 ),
                 HeadGears::WizardHat => ArmorGenerationTemplate::new(
                     Range::new(8, 10),
@@ -72,6 +76,7 @@ pub static HEADGEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGeneratio
                     40,
                     ArmorCategories::Cloth,
                     requirements,
+                    None,
                     None,
                 ),
                 HeadGears::Eyepatch => ArmorGenerationTemplate::new(
@@ -81,6 +86,7 @@ pub static HEADGEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGeneratio
                     ArmorCategories::Leather,
                     requirements,
                     None,
+                    None,
                 ),
                 HeadGears::LeatherHat => ArmorGenerationTemplate::new(
                     Range::new(2, 5),
@@ -88,6 +94,7 @@ pub static HEADGEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGeneratio
                     20,
                     ArmorCategories::Leather,
                     requirements,
+                    None,
                     None,
                 ),
                 HeadGears::LeatherHelm => ArmorGenerationTemplate::new(
@@ -97,6 +104,7 @@ pub static HEADGEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGeneratio
                     ArmorCategories::Leather,
                     requirements,
                     None,
+                    None,
                 ),
                 HeadGears::DemonsaurHelm => ArmorGenerationTemplate::new(
                     Range::new(9, 10),
@@ -104,6 +112,7 @@ pub static HEADGEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGeneratio
                     45,
                     ArmorCategories::Leather,
                     requirements,
+                    None,
                     None,
                 ),
                 HeadGears::Hairpin => ArmorGenerationTemplate::new(
@@ -113,6 +122,7 @@ pub static HEADGEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGeneratio
                     ArmorCategories::Mail,
                     requirements,
                     None,
+                    None,
                 ),
                 HeadGears::Skullcap => ArmorGenerationTemplate::new(
                     Range::new(3, 6),
@@ -120,6 +130,7 @@ pub static HEADGEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGeneratio
                     28,
                     ArmorCategories::Mail,
                     requirements,
+                    None,
                     None,
                 ),
                 HeadGears::Coif => ArmorGenerationTemplate::new(
@@ -129,6 +140,7 @@ pub static HEADGEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGeneratio
                     ArmorCategories::Mail,
                     requirements,
                     None,
+                    None,
                 ),
                 HeadGears::OhmushellMask => ArmorGenerationTemplate::new(
                     Range::new(7, 10),
@@ -136,6 +148,7 @@ pub static HEADGEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGeneratio
                     50,
                     ArmorCategories::Mail,
                     requirements,
+                    None,
                     None,
                 ),
                 HeadGears::Circlet => ArmorGenerationTemplate::new(
@@ -145,6 +158,7 @@ pub static HEADGEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGeneratio
                     ArmorCategories::Plate,
                     requirements,
                     None,
+                    None,
                 ),
                 HeadGears::Crown => ArmorGenerationTemplate::new(
                     Range::new(3, 7),
@@ -152,6 +166,7 @@ pub static HEADGEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGeneratio
                     35,
                     ArmorCategories::Plate,
                     requirements,
+                    None,
                     None,
                 ),
                 HeadGears::FullHelm => ArmorGenerationTemplate::new(
@@ -161,6 +176,7 @@ pub static HEADGEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGeneratio
                     ArmorCategories::Plate,
                     requirements,
                     None,
+                    None,
                 ),
                 HeadGears::GreatHelm => ArmorGenerationTemplate::new(
                     Range::new(9, 10),
@@ -168,6 +184,7 @@ pub static HEADGEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGeneratio
                     50,
                     ArmorCategories::Plate,
                     requirements,
+                    None,
                     None,
                 ),
             };

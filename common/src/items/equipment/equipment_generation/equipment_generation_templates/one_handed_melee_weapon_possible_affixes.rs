@@ -1,4 +1,4 @@
-use crate::items::affixes::{PrefixTypes, SuffixTypes};
+use crate::items::equipment::affixes::{PrefixTypes, SuffixTypes};
 use once_cell::sync::Lazy;
 use strum::IntoEnumIterator;
 

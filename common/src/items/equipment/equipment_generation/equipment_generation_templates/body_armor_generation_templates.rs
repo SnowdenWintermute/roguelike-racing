@@ -1,6 +1,11 @@
-use super::{ArmorCategories, ArmorGenerationTemplate, BodyArmors};
+use super::ArmorGenerationTemplate;
 use crate::{
-    combatants::CombatAttributes, items::items_by_level::items_by_level, primatives::Range,
+    combatants::CombatAttributes,
+    items::{
+        equipment::{armor::ArmorCategories, body_armors::BodyArmors},
+        items_by_level::items_by_level,
+    },
+    primatives::Range,
 };
 use once_cell::sync::Lazy;
 use std::collections::HashMap;

@@ -2,6 +2,7 @@ use crate::app_consts::error_messages::{self, PLAYER_NOT_FOUND};
 use crate::app_consts::DEEPEST_FLOOR;
 use crate::character::Character;
 use crate::game::id_generator::IdGenerator;
+use crate::items::equipment::affixes::Affix;
 use crate::items::Item;
 use crate::{adventuring_party::AdventuringParty, errors::AppError};
 use serde::{Deserialize, Serialize};
@@ -75,10 +76,10 @@ impl RoguelikeRacerGame {
                         }
                         for affix in equipment_properties.affixes {
                             match affix {
-                                crate::items::affixes::Affix::Prefix(prefix_type, tier) => {
+                                Affix::Prefix(prefix_type, tier) => {
                                     println!("Prefix: {:?} Tier: {}", prefix_type, tier)
                                 }
-                                crate::items::affixes::Affix::Suffix(suffix_type, tier) => {
+                                Affix::Suffix(suffix_type, tier) => {
                                     println!("Suffix: {:?} Tier: {}", suffix_type, tier)
                                 }
                             }

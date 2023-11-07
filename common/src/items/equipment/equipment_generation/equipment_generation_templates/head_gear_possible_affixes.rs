@@ -1,8 +1,8 @@
-use crate::items::affixes::{PrefixTypes, SuffixTypes};
+use crate::items::equipment::affixes::{PrefixTypes, SuffixTypes};
 use once_cell::sync::Lazy;
 use strum::IntoEnumIterator;
 
-pub static HEADGEAR_POSSIBLE_PREFIXES_AND_TIERS: Lazy<Vec<(PrefixTypes, u8)>> = Lazy::new(|| {
+pub static HEAD_GEAR_POSSIBLE_PREFIXES_AND_TIERS: Lazy<Vec<(PrefixTypes, u8)>> = Lazy::new(|| {
     let all_prefix_types: Vec<PrefixTypes> = PrefixTypes::iter().collect();
     let mut possible_prefixes_and_tiers: Vec<(PrefixTypes, u8)> = vec![];
     let mut i = 0;
@@ -28,7 +28,7 @@ pub static HEADGEAR_POSSIBLE_PREFIXES_AND_TIERS: Lazy<Vec<(PrefixTypes, u8)>> = 
     possible_prefixes_and_tiers
 });
 
-pub static HEADGEAR_POSSIBLE_SUFFIXES_AND_TIERS: Lazy<Vec<(SuffixTypes, u8)>> = Lazy::new(|| {
+pub static HEAD_GEAR_POSSIBLE_SUFFIXES_AND_TIERS: Lazy<Vec<(SuffixTypes, u8)>> = Lazy::new(|| {
     let all_suffix_types: Vec<SuffixTypes> = SuffixTypes::iter().collect();
     let mut possible_suffixes_and_tiers: Vec<(SuffixTypes, u8)> = vec![];
     let mut i = 0;

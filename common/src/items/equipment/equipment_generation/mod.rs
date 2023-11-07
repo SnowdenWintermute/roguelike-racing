@@ -1,45 +1,52 @@
-use super::{
-    affixes::{PrefixTypes, SuffixTypes},
-    body_armor::{
+mod equipment_generation_template_properties;
+pub mod equipment_generation_templates;
+mod generate_affixes;
+mod generate_base_equipment;
+mod generate_durability;
+mod generate_equipment_combat_attributes;
+mod generate_equipment_traits;
+mod generate_weapon_damage_classifications;
+mod roll_equipment_properties_from_template;
+mod select_random_affix_types;
+use self::{
+    equipment_generation_templates::{
         body_armor_generation_templates::BODY_ARMOR_GENERATION_TEMPLATES,
         body_armor_possible_affixes::{
             BODY_ARMOR_POSSIBLE_PREFIXES_AND_TIERS, BODY_ARMOR_POSSIBLE_SUFFIXES_AND_TIERS,
         },
-        ArmorProperties,
-    },
-    equipment::EquipmentTypes,
-    equipment_base_items::BaseItem,
-    generate_equipment_properties::generate_equipment_properties,
-    generate_weapon_damage_classifications::generate_weapon_damage_classifications,
-    headgear::{
-        headgear_generation_templates::HEADGEAR_GENERATION_TEMPLATES,
-        headgear_possible_affixes::{
-            HEADGEAR_POSSIBLE_PREFIXES_AND_TIERS, HEADGEAR_POSSIBLE_SUFFIXES_AND_TIERS,
+        head_gear_generation_templates::HEAD_GEAR_GENERATION_TEMPLATES,
+        head_gear_possible_affixes::{
+            HEAD_GEAR_POSSIBLE_PREFIXES_AND_TIERS, HEAD_GEAR_POSSIBLE_SUFFIXES_AND_TIERS,
         },
-    },
-    one_handed_melee_weapons::{
         one_handed_melee_weapon_generation_templates::ONE_HANDED_MELEE_WEAPON_GENERATION_TEMPLATES,
-        one_handed_melee_weapons_possible_affixes::{
+        one_handed_melee_weapon_possible_affixes::{
             ONE_HANDED_MELEE_WEAPONS_POSSIBLE_PREFIXES_AND_TIERS,
             ONE_HANDED_MELEE_WEAPONS_POSSIBLE_SUFFIXES_AND_TIERS,
         },
-        WeaponProperties,
     },
-    EquipmentProperties, Item, ItemProperties,
+    generate_base_equipment::{generate_base_equipment, BaseEquipment},
+    generate_weapon_damage_classifications::generate_weapon_damage_classifications,
+    roll_equipment_properties_from_template::roll_equipment_properties_from_template,
 };
-use crate::{combatants::CombatAttributes, primatives::MaxAndCurrent};
+use super::{
+    affixes::{PrefixTypes, SuffixTypes},
+    armor::ArmorProperties,
+    weapons::WeaponProperties,
+    EquipmentProperties, EquipmentTypes,
+};
+use crate::{combatants::CombatAttributes, items::Item, primatives::MaxAndCurrent};
 use rand::prelude::*;
 use std::collections::HashMap;
 use strum::IntoEnumIterator;
 
-pub fn generate_equipment_properties_by_base_item(level: u8) -> EquipmentProperties {
+pub fn generate_equipment_properties_from_base_item(level: u8) -> EquipmentProperties {
     // GEN BASE ITEM
-    let base_item = Item::generate_base_item(level);
+    let base_item = generate_base_equipment(level);
     let num_prefixes = 1;
     let num_suffixes = 1;
 
     match base_item {
-        BaseItem::Armor(base_item) => {
+        BaseEquipment::Armor(base_item) => {
             let template = BODY_ARMOR_GENERATION_TEMPLATES
                 .get(&base_item)
                 .expect("a generation template should exist for each base armor type");
@@ -54,7 +61,7 @@ pub fn generate_equipment_properties_by_base_item(level: u8) -> EquipmentPropert
             let possible_suffixes: Vec<&(SuffixTypes, u8)> =
                 BODY_ARMOR_POSSIBLE_SUFFIXES_AND_TIERS.iter().collect();
 
-            generate_equipment_properties(
+            roll_equipment_properties_from_template(
                 equipment_type,
                 level,
                 &template.template_properties,
@@ -64,8 +71,8 @@ pub fn generate_equipment_properties_by_base_item(level: u8) -> EquipmentPropert
                 num_suffixes,
             )
         }
-        BaseItem::HeadGear(base_item) => {
-            let template = HEADGEAR_GENERATION_TEMPLATES
+        BaseEquipment::HeadGear(base_item) => {
+            let template = HEAD_GEAR_GENERATION_TEMPLATES
                 .get(&base_item)
                 .expect("a generation template should exist for each base armor type");
             let base_ac =
@@ -75,11 +82,11 @@ pub fn generate_equipment_properties_by_base_item(level: u8) -> EquipmentPropert
                 ArmorProperties::new(template.category, base_ac),
             );
             let possible_prefixes: Vec<&(PrefixTypes, u8)> =
-                HEADGEAR_POSSIBLE_PREFIXES_AND_TIERS.iter().collect();
+                HEAD_GEAR_POSSIBLE_PREFIXES_AND_TIERS.iter().collect();
             let possible_suffixes: Vec<&(SuffixTypes, u8)> =
-                HEADGEAR_POSSIBLE_SUFFIXES_AND_TIERS.iter().collect();
+                HEAD_GEAR_POSSIBLE_SUFFIXES_AND_TIERS.iter().collect();
 
-            generate_equipment_properties(
+            roll_equipment_properties_from_template(
                 equipment_type,
                 level,
                 &template.template_properties,
@@ -89,9 +96,9 @@ pub fn generate_equipment_properties_by_base_item(level: u8) -> EquipmentPropert
                 num_suffixes,
             )
         }
-        BaseItem::Jewelry => todo!(),
-        BaseItem::Shield => todo!(),
-        BaseItem::OneHandedMeleeWeapon(base_item) => {
+        BaseEquipment::Jewelry => todo!(),
+        BaseEquipment::Shield => todo!(),
+        BaseEquipment::OneHandedMeleeWeapon(base_item) => {
             let template = ONE_HANDED_MELEE_WEAPON_GENERATION_TEMPLATES
                 .get(&base_item)
                 .expect("a generation template should exist for each base armor type");
@@ -114,7 +121,7 @@ pub fn generate_equipment_properties_by_base_item(level: u8) -> EquipmentPropert
                 WeaponProperties::new(damage_classifications, template.damage.clone()),
             );
 
-            generate_equipment_properties(
+            roll_equipment_properties_from_template(
                 equipment_type,
                 level,
                 &template.template_properties,
@@ -124,7 +131,7 @@ pub fn generate_equipment_properties_by_base_item(level: u8) -> EquipmentPropert
                 num_suffixes,
             )
         }
-        BaseItem::TwoHandedMeleeWeapon => todo!(),
-        BaseItem::TwoHandedRangedWeapon => todo!(),
+        BaseEquipment::TwoHandedMeleeWeapon => todo!(),
+        BaseEquipment::TwoHandedRangedWeapon => todo!(),
     }
 }

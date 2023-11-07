@@ -1,6 +1,5 @@
+use crate::items::equipment::weapons::DamageClassifications;
 use rand::Rng;
-
-use super::one_handed_melee_weapons::DamageClassifications;
 
 pub fn generate_weapon_damage_classifications(
     possible_classifications: &Vec<DamageClassifications>,

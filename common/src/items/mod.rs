@@ -1,24 +1,10 @@
 #![allow(dead_code)]
-pub mod affixes;
-pub mod body_armor;
 pub mod consumables;
 pub mod equipment;
-pub mod equipment_base_items;
-mod generate_equipment_affixes;
-pub mod generate_equipment_attributes;
-mod generate_equipment_durability;
-pub mod generate_equipment_properties_by_base_item;
-pub mod generate_equipment_traits;
-pub mod generate_weapon_damage_classifications;
-pub mod headgear;
-pub mod item_generation_template_properties;
 pub mod items_by_level;
-pub mod one_handed_melee_weapons;
-mod select_random_affix_types;
-mod weapons;
 use self::consumables::ConsumableProperties;
+use self::equipment::equipment_generation::generate_equipment_properties_from_base_item;
 use self::equipment::EquipmentProperties;
-use self::generate_equipment_properties_by_base_item::generate_equipment_properties_by_base_item;
 use crate::combatants::abilities::{TargetingScheme, ValidTargets};
 use crate::game::id_generator::IdGenerator;
 use crate::primatives::{EntityProperties, MaxAndCurrent};
@@ -27,7 +13,6 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use strum_macros::EnumIter;
 mod generate_consumable_properties;
-mod generate_equipment_properties;
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize, Eq)]
 pub enum ItemCategories {
@@ -66,7 +51,7 @@ impl Item {
         //     ItemCategories::Equipment => (),
         // };
         //
-        let equipment_properties = generate_equipment_properties_by_base_item(level);
+        let equipment_properties = generate_equipment_properties_from_base_item(level);
 
         Item {
             entity_properties: EntityProperties {

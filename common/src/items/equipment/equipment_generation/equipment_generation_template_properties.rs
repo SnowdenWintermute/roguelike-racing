@@ -1,32 +1,31 @@
 use crate::combatants::CombatAttributes;
-use crate::items::affixes::{PrefixTypes, SuffixTypes};
+use crate::items::equipment::affixes::{PrefixTypes, SuffixTypes};
+use crate::items::equipment::EquipmentTraits;
 use crate::primatives::Range;
 use std::collections::HashMap;
 
-use super::equipment::EquipmentTraits;
-
-pub struct ItemGenerationTemplateAffixModifiers {
+pub struct EquipmentGenerationTemplateAffixModifiers {
     pub prefix_exclusions: Option<Vec<PrefixTypes>>,
     pub suffix_exclusions: Option<Vec<SuffixTypes>>,
     pub prefix_tier_overrides: Option<Vec<(PrefixTypes, u8)>>,
     pub suffix_tier_overrides: Option<Vec<(SuffixTypes, u8)>>,
 }
 
-pub struct RefItemGenerationTemplateAffixModifiers<'a> {
+pub struct RefEquipmentGenerationTemplateAffixModifiers<'a> {
     pub prefix_exclusions: &'a Option<Vec<PrefixTypes>>,
     pub suffix_exclusions: &'a Option<Vec<SuffixTypes>>,
     pub prefix_tier_overrides: &'a Option<Vec<(PrefixTypes, u8)>>,
     pub suffix_tier_overrides: &'a Option<Vec<(SuffixTypes, u8)>>,
 }
 
-impl ItemGenerationTemplateAffixModifiers {
+impl EquipmentGenerationTemplateAffixModifiers {
     pub fn new(
         prefix_exclusions: Option<Vec<PrefixTypes>>,
         suffix_exclusions: Option<Vec<SuffixTypes>>,
         prefix_tier_overrides: Option<Vec<(PrefixTypes, u8)>>,
         suffix_tier_overrides: Option<Vec<(SuffixTypes, u8)>>,
-    ) -> ItemGenerationTemplateAffixModifiers {
-        ItemGenerationTemplateAffixModifiers {
+    ) -> EquipmentGenerationTemplateAffixModifiers {
+        EquipmentGenerationTemplateAffixModifiers {
             prefix_exclusions,
             suffix_exclusions,
             prefix_tier_overrides,
@@ -35,16 +34,16 @@ impl ItemGenerationTemplateAffixModifiers {
     }
 }
 
-pub struct ItemGenerationTemplateProperties {
+pub struct EquipmentGenerationTemplateProperties {
     pub level_range: Range<u8>,
     pub max_durability: u8,
     pub requirements: HashMap<CombatAttributes, u8>,
-    pub affix_modifiers: Option<ItemGenerationTemplateAffixModifiers>,
+    pub affix_modifiers: Option<EquipmentGenerationTemplateAffixModifiers>,
     pub traits: Option<Vec<EquipmentTraits>>,
 }
 
-impl ItemGenerationTemplateProperties {
-    pub fn get_affix_modifers(&self) -> RefItemGenerationTemplateAffixModifiers {
+impl EquipmentGenerationTemplateProperties {
+    pub fn get_affix_modifers(&self) -> RefEquipmentGenerationTemplateAffixModifiers {
         let affix_modifiers = match &self.affix_modifiers {
             Some(overrides) => Some(overrides),
             None => None,
@@ -66,7 +65,7 @@ impl ItemGenerationTemplateProperties {
             None => &None,
         };
 
-        RefItemGenerationTemplateAffixModifiers {
+        RefEquipmentGenerationTemplateAffixModifiers {
             prefix_tier_overrides,
             suffix_tier_overrides,
             prefix_exclusions,
@@ -75,6 +74,6 @@ impl ItemGenerationTemplateProperties {
     }
 }
 
-pub trait ItemGenerationTemplate {
+pub trait EquipmentGenerationTemplate {
     fn get_level_range(&self) -> &Range<u8>;
 }

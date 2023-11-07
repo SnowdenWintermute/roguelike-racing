@@ -1,11 +1,9 @@
+use crate::app_consts::DEEPEST_FLOOR;
+use crate::items::equipment::affixes::{Affix, PrefixTypes, SuffixTypes};
+use rand::Rng;
 use std::cmp;
 
-use crate::app_consts::DEEPEST_FLOOR;
-
-use super::affixes::{self, Affix, PrefixTypes, SuffixTypes};
-use rand::Rng;
-
-pub fn generate_equipment_affixes(
+pub fn generate_affixes(
     prefixes_and_max_tiers: Vec<(PrefixTypes, u8)>,
     suffixes_and_max_tiers: Vec<(SuffixTypes, u8)>,
     level: u8,

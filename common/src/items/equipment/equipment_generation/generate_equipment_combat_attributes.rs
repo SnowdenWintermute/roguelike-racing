@@ -1,5 +1,6 @@
-use super::affixes::{self, Affix, PrefixTypes, SuffixTypes};
-use crate::{combatants::CombatAttributes, primatives::Range};
+use crate::combatants::CombatAttributes;
+use crate::items::equipment::affixes::{Affix, PrefixTypes, SuffixTypes};
+use crate::primatives::Range;
 use once_cell::sync::Lazy;
 use rand::Rng;
 use std::collections::HashMap;
@@ -20,7 +21,9 @@ impl AttributeValueCreationTemplate {
     }
 }
 
-pub fn generate_equipment_attributes(affixes: &Vec<Affix>) -> HashMap<CombatAttributes, u16> {
+pub fn generate_equipment_combat_attributes(
+    affixes: &Vec<Affix>,
+) -> HashMap<CombatAttributes, u16> {
     let mut attributes: HashMap<CombatAttributes, u16> = HashMap::new();
 
     for affix in affixes {

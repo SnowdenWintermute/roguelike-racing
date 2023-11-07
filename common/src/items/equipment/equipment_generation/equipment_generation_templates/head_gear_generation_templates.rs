@@ -1,11 +1,11 @@
-use super::HeadGears;
+use super::ArmorGenerationTemplate;
 use crate::{
     combatants::CombatAttributes,
     items::{
-        affixes::{PrefixTypes, SuffixTypes},
-        body_armor::{ArmorCategories, ArmorGenerationTemplate},
-        item_generation_template_properties::{
-            ItemGenerationTemplateAffixModifiers, ItemGenerationTemplateProperties,
+        equipment::{
+            affixes::SuffixTypes, armor::ArmorCategories,
+            equipment_generation::equipment_generation_template_properties::EquipmentGenerationTemplateAffixModifiers,
+            head_gears::HeadGears,
         },
         items_by_level::items_by_level,
     },
@@ -15,7 +15,7 @@ use once_cell::sync::Lazy;
 use std::collections::HashMap;
 use strum::IntoEnumIterator;
 
-pub static HEADGEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGenerationTemplate>> =
+pub static HEAD_GEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGenerationTemplate>> =
     Lazy::new(|| {
         let mut m = HashMap::new();
         let headgears: Vec<HeadGears> = HeadGears::iter().collect();
@@ -57,7 +57,7 @@ pub static HEADGEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGeneratio
                     20,
                     ArmorCategories::Cloth,
                     requirements,
-                    Some(ItemGenerationTemplateAffixModifiers::new(
+                    Some(EquipmentGenerationTemplateAffixModifiers::new(
                         None,
                         Some(vec![
                             SuffixTypes::Strength,
@@ -195,8 +195,8 @@ pub static HEADGEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGeneratio
         m
     });
 
-pub static HEADGEARS_BY_LEVEL: Lazy<HashMap<u8, Vec<HeadGears>>> = Lazy::new(|| {
-    let items_and_level_ranges: Vec<(&HeadGears, &Range<u8>)> = HEADGEAR_GENERATION_TEMPLATES
+pub static HEAD_GEARS_BY_LEVEL: Lazy<HashMap<u8, Vec<HeadGears>>> = Lazy::new(|| {
+    let items_and_level_ranges: Vec<(&HeadGears, &Range<u8>)> = HEAD_GEAR_GENERATION_TEMPLATES
         .iter()
         .collect::<Vec<(&HeadGears, &ArmorGenerationTemplate)>>()
         .iter()

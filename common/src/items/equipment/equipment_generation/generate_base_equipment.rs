@@ -1,10 +1,7 @@
-use super::{
-    body_armor::{body_armor_generation_templates::BODY_ARMORS_BY_LEVEL, BodyArmors},
-    headgear::{headgear_generation_templates::HEADGEARS_BY_LEVEL, HeadGears},
-    one_handed_melee_weapons::OneHandedMeleeWeapons,
-    Item,
+use crate::items::equipment::{
+    body_armors::BodyArmors, head_gears::HeadGears,
+    one_handed_melee_weapons::OneHandedMeleeWeapons, EquipmentTypes,
 };
-use crate::items::equipment::EquipmentTypes;
 use core::panic;
 use once_cell::sync::Lazy;
 use rand::prelude::*;
@@ -12,8 +9,10 @@ use std::{collections::HashMap, default};
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
+use super::equipment_generation_templates::head_gear_generation_templates::HEAD_GEARS_BY_LEVEL;
+
 #[derive(Debug)]
-pub enum BaseItem {
+pub enum BaseEquipment {
     Armor(BodyArmors),
     HeadGear(HeadGears),
     Jewelry,
@@ -23,21 +22,20 @@ pub enum BaseItem {
     Shield,
 }
 
-impl Item {
-    pub fn generate_base_item(level: u8) -> BaseItem {
-        let mut rng = rand::thread_rng();
-        let categories: Vec<EquipmentTypes> = EquipmentTypes::iter().collect();
-        let category = categories.choose(&mut rand::thread_rng()).unwrap();
-        match category {
+pub fn generate_base_equipment(level: u8) -> BaseEquipment {
+    let mut rng = rand::thread_rng();
+    let categories: Vec<EquipmentTypes> = EquipmentTypes::iter().collect();
+    let category = categories.choose(&mut rand::thread_rng()).unwrap();
+    match category {
             // EquipmentCategories::Armor => {
             // }
             _ =>{
-                let possible_base_armors_option = HEADGEARS_BY_LEVEL
+                let possible_base_armors_option = HEAD_GEARS_BY_LEVEL
                     .get(&level);
                 if possible_base_armors_option.is_some() {
                     let possible_base_armors = possible_base_armors_option.unwrap();
                 // return BaseItem::HeadGear(HeadGears::Ribbon)
-                return BaseItem::OneHandedMeleeWeapon(OneHandedMeleeWeapons::BastardSword)
+                return BaseEquipment::OneHandedMeleeWeapon(OneHandedMeleeWeapons::BastardSword)
                 // let possible_base_armors_option = BODY_ARMORS_BY_LEVEL
                 //     .get(&level);
                 // if possible_base_armors_option.is_some() {
@@ -57,5 +55,4 @@ impl Item {
             // EquipmentCategories::RangedWeapon => todo!(),
             // EquipmentCategories::Shield => todo!(),
         }
-    }
 }

@@ -1,9 +1,16 @@
-use super::body_armor::{ArmorCategories, ArmorProperties, BodyArmors};
-use super::headgear::HeadGears;
-use super::one_handed_melee_weapons::{
-    DamageClassifications, DamageTypes, OneHandedMeleeWeapons, WeaponProperties,
-};
-use crate::items::affixes::Affix;
+pub mod affixes;
+pub mod armor;
+pub mod body_armors;
+pub mod equipment_generation;
+pub mod head_gears;
+pub mod one_handed_melee_weapons;
+pub mod weapons;
+use self::affixes::Affix;
+use self::armor::ArmorProperties;
+use self::body_armors::BodyArmors;
+use self::head_gears::HeadGears;
+use self::one_handed_melee_weapons::OneHandedMeleeWeapons;
+use self::weapons::WeaponProperties;
 use crate::primatives::MaxAndCurrent;
 use crate::{combatants::CombatAttributes, primatives::Range};
 use core::fmt;
@@ -29,8 +36,8 @@ pub enum EquipmentTypes {
     Ring,
     Amulet,
     OneHandedMeleeWeapon(OneHandedMeleeWeapons, WeaponProperties),
-    TwoHandedWeapon(DamageClassifications),
-    RangedWeapon(DamageClassifications),
+    TwoHandedWeapon(),
+    RangedWeapon(),
     Shield(ShieldTypes),
 }
 
@@ -48,8 +55,8 @@ impl fmt::Display for EquipmentTypes {
             EquipmentTypes::OneHandedMeleeWeapon(base_item, damage_classifications) => {
                 write!(f, "{base_item} {:?}", damage_classifications)
             }
-            EquipmentTypes::TwoHandedWeapon(_) => write!(f, ""),
-            EquipmentTypes::RangedWeapon(_) => write!(f, ""),
+            EquipmentTypes::TwoHandedWeapon() => write!(f, ""),
+            EquipmentTypes::RangedWeapon() => write!(f, ""),
             EquipmentTypes::Shield(_) => write!(f, ""),
         }
     }

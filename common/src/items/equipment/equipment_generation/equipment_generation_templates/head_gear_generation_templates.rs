@@ -1,4 +1,4 @@
-use super::ArmorGenerationTemplate;
+use super::{generate_templates::generate_templates, ArmorGenerationTemplate};
 use crate::{
     combatants::CombatAttributes,
     items::{
@@ -15,185 +15,179 @@ use once_cell::sync::Lazy;
 use std::collections::HashMap;
 use strum::IntoEnumIterator;
 
-pub static HEAD_GEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGenerationTemplate>> =
-    Lazy::new(|| {
-        let mut m = HashMap::new();
-        let headgears: Vec<HeadGears> = HeadGears::iter().collect();
-        let mut i = 0;
-        while i < headgears.len() {
-            let headgear = headgears[i];
-            let mut requirements: HashMap<CombatAttributes, u8> = HashMap::new();
-            let template = match headgear {
-                HeadGears::Cap => ArmorGenerationTemplate::new(
-                    Range::new(1, 3),
-                    Range::new(1, 3),
-                    10,
-                    ArmorCategories::Cloth,
-                    requirements,
-                    None,
-                    None,
-                ),
-                HeadGears::Bandana => ArmorGenerationTemplate::new(
-                    Range::new(2, 4),
-                    Range::new(2, 4),
-                    12,
-                    ArmorCategories::Cloth,
-                    requirements,
-                    None,
-                    None,
-                ),
-                HeadGears::PaddedCap => ArmorGenerationTemplate::new(
-                    Range::new(3, 6),
-                    Range::new(3, 6),
-                    20,
-                    ArmorCategories::Cloth,
-                    requirements,
-                    None,
-                    None,
-                ),
-                HeadGears::Ribbon => ArmorGenerationTemplate::new(
-                    Range::new(5, 10),
-                    Range::new(1, 1),
-                    20,
-                    ArmorCategories::Cloth,
-                    requirements,
-                    Some(EquipmentGenerationTemplateAffixModifiers::new(
-                        None,
-                        Some(vec![
-                            SuffixTypes::Strength,
-                            SuffixTypes::Dexterity,
-                            SuffixTypes::Vitality,
-                            SuffixTypes::Durability,
-                        ]),
-                        None,
-                        Some(vec![(SuffixTypes::AllBase, 4)]),
-                    )),
-                    None,
-                ),
-                HeadGears::WizardHat => ArmorGenerationTemplate::new(
-                    Range::new(8, 10),
-                    Range::new(6, 14),
-                    40,
-                    ArmorCategories::Cloth,
-                    requirements,
-                    None,
-                    None,
-                ),
-                HeadGears::Eyepatch => ArmorGenerationTemplate::new(
-                    Range::new(1, 3),
-                    Range::new(2, 5),
-                    14,
-                    ArmorCategories::Leather,
-                    requirements,
-                    None,
-                    None,
-                ),
-                HeadGears::LeatherHat => ArmorGenerationTemplate::new(
-                    Range::new(2, 5),
-                    Range::new(5, 8),
-                    20,
-                    ArmorCategories::Leather,
-                    requirements,
-                    None,
-                    None,
-                ),
-                HeadGears::LeatherHelm => ArmorGenerationTemplate::new(
-                    Range::new(4, 8),
-                    Range::new(9, 15),
-                    35,
-                    ArmorCategories::Leather,
-                    requirements,
-                    None,
-                    None,
-                ),
-                HeadGears::DemonsaurHelm => ArmorGenerationTemplate::new(
-                    Range::new(9, 10),
-                    Range::new(18, 24),
-                    45,
-                    ArmorCategories::Leather,
-                    requirements,
-                    None,
-                    None,
-                ),
-                HeadGears::Hairpin => ArmorGenerationTemplate::new(
-                    Range::new(3, 4),
-                    Range::new(2, 2),
-                    20,
-                    ArmorCategories::Mail,
-                    requirements,
-                    None,
-                    None,
-                ),
-                HeadGears::Skullcap => ArmorGenerationTemplate::new(
-                    Range::new(3, 6),
-                    Range::new(8, 16),
-                    28,
-                    ArmorCategories::Mail,
-                    requirements,
-                    None,
-                    None,
-                ),
-                HeadGears::Coif => ArmorGenerationTemplate::new(
-                    Range::new(4, 8),
-                    Range::new(20, 26),
-                    36,
-                    ArmorCategories::Mail,
-                    requirements,
-                    None,
-                    None,
-                ),
-                HeadGears::OhmushellMask => ArmorGenerationTemplate::new(
-                    Range::new(7, 10),
-                    Range::new(30, 38),
-                    50,
-                    ArmorCategories::Mail,
-                    requirements,
-                    None,
-                    None,
-                ),
-                HeadGears::Circlet => ArmorGenerationTemplate::new(
-                    Range::new(2, 5),
-                    Range::new(5, 10),
-                    30,
-                    ArmorCategories::Plate,
-                    requirements,
-                    None,
-                    None,
-                ),
-                HeadGears::Crown => ArmorGenerationTemplate::new(
-                    Range::new(3, 7),
-                    Range::new(10, 20),
-                    35,
-                    ArmorCategories::Plate,
-                    requirements,
-                    None,
-                    None,
-                ),
-                HeadGears::FullHelm => ArmorGenerationTemplate::new(
-                    Range::new(5, 10),
-                    Range::new(22, 30),
-                    40,
-                    ArmorCategories::Plate,
-                    requirements,
-                    None,
-                    None,
-                ),
-                HeadGears::GreatHelm => ArmorGenerationTemplate::new(
-                    Range::new(9, 10),
-                    Range::new(32, 40),
-                    50,
-                    ArmorCategories::Plate,
-                    requirements,
-                    None,
-                    None,
-                ),
-            };
+fn head_gear_template_from_base_item(
+    head_gear: &HeadGears,
+    mut requirements: HashMap<CombatAttributes, u8>,
+) -> ArmorGenerationTemplate {
+    match head_gear {
+        HeadGears::Cap => ArmorGenerationTemplate::new(
+            Range::new(1, 3),
+            Range::new(1, 3),
+            10,
+            ArmorCategories::Cloth,
+            requirements,
+            None,
+            None,
+        ),
+        HeadGears::Bandana => ArmorGenerationTemplate::new(
+            Range::new(2, 4),
+            Range::new(2, 4),
+            12,
+            ArmorCategories::Cloth,
+            requirements,
+            None,
+            None,
+        ),
+        HeadGears::PaddedCap => ArmorGenerationTemplate::new(
+            Range::new(3, 6),
+            Range::new(3, 6),
+            20,
+            ArmorCategories::Cloth,
+            requirements,
+            None,
+            None,
+        ),
+        HeadGears::Ribbon => ArmorGenerationTemplate::new(
+            Range::new(5, 10),
+            Range::new(1, 1),
+            20,
+            ArmorCategories::Cloth,
+            requirements,
+            Some(EquipmentGenerationTemplateAffixModifiers::new(
+                None,
+                Some(vec![
+                    SuffixTypes::Strength,
+                    SuffixTypes::Dexterity,
+                    SuffixTypes::Vitality,
+                    SuffixTypes::Durability,
+                ]),
+                None,
+                Some(vec![(SuffixTypes::AllBase, 4)]),
+            )),
+            None,
+        ),
+        HeadGears::WizardHat => ArmorGenerationTemplate::new(
+            Range::new(8, 10),
+            Range::new(6, 14),
+            40,
+            ArmorCategories::Cloth,
+            requirements,
+            None,
+            None,
+        ),
+        HeadGears::Eyepatch => ArmorGenerationTemplate::new(
+            Range::new(1, 3),
+            Range::new(2, 5),
+            14,
+            ArmorCategories::Leather,
+            requirements,
+            None,
+            None,
+        ),
+        HeadGears::LeatherHat => ArmorGenerationTemplate::new(
+            Range::new(2, 5),
+            Range::new(5, 8),
+            20,
+            ArmorCategories::Leather,
+            requirements,
+            None,
+            None,
+        ),
+        HeadGears::LeatherHelm => ArmorGenerationTemplate::new(
+            Range::new(4, 8),
+            Range::new(9, 15),
+            35,
+            ArmorCategories::Leather,
+            requirements,
+            None,
+            None,
+        ),
+        HeadGears::DemonsaurHelm => ArmorGenerationTemplate::new(
+            Range::new(9, 10),
+            Range::new(18, 24),
+            45,
+            ArmorCategories::Leather,
+            requirements,
+            None,
+            None,
+        ),
+        HeadGears::Hairpin => ArmorGenerationTemplate::new(
+            Range::new(3, 4),
+            Range::new(2, 2),
+            20,
+            ArmorCategories::Mail,
+            requirements,
+            None,
+            None,
+        ),
+        HeadGears::Skullcap => ArmorGenerationTemplate::new(
+            Range::new(3, 6),
+            Range::new(8, 16),
+            28,
+            ArmorCategories::Mail,
+            requirements,
+            None,
+            None,
+        ),
+        HeadGears::Coif => ArmorGenerationTemplate::new(
+            Range::new(4, 8),
+            Range::new(20, 26),
+            36,
+            ArmorCategories::Mail,
+            requirements,
+            None,
+            None,
+        ),
+        HeadGears::OhmushellMask => ArmorGenerationTemplate::new(
+            Range::new(7, 10),
+            Range::new(30, 38),
+            50,
+            ArmorCategories::Mail,
+            requirements,
+            None,
+            None,
+        ),
+        HeadGears::Circlet => ArmorGenerationTemplate::new(
+            Range::new(2, 5),
+            Range::new(5, 10),
+            30,
+            ArmorCategories::Plate,
+            requirements,
+            None,
+            None,
+        ),
+        HeadGears::Crown => ArmorGenerationTemplate::new(
+            Range::new(3, 7),
+            Range::new(10, 20),
+            35,
+            ArmorCategories::Plate,
+            requirements,
+            None,
+            None,
+        ),
+        HeadGears::FullHelm => ArmorGenerationTemplate::new(
+            Range::new(5, 10),
+            Range::new(22, 30),
+            40,
+            ArmorCategories::Plate,
+            requirements,
+            None,
+            None,
+        ),
+        HeadGears::GreatHelm => ArmorGenerationTemplate::new(
+            Range::new(9, 10),
+            Range::new(32, 40),
+            50,
+            ArmorCategories::Plate,
+            requirements,
+            None,
+            None,
+        ),
+    }
+}
 
-            m.insert(headgear, template);
-            i += 1;
-        }
-        m
-    });
+pub static HEAD_GEAR_GENERATION_TEMPLATES: Lazy<HashMap<HeadGears, ArmorGenerationTemplate>> =
+    Lazy::new(|| generate_templates(head_gear_template_from_base_item));
 
 pub static HEAD_GEARS_BY_LEVEL: Lazy<HashMap<u8, Vec<HeadGears>>> = Lazy::new(|| {
     let items_and_level_ranges: Vec<(&HeadGears, &Range<u8>)> = HEAD_GEAR_GENERATION_TEMPLATES

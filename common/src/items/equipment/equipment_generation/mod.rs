@@ -46,7 +46,7 @@ pub fn generate_equipment_properties_from_base_item(level: u8) -> EquipmentPrope
     let num_suffixes = 1;
 
     match base_item {
-        BaseEquipment::Armor(base_item) => {
+        BaseEquipment::BodyArmor(base_item) => {
             let template = BODY_ARMOR_GENERATION_TEMPLATES
                 .get(&base_item)
                 .expect("a generation template should exist for each base armor type");

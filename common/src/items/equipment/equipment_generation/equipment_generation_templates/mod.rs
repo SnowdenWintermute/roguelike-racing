@@ -12,6 +12,7 @@ use crate::{
 use std::collections::HashMap;
 pub mod body_armor_generation_templates;
 pub mod body_armor_possible_affixes;
+mod generate_templates;
 pub mod head_gear_generation_templates;
 pub mod head_gear_possible_affixes;
 pub mod one_handed_melee_weapon_generation_templates;

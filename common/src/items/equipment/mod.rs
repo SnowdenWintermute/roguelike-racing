@@ -5,15 +5,17 @@ pub mod equipment_generation;
 pub mod head_gears;
 pub mod one_handed_melee_weapons;
 pub mod shield_properties;
+pub mod shields;
 pub mod two_handed_melee_weapons;
 pub mod two_handed_ranged_weapons;
 pub mod weapon_properties;
-pub mod shields;
 use self::affixes::Affix;
 use self::armor_properties::ArmorProperties;
 use self::body_armors::BodyArmors;
 use self::head_gears::HeadGears;
 use self::one_handed_melee_weapons::OneHandedMeleeWeapons;
+use self::shield_properties::ShieldProperties;
+use self::shields::Shields;
 use self::two_handed_melee_weapons::TwoHandedMeleeWeapons;
 use self::two_handed_ranged_weapons::TwoHandedRangedWeapons;
 use self::weapon_properties::WeaponProperties;
@@ -44,7 +46,7 @@ pub enum EquipmentTypes {
     OneHandedMeleeWeapon(OneHandedMeleeWeapons, WeaponProperties),
     TwoHandedMeleeWeapon(TwoHandedMeleeWeapons, WeaponProperties),
     TwoHandedRangedWeapon(TwoHandedRangedWeapons, WeaponProperties),
-    Shield,
+    Shield(Shields, ShieldProperties),
 }
 
 impl fmt::Display for EquipmentTypes {
@@ -58,12 +60,14 @@ impl fmt::Display for EquipmentTypes {
             }
             EquipmentTypes::Ring => write!(f, ""),
             EquipmentTypes::Amulet => write!(f, ""),
-            EquipmentTypes::OneHandedMeleeWeapon(base_item, damage_classifications) => {
-                write!(f, "{base_item} {:?}", damage_classifications)
+            EquipmentTypes::OneHandedMeleeWeapon(base_item, properties) => {
+                write!(f, "{base_item} {:?}", properties)
             }
             EquipmentTypes::TwoHandedMeleeWeapon(..) => write!(f, ""),
             EquipmentTypes::TwoHandedRangedWeapon(..) => write!(f, ""),
-            EquipmentTypes::Shield => write!(f, ""),
+            EquipmentTypes::Shield(base_item, properties) => {
+                write!(f, "{base_item}, {:?}", properties)
+            }
         }
     }
 }

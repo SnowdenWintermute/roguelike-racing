@@ -13,7 +13,7 @@ use super::equipment_generation_templates::head_gear_generation_templates::HEAD_
 
 #[derive(Debug)]
 pub enum BaseEquipment {
-    Armor(BodyArmors),
+    BodyArmor(BodyArmors),
     HeadGear(HeadGears),
     Jewelry,
     OneHandedMeleeWeapon(OneHandedMeleeWeapons),
@@ -35,7 +35,8 @@ pub fn generate_base_equipment(level: u8) -> BaseEquipment {
                 if possible_base_armors_option.is_some() {
                     let possible_base_armors = possible_base_armors_option.unwrap();
                 // return BaseItem::HeadGear(HeadGears::Ribbon)
-                return BaseEquipment::OneHandedMeleeWeapon(OneHandedMeleeWeapons::BastardSword)
+                // return BaseEquipment::OneHandedMeleeWeapon(OneHandedMeleeWeapons::BastardSword)
+                return BaseEquipment::BodyArmor(BodyArmors::ShardPlate);
                 // let possible_base_armors_option = BODY_ARMORS_BY_LEVEL
                 //     .get(&level);
                 // if possible_base_armors_option.is_some() {

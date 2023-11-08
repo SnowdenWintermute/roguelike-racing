@@ -1,5 +1,6 @@
 use once_cell::sync::Lazy;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde::Serialize;
 use strum_macros::EnumIter;
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone)]

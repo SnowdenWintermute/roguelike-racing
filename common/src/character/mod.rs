@@ -1,12 +1,19 @@
 #![allow(dead_code)]
 use self::inventory::CharacterInventory;
-use crate::combatants::abilities::{CombatantAbility, CombatantAbilityNames};
-use crate::combatants::{CombatAttributes, CombatantClass, CombatantProperties};
+use crate::combatants::abilities::CombatantAbility;
+use crate::combatants::abilities::CombatantAbilityNames;
+use crate::combatants::CombatAttributes;
+use crate::combatants::CombatantClass;
+use crate::combatants::CombatantProperties;
 use crate::game::id_generator::IdGenerator;
 use crate::items::equipment::EquipmentProperties;
-use crate::items::{self, Item, ItemCategories};
-use crate::primatives::{EntityProperties, MaxAndCurrent};
-use serde::{Deserialize, Serialize};
+use crate::items::Item;
+use crate::items::ItemCategories;
+use crate::items::{self};
+use crate::primatives::EntityProperties;
+use crate::primatives::MaxAndCurrent;
+use serde::Deserialize;
+use serde::Serialize;
 use std::collections::HashMap;
 pub mod inventory;
 

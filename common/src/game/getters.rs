@@ -1,10 +1,10 @@
-use crate::{
-    adventuring_party::AdventuringParty,
-    app_consts::error_messages,
-    errors::{AppError, AppErrorTypes},
-};
+use crate::adventuring_party::AdventuringParty;
+use crate::app_consts::error_messages;
+use crate::errors::AppError;
+use crate::errors::AppErrorTypes;
 
-use super::{RoguelikeRacerGame, RoguelikeRacerPlayer};
+use super::RoguelikeRacerGame;
+use super::RoguelikeRacerPlayer;
 
 pub fn get_mut_player<'a>(
     game: &'a mut RoguelikeRacerGame,

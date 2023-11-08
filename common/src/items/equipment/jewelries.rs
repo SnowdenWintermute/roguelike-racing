@@ -1,12 +1,13 @@
 use core::fmt;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde::Serialize;
 use strum_macros::EnumIter;
 
 #[derive(Serialize, Deserialize, Default, EnumIter, Hash, Eq, PartialEq, Copy, Clone, Debug)]
 pub enum Jewelries {
     #[default]
     Ring,
-    Amulet
+    Amulet,
 }
 
 impl fmt::Display for Jewelries {

@@ -8,33 +8,33 @@ mod generate_equipment_traits;
 mod generate_weapon_damage_classifications;
 mod roll_equipment_properties_from_template;
 mod select_random_affix_types;
-use self::{
-    equipment_generation_templates::{
-        body_armor_generation_templates::BODY_ARMOR_GENERATION_TEMPLATES,
-        body_armor_possible_affixes::{
-            BODY_ARMOR_POSSIBLE_PREFIXES_AND_TIERS, BODY_ARMOR_POSSIBLE_SUFFIXES_AND_TIERS,
-        },
-        head_gear_generation_templates::HEAD_GEAR_GENERATION_TEMPLATES,
-        head_gear_possible_affixes::{
-            HEAD_GEAR_POSSIBLE_PREFIXES_AND_TIERS, HEAD_GEAR_POSSIBLE_SUFFIXES_AND_TIERS,
-        },
-        one_handed_melee_weapon_generation_templates::ONE_HANDED_MELEE_WEAPON_GENERATION_TEMPLATES,
-        one_handed_melee_weapon_possible_affixes::{
-            ONE_HANDED_MELEE_WEAPONS_POSSIBLE_PREFIXES_AND_TIERS,
-            ONE_HANDED_MELEE_WEAPONS_POSSIBLE_SUFFIXES_AND_TIERS,
-        }, jewelry_possible_affixes::{JEWELRY_POSSIBLE_PREFIXES_AND_TIERS, JEWELRY_POSSIBLE_SUFFIXES_AND_TIERS},
-    },
-    generate_base_equipment::{generate_base_equipment, BaseEquipment},
-    generate_weapon_damage_classifications::generate_weapon_damage_classifications,
-    roll_equipment_properties_from_template::roll_equipment_properties_from_template, equipment_generation_template_properties::EquipmentGenerationTemplateProperties,
-};
-use super::{
-    affixes::{PrefixTypes, SuffixTypes},
-    armor_properties::ArmorProperties,
-    weapon_properties::WeaponProperties,
-    EquipmentProperties, EquipmentTypes,
-};
-use crate::{combatants::CombatAttributes, items::Item, primatives::{MaxAndCurrent, Range}, app_consts::DEEPEST_FLOOR};
+use self::equipment_generation_template_properties::EquipmentGenerationTemplateProperties;
+use self::equipment_generation_templates::body_armor_generation_templates::BODY_ARMOR_GENERATION_TEMPLATES;
+use self::equipment_generation_templates::body_armor_possible_affixes::BODY_ARMOR_POSSIBLE_PREFIXES_AND_TIERS;
+use self::equipment_generation_templates::body_armor_possible_affixes::BODY_ARMOR_POSSIBLE_SUFFIXES_AND_TIERS;
+use self::equipment_generation_templates::head_gear_generation_templates::HEAD_GEAR_GENERATION_TEMPLATES;
+use self::equipment_generation_templates::head_gear_possible_affixes::HEAD_GEAR_POSSIBLE_PREFIXES_AND_TIERS;
+use self::equipment_generation_templates::head_gear_possible_affixes::HEAD_GEAR_POSSIBLE_SUFFIXES_AND_TIERS;
+use self::equipment_generation_templates::jewelry_possible_affixes::JEWELRY_POSSIBLE_PREFIXES_AND_TIERS;
+use self::equipment_generation_templates::jewelry_possible_affixes::JEWELRY_POSSIBLE_SUFFIXES_AND_TIERS;
+use self::equipment_generation_templates::one_handed_melee_weapon_generation_templates::ONE_HANDED_MELEE_WEAPON_GENERATION_TEMPLATES;
+use self::equipment_generation_templates::one_handed_melee_weapon_possible_affixes::ONE_HANDED_MELEE_WEAPONS_POSSIBLE_PREFIXES_AND_TIERS;
+use self::equipment_generation_templates::one_handed_melee_weapon_possible_affixes::ONE_HANDED_MELEE_WEAPONS_POSSIBLE_SUFFIXES_AND_TIERS;
+use self::generate_base_equipment::generate_base_equipment;
+use self::generate_base_equipment::BaseEquipment;
+use self::generate_weapon_damage_classifications::generate_weapon_damage_classifications;
+use self::roll_equipment_properties_from_template::roll_equipment_properties_from_template;
+use super::affixes::PrefixTypes;
+use super::affixes::SuffixTypes;
+use super::armor_properties::ArmorProperties;
+use super::weapon_properties::WeaponProperties;
+use super::EquipmentProperties;
+use super::EquipmentTypes;
+use crate::app_consts::DEEPEST_FLOOR;
+use crate::combatants::CombatAttributes;
+use crate::items::Item;
+use crate::primatives::MaxAndCurrent;
+use crate::primatives::Range;
 use rand::prelude::*;
 use std::collections::HashMap;
 use strum::IntoEnumIterator;
@@ -98,16 +98,23 @@ pub fn generate_equipment_properties_from_base_item(level: u8) -> EquipmentPrope
         }
         BaseEquipment::Jewelry => {
             let template = EquipmentGenerationTemplateProperties {
-                level_range: Range::new(1,DEEPEST_FLOOR),
+                level_range: Range::new(1, DEEPEST_FLOOR),
                 max_durability: None,
                 requirements: HashMap::new(),
                 affix_modifiers: None,
                 traits: None,
             };
-            let possible_prefixes : Vec<&(PrefixTypes, u8)>= JEWELRY_POSSIBLE_PREFIXES_AND_TIERS.iter().collect();
-            let possible_suffixes : Vec<&(SuffixTypes, u8)>= JEWELRY_POSSIBLE_SUFFIXES_AND_TIERS.iter().collect();
-            let possible_equipment_types = vec![EquipmentTypes::Ring, EquipmentTypes::Ring,EquipmentTypes::Amulet];
-            let equipment_type_index = rand::thread_rng().gen_range(0..possible_equipment_types.len());
+            let possible_prefixes: Vec<&(PrefixTypes, u8)> =
+                JEWELRY_POSSIBLE_PREFIXES_AND_TIERS.iter().collect();
+            let possible_suffixes: Vec<&(SuffixTypes, u8)> =
+                JEWELRY_POSSIBLE_SUFFIXES_AND_TIERS.iter().collect();
+            let possible_equipment_types = vec![
+                EquipmentTypes::Ring,
+                EquipmentTypes::Ring,
+                EquipmentTypes::Amulet,
+            ];
+            let equipment_type_index =
+                rand::thread_rng().gen_range(0..possible_equipment_types.len());
             let equipment_type = possible_equipment_types[equipment_type_index].clone();
             roll_equipment_properties_from_template(
                 equipment_type,
@@ -118,8 +125,7 @@ pub fn generate_equipment_properties_from_base_item(level: u8) -> EquipmentPrope
                 num_prefixes,
                 num_suffixes,
             )
-
-        },
+        }
         BaseEquipment::Shield => todo!(),
         BaseEquipment::OneHandedMeleeWeapon(base_item) => {
             let template = ONE_HANDED_MELEE_WEAPON_GENERATION_TEMPLATES

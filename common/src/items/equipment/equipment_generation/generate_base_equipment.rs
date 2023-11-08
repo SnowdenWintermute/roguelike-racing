@@ -1,11 +1,12 @@
-use crate::items::equipment::{
-    body_armors::BodyArmors, head_gears::HeadGears,
-    one_handed_melee_weapons::OneHandedMeleeWeapons, EquipmentTypes,
-};
+use crate::items::equipment::body_armors::BodyArmors;
+use crate::items::equipment::head_gears::HeadGears;
+use crate::items::equipment::one_handed_melee_weapons::OneHandedMeleeWeapons;
+use crate::items::equipment::EquipmentTypes;
 use core::panic;
 use once_cell::sync::Lazy;
 use rand::prelude::*;
-use std::{collections::HashMap, default};
+use std::collections::HashMap;
+use std::default;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 

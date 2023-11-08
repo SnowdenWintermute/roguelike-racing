@@ -1,6 +1,7 @@
 use crate::combatants::abilities::TargetingScheme;
 use crate::combatants::abilities::ValidTargets;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde::Serialize;
 use strum_macros::EnumIter;
 
 #[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq)]

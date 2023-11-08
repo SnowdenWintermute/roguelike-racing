@@ -1,5 +1,7 @@
 use crate::combatants::CombatAttributes;
-use crate::items::equipment::affixes::{Affix, PrefixTypes, SuffixTypes};
+use crate::items::equipment::affixes::Affix;
+use crate::items::equipment::affixes::PrefixTypes;
+use crate::items::equipment::affixes::SuffixTypes;
 use crate::primatives::Range;
 use once_cell::sync::Lazy;
 use rand::Rng;

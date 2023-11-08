@@ -1,5 +1,7 @@
-use crate::{combatants::CombatantClass, items::equipment::EquipmentSlots};
-use serde::{Deserialize, Serialize};
+use crate::combatants::CombatantClass;
+use crate::items::equipment::EquipmentSlots;
+use serde::Deserialize;
+use serde::Serialize;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum PlayerInputs {

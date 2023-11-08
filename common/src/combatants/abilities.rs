@@ -1,5 +1,6 @@
 use crate::combatants::CombatantClass;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde::Serialize;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum TargetingScheme {

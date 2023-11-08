@@ -1,4 +1,5 @@
-use crate::combatants::abilities::{CombatantAbility, CombatantAbilityNames};
+use crate::combatants::abilities::CombatantAbility;
+use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::CombatantProperties;
 use crate::errors::AppError;
 use crate::items::consumables::ConsumableTypes;

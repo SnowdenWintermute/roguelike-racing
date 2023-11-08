@@ -1,7 +1,7 @@
-use crate::items::equipment::{
-    affixes::{Affix, PrefixTypes, SuffixTypes},
-    EquipmentTraits,
-};
+use crate::items::equipment::affixes::Affix;
+use crate::items::equipment::affixes::PrefixTypes;
+use crate::items::equipment::affixes::SuffixTypes;
+use crate::items::equipment::EquipmentTraits;
 
 pub fn generate_equipment_traits(affixes: &Vec<Affix>) -> Option<Vec<EquipmentTraits>> {
     if affixes.len() < 1 {

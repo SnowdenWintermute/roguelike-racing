@@ -1,5 +1,6 @@
 use crate::combatants::CombatAttributes;
-use crate::items::equipment::affixes::{PrefixTypes, SuffixTypes};
+use crate::items::equipment::affixes::PrefixTypes;
+use crate::items::equipment::affixes::SuffixTypes;
 use crate::items::equipment::EquipmentTraits;
 use crate::primatives::Range;
 use std::collections::HashMap;

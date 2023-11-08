@@ -1,10 +1,12 @@
 use self::abilities::CombatantAbility;
 use self::abilities::CombatantAbilityNames;
+use crate::items::equipment::EquipmentSlots;
 use crate::items::Item;
+use crate::primatives::MaxAndCurrent;
 use crate::status_effects::StatusEffects;
-use crate::{items::equipment::EquipmentSlots, primatives::MaxAndCurrent};
 use core::fmt;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde::Serialize;
 use std::collections::HashMap;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;

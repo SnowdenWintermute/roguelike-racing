@@ -5,7 +5,8 @@ use crate::game::id_generator::IdGenerator;
 use crate::items::Item;
 use crate::monster::Monster;
 use rand::prelude::*;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde::Serialize;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 

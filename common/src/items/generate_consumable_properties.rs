@@ -1,6 +1,10 @@
-use crate::combatants::abilities::{TargetingScheme, ValidTargets};
+use crate::combatants::abilities::TargetingScheme;
+use crate::combatants::abilities::ValidTargets;
 
-use super::{consumables::ConsumableTypes, ConsumableProperties, Item, ItemProperties};
+use super::consumables::ConsumableTypes;
+use super::ConsumableProperties;
+use super::Item;
+use super::ItemProperties;
 use rand::prelude::*;
 use std::vec;
 use strum::IntoEnumIterator;

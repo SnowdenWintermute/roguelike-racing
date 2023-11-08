@@ -1,5 +1,7 @@
 use crate::app_consts::DEEPEST_FLOOR;
-use crate::items::equipment::affixes::{Affix, PrefixTypes, SuffixTypes};
+use crate::items::equipment::affixes::Affix;
+use crate::items::equipment::affixes::PrefixTypes;
+use crate::items::equipment::affixes::SuffixTypes;
 use rand::Rng;
 use std::cmp;
 

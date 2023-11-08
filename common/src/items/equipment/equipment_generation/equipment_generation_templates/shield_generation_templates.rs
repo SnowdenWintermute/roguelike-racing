@@ -1,5 +1,6 @@
 use super::generate_templates::generate_templates;
-use super::{ShieldGenerationTemplate, WeaponGenerationTemplate};
+use super::ShieldGenerationTemplate;
+use super::WeaponGenerationTemplate;
 use crate::combatants::CombatAttributes;
 use crate::items::equipment::affixes::SuffixTypes;
 use crate::items::equipment::equipment_generation::equipment_generation_template_properties::EquipmentGenerationTemplateAffixModifiers;

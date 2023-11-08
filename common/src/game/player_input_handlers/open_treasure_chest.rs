@@ -1,7 +1,7 @@
-use crate::{
-    adventuring_party::AdventuringParty, errors::AppError, game::id_generator::IdGenerator,
-    items::Item,
-};
+use crate::adventuring_party::AdventuringParty;
+use crate::errors::AppError;
+use crate::game::id_generator::IdGenerator;
+use crate::items::Item;
 
 pub fn open_treasure_chest(
     id_generator: &mut IdGenerator,

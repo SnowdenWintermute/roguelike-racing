@@ -1,8 +1,11 @@
 #![allow(dead_code)]
-use crate::combatants::{CombatantClass, CombatantProperties};
+use crate::combatants::CombatantClass;
+use crate::combatants::CombatantProperties;
 use crate::game::id_generator::IdGenerator;
-use crate::primatives::{EntityProperties, MaxAndCurrent};
-use serde::{Deserialize, Serialize};
+use crate::primatives::EntityProperties;
+use crate::primatives::MaxAndCurrent;
+use serde::Deserialize;
+use serde::Serialize;
 use std::collections::HashMap;
 use strum_macros::EnumIter;
 

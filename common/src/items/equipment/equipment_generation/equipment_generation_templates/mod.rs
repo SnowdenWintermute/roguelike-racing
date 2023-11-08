@@ -1,20 +1,18 @@
-use super::equipment_generation_template_properties::{
-    EquipmentGenerationTemplateAffixModifiers, EquipmentGenerationTemplateProperties,
-};
-use crate::{
-    combatants::CombatAttributes,
-    items::equipment::{
-        armor_properties::ArmorCategories, shield_properties::ShieldSizes,
-        weapon_properties::DamageClassifications, EquipmentTraits,
-    },
-    primatives::Range,
-};
+use super::equipment_generation_template_properties::EquipmentGenerationTemplateAffixModifiers;
+use super::equipment_generation_template_properties::EquipmentGenerationTemplateProperties;
+use crate::combatants::CombatAttributes;
+use crate::items::equipment::armor_properties::ArmorCategories;
+use crate::items::equipment::shield_properties::ShieldSizes;
+use crate::items::equipment::weapon_properties::DamageClassifications;
+use crate::items::equipment::EquipmentTraits;
+use crate::primatives::Range;
 use std::collections::HashMap;
 pub mod body_armor_generation_templates;
 pub mod body_armor_possible_affixes;
 mod generate_templates;
 pub mod head_gear_generation_templates;
 pub mod head_gear_possible_affixes;
+pub mod jewelry_possible_affixes;
 pub mod one_handed_melee_weapon_generation_templates;
 pub mod one_handed_melee_weapon_possible_affixes;
 pub mod shield_generation_templates;
@@ -23,7 +21,6 @@ pub mod two_handed_melee_weapon_generation_templates;
 pub mod two_handed_melee_weapon_possible_affixes;
 pub mod two_handed_ranged_weapon_generation_templates;
 pub mod two_handed_ranged_weapon_possible_affixes;
-pub mod jewelry_possible_affixes;
 mod vec_of_possible_affixes_and_tiers_from_filter;
 
 pub struct ArmorGenerationTemplate {

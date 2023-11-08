@@ -1,4 +1,5 @@
-use rand::{rngs::ThreadRng, Rng};
+use rand::rngs::ThreadRng;
+use rand::Rng;
 
 pub fn generate_random_username() -> String {
     let mut rng = rand::thread_rng();

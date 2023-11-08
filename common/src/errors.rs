@@ -1,8 +1,7 @@
-use std::{
-    convert::Infallible,
-    fmt,
-    io::{self, Write},
-};
+use std::convert::Infallible;
+use std::fmt;
+use std::io::Write;
+use std::io::{self};
 
 #[derive(Debug)]
 pub enum AppErrorTypes {

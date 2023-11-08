@@ -1,4 +1,5 @@
-use crate::{app_consts::DEEPEST_FLOOR, primatives::Range};
+use crate::app_consts::DEEPEST_FLOOR;
+use crate::primatives::Range;
 use std::collections::HashMap;
 
 pub fn items_by_level<T>(templates: Vec<(&T, &Range<u8>)>) -> HashMap<u8, Vec<T>>
@@ -24,4 +25,3 @@ where
     }
     m
 }
-

@@ -1,16 +1,20 @@
-use super::{
-    equipment_generation_template_properties::EquipmentGenerationTemplateProperties,
-    generate_affixes::generate_affixes, generate_durability::generate_durability,
-    generate_equipment_combat_attributes::generate_equipment_combat_attributes,
-    generate_equipment_traits::generate_equipment_traits,
-    select_random_affix_types::select_random_affix_types,
-};
+use super::equipment_generation_template_properties::EquipmentGenerationTemplateProperties;
+use super::generate_affixes::generate_affixes;
+use super::generate_durability::generate_durability;
+use super::generate_equipment_combat_attributes::generate_equipment_combat_attributes;
+use super::generate_equipment_traits::generate_equipment_traits;
+use super::select_random_affix_types::select_random_affix_types;
 use crate::combatants::CombatAttributes;
-use crate::items::equipment::affixes::{PrefixTypes, SuffixTypes};
-use crate::items::equipment::{EquipmentProperties, EquipmentTypes};
-use crate::primatives::{MaxAndCurrent, Range};
-use rand::{seq::SliceRandom, Rng};
-use std::collections::{HashMap, HashSet};
+use crate::items::equipment::affixes::PrefixTypes;
+use crate::items::equipment::affixes::SuffixTypes;
+use crate::items::equipment::EquipmentProperties;
+use crate::items::equipment::EquipmentTypes;
+use crate::primatives::MaxAndCurrent;
+use crate::primatives::Range;
+use rand::seq::SliceRandom;
+use rand::Rng;
+use std::collections::HashMap;
+use std::collections::HashSet;
 use strum::IntoEnumIterator;
 
 pub fn roll_equipment_properties_from_template(

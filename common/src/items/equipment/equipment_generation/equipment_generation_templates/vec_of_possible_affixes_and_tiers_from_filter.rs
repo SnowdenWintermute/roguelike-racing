@@ -1,5 +1,9 @@
-pub fn vec_of_possible_affixes_and_tiers_from_filter<T>(all_affix_types: Vec<T>, get_tier_if_type_allowed: fn(affix_type:&T) -> Option<u8>) -> Vec<(T, u8)> 
-where T: Clone
+pub fn vec_of_possible_affixes_and_tiers_from_filter<T>(
+    all_affix_types: Vec<T>,
+    get_tier_if_type_allowed: fn(affix_type: &T) -> Option<u8>,
+) -> Vec<(T, u8)>
+where
+    T: Clone,
 {
     let mut possible_affixes_and_tiers: Vec<(T, u8)> = vec![];
     let mut i = 0;

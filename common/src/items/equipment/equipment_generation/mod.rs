@@ -24,7 +24,6 @@ use self::roll_equipment_properties_from_blueprint::roll_equipment_properties_fr
 use super::EquipmentProperties;
 
 pub fn generate_equipment_properties_from_base_item(level: u8) -> EquipmentProperties {
-    // GEN BASE ITEM
     let base_item = generate_base_equipment(level);
     // determine num prefixes and suffixes
     let num_prefixes = 1;

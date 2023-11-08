@@ -8,7 +8,6 @@ use crate::items::items_by_level::items_by_level;
 use crate::primatives::Range;
 use once_cell::sync::Lazy;
 use std::collections::HashMap;
-use strum::IntoEnumIterator;
 
 fn two_handed_melee_weapon_template_from_base_item(
     item: &TwoHandedMeleeWeapons,
@@ -25,16 +24,20 @@ fn two_handed_melee_weapon_template_from_base_item(
             None,
             None,
         ),
-        TwoHandedMeleeWeapons::Spear => WeaponGenerationTemplate::new(
-            Range::new(2, 5),
-            Range::new(3, 9),
-            Some(1),
-            vec![DamageClassifications::Physical(DamageTypes::Piercing)],
-            1,
-            requirements,
-            None,
-            None,
-        ),
+        TwoHandedMeleeWeapons::Spear => {
+            requirements.insert(CombatAttributes::Dexterity, 3);
+            requirements.insert(CombatAttributes::Strength, 3);
+            WeaponGenerationTemplate::new(
+                Range::new(2, 5),
+                Range::new(3, 9),
+                Some(1),
+                vec![DamageClassifications::Physical(DamageTypes::Piercing)],
+                1,
+                requirements,
+                None,
+                None,
+            )
+        }
         TwoHandedMeleeWeapons::Bardiche => WeaponGenerationTemplate::new(
             Range::new(2, 5),
             Range::new(5, 11),

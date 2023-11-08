@@ -8,7 +8,6 @@ use crate::items::items_by_level::items_by_level;
 use crate::primatives::Range;
 use once_cell::sync::Lazy;
 use std::collections::HashMap;
-use strum::IntoEnumIterator;
 
 pub fn one_handed_melee_weapon_template_from_base_item(
     item: &OneHandedMeleeWeapons,
@@ -45,16 +44,19 @@ pub fn one_handed_melee_weapon_template_from_base_item(
             None,
             None,
         ),
-        OneHandedMeleeWeapons::WarHammer => WeaponGenerationTemplate::new(
-            Range::new(8, 10),
-            Range::new(4, 16),
-            Some(1),
-            vec![DamageClassifications::Physical(DamageTypes::Blunt)],
-            1,
-            requirements,
-            None,
-            None,
-        ),
+        OneHandedMeleeWeapons::WarHammer => {
+            requirements.insert(CombatAttributes::Strength, 20);
+            WeaponGenerationTemplate::new(
+                Range::new(8, 10),
+                Range::new(4, 16),
+                Some(1),
+                vec![DamageClassifications::Physical(DamageTypes::Blunt)],
+                1,
+                requirements,
+                None,
+                None,
+            )
+        }
         OneHandedMeleeWeapons::ShortSword => WeaponGenerationTemplate::new(
             Range::new(2, 4),
             Range::new(2, 6),

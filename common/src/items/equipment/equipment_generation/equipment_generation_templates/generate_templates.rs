@@ -15,7 +15,7 @@ where
     let mut i = 0;
     while i < base_items.len() {
         let base_item = base_items[i].clone();
-        let mut requirements: HashMap<CombatAttributes, u8> = HashMap::new();
+        let requirements: HashMap<CombatAttributes, u8> = HashMap::new();
         let template = template_from_base_item(&base_item, requirements);
         m.insert(base_item, template);
         i += 1;

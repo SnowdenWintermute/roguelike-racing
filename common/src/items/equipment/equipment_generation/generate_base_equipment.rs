@@ -1,26 +1,26 @@
+#![allow(unused)]
+use super::equipment_generation_templates::head_gear_generation_templates::HEAD_GEARS_BY_LEVEL;
 use crate::items::equipment::body_armors::BodyArmors;
 use crate::items::equipment::head_gears::HeadGears;
+use crate::items::equipment::jewelries::Jewelries;
 use crate::items::equipment::one_handed_melee_weapons::OneHandedMeleeWeapons;
+use crate::items::equipment::shields::Shields;
+use crate::items::equipment::two_handed_melee_weapons::TwoHandedMeleeWeapons;
+use crate::items::equipment::two_handed_ranged_weapons::TwoHandedRangedWeapons;
 use crate::items::equipment::EquipmentTypes;
 use core::panic;
-use once_cell::sync::Lazy;
 use rand::prelude::*;
-use std::collections::HashMap;
-use std::default;
 use strum::IntoEnumIterator;
-use strum_macros::EnumIter;
-
-use super::equipment_generation_templates::head_gear_generation_templates::HEAD_GEARS_BY_LEVEL;
 
 #[derive(Debug)]
 pub enum BaseEquipment {
     BodyArmor(BodyArmors),
     HeadGear(HeadGears),
-    Jewelry,
+    Jewelry(Jewelries),
     OneHandedMeleeWeapon(OneHandedMeleeWeapons),
-    TwoHandedMeleeWeapon,
-    TwoHandedRangedWeapon,
-    Shield,
+    TwoHandedMeleeWeapon(TwoHandedMeleeWeapons),
+    TwoHandedRangedWeapon(TwoHandedRangedWeapons),
+    Shield(Shields),
 }
 
 pub fn generate_base_equipment(level: u8) -> BaseEquipment {

@@ -9,7 +9,6 @@ use crate::items::items_by_level::items_by_level;
 use crate::primatives::Range;
 use once_cell::sync::Lazy;
 use std::collections::HashMap;
-use strum::IntoEnumIterator;
 
 fn head_gear_template_from_base_item(
     head_gear: &HeadGears,
@@ -62,15 +61,18 @@ fn head_gear_template_from_base_item(
             )),
             None,
         ),
-        HeadGears::WizardHat => ArmorGenerationTemplate::new(
-            Range::new(8, 10),
-            Range::new(6, 14),
-            Some(40),
-            ArmorCategories::Cloth,
-            requirements,
-            None,
-            None,
-        ),
+        HeadGears::WizardHat => {
+            requirements.insert(CombatAttributes::Intelligence, 20);
+            ArmorGenerationTemplate::new(
+                Range::new(8, 10),
+                Range::new(6, 14),
+                Some(40),
+                ArmorCategories::Cloth,
+                requirements,
+                None,
+                None,
+            )
+        }
         HeadGears::Eyepatch => ArmorGenerationTemplate::new(
             Range::new(1, 3),
             Range::new(2, 5),

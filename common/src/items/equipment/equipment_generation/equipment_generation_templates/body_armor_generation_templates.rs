@@ -3,12 +3,10 @@ use super::ArmorGenerationTemplate;
 use crate::combatants::CombatAttributes;
 use crate::items::equipment::armor_properties::ArmorCategories;
 use crate::items::equipment::body_armors::BodyArmors;
-use crate::items::equipment::equipment_generation::equipment_generation_template_properties::EquipmentGenerationTemplateProperties;
 use crate::items::items_by_level::items_by_level;
 use crate::primatives::Range;
 use once_cell::sync::Lazy;
 use std::collections::HashMap;
-use strum::IntoEnumIterator;
 
 fn body_armor_template_from_base_item(
     armor: &BodyArmors,

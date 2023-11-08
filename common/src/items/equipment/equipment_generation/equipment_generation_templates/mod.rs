@@ -88,24 +88,23 @@ impl WeaponGenerationTemplate {
 
 pub struct ShieldGenerationTemplate {
     pub size: ShieldSizes,
-    pub armor_class: u8,
+    pub ac_range: Range<u8>,
     pub template_properties: EquipmentGenerationTemplateProperties,
 }
 
 impl ShieldGenerationTemplate {
     pub fn new(
         level_range: Range<u8>,
-        damage: Range<u8>,
-        max_durability: Option<u8>,
+        ac_range: Range<u8>,
         size: ShieldSizes,
-        armor_class: u8,
+        max_durability: Option<u8>,
         requirements: HashMap<CombatAttributes, u8>,
         affix_modifiers: Option<EquipmentGenerationTemplateAffixModifiers>,
         traits: Option<Vec<EquipmentTraits>>,
     ) -> ShieldGenerationTemplate {
         ShieldGenerationTemplate {
             size,
-            armor_class,
+            ac_range,
             template_properties: EquipmentGenerationTemplateProperties {
                 level_range,
                 max_durability,

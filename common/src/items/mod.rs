@@ -1,4 +1,3 @@
-#![allow(dead_code)]
 pub mod consumables;
 pub mod equipment;
 pub mod items_by_level;

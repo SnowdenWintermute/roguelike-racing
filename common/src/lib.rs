@@ -1,4 +1,3 @@
-#![allow(unused)]
 pub mod adventuring_party;
 pub mod app_consts;
 pub mod character;

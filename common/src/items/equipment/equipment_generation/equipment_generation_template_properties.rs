@@ -5,6 +5,7 @@ use crate::items::equipment::EquipmentTraits;
 use crate::primatives::Range;
 use std::collections::HashMap;
 
+#[derive(Clone)]
 pub struct EquipmentGenerationTemplateAffixModifiers {
     pub prefix_exclusions: Option<Vec<PrefixTypes>>,
     pub suffix_exclusions: Option<Vec<SuffixTypes>>,
@@ -35,6 +36,7 @@ impl EquipmentGenerationTemplateAffixModifiers {
     }
 }
 
+#[derive(Clone)]
 pub struct EquipmentGenerationTemplateProperties {
     pub level_range: Range<u8>,
     pub max_durability: Option<u8>,

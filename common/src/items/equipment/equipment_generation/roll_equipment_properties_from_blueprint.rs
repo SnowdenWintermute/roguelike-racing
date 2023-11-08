@@ -17,7 +17,7 @@ use std::collections::HashMap;
 use std::collections::HashSet;
 use strum::IntoEnumIterator;
 
-pub fn roll_equipment_properties_from_template(
+pub fn roll_equipment_properties_from_blueprint(
     equipment_type: EquipmentTypes,
     level: u8,
     template_properties: &EquipmentGenerationTemplateProperties,

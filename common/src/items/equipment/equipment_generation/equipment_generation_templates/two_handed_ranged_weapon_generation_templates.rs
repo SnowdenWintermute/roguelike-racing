@@ -8,7 +8,6 @@ use crate::items::items_by_level::items_by_level;
 use crate::primatives::Range;
 use once_cell::sync::Lazy;
 use std::collections::HashMap;
-use strum::IntoEnumIterator;
 
 fn two_handed_ranged_weapon_template_from_base_item(
     item: &TwoHandedRangedWeapons,
@@ -25,16 +24,19 @@ fn two_handed_ranged_weapon_template_from_base_item(
             None,
             None,
         ),
-        TwoHandedRangedWeapons::RecurveBow => WeaponGenerationTemplate::new(
-            Range::new(3, 6),
-            Range::new(5, 10),
-            Some(1),
-            vec![DamageClassifications::Physical(DamageTypes::Piercing)],
-            1,
-            requirements,
-            None,
-            None,
-        ),
+        TwoHandedRangedWeapons::RecurveBow => {
+            requirements.insert(CombatAttributes::Dexterity, 5);
+            WeaponGenerationTemplate::new(
+                Range::new(3, 6),
+                Range::new(5, 10),
+                Some(1),
+                vec![DamageClassifications::Physical(DamageTypes::Piercing)],
+                1,
+                requirements,
+                None,
+                None,
+            )
+        }
         TwoHandedRangedWeapons::CompositeBow => WeaponGenerationTemplate::new(
             Range::new(5, 8),
             Range::new(8, 16),

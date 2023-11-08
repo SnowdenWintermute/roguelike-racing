@@ -17,7 +17,7 @@ fn two_handed_ranged_weapon_template_from_base_item(
         TwoHandedRangedWeapons::ShortBow => WeaponGenerationTemplate::new(
             Range::new(1, 4),
             Range::new(2, 7),
-            1,
+            Some(1),
             vec![DamageClassifications::Physical(DamageTypes::Piercing)],
             1,
             requirements,
@@ -27,7 +27,7 @@ fn two_handed_ranged_weapon_template_from_base_item(
         TwoHandedRangedWeapons::RecurveBow => WeaponGenerationTemplate::new(
             Range::new(3, 6),
             Range::new(5, 10),
-            1,
+            Some(1),
             vec![DamageClassifications::Physical(DamageTypes::Piercing)],
             1,
             requirements,
@@ -37,7 +37,7 @@ fn two_handed_ranged_weapon_template_from_base_item(
         TwoHandedRangedWeapons::CompositeBow => WeaponGenerationTemplate::new(
             Range::new(5, 8),
             Range::new(8, 16),
-            1,
+            Some(1),
             vec![DamageClassifications::Physical(DamageTypes::Piercing)],
             1,
             requirements,
@@ -47,7 +47,7 @@ fn two_handed_ranged_weapon_template_from_base_item(
         TwoHandedRangedWeapons::MilitaryBow => WeaponGenerationTemplate::new(
             Range::new(8, 10),
             Range::new(12, 26),
-            1,
+            Some(1),
             vec![DamageClassifications::Physical(DamageTypes::Piercing)],
             1,
             requirements,
@@ -57,7 +57,7 @@ fn two_handed_ranged_weapon_template_from_base_item(
         TwoHandedRangedWeapons::EtherBow => WeaponGenerationTemplate::new(
             Range::new(7, 10),
             Range::new(10, 22),
-            1,
+            Some(1),
             vec![DamageClassifications::Magical(DamageTypes::Piercing)],
             1,
             requirements,

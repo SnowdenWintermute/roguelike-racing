@@ -17,7 +17,7 @@ fn two_handed_melee_weapon_template_from_base_item(
         TwoHandedMeleeWeapons::BoStaff => WeaponGenerationTemplate::new(
             Range::new(1, 4),
             Range::new(2, 8),
-            1,
+            Some(1),
             vec![DamageClassifications::Physical(DamageTypes::Blunt)],
             1,
             requirements,
@@ -27,7 +27,7 @@ fn two_handed_melee_weapon_template_from_base_item(
         TwoHandedMeleeWeapons::Spear => WeaponGenerationTemplate::new(
             Range::new(2, 5),
             Range::new(3, 9),
-            1,
+            Some(1),
             vec![DamageClassifications::Physical(DamageTypes::Piercing)],
             1,
             requirements,
@@ -37,7 +37,7 @@ fn two_handed_melee_weapon_template_from_base_item(
         TwoHandedMeleeWeapons::Bardiche => WeaponGenerationTemplate::new(
             Range::new(2, 5),
             Range::new(5, 11),
-            1,
+            Some(1),
             vec![DamageClassifications::Physical(DamageTypes::Slashing)],
             1,
             requirements,
@@ -47,7 +47,7 @@ fn two_handed_melee_weapon_template_from_base_item(
         TwoHandedMeleeWeapons::SplittingMaul => WeaponGenerationTemplate::new(
             Range::new(3, 6),
             Range::new(6, 12),
-            1,
+            Some(1),
             vec![
                 DamageClassifications::Physical(DamageTypes::Blunt),
                 DamageClassifications::Physical(DamageTypes::Piercing),
@@ -60,7 +60,7 @@ fn two_handed_melee_weapon_template_from_base_item(
         TwoHandedMeleeWeapons::Maul => WeaponGenerationTemplate::new(
             Range::new(5, 7),
             Range::new(9, 14),
-            1,
+            Some(1),
             vec![DamageClassifications::Physical(DamageTypes::Blunt)],
             1,
             requirements,
@@ -70,7 +70,7 @@ fn two_handed_melee_weapon_template_from_base_item(
         TwoHandedMeleeWeapons::BattleAxe => WeaponGenerationTemplate::new(
             Range::new(5, 7),
             Range::new(6, 17),
-            1,
+            Some(1),
             vec![DamageClassifications::Physical(DamageTypes::Slashing)],
             1,
             requirements,
@@ -80,7 +80,7 @@ fn two_handed_melee_weapon_template_from_base_item(
         TwoHandedMeleeWeapons::Glaive => WeaponGenerationTemplate::new(
             Range::new(5, 7),
             Range::new(8, 16),
-            1,
+            Some(1),
             vec![
                 DamageClassifications::Physical(DamageTypes::Slashing),
                 DamageClassifications::Physical(DamageTypes::Piercing),
@@ -93,7 +93,7 @@ fn two_handed_melee_weapon_template_from_base_item(
         TwoHandedMeleeWeapons::ElementalStaff => WeaponGenerationTemplate::new(
             Range::new(6, 9),
             Range::new(10, 18),
-            1,
+            Some(1),
             vec![
                 DamageClassifications::Physical(DamageTypes::Fire),
                 DamageClassifications::Physical(DamageTypes::Ice),
@@ -110,7 +110,7 @@ fn two_handed_melee_weapon_template_from_base_item(
         TwoHandedMeleeWeapons::Trident => WeaponGenerationTemplate::new(
             Range::new(8, 10),
             Range::new(14, 26),
-            1,
+            Some(1),
             vec![
                 DamageClassifications::Magical(DamageTypes::Water),
                 DamageClassifications::Physical(DamageTypes::Piercing),
@@ -123,7 +123,7 @@ fn two_handed_melee_weapon_template_from_base_item(
         TwoHandedMeleeWeapons::Halberd => WeaponGenerationTemplate::new(
             Range::new(8, 10),
             Range::new(12, 25),
-            1,
+            Some(1),
             vec![
                 DamageClassifications::Physical(DamageTypes::Piercing),
                 DamageClassifications::Physical(DamageTypes::Slashing),
@@ -136,7 +136,7 @@ fn two_handed_melee_weapon_template_from_base_item(
         TwoHandedMeleeWeapons::GreatAxe => WeaponGenerationTemplate::new(
             Range::new(9, 10),
             Range::new(15, 35),
-            1,
+            Some(1),
             vec![DamageClassifications::Physical(DamageTypes::Slashing)],
             1,
             requirements,
@@ -146,7 +146,7 @@ fn two_handed_melee_weapon_template_from_base_item(
         TwoHandedMeleeWeapons::GravityHammer => WeaponGenerationTemplate::new(
             Range::new(9, 10),
             Range::new(20, 30),
-            1,
+            Some(1),
             vec![DamageClassifications::Physical(DamageTypes::Blunt)],
             1,
             requirements,

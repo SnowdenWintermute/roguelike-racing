@@ -23,6 +23,8 @@ pub mod two_handed_melee_weapon_generation_templates;
 pub mod two_handed_melee_weapon_possible_affixes;
 pub mod two_handed_ranged_weapon_generation_templates;
 pub mod two_handed_ranged_weapon_possible_affixes;
+pub mod jewelry_possible_affixes;
+mod vec_of_possible_affixes_and_tiers_from_filter;
 
 pub struct ArmorGenerationTemplate {
     pub category: ArmorCategories,
@@ -34,7 +36,7 @@ impl ArmorGenerationTemplate {
     pub fn new(
         level_range: Range<u8>,
         ac_range: Range<u8>,
-        max_durability: u8,
+        max_durability: Option<u8>,
         category: ArmorCategories,
         requirements: HashMap<CombatAttributes, u8>,
         affix_modifiers: Option<EquipmentGenerationTemplateAffixModifiers>,
@@ -65,7 +67,7 @@ impl WeaponGenerationTemplate {
     pub fn new(
         level_range: Range<u8>,
         damage: Range<u8>,
-        max_durability: u8,
+        max_durability: Option<u8>,
         possbile_damage_classifications: Vec<DamageClassifications>,
         num_damage_classifications: u8,
         requirements: HashMap<CombatAttributes, u8>,
@@ -97,7 +99,7 @@ impl ShieldGenerationTemplate {
     pub fn new(
         level_range: Range<u8>,
         damage: Range<u8>,
-        max_durability: u8,
+        max_durability: Option<u8>,
         size: ShieldSizes,
         armor_class: u8,
         requirements: HashMap<CombatAttributes, u8>,

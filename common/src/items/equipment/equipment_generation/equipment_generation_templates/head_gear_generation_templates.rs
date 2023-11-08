@@ -23,7 +23,7 @@ fn head_gear_template_from_base_item(
         HeadGears::Cap => ArmorGenerationTemplate::new(
             Range::new(1, 3),
             Range::new(1, 3),
-            10,
+            Some(10),
             ArmorCategories::Cloth,
             requirements,
             None,
@@ -32,7 +32,7 @@ fn head_gear_template_from_base_item(
         HeadGears::Bandana => ArmorGenerationTemplate::new(
             Range::new(2, 4),
             Range::new(2, 4),
-            12,
+            Some(12),
             ArmorCategories::Cloth,
             requirements,
             None,
@@ -41,7 +41,7 @@ fn head_gear_template_from_base_item(
         HeadGears::PaddedCap => ArmorGenerationTemplate::new(
             Range::new(3, 6),
             Range::new(3, 6),
-            20,
+            Some(20),
             ArmorCategories::Cloth,
             requirements,
             None,
@@ -50,7 +50,7 @@ fn head_gear_template_from_base_item(
         HeadGears::Ribbon => ArmorGenerationTemplate::new(
             Range::new(5, 10),
             Range::new(1, 1),
-            20,
+            Some(20),
             ArmorCategories::Cloth,
             requirements,
             Some(EquipmentGenerationTemplateAffixModifiers::new(
@@ -69,7 +69,7 @@ fn head_gear_template_from_base_item(
         HeadGears::WizardHat => ArmorGenerationTemplate::new(
             Range::new(8, 10),
             Range::new(6, 14),
-            40,
+            Some(40),
             ArmorCategories::Cloth,
             requirements,
             None,
@@ -78,7 +78,7 @@ fn head_gear_template_from_base_item(
         HeadGears::Eyepatch => ArmorGenerationTemplate::new(
             Range::new(1, 3),
             Range::new(2, 5),
-            14,
+            Some(14),
             ArmorCategories::Leather,
             requirements,
             None,
@@ -87,7 +87,7 @@ fn head_gear_template_from_base_item(
         HeadGears::LeatherHat => ArmorGenerationTemplate::new(
             Range::new(2, 5),
             Range::new(5, 8),
-            20,
+            Some(20),
             ArmorCategories::Leather,
             requirements,
             None,
@@ -96,7 +96,7 @@ fn head_gear_template_from_base_item(
         HeadGears::LeatherHelm => ArmorGenerationTemplate::new(
             Range::new(4, 8),
             Range::new(9, 15),
-            35,
+            Some(35),
             ArmorCategories::Leather,
             requirements,
             None,
@@ -105,7 +105,7 @@ fn head_gear_template_from_base_item(
         HeadGears::DemonsaurHelm => ArmorGenerationTemplate::new(
             Range::new(9, 10),
             Range::new(18, 24),
-            45,
+            Some(45),
             ArmorCategories::Leather,
             requirements,
             None,
@@ -114,7 +114,7 @@ fn head_gear_template_from_base_item(
         HeadGears::Hairpin => ArmorGenerationTemplate::new(
             Range::new(3, 4),
             Range::new(2, 2),
-            20,
+            Some(20),
             ArmorCategories::Mail,
             requirements,
             None,
@@ -123,7 +123,7 @@ fn head_gear_template_from_base_item(
         HeadGears::Skullcap => ArmorGenerationTemplate::new(
             Range::new(3, 6),
             Range::new(8, 16),
-            28,
+            Some(28),
             ArmorCategories::Mail,
             requirements,
             None,
@@ -132,7 +132,7 @@ fn head_gear_template_from_base_item(
         HeadGears::Coif => ArmorGenerationTemplate::new(
             Range::new(4, 8),
             Range::new(20, 26),
-            36,
+            Some(36),
             ArmorCategories::Mail,
             requirements,
             None,
@@ -141,7 +141,7 @@ fn head_gear_template_from_base_item(
         HeadGears::OhmushellMask => ArmorGenerationTemplate::new(
             Range::new(7, 10),
             Range::new(30, 38),
-            50,
+            Some(50),
             ArmorCategories::Mail,
             requirements,
             None,
@@ -150,7 +150,7 @@ fn head_gear_template_from_base_item(
         HeadGears::Circlet => ArmorGenerationTemplate::new(
             Range::new(2, 5),
             Range::new(5, 10),
-            30,
+            Some(30),
             ArmorCategories::Plate,
             requirements,
             None,
@@ -159,7 +159,7 @@ fn head_gear_template_from_base_item(
         HeadGears::Crown => ArmorGenerationTemplate::new(
             Range::new(3, 7),
             Range::new(10, 20),
-            35,
+            Some(35),
             ArmorCategories::Plate,
             requirements,
             None,
@@ -168,7 +168,7 @@ fn head_gear_template_from_base_item(
         HeadGears::FullHelm => ArmorGenerationTemplate::new(
             Range::new(5, 10),
             Range::new(22, 30),
-            40,
+            Some(40),
             ArmorCategories::Plate,
             requirements,
             None,
@@ -177,7 +177,7 @@ fn head_gear_template_from_base_item(
         HeadGears::GreatHelm => ArmorGenerationTemplate::new(
             Range::new(9, 10),
             Range::new(32, 40),
-            50,
+            Some(50),
             ArmorCategories::Plate,
             requirements,
             None,

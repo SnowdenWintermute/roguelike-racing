@@ -36,7 +36,7 @@ impl EquipmentGenerationTemplateAffixModifiers {
 
 pub struct EquipmentGenerationTemplateProperties {
     pub level_range: Range<u8>,
-    pub max_durability: u8,
+    pub max_durability: Option<u8>,
     pub requirements: HashMap<CombatAttributes, u8>,
     pub affix_modifiers: Option<EquipmentGenerationTemplateAffixModifiers>,
     pub traits: Option<Vec<EquipmentTraits>>,

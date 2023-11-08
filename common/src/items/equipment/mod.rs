@@ -9,6 +9,7 @@ pub mod shields;
 pub mod two_handed_melee_weapons;
 pub mod two_handed_ranged_weapons;
 pub mod weapon_properties;
+pub mod jewelries;
 use self::affixes::Affix;
 use self::armor_properties::ArmorProperties;
 use self::body_armors::BodyArmors;

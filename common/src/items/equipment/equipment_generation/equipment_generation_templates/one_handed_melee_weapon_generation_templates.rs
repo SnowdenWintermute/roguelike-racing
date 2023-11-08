@@ -17,7 +17,7 @@ pub fn one_handed_melee_weapon_template_from_base_item(
         OneHandedMeleeWeapons::Stick => WeaponGenerationTemplate::new(
             Range::new(1, 3),
             Range::new(1, 3),
-            1,
+            Some(1),
             vec![DamageClassifications::Physical(DamageTypes::Blunt)],
             1,
             requirements,
@@ -27,7 +27,7 @@ pub fn one_handed_melee_weapon_template_from_base_item(
         OneHandedMeleeWeapons::Mace => WeaponGenerationTemplate::new(
             Range::new(2, 6),
             Range::new(1, 8),
-            1,
+            Some(1),
             vec![DamageClassifications::Physical(DamageTypes::Blunt)],
             1,
             requirements,
@@ -37,7 +37,7 @@ pub fn one_handed_melee_weapon_template_from_base_item(
         OneHandedMeleeWeapons::Morningstar => WeaponGenerationTemplate::new(
             Range::new(4, 8),
             Range::new(2, 12),
-            1,
+            Some(1),
             vec![DamageClassifications::Physical(DamageTypes::Blunt)],
             1,
             requirements,
@@ -47,7 +47,7 @@ pub fn one_handed_melee_weapon_template_from_base_item(
         OneHandedMeleeWeapons::WarHammer => WeaponGenerationTemplate::new(
             Range::new(8, 10),
             Range::new(4, 16),
-            1,
+            Some(1),
             vec![DamageClassifications::Physical(DamageTypes::Blunt)],
             1,
             requirements,
@@ -57,7 +57,7 @@ pub fn one_handed_melee_weapon_template_from_base_item(
         OneHandedMeleeWeapons::ShortSword => WeaponGenerationTemplate::new(
             Range::new(2, 4),
             Range::new(2, 6),
-            1,
+            Some(1),
             vec![DamageClassifications::Physical(DamageTypes::Slashing)],
             1,
             requirements,
@@ -67,7 +67,7 @@ pub fn one_handed_melee_weapon_template_from_base_item(
         OneHandedMeleeWeapons::Blade => WeaponGenerationTemplate::new(
             Range::new(3, 5),
             Range::new(4, 8),
-            1,
+            Some(1),
             vec![DamageClassifications::Physical(DamageTypes::Slashing)],
             1,
             requirements,
@@ -77,7 +77,7 @@ pub fn one_handed_melee_weapon_template_from_base_item(
         OneHandedMeleeWeapons::BroadSword => WeaponGenerationTemplate::new(
             Range::new(5, 8),
             Range::new(4, 12),
-            1,
+            Some(1),
             vec![DamageClassifications::Physical(DamageTypes::Slashing)],
             1,
             requirements,
@@ -87,7 +87,7 @@ pub fn one_handed_melee_weapon_template_from_base_item(
         OneHandedMeleeWeapons::BastardSword => WeaponGenerationTemplate::new(
             Range::new(8, 10),
             Range::new(6, 15),
-            1,
+            Some(1),
             vec![
                 DamageClassifications::Physical(DamageTypes::Slashing),
                 DamageClassifications::Physical(DamageTypes::Piercing),
@@ -100,7 +100,7 @@ pub fn one_handed_melee_weapon_template_from_base_item(
         OneHandedMeleeWeapons::Dagger => WeaponGenerationTemplate::new(
             Range::new(1, 3),
             Range::new(1, 4),
-            1,
+            Some(1),
             vec![DamageClassifications::Physical(DamageTypes::Piercing)],
             1,
             requirements,
@@ -110,7 +110,7 @@ pub fn one_handed_melee_weapon_template_from_base_item(
         OneHandedMeleeWeapons::Rapier => WeaponGenerationTemplate::new(
             Range::new(3, 7),
             Range::new(1, 11),
-            1,
+            Some(1),
             vec![DamageClassifications::Physical(DamageTypes::Piercing)],
             1,
             requirements,
@@ -120,7 +120,7 @@ pub fn one_handed_melee_weapon_template_from_base_item(
         OneHandedMeleeWeapons::ShortSpear => WeaponGenerationTemplate::new(
             Range::new(6, 9),
             Range::new(4, 13),
-            1,
+            Some(1),
             vec![DamageClassifications::Physical(DamageTypes::Piercing)],
             1,
             requirements,
@@ -130,7 +130,7 @@ pub fn one_handed_melee_weapon_template_from_base_item(
         OneHandedMeleeWeapons::RuneSword => WeaponGenerationTemplate::new(
             Range::new(5, 10),
             Range::new(2, 12),
-            1,
+            Some(1),
             vec![
                 DamageClassifications::Physical(DamageTypes::Fire),
                 DamageClassifications::Physical(DamageTypes::Ice),
@@ -147,7 +147,7 @@ pub fn one_handed_melee_weapon_template_from_base_item(
         OneHandedMeleeWeapons::EtherBlade => WeaponGenerationTemplate::new(
             Range::new(5, 8),
             Range::new(6, 10),
-            1,
+            Some(1),
             vec![DamageClassifications::Magical(DamageTypes::Slashing)],
             1,
             requirements,

@@ -22,7 +22,7 @@ impl fmt::Display for Shields {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Shields::MakeshiftBuckler => write!(f, "Makeshift Buckler"),
-            Shields::WoodenKiteShield => write!(f, "Wooden KiteShield"),
+            Shields::WoodenKiteShield => write!(f, "Wooden Kite Shield"),
             Shields::Buckler => write!(f, "Buckler"),
             Shields::Pavise => write!(f, "Pavise"),
             Shields::Aspis => write!(f, "Aspis"),
@@ -30,7 +30,7 @@ impl fmt::Display for Shields {
             Shields::KiteShield => write!(f, "Kite Shield"),
             Shields::TowerShield => write!(f, "Tower Shield"),
             Shields::AncientBuckler => write!(f, "Ancient Buckler"),
-            Shields::GothicShield => write!(f, "Aegis"),
+            Shields::GothicShield => write!(f, "Gothic Shield"),
         }
     }
 }

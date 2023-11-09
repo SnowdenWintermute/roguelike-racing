@@ -1,8 +1,7 @@
+use crate::combatants::CombatAttributes;
 use core::hash::Hash;
 use std::collections::HashMap;
 use strum::IntoEnumIterator;
-
-use crate::combatants::CombatAttributes;
 
 pub fn generate_templates<T, U>(
     template_from_base_item: fn(&T, HashMap<CombatAttributes, u8>) -> U,

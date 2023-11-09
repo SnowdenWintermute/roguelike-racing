@@ -29,7 +29,7 @@ fn shield_template_from_base_item(
             ShieldGenerationTemplate::new(
                 Range::new(2, 4),
                 Range::new(2, 6),
-                ShieldSizes::Small,
+                ShieldSizes::Medium,
                 Some(6),
                 requirements,
                 None,
@@ -48,7 +48,7 @@ fn shield_template_from_base_item(
         Shields::Pavise => ShieldGenerationTemplate::new(
             Range::new(4, 6),
             Range::new(2, 6),
-            ShieldSizes::Small,
+            ShieldSizes::Large,
             Some(6),
             requirements,
             None,
@@ -57,7 +57,7 @@ fn shield_template_from_base_item(
         Shields::Aspis => ShieldGenerationTemplate::new(
             Range::new(5, 7),
             Range::new(2, 6),
-            ShieldSizes::Small,
+            ShieldSizes::Medium,
             Some(6),
             requirements,
             None,
@@ -80,7 +80,7 @@ fn shield_template_from_base_item(
         Shields::KiteShield => ShieldGenerationTemplate::new(
             Range::new(6, 8),
             Range::new(2, 6),
-            ShieldSizes::Small,
+            ShieldSizes::Medium,
             Some(6),
             requirements,
             None,
@@ -89,7 +89,7 @@ fn shield_template_from_base_item(
         Shields::TowerShield => ShieldGenerationTemplate::new(
             Range::new(7, 10),
             Range::new(2, 6),
-            ShieldSizes::Small,
+            ShieldSizes::Large,
             Some(6),
             requirements,
             None,
@@ -107,7 +107,7 @@ fn shield_template_from_base_item(
         Shields::GothicShield => ShieldGenerationTemplate::new(
             Range::new(8, 10),
             Range::new(2, 6),
-            ShieldSizes::Small,
+            ShieldSizes::Medium,
             Some(6),
             requirements,
             None,

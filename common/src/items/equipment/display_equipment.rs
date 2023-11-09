@@ -144,7 +144,6 @@ impl fmt::Display for Item {
                         );
                     }
                     EquipmentTypes::Shield(base_item, properties) => {
-                        let mut output = String::new();
                         output
                             .push_str(format!("{} ilvl {}\n", base_item, self.item_level).as_str());
                         output.push_str(format!("Shield Size: {}\n", properties.size).as_str());

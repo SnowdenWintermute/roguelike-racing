@@ -8,6 +8,7 @@ use crate::items::equipment::body_armors::BodyArmors;
 use crate::items::equipment::head_gears::HeadGears;
 use crate::items::equipment::jewelries::Jewelries;
 use crate::items::equipment::one_handed_melee_weapons::OneHandedMeleeWeapons;
+use crate::items::equipment::shield_properties::ShieldProperties;
 use crate::items::equipment::shields::Shields;
 use crate::items::equipment::two_handed_melee_weapons::TwoHandedMeleeWeapons;
 use crate::items::equipment::two_handed_ranged_weapons::TwoHandedRangedWeapons;
@@ -42,6 +43,7 @@ where
 pub fn generate_base_equipment(level: u8) -> BaseEquipment {
     let categories: Vec<EquipmentTypes> = EquipmentTypes::iter().collect();
     let category = categories.choose(&mut rand::thread_rng()).unwrap();
+    // let category = EquipmentTypes::Shield(Shields::Buckler, ShieldProperties::default());
     match category {
         EquipmentTypes::HeadGear(..) => {
             let possible_base_items = HEAD_GEARS_BY_LEVEL.get(&level);

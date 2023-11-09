@@ -3,6 +3,7 @@ use super::generate_affixes::generate_affixes;
 use super::generate_durability::generate_durability;
 use super::generate_equipment_combat_attributes::generate_equipment_combat_attributes;
 use super::generate_equipment_traits::generate_equipment_traits;
+use super::make_indestructable_if_max_tier_durablity::make_indestructable_if_max_tier_durability;
 use super::select_random_affix_types::select_random_affix_types;
 use crate::items::equipment::affixes::PrefixTypes;
 use crate::items::equipment::affixes::SuffixTypes;
@@ -34,14 +35,8 @@ pub fn roll_equipment_properties_from_blueprint(
         &affix_modifiers.suffix_exclusions,
     );
 
-    // Make item indestructable if highest tier durability
-    for suffix_and_tier in &suffix_types_and_tiers {
-        if suffix_and_tier.0 == SuffixTypes::Durability && suffix_and_tier.1 == 5 {
-            durability = None
-        }
-    }
-
     let affixes = generate_affixes(prefix_types_and_tiers, suffix_types_and_tiers, level);
+    make_indestructable_if_max_tier_durability(&affixes, &mut durability);
     let traits = generate_equipment_traits(&affixes);
     let attributes = generate_equipment_combat_attributes(&affixes);
 

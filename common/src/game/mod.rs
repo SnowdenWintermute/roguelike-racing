@@ -3,6 +3,9 @@ use crate::app_consts::DEEPEST_FLOOR;
 use crate::character::Character;
 use crate::errors::AppError;
 use crate::game::id_generator::IdGenerator;
+use crate::items::equipment::equipment_generation::name_equipment;
+use crate::items::equipment::equipment_generation::name_equipment::name_equipment;
+use crate::items::equipment::equipment_generation::print_random_equipments::print_random_equipments;
 use crate::items::Item;
 use serde::Deserialize;
 use serde::Serialize;
@@ -60,14 +63,7 @@ impl RoguelikeRacerGame {
             id_generator: IdGenerator::new(),
         };
 
-        for _i in 1..=DEEPEST_FLOOR {
-            for _ in 0..5 {
-                let level = DEEPEST_FLOOR;
-                let item = Item::generate(&mut game.id_generator, level);
-                println!("{}", &item);
-            }
-        }
-
+        print_random_equipments();
         game
     }
 

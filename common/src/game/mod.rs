@@ -1,21 +1,17 @@
+use self::getters::get_mut_party;
+use self::getters::get_mut_player;
 use crate::adventuring_party::AdventuringParty;
-use crate::app_consts::DEEPEST_FLOOR;
 use crate::character::Character;
 use crate::errors::AppError;
 use crate::game::id_generator::IdGenerator;
-use crate::items::equipment::equipment_generation::name_equipment;
-use crate::items::equipment::equipment_generation::name_equipment::name_equipment;
 use crate::items::equipment::equipment_generation::print_random_equipments::print_random_equipments;
-use crate::items::Item;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::time::SystemTime;
 use std::time::UNIX_EPOCH;
-
-use self::getters::get_mut_party;
-use self::getters::get_mut_player;
+pub mod add_character_to_adventuring_party;
 pub mod getters;
 pub mod id_generator;
 pub mod player_actions;
@@ -63,7 +59,7 @@ impl RoguelikeRacerGame {
             id_generator: IdGenerator::new(),
         };
 
-        print_random_equipments();
+        print_random_equipments(&mut game);
         game
     }
 

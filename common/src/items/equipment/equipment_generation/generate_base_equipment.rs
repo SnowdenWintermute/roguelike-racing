@@ -8,7 +8,6 @@ use crate::items::equipment::body_armors::BodyArmors;
 use crate::items::equipment::head_gears::HeadGears;
 use crate::items::equipment::jewelries::Jewelries;
 use crate::items::equipment::one_handed_melee_weapons::OneHandedMeleeWeapons;
-use crate::items::equipment::shield_properties::ShieldProperties;
 use crate::items::equipment::shields::Shields;
 use crate::items::equipment::two_handed_melee_weapons::TwoHandedMeleeWeapons;
 use crate::items::equipment::two_handed_ranged_weapons::TwoHandedRangedWeapons;

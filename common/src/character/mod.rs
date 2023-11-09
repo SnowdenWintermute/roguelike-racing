@@ -1,15 +1,16 @@
-#![allow(dead_code)]
 use self::inventory::CharacterInventory;
+use self::outfit_new_warrior::outfit_new_warrior;
 use crate::combatants::abilities::CombatantAbility;
 use crate::combatants::abilities::CombatantAbilityNames;
-use crate::combatants::CombatAttributes;
 use crate::combatants::CombatantClass;
 use crate::combatants::CombatantProperties;
+use crate::game::RoguelikeRacerGame;
 use crate::primatives::EntityProperties;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
 pub mod inventory;
+pub mod outfit_new_warrior;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Character {
@@ -23,58 +24,34 @@ pub struct Character {
 
 impl Character {
     pub fn new(
-        id: u32,
+        game: &mut RoguelikeRacerGame,
         name: &str,
         combatant_class: CombatantClass,
         name_of_controlling_user: String,
     ) -> Character {
-        let mut abilities = HashMap::<CombatantAbilityNames, CombatantAbility>::new();
-        abilities.insert(
-            CombatantAbilityNames::Attack,
-            CombatantAbility::new(&CombatantAbilityNames::Attack),
-        );
-        match combatant_class {
-            CombatantClass::Mage => {
-                abilities.insert(
-                    CombatantAbilityNames::HeatLance,
-                    CombatantAbility::new(&CombatantAbilityNames::HeatLance),
-                );
-            }
-            CombatantClass::Rogue => {
-                abilities.insert(
-                    CombatantAbilityNames::ShootArrow,
-                    CombatantAbility::new(&CombatantAbilityNames::ShootArrow),
-                );
-            }
-            CombatantClass::Warrior => {
-                abilities.insert(
-                    CombatantAbilityNames::ArmorBreak,
-                    CombatantAbility::new(&CombatantAbilityNames::ArmorBreak),
-                );
-                abilities.insert(
-                    CombatantAbilityNames::Heal,
-                    CombatantAbility::new(&CombatantAbilityNames::Heal),
-                );
-            }
-            CombatantClass::Monster => {}
-        }
-
         let mut character = Character {
             name_of_controlling_user,
             entity_properties: EntityProperties {
-                id,
+                id: game.id_generator.get_next_entity_id(),
                 name: name.to_owned(),
             },
-            combatant_properties: CombatantProperties::new(combatant_class, abilities),
+            combatant_properties: CombatantProperties::new(&combatant_class, HashMap::new()),
             inventory: CharacterInventory::new(),
             unspent_ability_points: 1,
             actions_taken: 0,
         };
 
-        character
-            .combatant_properties
-            .inherent_attributes
-            .insert(CombatAttributes::Damage, 4);
+        character.combatant_properties.abilities.insert(
+            CombatantAbilityNames::Attack,
+            CombatantAbility::new(&CombatantAbilityNames::Attack),
+        );
+
+        match combatant_class {
+            CombatantClass::Mage => {}
+            CombatantClass::Rogue => {}
+            CombatantClass::Warrior => outfit_new_warrior(game, &mut character),
+            CombatantClass::Monster => {}
+        }
 
         character
     }

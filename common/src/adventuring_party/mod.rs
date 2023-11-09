@@ -54,22 +54,22 @@ impl AdventuringParty {
         }
     }
 
-    pub fn add_player_character(
-        &mut self,
-        id: u32,
-        combatant_class: CombatantClass,
-        name: &str,
-        name_of_controlling_user: String,
-    ) -> Result<(), AppError> {
-        if self.characters.len() >= MAX_PARTY_SIZE.into() {
-            return Err(AppError {
-                error_type: crate::errors::AppErrorTypes::InvalidInput,
-                message: error_messages::PARTY_FULL.to_string(),
-            });
-        }
-        let new_character = Character::new(id, name, combatant_class, name_of_controlling_user);
-        self.characters
-            .insert(new_character.entity_properties.id, new_character);
-        Ok(())
-    }
+    // pub fn add_player_character(
+    //     &mut self,
+    //     id: u32,
+    //     combatant_class: CombatantClass,
+    //     name: &str,
+    //     name_of_controlling_user: String,
+    // ) -> Result<(), AppError> {
+    //     if self.characters.len() >= MAX_PARTY_SIZE.into() {
+    //         return Err(AppError {
+    //             error_type: crate::errors::AppErrorTypes::InvalidInput,
+    //             message: error_messages::PARTY_FULL.to_string(),
+    //         });
+    //     }
+    //     let new_character = Character::new(id, name, combatant_class, name_of_controlling_user);
+    //     self.characters
+    //         .insert(new_character.entity_properties.id, new_character);
+    //     Ok(())
+    // }
 }

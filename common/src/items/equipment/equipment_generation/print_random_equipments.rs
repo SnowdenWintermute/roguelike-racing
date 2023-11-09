@@ -1,6 +1,10 @@
-use crate::{app_consts::DEEPEST_FLOOR, items::Item};
+use crate::{
+    app_consts::DEEPEST_FLOOR,
+    game::RoguelikeRacerGame,
+    items::{equipment::equipment_generation::name_equipment::name_equipment, Item},
+};
 
-pub fn print_random_equipments() {
+pub fn print_random_equipments(game: &mut RoguelikeRacerGame) {
     for i in 1..=DEEPEST_FLOOR {
         for _ in 0..=5 {
             let level = i;

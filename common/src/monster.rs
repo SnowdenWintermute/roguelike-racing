@@ -37,7 +37,10 @@ impl Monster {
                 id: id_generator.get_next_entity_id(),
                 name: "some monster name".to_string(),
             },
-            combatant_properties: CombatantProperties::new(CombatantClass::Monster, HashMap::new()),
+            combatant_properties: CombatantProperties::new(
+                &CombatantClass::Monster,
+                HashMap::new(),
+            ),
         }
     }
 }

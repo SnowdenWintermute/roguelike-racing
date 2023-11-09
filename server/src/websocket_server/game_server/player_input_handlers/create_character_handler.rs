@@ -31,10 +31,9 @@ impl GameServer {
             error_type: common::errors::AppErrorTypes::ServerError,
             message: common::app_consts::error_messages::MISSING_PARTY_REFERENCE.to_string(),
         })?;
-        let party = get_mut_party(game, party_id)?;
 
-        party.add_player_character(
-            next_entity_id,
+        game.add_character_to_adventuring_party(
+            party_id,
             character_creation.combatant_class.clone(),
             &character_creation.character_name,
             username.clone(),

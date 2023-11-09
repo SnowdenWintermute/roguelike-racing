@@ -87,11 +87,11 @@ pub struct CombatantProperties {
 
 impl CombatantProperties {
     pub fn new(
-        combatant_class: CombatantClass,
+        combatant_class: &CombatantClass,
         abilities: HashMap<CombatantAbilityNames, CombatantAbility>,
     ) -> CombatantProperties {
         CombatantProperties {
-            combatant_class,
+            combatant_class: combatant_class.clone(),
             inherent_attributes: HashMap::new(),
             hit_points: MaxAndCurrent::new(10, 10),
             mana: MaxAndCurrent::new(10, 10),

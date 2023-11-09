@@ -4,16 +4,11 @@ pub mod items_by_level;
 use self::consumables::ConsumableProperties;
 use self::equipment::equipment_generation::generate_equipment_properties_from_base_item;
 use self::equipment::EquipmentProperties;
-use crate::combatants::abilities::TargetingScheme;
-use crate::combatants::abilities::ValidTargets;
 use crate::game::id_generator::IdGenerator;
 use crate::primatives::EntityProperties;
-use crate::primatives::MaxAndCurrent;
 use rand::prelude::*;
 use serde::Deserialize;
 use serde::Serialize;
-use std::collections::HashMap;
-use strum_macros::EnumIter;
 mod generate_consumable_properties;
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize, Eq)]

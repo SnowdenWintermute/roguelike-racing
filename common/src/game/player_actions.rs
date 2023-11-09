@@ -6,8 +6,6 @@ use crate::game::player_input_handlers::select_consumable;
 use crate::game::player_input_handlers::use_selected_consumable;
 use crate::packets::client_to_server::PlayerInputRequest;
 use crate::packets::client_to_server::PlayerInputs;
-use serde::Deserialize;
-use serde::Serialize;
 
 impl RoguelikeRacerGame {
     pub fn process_player_input(

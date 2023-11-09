@@ -2,14 +2,11 @@ use super::EquipmentBlueprint;
 use crate::items::equipment::{
     affixes::{PrefixTypes, SuffixTypes},
     armor_properties::ArmorProperties,
-    equipment_generation::{
-        equipment_generation_templates::{
-            head_gear_generation_templates::HEAD_GEAR_GENERATION_TEMPLATES,
-            head_gear_possible_affixes::{
-                HEAD_GEAR_POSSIBLE_PREFIXES_AND_TIERS, HEAD_GEAR_POSSIBLE_SUFFIXES_AND_TIERS,
-            },
+    equipment_generation::equipment_generation_templates::{
+        head_gear_generation_templates::HEAD_GEAR_GENERATION_TEMPLATES,
+        head_gear_possible_affixes::{
+            HEAD_GEAR_POSSIBLE_PREFIXES_AND_TIERS, HEAD_GEAR_POSSIBLE_SUFFIXES_AND_TIERS,
         },
-        generate_base_equipment::BaseEquipment,
     },
     head_gears::HeadGears,
     EquipmentTypes,

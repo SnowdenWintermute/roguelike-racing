@@ -1,7 +1,3 @@
-use std::collections::HashMap;
-
-use rand::Rng;
-
 use super::EquipmentBlueprint;
 use crate::{
     app_consts::DEEPEST_FLOOR,
@@ -18,8 +14,10 @@ use crate::{
     },
     primatives::Range,
 };
+use rand::Rng;
+use std::collections::HashMap;
 
-pub fn jewelry_blueprint_from_base_item<'a>(base_item: Jewelries) -> EquipmentBlueprint<'a> {
+pub fn jewelry_blueprint_from_base_item<'a>(_base_item: Jewelries) -> EquipmentBlueprint<'a> {
     let template_properties = EquipmentGenerationTemplateProperties {
         level_range: Range::new(1, DEEPEST_FLOOR),
         max_durability: None,

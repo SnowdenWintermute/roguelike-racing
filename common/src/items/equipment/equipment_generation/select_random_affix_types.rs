@@ -18,7 +18,7 @@ pub fn select_random_affix_types<T: Clone + PartialEq>(
             .retain(|affix_and_tier| !exclusions.contains(&affix_and_tier.0));
     }
 
-    for i in 0..num_affixes {
+    for _i in 0..num_affixes {
         // this shouldn't happen if we don't allow items with a higher number of prefixes than the
         // number of prefix types, but just in case we'll exit early
         if remaining_affixes_with_tiers.len() < 1 {

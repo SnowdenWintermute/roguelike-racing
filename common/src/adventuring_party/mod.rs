@@ -5,15 +5,10 @@ use crate::combatants::CombatantClass;
 use crate::dungeon_rooms::DungeonRoom;
 use crate::dungeon_rooms::DungeonRoomTypes;
 use crate::errors::AppError;
-use crate::game::getters::get_mut_player;
-use crate::game::id_generator::IdGenerator;
-use crate::game::RoguelikeRacerPlayer;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
 use std::collections::HashSet;
-use std::time::Instant;
-use std::time::SystemTime;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct RoomsExplored {
@@ -73,7 +68,6 @@ impl AdventuringParty {
             });
         }
         let new_character = Character::new(id, name, combatant_class, name_of_controlling_user);
-        let new_character_id = new_character.entity_properties.id;
         self.characters
             .insert(new_character.entity_properties.id, new_character);
         Ok(())

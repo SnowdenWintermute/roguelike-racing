@@ -1,3 +1,4 @@
+use super::EquipmentBlueprint;
 use crate::items::equipment::{
     affixes::{PrefixTypes, SuffixTypes},
     equipment_generation::{
@@ -14,8 +15,6 @@ use crate::items::equipment::{
     weapon_properties::WeaponProperties,
     EquipmentTypes,
 };
-
-use super::EquipmentBlueprint;
 
 pub fn two_handed_melee_weapon_blueprint_from_base_item<'a>(
     base_item: TwoHandedMeleeWeapons,

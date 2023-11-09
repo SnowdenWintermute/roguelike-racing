@@ -1,6 +1,4 @@
-use std::convert::Infallible;
 use std::fmt;
-use std::io::Write;
 use std::io::{self};
 
 #[derive(Debug)]
@@ -59,7 +57,7 @@ impl From<io::Error> for AppError {
 }
 
 impl From<serde_cbor::Error> for AppError {
-    fn from(error: serde_cbor::Error) -> Self {
+    fn from(_error: serde_cbor::Error) -> Self {
         AppError {
             error_type: AppErrorTypes::ServerError,
             message: "Error serializing with serde_cbor".to_string(),

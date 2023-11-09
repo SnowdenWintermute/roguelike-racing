@@ -3,14 +3,11 @@ use crate::items::equipment::{
     affixes::{PrefixTypes, SuffixTypes},
     armor_properties::ArmorProperties,
     body_armors::BodyArmors,
-    equipment_generation::{
-        equipment_generation_templates::{
-            body_armor_generation_templates::BODY_ARMOR_GENERATION_TEMPLATES,
-            body_armor_possible_affixes::{
-                BODY_ARMOR_POSSIBLE_PREFIXES_AND_TIERS, BODY_ARMOR_POSSIBLE_SUFFIXES_AND_TIERS,
-            },
+    equipment_generation::equipment_generation_templates::{
+        body_armor_generation_templates::BODY_ARMOR_GENERATION_TEMPLATES,
+        body_armor_possible_affixes::{
+            BODY_ARMOR_POSSIBLE_PREFIXES_AND_TIERS, BODY_ARMOR_POSSIBLE_SUFFIXES_AND_TIERS,
         },
-        generate_base_equipment::BaseEquipment,
     },
     EquipmentTypes,
 };

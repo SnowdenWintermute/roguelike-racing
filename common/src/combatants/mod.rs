@@ -112,7 +112,7 @@ impl CombatantProperties {
 
         add_attributes_to_accumulator(&self.inherent_attributes, &mut total_attributes);
 
-        for (slot, item) in self.equipment.clone() {
+        for (_slot, item) in self.equipment.clone() {
             match item.item_properties {
                 crate::items::ItemProperties::Consumable(_) => (),
                 crate::items::ItemProperties::Equipment(equipment) => {

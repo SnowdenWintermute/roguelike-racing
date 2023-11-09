@@ -1,5 +1,6 @@
 use serde::Deserialize;
 use serde::Serialize;
+use std::fmt::Display;
 use strum_macros::EnumIter;
 
 #[derive(Serialize, Deserialize, Eq, PartialEq, Clone, Debug, Default)]
@@ -20,4 +21,14 @@ pub enum ShieldSizes {
     Small,
     Medium,
     Large,
+}
+
+impl Display for ShieldSizes {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ShieldSizes::Small => write!(f, "Small"),
+            ShieldSizes::Medium => write!(f, "Medium"),
+            ShieldSizes::Large => write!(f, "Large"),
+        }
+    }
 }

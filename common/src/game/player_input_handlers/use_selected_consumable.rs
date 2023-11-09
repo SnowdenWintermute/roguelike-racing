@@ -22,7 +22,7 @@ pub fn use_selected_consumable(
             message: "Tried to use the selected item but no item was selected".to_string(),
         })?;
 
-    let selected_consumable = player_character
+    let _selected_consumable = player_character
         .inventory
         .items
         .get(selected_item_slot as usize)

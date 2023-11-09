@@ -28,7 +28,7 @@ fn tier_if_suffix_allowed(suffix_type: &SuffixTypes) -> Option<u8> {
         SuffixTypes::Hp => Some(5),
         SuffixTypes::Focus => Some(5),
         SuffixTypes::Damage => None,
-        SuffixTypes::Durability => Some(5),
+        SuffixTypes::Durability => None,
     }
 }
 

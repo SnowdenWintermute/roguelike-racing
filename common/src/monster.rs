@@ -3,7 +3,6 @@ use crate::combatants::CombatantClass;
 use crate::combatants::CombatantProperties;
 use crate::game::id_generator::IdGenerator;
 use crate::primatives::EntityProperties;
-use crate::primatives::MaxAndCurrent;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;

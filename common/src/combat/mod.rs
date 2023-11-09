@@ -39,12 +39,12 @@ pub struct CombatEvent {
 impl CombatantProperties {
     pub fn process_combat_action(
         &self,
-        perpetrator_id: u32,
-        target_ids: Vec<u32>,
-        combat_action: CombatAction,
-        opponent_combatant_properties: CombatantProperties,
+        // perpetrator_id: u32,
+        // target_ids: Vec<u32>,
+        // combat_action: CombatAction,
+        // opponent_combatant_properties: CombatantProperties,
     ) -> Result<Vec<CombatEvent>, AppError> {
-        let mut combat_events: Vec<CombatEvent> = vec![];
+        let combat_events: Vec<CombatEvent> = vec![];
         //
         Ok(combat_events)
     }

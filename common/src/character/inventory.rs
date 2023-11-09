@@ -2,7 +2,6 @@ use crate::app_consts::CHARACTER_INVENTORY_DEFAULT_CAPACITY;
 use crate::items::Item;
 use serde::Deserialize;
 use serde::Serialize;
-use std::collections::HashMap;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct CharacterInventory {

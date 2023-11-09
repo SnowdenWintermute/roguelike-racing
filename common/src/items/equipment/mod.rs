@@ -1,6 +1,7 @@
 pub mod affixes;
 pub mod armor_properties;
 pub mod body_armors;
+mod display_equipment;
 pub mod equipment_generation;
 pub mod head_gears;
 pub mod jewelries;
@@ -22,7 +23,6 @@ use self::two_handed_ranged_weapons::TwoHandedRangedWeapons;
 use self::weapon_properties::WeaponProperties;
 use crate::combatants::CombatAttributes;
 use crate::primatives::MaxAndCurrent;
-use crate::primatives::Range;
 use core::fmt;
 use serde::Deserialize;
 use serde::Serialize;
@@ -52,29 +52,6 @@ pub enum EquipmentTypes {
     Shield(Shields, ShieldProperties),
 }
 
-impl fmt::Display for EquipmentTypes {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            EquipmentTypes::BodyArmor(base_item, properties) => {
-                write!(f, "{} ({})", base_item, properties.armor_category)
-            }
-            EquipmentTypes::HeadGear(base_item, properties) => {
-                write!(f, "{}, ({})", base_item, properties.armor_category)
-            }
-            EquipmentTypes::Ring => write!(f, ""),
-            EquipmentTypes::Amulet => write!(f, ""),
-            EquipmentTypes::OneHandedMeleeWeapon(base_item, properties) => {
-                write!(f, "{base_item} {:?}", properties)
-            }
-            EquipmentTypes::TwoHandedMeleeWeapon(..) => write!(f, ""),
-            EquipmentTypes::TwoHandedRangedWeapon(..) => write!(f, ""),
-            EquipmentTypes::Shield(base_item, properties) => {
-                write!(f, "{base_item}, {:?}", properties)
-            }
-        }
-    }
-}
-
 #[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq)]
 pub enum EquipmentTraits {
     LifeStealPercentage(u8),
@@ -82,6 +59,26 @@ pub enum EquipmentTraits {
     ArmorClassPercentage(u8),
     DamagePercentage(u8),
     RandomDamageTypeSelection,
+}
+
+impl fmt::Display for EquipmentTraits {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            EquipmentTraits::LifeStealPercentage(number) => {
+                write!(f, "Life steal percentage: {}", number)
+            }
+            EquipmentTraits::DurabilityBonus(number) => write!(f, "Durability bonus: {}", number),
+            EquipmentTraits::ArmorClassPercentage(number) => {
+                write!(f, "Bonus armor class percentage: {}", number)
+            }
+            EquipmentTraits::DamagePercentage(number) => {
+                write!(f, "Bonus damage percentage: {}", number)
+            }
+            EquipmentTraits::RandomDamageTypeSelection => {
+                write!(f, "Damage classification selected randomly")
+            }
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]

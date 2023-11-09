@@ -1,18 +1,13 @@
 use crate::adventuring_party::AdventuringParty;
-use crate::app_consts::error_messages::PLAYER_NOT_FOUND;
-use crate::app_consts::error_messages::{self};
 use crate::app_consts::DEEPEST_FLOOR;
 use crate::character::Character;
 use crate::errors::AppError;
 use crate::game::id_generator::IdGenerator;
-use crate::items::equipment::affixes::Affix;
 use crate::items::Item;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
 use std::collections::HashSet;
-use std::hash::Hash;
-use std::time::Instant;
 use std::time::SystemTime;
 use std::time::UNIX_EPOCH;
 
@@ -65,56 +60,11 @@ impl RoguelikeRacerGame {
             id_generator: IdGenerator::new(),
         };
 
-        for i in 1..=DEEPEST_FLOOR {
+        for _i in 1..=DEEPEST_FLOOR {
             for _ in 0..5 {
                 let level = DEEPEST_FLOOR;
                 let item = Item::generate(&mut game.id_generator, level);
-                match item.item_properties {
-                    crate::items::ItemProperties::Consumable(_) => (),
-                    crate::items::ItemProperties::Equipment(equipment_properties) => {
-                        println!("level {}:  {}", level, equipment_properties.equipment_type);
-                        // if let Some(base_ac) = equipment_properties.base_ac {
-                        //     println!("Base AC: {}", base_ac)
-                        // }
-                        // if let Some(base_damage) = equipment_properties.base_damage {
-                        //     println!("Base Damage: {:?}", base_damage)
-                        // }
-                        if let Some(durability) = equipment_properties.durability {
-                            println!("Durability: {}/{}", durability.current, durability.max)
-                        }
-                        for affix in equipment_properties.affixes {
-                            match affix {
-                                Affix::Prefix(prefix_type, tier) => {
-                                    println!("Prefix: {:?} Tier: {}", prefix_type, tier)
-                                }
-                                Affix::Suffix(suffix_type, tier) => {
-                                    println!("Suffix: {:?} Tier: {}", suffix_type, tier)
-                                }
-                            }
-                        }
-                        if equipment_properties.attributes.len() > 0 {
-                            for (attribute, value) in equipment_properties.attributes {
-                                println!("{:?}:{}", attribute, value)
-                            }
-                        }
-                        if equipment_properties.requirements.len() > 0 {
-                            println!("Requirements: ");
-                            for (attribute, value) in equipment_properties.requirements {
-                                println!("{:?}:{}", attribute, value)
-                            }
-                        }
-                        if let Some(traits) = equipment_properties.traits {
-                            for item in traits {
-                                println!("{:?}", item);
-                            }
-                        }
-                        println!("")
-                        // println!(
-                        //     "level {} generated {:?} {:?}",
-                        //     i, equipment_properties.affixes, equipment_properties.attributes
-                        // );
-                    }
-                }
+                println!("{}", &item);
             }
         }
 
@@ -122,7 +72,7 @@ impl RoguelikeRacerGame {
     }
 
     pub fn get_number_of_players(&self) -> u8 {
-        let mut number_of_players = self.players.len();
+        let number_of_players = self.players.len();
         number_of_players as u8
     }
 

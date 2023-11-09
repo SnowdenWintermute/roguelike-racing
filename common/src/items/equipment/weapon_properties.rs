@@ -2,6 +2,7 @@ use crate::primatives::Range;
 use core::fmt;
 use serde::Deserialize;
 use serde::Serialize;
+use std::fmt::Display;
 use strum_macros::EnumIter;
 
 #[derive(Serialize, Deserialize, Eq, PartialEq, Clone, Debug, Default)]
@@ -32,6 +33,16 @@ pub enum DamageClassifications {
 impl Default for DamageClassifications {
     fn default() -> DamageClassifications {
         DamageClassifications::Direct(DamageTypes::Pure)
+    }
+}
+
+impl Display for DamageClassifications {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            DamageClassifications::Direct(damage_type) => write!(f, "direct/{damage_type}"),
+            DamageClassifications::Physical(damage_type) => write!(f, "physical/{damage_type}"),
+            DamageClassifications::Magical(damage_type) => write!(f, "magical/{damage_type}"),
+        }
     }
 }
 

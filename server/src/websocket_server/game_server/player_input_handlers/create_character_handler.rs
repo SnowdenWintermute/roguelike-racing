@@ -1,14 +1,13 @@
-use std::collections::HashSet;
-
 use crate::websocket_server::game_server::{
     getters::{get_mut_game, get_user},
     GameServer,
 };
 use common::{
     errors::AppError,
-    game::getters::{get_mut_party, get_mut_player},
+    game::getters::{get_mut_character, get_mut_player},
     packets::{client_to_server::CharacterCreation, server_to_client::GameServerUpdatePackets},
 };
+use std::collections::HashSet;
 
 impl GameServer {
     pub fn create_character_handler(
@@ -32,7 +31,7 @@ impl GameServer {
             message: common::app_consts::error_messages::MISSING_PARTY_REFERENCE.to_string(),
         })?;
 
-        game.add_character_to_adventuring_party(
+        let new_character_id = game.add_character_to_adventuring_party(
             party_id,
             character_creation.combatant_class.clone(),
             &character_creation.character_name,
@@ -51,16 +50,16 @@ impl GameServer {
             }
         }
 
-        println!("{:#?}", game);
+        let character = get_mut_character(game, party_id, new_character_id)?;
+        let cloned_character = character.clone();
+
         self.emit_packet(
             &game_name,
             &GameServerUpdatePackets::CharacterCreation(
                 common::packets::server_to_client::NewCharacterInParty {
                     party_id,
                     username,
-                    character_id: next_entity_id,
-                    character_name: character_creation.character_name.clone(),
-                    combatant_class: character_creation.combatant_class,
+                    character: cloned_character,
                 },
             ),
             None,

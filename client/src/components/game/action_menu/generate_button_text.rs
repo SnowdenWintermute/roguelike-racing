@@ -1,6 +1,6 @@
 use super::available_actions::GameActions;
 use crate::store::game_store::GameStore;
-use common::{game::getters::get_party, items::ItemCategories};
+use common::game::getters::get_party;
 use std::rc::Rc;
 
 pub fn generate_button_text(action: &GameActions, game_state: Rc<GameStore>) -> String {
@@ -51,10 +51,9 @@ fn determine_use_item_text(id: &u32, game_state: Rc<GameStore>) -> &str {
 
     for item in &character.inventory.items {
         if item.entity_properties.id == *id {
-            if item.item_category == ItemCategories::Equipment {
-                return "Equip";
-            } else {
-                return "Use";
+            match item.item_properties {
+                common::items::ItemProperties::Consumable(_) => return "Use",
+                common::items::ItemProperties::Equipment(_) => return "Equip",
             }
         }
     }
@@ -80,9 +79,7 @@ fn determine_select_item_text(id: &u32, game_state: Rc<GameStore>) -> String {
 
     for item in &character.inventory.items {
         if item.entity_properties.id == *id {
-            if item.item_category == ItemCategories::Equipment {
-                return item.entity_properties.name.clone();
-            }
+            return item.entity_properties.name.clone();
         }
     }
     "No item found".to_string()

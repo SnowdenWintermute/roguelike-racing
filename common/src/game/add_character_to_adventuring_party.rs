@@ -13,7 +13,7 @@ impl RoguelikeRacerGame {
         combatant_class: CombatantClass,
         name: &str,
         name_of_controlling_user: String,
-    ) -> Result<(), AppError> {
+    ) -> Result<u32, AppError> {
         let party = get_mut_party(self, party_id)?;
 
         if party.characters.len() >= MAX_PARTY_SIZE.into() {
@@ -24,11 +24,12 @@ impl RoguelikeRacerGame {
         }
 
         let new_character = Character::new(self, name, combatant_class, name_of_controlling_user);
+        let character_id = new_character.entity_properties.id;
 
         let party = get_mut_party(self, party_id)?;
         party
             .characters
             .insert(new_character.entity_properties.id, new_character);
-        Ok(())
+        Ok(character_id)
     }
 }

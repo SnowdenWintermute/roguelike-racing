@@ -1,10 +1,10 @@
-use crate::adventuring_party::AdventuringParty;
-use crate::app_consts::error_messages;
-use crate::errors::AppError;
-use crate::errors::AppErrorTypes;
-
 use super::RoguelikeRacerGame;
 use super::RoguelikeRacerPlayer;
+use crate::adventuring_party::AdventuringParty;
+use crate::app_consts::error_messages;
+use crate::character::Character;
+use crate::errors::AppError;
+use crate::errors::AppErrorTypes;
 
 pub fn get_mut_player<'a>(
     game: &'a mut RoguelikeRacerGame,
@@ -43,4 +43,20 @@ pub fn get_party<'a>(
             message: error_messages::PARTY_NOT_FOUND.to_string(),
         })?;
     Ok(party)
+}
+
+pub fn get_mut_character<'a>(
+    game: &'a mut RoguelikeRacerGame,
+    party_id: u32,
+    character_id: u32,
+) -> Result<&'a mut Character, AppError> {
+    let party = get_mut_party(game, party_id)?;
+    let character = party
+        .characters
+        .get_mut(&character_id)
+        .ok_or_else(|| AppError {
+            error_type: crate::errors::AppErrorTypes::ServerError,
+            message: error_messages::CHARACTER_NOT_FOUND.to_string(),
+        })?;
+    Ok(character)
 }

@@ -1,10 +1,6 @@
-use crate::app_consts::error_messages;
-use crate::app_consts::MAX_PARTY_SIZE;
 use crate::character::Character;
-use crate::combatants::CombatantClass;
 use crate::dungeon_rooms::DungeonRoom;
 use crate::dungeon_rooms::DungeonRoomTypes;
-use crate::errors::AppError;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
@@ -53,23 +49,4 @@ impl AdventuringParty {
             time_of_escape: None,
         }
     }
-
-    // pub fn add_player_character(
-    //     &mut self,
-    //     id: u32,
-    //     combatant_class: CombatantClass,
-    //     name: &str,
-    //     name_of_controlling_user: String,
-    // ) -> Result<(), AppError> {
-    //     if self.characters.len() >= MAX_PARTY_SIZE.into() {
-    //         return Err(AppError {
-    //             error_type: crate::errors::AppErrorTypes::InvalidInput,
-    //             message: error_messages::PARTY_FULL.to_string(),
-    //         });
-    //     }
-    //     let new_character = Character::new(id, name, combatant_class, name_of_controlling_user);
-    //     self.characters
-    //         .insert(new_character.entity_properties.id, new_character);
-    //     Ok(())
-    // }
 }

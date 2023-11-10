@@ -1,3 +1,4 @@
+use crate::character::Character;
 use crate::combatants::CombatantClass;
 use crate::game::RoguelikeRacerGame;
 use serde::Deserialize;
@@ -91,10 +92,8 @@ pub struct PlayerRemovedFromGame {
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct NewCharacterInParty {
     pub party_id: u32,
+    pub character: Character,
     pub username: String,
-    pub character_id: u32,
-    pub character_name: String,
-    pub combatant_class: CombatantClass,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]

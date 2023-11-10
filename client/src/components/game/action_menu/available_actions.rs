@@ -71,6 +71,7 @@ impl MenuTypes {
                     menu_items.push(GameActions::ToggleInventoryOpen);
                     if let Some(item_ids) = &item_ids_in_inventory {
                         for id in item_ids {
+                            log!(format!("item id: {}", id));
                             menu_items.push(GameActions::SelectItem(*id))
                         }
                     }

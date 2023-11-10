@@ -7,7 +7,6 @@ use self::equipment::equipment_generation::name_equipment::name_equipment;
 use self::equipment::EquipmentProperties;
 use crate::game::id_generator::IdGenerator;
 use crate::primatives::EntityProperties;
-use rand::prelude::*;
 use serde::Deserialize;
 use serde::Serialize;
 mod generate_consumable_properties;
@@ -29,15 +28,6 @@ pub struct Item {
 
 impl Item {
     pub fn generate(id_generator: &mut IdGenerator, level: u8) -> Item {
-        // let mut rng = rand::thread_rng();
-        // let random_number = rng.gen_range(1..100);
-
-        // let item_properties = match item_category {
-        //     // ItemCategories::Equipment => Item::generate_equipment_properties(level),
-        //     ItemCategories::Consumable => Item::generate_consumable_properties(level),
-        //     ItemCategories::Equipment => (),
-        // };
-        //
         let equipment_properties = generate_equipment_properties_from_base_item(level);
         let item_name = name_equipment(&equipment_properties);
 

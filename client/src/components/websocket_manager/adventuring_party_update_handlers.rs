@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 use crate::store::game_store::GameStore;
 use common::{
     app_consts::error_messages,
@@ -10,6 +8,7 @@ use common::{
         PlayerCharacterDeletion,
     },
 };
+use std::collections::HashSet;
 
 pub fn handle_adventuring_party_created(
     game_state: &mut GameStore,
@@ -54,22 +53,21 @@ pub fn handle_character_creation(
         message: "Client error".to_string(),
     })?;
     let party = get_mut_party(game, character_creation.party_id)?;
-    party.add_player_character(
-        character_creation.character_id,
-        character_creation.combatant_class.clone(),
-        &character_creation.character_name,
-        character_creation.username.clone(),
-    )?;
+    let character_id = character_creation.character.entity_properties.id;
+    party.characters.insert(
+        character_creation.character.entity_properties.id,
+        character_creation.character,
+    );
 
     let player = get_mut_player(game, character_creation.username.clone())?;
     match &mut player.character_ids {
         None => {
             let mut new_ids = HashSet::new();
-            new_ids.insert(character_creation.character_id);
+            new_ids.insert(character_id);
             player.character_ids = Some(new_ids);
         }
         Some(ids) => {
-            ids.insert(character_creation.character_id);
+            ids.insert(character_id);
         }
     }
 

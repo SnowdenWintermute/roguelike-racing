@@ -123,11 +123,23 @@ pub fn generate_equipment_combat_attributes(
                         let max = tier * 1.0;
                         let attribute_value =
                             rand::thread_rng().gen_range(min.round() as u16..=max.round() as u16);
-                        attributes.insert(CombatAttributes::Strength, attribute_value);
-                        attributes.insert(CombatAttributes::Dexterity, attribute_value);
-                        attributes.insert(CombatAttributes::Intelligence, attribute_value);
-                        attributes.insert(CombatAttributes::Vitality, attribute_value);
-                        attributes.insert(CombatAttributes::Resilience, attribute_value);
+                        let base_attributes = vec![
+                            CombatAttributes::Strength,
+                            CombatAttributes::Dexterity,
+                            CombatAttributes::Intelligence,
+                            CombatAttributes::Vitality,
+                            CombatAttributes::Resilience,
+                        ];
+                        for attribute in base_attributes {
+                            // if some attribute already exists in the hashmap, add it's value to
+                            // the roll before overwriting
+                            let mut existing_attribute = 0;
+                            if let Some(curr_value) = attributes.get(&attribute) {
+                                existing_attribute += curr_value;
+                            }
+                            attributes
+                                .insert(attribute.clone(), attribute_value + existing_attribute);
+                        }
                     }
                     SuffixTypes::Hp => {
                         attribute_templates.push(AttributeValueCreationTemplate::new(
@@ -158,7 +170,13 @@ pub fn generate_equipment_combat_attributes(
         for template in attribute_templates {
             let attribute_value = rand::thread_rng()
                 .gen_range(template.min.round() as u16..=template.max.round() as u16);
-            attributes.insert(template.attribute, attribute_value);
+            let mut existing_attribute = 0;
+
+            // in case we already added some stats
+            if let Some(curr_value) = attributes.get(&template.attribute) {
+                existing_attribute += curr_value;
+            }
+            attributes.insert(template.attribute, attribute_value + existing_attribute);
         }
     }
 

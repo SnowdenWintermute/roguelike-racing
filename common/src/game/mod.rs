@@ -4,7 +4,6 @@ use crate::adventuring_party::AdventuringParty;
 use crate::character::Character;
 use crate::errors::AppError;
 use crate::game::id_generator::IdGenerator;
-use crate::items::equipment::equipment_generation::print_random_equipments::print_random_equipments;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
@@ -49,7 +48,7 @@ pub struct RoguelikeRacerGame {
 
 impl RoguelikeRacerGame {
     pub fn new(game_name: String) -> RoguelikeRacerGame {
-        let mut game = RoguelikeRacerGame {
+        let game = RoguelikeRacerGame {
             name: game_name,
             password: None,
             players: HashMap::new(),
@@ -59,7 +58,7 @@ impl RoguelikeRacerGame {
             id_generator: IdGenerator::new(),
         };
 
-        print_random_equipments(&mut game);
+        // print_random_equipments(&mut game);
         game
     }
 

@@ -12,6 +12,7 @@ use crate::items::equipment::shields::Shields;
 use crate::items::equipment::two_handed_melee_weapons::TwoHandedMeleeWeapons;
 use crate::items::equipment::two_handed_ranged_weapons::TwoHandedRangedWeapons;
 use crate::items::equipment::EquipmentTypes;
+use core::fmt::Debug;
 use core::panic;
 use rand::prelude::*;
 use strum::IntoEnumIterator;
@@ -29,9 +30,10 @@ pub enum BaseEquipment {
 
 fn choose_base_item<T>(options: Option<&Vec<T>>) -> T
 where
-    T: Clone,
+    T: Clone + Debug,
 {
     if let Some(base_items) = options {
+        println!("base items: {:#?}", base_items);
         let base_item = base_items.choose(&mut rand::thread_rng()).unwrap();
         return base_item.clone();
     } else {
@@ -43,6 +45,10 @@ pub fn generate_base_equipment(level: u8) -> BaseEquipment {
     let categories: Vec<EquipmentTypes> = EquipmentTypes::iter().collect();
     let category = categories.choose(&mut rand::thread_rng()).unwrap();
     // let category = EquipmentTypes::Shield(Shields::Buckler, ShieldProperties::default());
+    println!(
+        "generating items for level: {level} and category: {:?}",
+        category
+    );
     match category {
         EquipmentTypes::HeadGear(..) => {
             let possible_base_items = HEAD_GEARS_BY_LEVEL.get(&level);

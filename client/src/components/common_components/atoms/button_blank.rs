@@ -6,6 +6,14 @@ pub struct Props {
     pub id: String,
     #[prop_or(Callback::from(|_e:MouseEvent|()))]
     pub onclick: Callback<MouseEvent>,
+    #[prop_or(Callback::from(|_e:MouseEvent|()))]
+    pub onmouseenter: Callback<MouseEvent>,
+    #[prop_or(Callback::from(|_e:MouseEvent|()))]
+    pub onmouseleave: Callback<MouseEvent>,
+    #[prop_or(Callback::from(|_e:FocusEvent|()))]
+    pub onfocus: Callback<FocusEvent>,
+    #[prop_or(Callback::from(|_e:FocusEvent|()))]
+    pub onblur: Callback<FocusEvent>,
     #[prop_or(false)]
     pub disabled: bool,
     #[prop_or_default]
@@ -26,6 +34,10 @@ pub fn button_blank(props: &Props) -> Html {
         <button
             class={props.class.clone()}
             onclick={button_onclick}
+            onmouseenter={props.onmouseenter.clone()}
+            onmouseleave={props.onmouseleave.clone()}
+            onfocus={props.onfocus.clone()}
+            onblur={props.onblur.clone()}
             disabled={props.disabled}
             type={props.button_type.clone()}
             id={props.id.clone()}

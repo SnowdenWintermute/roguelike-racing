@@ -1,14 +1,15 @@
+mod action_menu_button;
 mod available_actions;
 mod generate_action_menu_handlers;
+pub mod generate_action_menu_hover_handlers;
 mod generate_action_menu_items;
-mod get_character_owned_item_by_id;
-use gloo_utils::window;
-use wasm_bindgen::{JsCast, UnwrapThrowExt};
 mod generate_button_text;
+mod get_character_owned_item_by_id;
+mod set_keyup_listeners;
+mod set_up_actions;
 use crate::{
-    components::{
-        common_components::atoms::button_blank::ButtonBlank,
-        game::action_menu::available_actions::GameActions,
+    components::game::action_menu::{
+        action_menu_button::ActionMenuButton, available_actions::GameActions,
     },
     store::{game_store::GameStore, websocket_store::WebsocketStore},
 };
@@ -28,13 +29,18 @@ pub fn action_menu(props: &Props) -> Html {
     let (game_state, game_dispatch) = use_store::<GameStore>();
     let (websocket_state, _) = use_store::<WebsocketStore>();
     let actions_state = use_state(|| Vec::<GameActions>::new());
+    let page = use_state(|| 1 as u8);
+    let page_size = 6;
     let handlers_state = use_state(|| Vec::new());
-    let viewing_inventory = game_state.viewing_inventory.clone();
-
+    let hover_handlers_state = use_state(|| Vec::new());
     let party = props.adventuring_party.clone();
-    let cloned_actions_state = actions_state.clone();
+
     let cloned_handlers_state = handlers_state.clone();
+    let cloned_hover_handlers_state = hover_handlers_state.clone();
     let cloned_game_state = game_state.clone();
+    let cloned_game_dispatch = game_dispatch.clone();
+    let cloned_actions_state = actions_state.clone();
+    let cloned_websocket_state = websocket_state.clone();
     use_effect_with(
         (
             game_state.focused_character_id,
@@ -46,20 +52,15 @@ pub fn action_menu(props: &Props) -> Html {
             party.current_room.monsters.is_some(),
         ),
         move |_| {
-            let re_cloned_game_state = cloned_game_state.clone();
-            let new_actions = generate_action_menu_items::generate_action_menu_items(
-                re_cloned_game_state,
-                &party,
-            );
-            cloned_actions_state.set(new_actions.clone());
-
-            let new_handlers = generate_action_menu_handlers::generate_action_menu_handlers(
-                new_actions,
-                game_dispatch,
+            set_up_actions::set_up_actions(
+                cloned_websocket_state,
                 cloned_game_state,
-                websocket_state,
-            );
-            cloned_handlers_state.set(new_handlers);
+                cloned_game_dispatch,
+                cloned_actions_state,
+                cloned_handlers_state,
+                cloned_hover_handlers_state,
+                party,
+            )
         },
     );
 
@@ -67,42 +68,50 @@ pub fn action_menu(props: &Props) -> Html {
     let cloned_handlers = handlers_state.clone();
     let num_actions = actions_state.len();
     use_effect_with(num_actions, move |_| {
-        let listener = EventListener::new(&window(), "keyup", move |event| {
-            let event = event.dyn_ref::<web_sys::KeyboardEvent>().unwrap_throw();
-            for i in 0..num_actions {
-                let key = (i + 1).to_string();
-                if event.key() == key {
-                    cloned_handlers[i]()
-                }
-            }
-        });
-        keyup_listener_state.set(Some(listener));
+        set_keyup_listeners::set_keyup_listeners(cloned_handlers, keyup_listener_state, num_actions)
     });
 
     html!(
         <section class="w-1/3 max-w-[733px] border border-slate-400 bg-slate-700 mr-4 overflow-y-auto">
         {actions_state.deref().iter().enumerate().map(|(i, action)| {
-        let cloned_game_state = game_state.clone();
-        let button_text = generate_button_text::generate_button_text(&action, cloned_game_state);
-        let cloned_handlers = handlers_state.clone();
-        let handler = Callback::from(move |_| {
-            cloned_handlers[i]()
-        });
+            // let i = *i;
+            let cloned_game_state = game_state.clone();
+            let button_text = generate_button_text::generate_button_text(&action, cloned_game_state);
 
-          html!(
-              <ButtonBlank class="h-10 w-full border-b border-slate-400 flex items-center hover:bg-slate-950"
-              onclick={handler}
-              >
-                  <span class="h-full w-10 border-r border-slate-400 flex justify-center items-center mr-2">{i+1}</span> {button_text}
-              </ButtonBlank>
-              )
-          }).collect::<Html>() }
-        <div>{"Inventory is open: "}{if viewing_inventory {
-            "true"
-        } else {
-            "false"
-        }
-        }</div>
+            let cloned_click_handlers = handlers_state.clone();
+            let click_handler = Callback::from(move |_| {
+                cloned_click_handlers[i]()
+            });
+            let cloned_hover_handlers = hover_handlers_state.clone();
+            let mouse_enter_handler = Callback::from(move |_| {
+                cloned_hover_handlers[i]()
+            });
+            let cloned_game_dispatch = game_dispatch.clone();
+            let mouse_leave_handler = Callback::from(move |_| {
+                cloned_game_dispatch.reduce_mut(|store| store.hovered_entity = None)
+            });
+            let cloned_hover_handlers = hover_handlers_state.clone();
+            let focus_handler = Callback::from(move |_| {
+                cloned_hover_handlers[i]()
+            });
+            let cloned_game_dispatch = game_dispatch.clone();
+            let blur_handler =  Callback::from(move |_| {
+                cloned_game_dispatch.reduce_mut(|store| store.hovered_entity = None)
+            });
+
+
+              html!(
+                  <ActionMenuButton
+                    number={i+1}
+                    click_handler={click_handler}
+                    focus_handler={focus_handler}
+                    mouse_enter_handler={mouse_enter_handler}
+                    mouse_leave_handler={mouse_leave_handler}
+                    blur_handler={blur_handler}
+                    button_text={button_text}
+                  />
+                  )
+              }).collect::<Html>() }
         </section>
     )
 }

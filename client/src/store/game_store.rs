@@ -1,4 +1,3 @@
-#![allow(dead_code)]
 use common::{
     combatants::CombatantProperties, game::RoguelikeRacerGame, items::Item,
     primatives::EntityProperties,
@@ -30,4 +29,15 @@ pub struct GameStore {
     pub viewing_inventory: bool,
     pub selecting_injection_type: bool,
     pub viewing_items_on_ground: bool,
+}
+
+pub fn set_item_hovered(game_dispatch: Dispatch<GameStore>, item_option: Option<Item>) {
+    game_dispatch.reduce_mut(|store| {
+        if let Some(item) = item_option {
+            let entity_details = DetailableEntities::Item(item.clone());
+            store.hovered_entity = Some(entity_details);
+        } else {
+            store.hovered_entity = None;
+        }
+    })
 }

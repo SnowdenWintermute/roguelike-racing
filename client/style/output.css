@@ -590,6 +590,10 @@ video {
   height: 100vh;
 }
 
+.h-\[453px\] {
+  height: 453px;
+}
+
 .max-h-\[453px\] {
   max-height: 453px;
 }
@@ -628,6 +632,10 @@ video {
 
 .w-screen {
   width: 100vw;
+}
+
+.\!min-w-\[2\.5rem\] {
+  min-width: 2.5rem !important;
 }
 
 .max-w-\[733px\] {
@@ -831,6 +839,10 @@ video {
   text-align: center;
 }
 
+.align-middle {
+  vertical-align: middle;
+}
+
 .text-lg {
   font-size: 1.125rem;
   line-height: 1.75rem;
@@ -863,6 +875,10 @@ video {
 .text-zinc-300 {
   --tw-text-opacity: 1;
   color: rgb(212 212 216 / var(--tw-text-opacity));
+}
+
+.filter {
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
 .last\:mb-0:last-child {

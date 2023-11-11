@@ -27,7 +27,7 @@ pub fn paper_doll(props: &Props) -> Html {
                 </div>
                 <PaperDollSlot
                     item_option={equipment.remove(&EquipmentSlots::RightHand)}
-                    class="h-40 border border-slate-400" />
+                    class="h-40 w-full border border-slate-400" />
             </div>
             <div class="w-1/3 mr-2 ml-2" >
                 <PaperDollSlot

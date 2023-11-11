@@ -1,7 +1,7 @@
-use crate::store::game_store::{DetailableEntities, GameStore};
+use crate::store::game_store::{set_item_hovered, GameStore};
 use common::items::Item;
 use yew::prelude::*;
-use yewdux::prelude::{use_store, Dispatch};
+use yewdux::prelude::use_store;
 
 #[derive(Properties, Eq, PartialEq)]
 pub struct Props {
@@ -25,17 +25,6 @@ pub fn paper_doll_slot(props: &Props) -> Html {
                 {item_display}
             </button>
         );
-    }
-
-    fn set_item_hovered(game_dispatch: Dispatch<GameStore>, item_option: Option<Item>) {
-        game_dispatch.reduce_mut(|store| {
-            if let Some(item) = item_option {
-                let entity_details = DetailableEntities::Item(item.clone());
-                store.hovered_entity = Some(entity_details);
-            } else {
-                store.hovered_entity = None;
-            }
-        })
     }
 
     let cloned_dispatch = game_dispatch.clone();

@@ -3,7 +3,6 @@ use crate::store::game_store::GameStore;
 use common::adventuring_party::AdventuringParty;
 use common::combatants::abilities::AbilityUsableContext;
 use common::combatants::abilities::CombatantAbilityNames;
-use gloo::console::log;
 use std::rc::Rc;
 
 pub fn generate_action_menu_items(

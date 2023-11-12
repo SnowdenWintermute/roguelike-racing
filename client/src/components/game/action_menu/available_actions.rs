@@ -71,16 +71,15 @@ impl MenuTypes {
                     menu_items.push(GameActions::ToggleInventoryOpen);
                     if let Some(item_ids) = &item_ids_in_inventory {
                         for id in item_ids {
-                            log!(format!("item id: {}", id));
                             menu_items.push(GameActions::SelectItem(*id))
                         }
                     }
                 }
                 MenuTypes::ItemSelected(id) => {
+                    menu_items.push(GameActions::DeselectItem);
                     menu_items.push(GameActions::UseItem(*id));
                     menu_items.push(GameActions::ShardItem(*id));
                     menu_items.push(GameActions::DropItem(*id));
-                    menu_items.push(GameActions::DeselectItem);
                 }
                 MenuTypes::AttributePointAssignment => {
                     menu_items.push(GameActions::SetAssignAttributePointsMenuOpen(false));

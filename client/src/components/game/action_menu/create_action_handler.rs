@@ -29,11 +29,19 @@ pub fn create_action_handler<'a>(
             }),
             GameActions::DeselectItem => Box::new(move || {
                 game_dispatch.reduce_mut(|game_state| game_state.selected_item = None);
+                game_dispatch.reduce_mut(|store| {
+                    let parent_page_number = store.parent_menu_pages.pop();
+                    if let Some(page_number) = parent_page_number {
+                        store.action_menu_current_page_number = page_number;
+                    }
+                });
             }),
             GameActions::SelectItem(id) => Box::new(move || {
                 let item = get_character_owned_item_by_id(&id, game_state.clone())
                     .expect("a character should only be able to select their own items");
                 game_dispatch.reduce_mut(|store| store.selected_item = Some(item));
+                game_dispatch.reduce_mut(|store| store.parent_menu_pages.push(store.action_menu_current_page_number));
+                game_dispatch.reduce_mut(|store| store.action_menu_current_page_number = 0);
             }),
             _ => Box::new(||())
             // GameActions::OpenTreasureChest => || (),

@@ -29,6 +29,8 @@ pub struct GameStore {
     pub viewing_inventory: bool,
     pub selecting_injection_type: bool,
     pub viewing_items_on_ground: bool,
+    pub parent_menu_pages: Vec<u8>,
+    pub action_menu_current_page_number: u8,
 }
 
 pub fn set_item_hovered(game_dispatch: Dispatch<GameStore>, item_option: Option<Item>) {

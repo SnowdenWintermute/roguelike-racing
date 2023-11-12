@@ -6,7 +6,7 @@ use yewdux::prelude::Dispatch;
 pub fn create_action_mouse_leave_handler(
     action: GameActions,
     game_dispatch: Dispatch<GameStore>,
-    game_state: Rc<GameStore>,
+    _game_state: Rc<GameStore>,
 ) -> Box<dyn Fn()> {
     match action {
             GameActions::SelectItem(_id) => Box::new(move || {

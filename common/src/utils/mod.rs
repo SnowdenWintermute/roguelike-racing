@@ -22,3 +22,14 @@ pub fn generate_random_username() -> String {
     let to_return = random_name.concat();
     to_return
 }
+
+pub fn calculate_number_of_pages(page_size: usize, num_items: usize) -> usize {
+    let full_pages = num_items / page_size;
+    let remaining_items = num_items % page_size;
+
+    if remaining_items > 0 {
+        full_pages + 1
+    } else {
+        full_pages
+    }
+}

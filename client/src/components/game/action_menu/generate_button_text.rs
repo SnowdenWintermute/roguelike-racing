@@ -3,11 +3,11 @@ use crate::store::game_store::GameStore;
 use common::game::getters::get_party;
 use std::rc::Rc;
 
-pub fn generate_button_text(action: &GameActions, game_state: Rc<GameStore>) -> String {
+pub fn generate_button_text(action: GameActions, game_state: Rc<GameStore>) -> String {
     match action {
         GameActions::ToggleReadyToExplore => "Ready to explore".to_string(),
         GameActions::SetInventoryOpen(open_status) => {
-            if *open_status {
+            if open_status {
                 "Open inventory".to_string()
             } else {
                 "Close inventory".to_string()
@@ -15,10 +15,10 @@ pub fn generate_button_text(action: &GameActions, game_state: Rc<GameStore>) -> 
         }
         GameActions::ToggleInventoryOpen => "Inventory".to_string(),
         GameActions::UseAutoinjector => "Use autoinjector".to_string(),
-        GameActions::SelectItem(id) => determine_select_item_text(id, game_state),
+        GameActions::SelectItem(id) => determine_select_item_text(&id, game_state),
         GameActions::OpenTreasureChest => "Open treasure chest".to_string(),
         GameActions::TakeItem => "Pick up item".to_string(),
-        GameActions::UseItem(id) => determine_use_item_text(id, game_state).to_string(),
+        GameActions::UseItem(id) => determine_use_item_text(&id, game_state).to_string(),
         GameActions::DropItem(_) => "Drop".to_string(),
         GameActions::DeselectItem => "Cancel".to_string(),
         GameActions::ShardItem(_) => "Convert to shard".to_string(),
@@ -32,7 +32,7 @@ pub fn generate_button_text(action: &GameActions, game_state: Rc<GameStore>) -> 
     }
 }
 
-fn determine_use_item_text(id: &u32, game_state: Rc<GameStore>) -> &str {
+fn determine_use_item_text<'a>(id: &u32, game_state: Rc<GameStore>) -> &'a str {
     let party_id = game_state
         .current_party_id
         .expect("only call this fn if char is in a party");

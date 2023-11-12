@@ -6,7 +6,7 @@ use common::combatants::abilities::CombatantAbilityNames;
 use std::rc::Rc;
 
 pub fn generate_action_menu_items(
-    game_state: Rc<GameStore>,
+    game_state: &Rc<GameStore>,
     party: &AdventuringParty,
 ) -> Vec<GameActions> {
     let mut menu_items: Vec<MenuTypes> = Vec::new();
@@ -15,6 +15,7 @@ pub fn generate_action_menu_items(
     if game_state.viewing_items_on_ground {
         menu_items.push(MenuTypes::ItemsOnGround);
         new_actions = MenuTypes::get_menu(&menu_items, None, None);
+        //
     } else if game_state.selected_item.is_some() {
         let id = game_state
             .selected_item
@@ -24,6 +25,7 @@ pub fn generate_action_menu_items(
             .id;
         menu_items.push(MenuTypes::ItemSelected(id));
         new_actions = MenuTypes::get_menu(&menu_items, None, None);
+        //
     } else if game_state.viewing_inventory {
         menu_items.push(MenuTypes::InventoryOpen);
         let focused_character = party.characters.get(&game_state.focused_character_id);
@@ -34,12 +36,14 @@ pub fn generate_action_menu_items(
             }
             new_actions = MenuTypes::get_menu(&menu_items, Some(ids), None);
         }
+        //
     } else if game_state.viewing_skill_level_up_menu
         || game_state.viewing_attribute_point_assignment_menu
     {
         menu_items.push(MenuTypes::LevelUpAbilities);
         let ability_names = get_ability_menu_names(&party, game_state.focused_character_id, None);
         new_actions = MenuTypes::get_menu(&menu_items, None, Some(ability_names));
+        //
     } else if party.current_room.monsters.is_none() {
         menu_items.push(MenuTypes::OutOfCombat);
         let ability_names = get_ability_menu_names(
@@ -54,6 +58,7 @@ pub fn generate_action_menu_items(
             menu_items.push(MenuTypes::ItemsOnGround);
         }
         new_actions = MenuTypes::get_menu(&menu_items, None, Some(ability_names));
+        //
     } else {
         menu_items.push(MenuTypes::InCombat);
         let ability_names = get_ability_menu_names(

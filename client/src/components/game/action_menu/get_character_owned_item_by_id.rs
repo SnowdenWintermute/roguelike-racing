@@ -1,10 +1,10 @@
+use std::rc::Rc;
 use crate::store::game_store::GameStore;
 use common::{app_consts::error_messages, errors::AppError, game::getters::get_party, items::Item};
-use std::rc::Rc;
 
 pub fn get_character_owned_item_by_id(
     id: &u32,
-    game_state: &Rc<GameStore>,
+    game_state: Rc<GameStore>,
 ) -> Result<Item, AppError> {
     let party_id = game_state
         .current_party_id

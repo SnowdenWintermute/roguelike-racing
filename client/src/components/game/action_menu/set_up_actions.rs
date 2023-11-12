@@ -1,51 +1,109 @@
 use super::{
-    available_actions::GameActions, generate_action_menu_handlers::generate_action_menu_handlers,
-    generate_action_menu_hover_handlers::generate_action_menu_hover_handlers,
+    create_action_handler::create_action_handler,
+    create_action_mouse_enter_handler::create_action_mouse_enter_handler,
+    create_action_mouse_leave_handler::create_action_mouse_leave_handler,
     generate_action_menu_items::generate_action_menu_items,
+    generate_button_text::generate_button_text,
 };
-use crate::store::{
-    game_store::{DetailableEntities, GameStore},
-    websocket_store::WebsocketStore,
-};
+use crate::store::{game_store::GameStore, websocket_store::WebsocketStore};
 use common::adventuring_party::AdventuringParty;
 use std::rc::Rc;
 use web_sys::{FocusEvent, MouseEvent};
-use yew::{Callback, UseStateHandle};
+use yew::Callback;
 use yewdux::prelude::Dispatch;
 
+#[derive(PartialEq, Clone, Debug)]
 pub struct ActionMenuButtonProperties {
-    text: String,
-    click_handler: Callback<MouseEvent>,
-    focus_handler: Callback<FocusEvent>,
-    blur_handler: Callback<FocusEvent>,
-    mouse_enter_handler: Callback<MouseEvent>,
-    mouse_leave_handler: Callback<MouseEvent>,
-    detailed_entity: DetailableEntities,
+    pub text: String,
+    pub click_handler: Callback<MouseEvent>,
+    pub focus_handler: Callback<FocusEvent>,
+    pub blur_handler: Callback<FocusEvent>,
+    pub mouse_enter_handler: Callback<MouseEvent>,
+    pub mouse_leave_handler: Callback<MouseEvent>,
+    // pub hotkey_handler: Box<dyn Fn()>,
 }
 
-pub fn set_up_actions(
+pub fn set_up_actions<'a>(
     websocket_state: Rc<WebsocketStore>,
     game_state: Rc<GameStore>,
-    game_dispatch: Dispatch<GameStore>,
-    actions_state: UseStateHandle<Vec<GameActions>>,
-    handlers_state: UseStateHandle<Vec<Box<dyn Fn()>>>,
-    hover_handlers_state: UseStateHandle<Vec<Box<dyn Fn()>>>,
-    party: AdventuringParty,
-) {
-    let new_actions = generate_action_menu_items(game_state.clone(), &party);
-    actions_state.set(new_actions.clone());
+    game_dispatch: &'a Dispatch<GameStore>,
+    party: &AdventuringParty,
+) -> Vec<ActionMenuButtonProperties> {
+    let new_actions = generate_action_menu_items(&game_state, party);
+    let mut button_properties = Vec::new();
 
-    let new_handlers = generate_action_menu_handlers(
-        new_actions,
-        game_dispatch.clone(),
-        game_state.clone(),
-        websocket_state,
-    );
-    handlers_state.set(new_handlers);
+    for action in new_actions {
+        let cloned_websocket_state = websocket_state.clone();
+        let cloned_action = action.clone();
+        let cloned_game_state = game_state.clone();
+        let cloned_game_dispatch = game_dispatch.clone();
+        // let hotkey_handler = create_action_handler(
+        //     cloned_action.clone(),
+        //     cloned_game_dispatch.clone(),
+        //     cloned_game_state.clone(),
+        //     cloned_websocket_state.clone(),
+        // );
+        let click_handler = Callback::from(move |_| {
+            create_action_handler(
+                cloned_action.clone(),
+                cloned_game_dispatch.clone(),
+                cloned_game_state.clone(),
+                cloned_websocket_state.clone(),
+            )()
+        });
+        let cloned_action = action.clone();
+        let cloned_game_state = game_state.clone();
+        let cloned_game_dispatch = game_dispatch.clone();
+        let mouse_enter_handler = Callback::from(move |_| {
+            create_action_mouse_enter_handler(
+                cloned_action.clone(),
+                cloned_game_dispatch.clone(),
+                cloned_game_state.clone(),
+            )()
+        });
+        let cloned_action = action.clone();
+        let cloned_game_state = game_state.clone();
+        let cloned_game_dispatch = game_dispatch.clone();
+        let mouse_leave_handler = Callback::from(move |_| {
+            create_action_mouse_leave_handler(
+                cloned_action.clone(),
+                cloned_game_dispatch.clone(),
+                cloned_game_state.clone(),
+            )()
+        });
+        let cloned_action = action.clone();
+        let cloned_game_state = game_state.clone();
+        let cloned_game_dispatch = game_dispatch.clone();
+        let focus_handler = Callback::from(move |_| {
+            create_action_mouse_enter_handler(
+                cloned_action.clone(),
+                cloned_game_dispatch.clone(),
+                cloned_game_state.clone(),
+            )()
+        });
+        let cloned_action = action.clone();
+        let cloned_game_state = game_state.clone();
+        let cloned_game_dispatch = game_dispatch.clone();
+        let blur_handler = Callback::from(move |_| {
+            create_action_mouse_leave_handler(
+                cloned_action.clone(),
+                cloned_game_dispatch.clone(),
+                cloned_game_state.clone(),
+            )()
+        });
+        let cloned_game_state = game_state.clone();
+        let text = generate_button_text(action.clone(), cloned_game_state);
 
-    let new_actions = generate_action_menu_items(game_state.clone(), &party);
+        button_properties.push(ActionMenuButtonProperties {
+            text,
+            click_handler,
+            mouse_enter_handler,
+            mouse_leave_handler,
+            focus_handler,
+            blur_handler,
+            // hotkey_handler,
+        })
+    }
 
-    let new_hover_handlers =
-        generate_action_menu_hover_handlers(new_actions, game_dispatch.clone(), game_state);
-    hover_handlers_state.set(new_hover_handlers);
+    button_properties
 }

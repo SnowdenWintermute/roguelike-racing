@@ -4,11 +4,17 @@ use yew::prelude::*;
 #[derive(Properties, PartialEq)]
 pub struct Props {
     pub number: usize,
+    #[prop_or(Callback::from(|_e:MouseEvent|()))]
     pub click_handler: Callback<MouseEvent>,
+    #[prop_or(Callback::from(|_e:FocusEvent|()))]
     pub focus_handler: Callback<FocusEvent>,
+    #[prop_or(Callback::from(|_e:MouseEvent|()))]
     pub mouse_enter_handler: Callback<MouseEvent>,
+    #[prop_or(Callback::from(|_e:MouseEvent|()))]
     pub mouse_leave_handler: Callback<MouseEvent>,
+    #[prop_or(Callback::from(|_e:FocusEvent|()))]
     pub blur_handler: Callback<FocusEvent>,
+    #[prop_or(String::from(""))]
     pub button_text: String,
 }
 

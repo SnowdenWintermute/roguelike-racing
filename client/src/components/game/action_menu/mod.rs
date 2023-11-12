@@ -1,19 +1,18 @@
 mod action_menu_button;
 mod available_actions;
-mod generate_action_menu_handlers;
-pub mod generate_action_menu_hover_handlers;
+mod create_action_handler;
+mod create_action_mouse_enter_handler;
+mod create_action_mouse_leave_handler;
 mod generate_action_menu_items;
 mod generate_button_text;
 mod get_character_owned_item_by_id;
 mod set_keyup_listeners;
 mod set_up_actions;
-use crate::{
-    components::game::action_menu::{
-        action_menu_button::ActionMenuButton, available_actions::GameActions,
-    },
-    store::{game_store::GameStore, websocket_store::WebsocketStore},
-};
+use crate::components::game::action_menu::action_menu_button::ActionMenuButton;
+use crate::components::game::action_menu::set_up_actions::ActionMenuButtonProperties;
+use crate::store::{game_store::GameStore, websocket_store::WebsocketStore};
 use common::adventuring_party::AdventuringParty;
+use common::utils::calculate_number_of_pages;
 use gloo::events::EventListener;
 use std::ops::Deref;
 use yew::prelude::*;
@@ -24,23 +23,38 @@ pub struct Props {
     pub adventuring_party: AdventuringParty,
 }
 
+const PAGE_SIZE: u8 = 6;
 #[function_component(ActionMenu)]
 pub fn action_menu(props: &Props) -> Html {
     let (game_state, game_dispatch) = use_store::<GameStore>();
     let (websocket_state, _) = use_store::<WebsocketStore>();
-    let actions_state = use_state(|| Vec::<GameActions>::new());
-    let page = use_state(|| 1 as u8);
-    let page_size = 6;
-    let handlers_state = use_state(|| Vec::new());
-    let hover_handlers_state = use_state(|| Vec::new());
     let party = props.adventuring_party.clone();
+    let action_button_properties = use_state(|| Vec::<ActionMenuButtonProperties>::new());
+    let button_props_on_current_page = use_state(|| Vec::<ActionMenuButtonProperties>::new());
+    let current_page_number = use_state(|| 0 as u8);
+    let cloned_current_page_number_for_page_turn = current_page_number.clone();
 
-    let cloned_handlers_state = handlers_state.clone();
-    let cloned_hover_handlers_state = hover_handlers_state.clone();
+    let cloned_current_page_number = current_page_number.clone();
+    let cloned_action_button_properties = action_button_properties.clone();
+    let cloned_button_props_on_current_page = button_props_on_current_page.clone();
+    use_effect_with(
+        (current_page_number, action_button_properties.clone()),
+        move |_| {
+            let min_index = cloned_current_page_number.deref() * PAGE_SIZE;
+            let max_index = cloned_current_page_number.deref() * PAGE_SIZE + PAGE_SIZE - 1;
+            let filtered_actions = cloned_action_button_properties
+                .deref()
+                .iter()
+                .enumerate()
+                .filter(|(i, _)| *i as u8 >= min_index && *i as u8 <= max_index)
+                .map(|(_, item)| item.clone())
+                .collect::<Vec<ActionMenuButtonProperties>>();
+            cloned_button_props_on_current_page.set(filtered_actions);
+        },
+    );
+
+    let cloned_action_button_properties = action_button_properties.clone();
     let cloned_game_state = game_state.clone();
-    let cloned_game_dispatch = game_dispatch.clone();
-    let cloned_actions_state = actions_state.clone();
-    let cloned_websocket_state = websocket_state.clone();
     use_effect_with(
         (
             game_state.focused_character_id,
@@ -52,66 +66,66 @@ pub fn action_menu(props: &Props) -> Html {
             party.current_room.monsters.is_some(),
         ),
         move |_| {
-            set_up_actions::set_up_actions(
-                cloned_websocket_state,
+            let actions = set_up_actions::set_up_actions(
+                websocket_state.clone(),
                 cloned_game_state,
-                cloned_game_dispatch,
-                cloned_actions_state,
-                cloned_handlers_state,
-                cloned_hover_handlers_state,
-                party,
-            )
+                &game_dispatch,
+                &party,
+            );
+            cloned_action_button_properties.set(actions);
         },
     );
 
     let keyup_listener_state = use_state(|| None::<EventListener>);
-    let cloned_handlers = handlers_state.clone();
-    let num_actions = actions_state.len();
-    use_effect_with(num_actions, move |_| {
-        set_keyup_listeners::set_keyup_listeners(cloned_handlers, keyup_listener_state, num_actions)
-    });
+    let cloned_button_props_on_current_page = button_props_on_current_page.clone();
+    let cloned_button_props_on_current_page_for_effect_change =
+        button_props_on_current_page.clone();
+    use_effect_with(
+        cloned_button_props_on_current_page_for_effect_change,
+        move |_| {
+            set_keyup_listeners::set_keyup_listeners(
+                cloned_button_props_on_current_page,
+                keyup_listener_state,
+            )
+        },
+    );
 
+    let cloned_button_props_on_current_page = button_props_on_current_page.clone();
+    let cloned_action_button_properties = action_button_properties.clone();
+    let number_of_pages =
+        calculate_number_of_pages(PAGE_SIZE as usize, cloned_action_button_properties.len());
+    let next_page = Callback::from(move |_| {
+        if *cloned_current_page_number_for_page_turn.deref() as usize == number_of_pages - 1 {
+            cloned_current_page_number_for_page_turn.set(0)
+        } else {
+            cloned_current_page_number_for_page_turn
+                .set(cloned_current_page_number_for_page_turn.deref() + 1);
+        }
+    });
     html!(
         <section class="w-1/3 max-w-[733px] border border-slate-400 bg-slate-700 mr-4 overflow-y-auto">
-        {actions_state.deref().iter().enumerate().map(|(i, action)| {
-            // let i = *i;
-            let cloned_game_state = game_state.clone();
-            let button_text = generate_button_text::generate_button_text(&action, cloned_game_state);
-
-            let cloned_click_handlers = handlers_state.clone();
-            let click_handler = Callback::from(move |_| {
-                cloned_click_handlers[i]()
-            });
-            let cloned_hover_handlers = hover_handlers_state.clone();
-            let mouse_enter_handler = Callback::from(move |_| {
-                cloned_hover_handlers[i]()
-            });
-            let cloned_game_dispatch = game_dispatch.clone();
-            let mouse_leave_handler = Callback::from(move |_| {
-                cloned_game_dispatch.reduce_mut(|store| store.hovered_entity = None)
-            });
-            let cloned_hover_handlers = hover_handlers_state.clone();
-            let focus_handler = Callback::from(move |_| {
-                cloned_hover_handlers[i]()
-            });
-            let cloned_game_dispatch = game_dispatch.clone();
-            let blur_handler =  Callback::from(move |_| {
-                cloned_game_dispatch.reduce_mut(|store| store.hovered_entity = None)
-            });
-
-
+        {cloned_button_props_on_current_page.deref().iter().enumerate().map(|(i, action)| {
               html!(
                   <ActionMenuButton
                     number={i+1}
-                    click_handler={click_handler}
-                    focus_handler={focus_handler}
-                    mouse_enter_handler={mouse_enter_handler}
-                    mouse_leave_handler={mouse_leave_handler}
-                    blur_handler={blur_handler}
-                    button_text={button_text}
+                    click_handler={action.click_handler.clone()}
+                    focus_handler={action.focus_handler.clone()}
+                    mouse_enter_handler={action.mouse_enter_handler.clone()}
+                    mouse_leave_handler={action.mouse_leave_handler.clone()}
+                    blur_handler={action.blur_handler.clone()}
+                    button_text={action.text.clone()}
                   />
                   )
               }).collect::<Html>() }
+        {html!(
+            if cloned_action_button_properties.deref().len() as u8 > PAGE_SIZE {
+                <ActionMenuButton
+                    number={PAGE_SIZE as usize +1}
+                    click_handler={next_page}
+                    button_text={String::from("Next page...")}
+                />
+            }
+        )}
         </section>
     )
 }

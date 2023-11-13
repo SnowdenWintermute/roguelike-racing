@@ -43,3 +43,13 @@ pub fn set_item_hovered(game_dispatch: Dispatch<GameStore>, item_option: Option<
         }
     })
 }
+
+pub fn select_item(game_dispatch: Dispatch<GameStore>, item_option: Option<Item>) {
+    game_dispatch.reduce_mut(|store| {
+        store.selected_item = item_option.clone();
+        store
+            .parent_menu_pages
+            .push(store.action_menu_current_page_number);
+        store.action_menu_current_page_number = 0;
+    })
+}

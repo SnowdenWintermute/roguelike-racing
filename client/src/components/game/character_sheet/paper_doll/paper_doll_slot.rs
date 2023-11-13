@@ -1,4 +1,4 @@
-use crate::store::game_store::{set_item_hovered, GameStore};
+use crate::store::game_store::{select_item, set_item_hovered, GameStore};
 use common::items::Item;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
@@ -54,10 +54,9 @@ pub fn paper_doll_slot(props: &Props) -> Html {
     let cloned_dispatch = game_dispatch.clone();
     let cloned_item_option = props.item_option.clone();
     let handle_click = Callback::from(move |_| {
+        let cloned_item_option = cloned_item_option.clone();
         let cloned_dispatch = cloned_dispatch.clone();
-        cloned_dispatch.reduce_mut(|store| {
-            store.selected_item = cloned_item_option.clone();
-        })
+        select_item(cloned_dispatch, cloned_item_option);
     });
 
     html!(

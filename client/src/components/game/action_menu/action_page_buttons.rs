@@ -1,11 +1,9 @@
+use crate::store::game_store::GameStore;
 use gloo::events::EventListener;
 use gloo_utils::window;
-use std::ops::Deref;
 use wasm_bindgen::{JsCast, UnwrapThrowExt};
 use yew::prelude::*;
 use yewdux::prelude::use_store;
-
-use crate::store::game_store::GameStore;
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
@@ -55,10 +53,10 @@ pub fn action_page_buttons(props: &Props) -> Html {
     use_effect_with(game_state.action_menu_current_page_number, move |_| {
         let listener = EventListener::new(&window(), "keyup", move |event| {
             let event = event.dyn_ref::<web_sys::KeyboardEvent>().unwrap_throw();
-            if event.key() == "9" {
+            if event.code() == "KeyW" {
                 cloned_prev_page();
             }
-            if event.key() == "0" {
+            if event.code() == "KeyE" {
                 cloned_next_page();
             }
         });

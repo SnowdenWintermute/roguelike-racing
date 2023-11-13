@@ -28,6 +28,7 @@ use super::EquipmentProperties;
 
 pub fn generate_equipment_properties_from_base_item(level: u8) -> EquipmentProperties {
     let base_item = generate_base_equipment(level);
+    // let base_item = BaseEquipment::OneHandedMeleeWeapon(OneHandedMeleeWeapons::RuneSword);
     // determine num prefixes and suffixes
     let num_prefixes = 1;
     let num_suffixes = 1;

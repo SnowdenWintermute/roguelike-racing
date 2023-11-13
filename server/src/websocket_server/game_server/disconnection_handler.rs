@@ -11,7 +11,8 @@ impl Handler<Disconnect> for GameServer {
 
         let connected_user = self.sessions.get(&actor_id);
         if connected_user.is_none() {
-            println!("a user disconnected but they weren't in the server's list of users")
+            println!("a user disconnected but they weren't in the server's list of users");
+            return;
         }
 
         let room_name_leaving = connected_user.unwrap().current_room_name.clone();

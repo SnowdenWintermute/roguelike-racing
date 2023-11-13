@@ -10,8 +10,8 @@ where
     let mut i = 1;
     while i <= DEEPEST_FLOOR {
         let mut v = Vec::new();
-        let mut j = 1;
-        while j < templates.len() {
+        let mut j = 0;
+        while j < templates.len() - 1 {
             let curr = &templates[j];
             let range = curr.1;
             if i >= range.min && i <= range.max {

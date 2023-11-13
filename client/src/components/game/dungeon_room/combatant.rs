@@ -1,7 +1,4 @@
-use crate::{
-    components::common_components::atoms::button_blank::ButtonBlank,
-    store::game_store::{self, DetailableEntities, GameStore},
-};
+use crate::store::game_store::{self, DetailableEntities, GameStore};
 use common::{combatants::CombatantProperties, primatives::EntityProperties};
 use yew::prelude::*;
 use yewdux::prelude::use_store;
@@ -47,12 +44,12 @@ pub fn combatant(props: &Props) -> Html {
         None => "",
     };
     let styles = format!(
-        "border border-slate-400 p-2 mb-2 last:mb-0 max-w-fit {}",
+        "text-left border border-slate-400 p-2 mb-2 last:mb-0 w-40 {}",
         selected_style
     );
 
     html!(
-        <ButtonBlank class={styles} onclick={handle_click} id={format!("combatant-{}", id)} >
+        <button class={styles} onclick={handle_click} id={format!("combatant-{}", id)} >
             <div class="pointer-events-none">
             {"entity id: "}{id}
             </div>
@@ -62,6 +59,6 @@ pub fn combatant(props: &Props) -> Html {
             <div class="text-blue-700 pointer-events-none" >
             {"hp: "}{combatant_properties.mana.current}{" / "}{combatant_properties.mana.max}
             </div>
-        </ButtonBlank>
+        </button>
     )
 }

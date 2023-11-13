@@ -62,8 +62,20 @@ pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Charact
         item_level: 1,
         item_properties: ItemProperties::Equipment(equipment_properties),
     };
-    for _ in 0..13 {
-        let random_equipment = Item::generate(&mut game.id_generator, 1);
+    for _ in 0..8 {
+        let random_equipment = Item::generate(&mut game.id_generator, 5);
+        character.inventory.items.push(random_equipment);
+    }
+    for _ in 0..8 {
+        let random_equipment = Item::generate(&mut game.id_generator, 7);
+        character.inventory.items.push(random_equipment);
+    }
+    for _ in 0..8 {
+        let random_equipment = Item::generate(&mut game.id_generator, 8);
+        character.inventory.items.push(random_equipment);
+    }
+    for _ in 0..8 {
+        let random_equipment = Item::generate(&mut game.id_generator, 10);
         character.inventory.items.push(random_equipment);
     }
 

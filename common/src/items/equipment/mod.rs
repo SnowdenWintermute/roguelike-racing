@@ -52,6 +52,21 @@ pub enum EquipmentTypes {
     Shield(Shields, ShieldProperties),
 }
 
+impl fmt::Display for EquipmentTypes {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            EquipmentTypes::BodyArmor(_, _) => write!(f, "Body Armor"),
+            EquipmentTypes::HeadGear(_, _) => write!(f, "Head Gear"),
+            EquipmentTypes::Ring => write!(f, "Ring"),
+            EquipmentTypes::Amulet => write!(f, "Amulet"),
+            EquipmentTypes::OneHandedMeleeWeapon(_, _) => write!(f, "One Handed Melee Weapon"),
+            EquipmentTypes::TwoHandedMeleeWeapon(_, _) => write!(f, "Two Handed Melee Weapon"),
+            EquipmentTypes::TwoHandedRangedWeapon(_, _) => write!(f, "Two Handed Ranged Weapon"),
+            EquipmentTypes::Shield(_, _) => write!(f, "Shield"),
+        }
+    }
+}
+
 #[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq)]
 pub enum EquipmentTraits {
     LifeStealPercentage(u8),

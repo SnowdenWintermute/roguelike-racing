@@ -3,7 +3,10 @@ use super::{
 };
 use crate::{
     components::websocket_manager::send_client_input::send_client_input,
-    store::{game_store::GameStore, websocket_store::WebsocketStore},
+    store::{
+        game_store::{select_item, GameStore},
+        websocket_store::WebsocketStore,
+    },
 };
 use common::packets::client_to_server::PlayerInputs;
 use gloo::console::log;
@@ -39,9 +42,8 @@ pub fn create_action_handler<'a>(
             GameActions::SelectItem(id) => Box::new(move || {
                 let item = get_character_owned_item_by_id(&id, game_state.clone())
                     .expect("a character should only be able to select their own items");
-                game_dispatch.reduce_mut(|store| store.selected_item = Some(item));
-                game_dispatch.reduce_mut(|store| store.parent_menu_pages.push(store.action_menu_current_page_number));
-                game_dispatch.reduce_mut(|store| store.action_menu_current_page_number = 0);
+                let cloned_dispatch = game_dispatch.clone();
+                select_item(cloned_dispatch, Some(item));
             }),
             _ => Box::new(||())
             // GameActions::OpenTreasureChest => || (),

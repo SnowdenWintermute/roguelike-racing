@@ -2,15 +2,16 @@ use common::{
     combatants::CombatantProperties, game::RoguelikeRacerGame, items::Item,
     primatives::EntityProperties,
 };
+use gloo::console::log;
 use yewdux::prelude::*;
 
-#[derive(PartialEq, Clone)]
+#[derive(PartialEq, Clone, Debug)]
 pub struct CombatantDetails {
     pub entity_properties: EntityProperties,
     pub combatant_properties: CombatantProperties,
 }
 
-#[derive(PartialEq, Clone)]
+#[derive(PartialEq, Clone, Debug)]
 pub enum DetailableEntities {
     Combatant(CombatantDetails),
     Item(Item),
@@ -47,6 +48,11 @@ pub fn set_item_hovered(game_dispatch: Dispatch<GameStore>, item_option: Option<
 pub fn select_item(game_dispatch: Dispatch<GameStore>, item_option: Option<Item>) {
     game_dispatch.reduce_mut(|store| {
         store.selected_item = item_option.clone();
+        store.hovered_entity = None;
+        if let Some(item) = item_option {
+            log!("setting item as detailed entity");
+            store.detailed_entity = Some(DetailableEntities::Item(item));
+        }
         store
             .parent_menu_pages
             .push(store.action_menu_current_page_number);

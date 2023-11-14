@@ -14,7 +14,6 @@ use crate::{
 use gloo::events::EventListener;
 use gloo_utils::window;
 use wasm_bindgen::{JsCast, UnwrapThrowExt};
-use web_sys::HtmlElement;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
@@ -40,22 +39,22 @@ pub fn game() -> Html {
         .expect("must have a party id")
         .clone();
 
-    let click_listener_state = use_state(|| None::<EventListener>);
-    let cloned_dispatch = game_dispatch.clone();
-    use_effect_with((), move |_| {
-        let listener = EventListener::new(&window(), "click", move |event| {
-            let event = event.dyn_ref::<web_sys::MouseEvent>().unwrap_throw();
-            let target = event.target();
-            if let Some(target) = target {
-                let element = target.unchecked_into::<HtmlElement>();
-                let id_tag = element.id().split("-").collect::<Vec<&str>>()[0].to_string();
-                if id_tag != "combatant".to_string() {
-                    cloned_dispatch.reduce_mut(|store| store.detailed_entity = None);
-                };
-            }
-        });
-        click_listener_state.set(Some(listener));
-    });
+    // let click_listener_state = use_state(|| None::<EventListener>);
+    // let cloned_dispatch = game_dispatch.clone();
+    // use_effect_with((), move |_| {
+    //     let listener = EventListener::new(&window(), "click", move |event| {
+    //         let event = event.dyn_ref::<web_sys::MouseEvent>().unwrap_throw();
+    //         let target = event.target();
+    //         if let Some(target) = target {
+    //             let element = target.unchecked_into::<HtmlElement>();
+    //             let id_tag = element.id().split("-").collect::<Vec<&str>>()[0].to_string();
+    //             // if id_tag != "combatant".to_string() {
+    //             //     cloned_dispatch.reduce_mut(|store| store.detailed_entity = None);
+    //             // };
+    //         }
+    //     });
+    //     click_listener_state.set(Some(listener));
+    // });
 
     let cloned_dispatch = game_dispatch.clone();
     let keyup_listener_state = use_state(|| None::<EventListener>);

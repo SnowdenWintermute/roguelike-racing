@@ -37,6 +37,7 @@ pub fn create_action_handler<'a>(
                     if let Some(page_number) = parent_page_number {
                         store.action_menu_current_page_number = page_number;
                     }
+                    store.detailed_entity = None;
                 });
             }),
             GameActions::SelectItem(id) => Box::new(move || {

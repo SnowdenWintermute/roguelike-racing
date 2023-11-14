@@ -3,6 +3,8 @@ use yew::prelude::*;
 use crate::components::game::tabbed_display::item_details_tab::equipment_details::equipment_durability::EquipmentDurability;
 mod combat_attributes;
 mod equipment_durability;
+mod requirements;
+mod traits;
 mod weapon_damage;
 
 #[derive(Properties, PartialEq)]
@@ -29,10 +31,9 @@ pub fn equipment_details(props: &Props) -> Html {
                     durability_option={props.equipment_properties.durability.clone()}
                     equipment_type={props.equipment_properties.equipment_type.clone()}
                 />
-                // combat attributes
                 {combat_attributes::combat_attributes(&props.equipment_properties)}
-                // traits
-                // requirements
+                {traits::traits(&props.equipment_properties.traits)}
+                {requirements::requirements(&props.equipment_properties.requirements)}
 
             </div>
     )

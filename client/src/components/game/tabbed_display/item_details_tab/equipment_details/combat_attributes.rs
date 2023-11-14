@@ -2,8 +2,11 @@ use common::{
     combatants::{CombatAttributes, CORE_ATTRIBUTES},
     items::equipment::{affixes::Affix, EquipmentProperties},
 };
-use gloo::console::log;
 use yew::{html, virtual_dom::VNode};
+
+fn attribute_bonus_text(name: &str, value: u16) -> String {
+    format!("+{value} {name}")
+}
 
 pub fn combat_attributes(equipment_properties: &EquipmentProperties) -> Vec<VNode> {
     let mut displayed_attributes = Vec::new();
@@ -48,10 +51,6 @@ pub fn combat_attributes(equipment_properties: &EquipmentProperties) -> Vec<VNod
             if value > &lowest_core_attribute_value {
                 let value_to_modify = cloned_attributes.get(&attribute).expect("");
                 let new_value = value_to_modify - lowest_core_attribute_value;
-                log!(format!(
-                    "subtracting {} from {} got {}",
-                    lowest_core_attribute_value, value_to_modify, new_value
-                ));
                 cloned_attributes.insert(*attribute, new_value);
             }
             // remove all base stats that tied for lowest
@@ -67,13 +66,13 @@ pub fn combat_attributes(equipment_properties: &EquipmentProperties) -> Vec<VNod
         for (attribute, value) in cloned_attributes_as_vec {
             displayed_attributes.push(html!(
             <div>
-            {format!("{}: {}", attribute, value)}
+            {attribute_bonus_text(&attribute.to_string(), value)}
             </div>
             ))
         }
         displayed_attributes.push(html!(
         <div>
-        {format!("{}: {}", "All Core Attributes", lowest_core_attribute_value)}
+            {attribute_bonus_text("to All Core Attributes", lowest_core_attribute_value)}
         </div>
         ))
         // push "all base" and the lowest
@@ -87,12 +86,11 @@ pub fn combat_attributes(equipment_properties: &EquipmentProperties) -> Vec<VNod
         for (attribute, value) in attributes_as_vec {
             displayed_attributes.push(html!(
             <div>
-            {format!("{}: {}", attribute, value)}
+            {attribute_bonus_text(&attribute.to_string(), value)}
             </div>
             ))
         }
     }
-    //
 
     displayed_attributes
 }

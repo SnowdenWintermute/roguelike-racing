@@ -21,7 +21,10 @@ pub fn combatant_detail_tab(props: &Props) -> Html {
         .get_total_attributes();
 
     let close_display = Callback::from(move |_| {
-        game_dispatch.reduce_mut(|store| store.detailed_entity = None);
+        game_dispatch.reduce_mut(|store| {
+            store.detailed_entity = None;
+            store.hovered_entity = None
+        });
     });
 
     html!(

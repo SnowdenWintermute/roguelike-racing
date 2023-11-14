@@ -51,6 +51,7 @@ impl GameServer {
         }
 
         let character = get_mut_character(game, party_id, new_character_id)?;
+        character.combatant_properties.get_total_attributes();
         let cloned_character = character.clone();
 
         self.emit_packet(

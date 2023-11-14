@@ -1,6 +1,4 @@
 mod item_details_tab;
-use std::ops::Deref;
-
 use crate::{
     components::game::{
         combat_log::CombatLog, combatant_detail_tab::CombatantDetailTab,
@@ -8,7 +6,6 @@ use crate::{
     },
     store::game_store::{DetailableEntities, GameStore},
 };
-use gloo::console::log;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
@@ -28,8 +25,6 @@ pub fn tabbed_display() -> Html {
         None => None,
     };
 
-    log!("evaluating detailed tab");
-    log!(format!("{:#?}", detailed_entity));
     let detailed_tab = match detailed_entity {
         Some(detailable) => match detailable {
             DetailableEntities::Combatant(combatant_properties) => {
@@ -52,7 +47,7 @@ pub fn tabbed_display() -> Html {
 
     html!(
         <section class="p-2 flex-grow border border-slate-400 bg-slate-700">
-        {displayed_tab}
+            {displayed_tab}
         </section>
     )
 }

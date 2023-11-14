@@ -42,7 +42,7 @@ impl fmt::Display for PrefixTypes {
             PrefixTypes::Resilience => write!(f, "Resilience"),
             PrefixTypes::Evasion => write!(f, "Evasion"),
             PrefixTypes::Obscurity => write!(f, "Obscurity"),
-            PrefixTypes::ArmorPenetration => write!(f, "Armor Penetration"),
+            PrefixTypes::ArmorPenetration => write!(f, "Armor Pen."),
         }
     }
 }

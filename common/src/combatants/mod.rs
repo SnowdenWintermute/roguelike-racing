@@ -75,7 +75,7 @@ impl fmt::Display for CombatAttributes {
             CombatAttributes::Obscurity => write!(f, "Obscurity"),
             CombatAttributes::Hp => write!(f, "HP"),
             CombatAttributes::Mp => write!(f, "MP"),
-            CombatAttributes::ArmorPenetration => write!(f, "Armor Penetration"),
+            CombatAttributes::ArmorPenetration => write!(f, "Armor Pen."),
         }
     }
 }
@@ -114,10 +114,16 @@ impl CombatantProperties {
         }
     }
 
-    pub fn get_total_attributes(&mut self) -> HashMap<CombatAttributes, u16> {
+    pub fn get_total_attributes(&self) -> HashMap<CombatAttributes, u16> {
         let mut total_attributes = HashMap::new();
         for attribute in CombatAttributes::iter() {
-            total_attributes.insert(attribute, 0);
+            if attribute == CombatAttributes::Hp {
+                total_attributes.insert(attribute, self.hit_points.max);
+            } else if attribute == CombatAttributes::Mp {
+                total_attributes.insert(attribute, self.mana.max);
+            } else {
+                total_attributes.insert(attribute, 0);
+            }
         }
 
         add_attributes_to_accumulator(&self.inherent_attributes, &mut total_attributes);
@@ -130,6 +136,10 @@ impl CombatantProperties {
                 }
             }
         }
+        println!(
+            "attributes after equipments accumulation: {:#?}",
+            total_attributes
+        );
 
         total_attributes
     }
@@ -140,8 +150,8 @@ pub fn add_attributes_to_accumulator(
     acc: &mut HashMap<CombatAttributes, u16>,
 ) {
     for (attribute, number) in attr {
-        acc.entry(*attribute)
-            .and_modify(|v| *v += number)
-            .or_insert(*number);
+        if let Some(value) = acc.get_mut(attribute) {
+            *value += number
+        }
     }
 }

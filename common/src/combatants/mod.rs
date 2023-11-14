@@ -31,23 +31,33 @@ impl fmt::Display for CombatantClass {
     }
 }
 
-#[derive(Debug, EnumIter, Clone, Copy, Hash, Eq, PartialEq, Serialize, Deserialize)]
+#[derive(
+    Debug, EnumIter, Clone, Copy, Hash, Eq, PartialEq, Serialize, Deserialize, PartialOrd, Ord,
+)]
 pub enum CombatAttributes {
     Damage,
-    ArmorClass,
-    Dexterity,
-    Strength,
-    Intelligence,
-    Vitality,
-    Resilience,
+    ArmorPenetration,
     Accuracy,
     Focus,
+    ArmorClass,
     Evasion,
     Obscurity,
     Hp,
     Mp,
-    ArmorPenetration,
+    Dexterity,
+    Intelligence,
+    Strength,
+    Vitality,
+    Resilience,
 }
+
+pub const CORE_ATTRIBUTES: [CombatAttributes; 5] = [
+    CombatAttributes::Dexterity,
+    CombatAttributes::Intelligence,
+    CombatAttributes::Strength,
+    CombatAttributes::Vitality,
+    CombatAttributes::Resilience,
+];
 
 impl fmt::Display for CombatAttributes {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

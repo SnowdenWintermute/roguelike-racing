@@ -1,6 +1,7 @@
 use common::items::equipment::{EquipmentProperties, EquipmentTypes };
 use yew::prelude::*;
 use crate::components::game::tabbed_display::item_details_tab::equipment_details::equipment_durability::EquipmentDurability;
+mod combat_attributes;
 mod equipment_durability;
 mod weapon_damage;
 
@@ -25,10 +26,11 @@ pub fn equipment_details(props: &Props) -> Html {
                 {armor_class_if_any}
                 {weapon_damage_if_any}
                 <EquipmentDurability
-                durability_option={props.equipment_properties.durability.clone()}
-                equipment_type={props.equipment_properties.equipment_type.clone()}
+                    durability_option={props.equipment_properties.durability.clone()}
+                    equipment_type={props.equipment_properties.equipment_type.clone()}
                 />
                 // combat attributes
+                {combat_attributes::combat_attributes(&props.equipment_properties)}
                 // traits
                 // requirements
 

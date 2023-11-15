@@ -26,6 +26,7 @@ pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Charact
     inherent_attributes.insert(CombatAttributes::Dexterity, 1);
     inherent_attributes.insert(CombatAttributes::Vitality, 2);
     inherent_attributes.insert(CombatAttributes::Resilience, 2);
+    inherent_attributes.insert(CombatAttributes::Accuracy, 75);
 
     combatant_properties.abilities.insert(
         CombatantAbilityNames::ArmorBreak,
@@ -86,11 +87,11 @@ pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Charact
 
     combatant_properties
         .equipment
-        .insert(EquipmentSlots::RightHand, starting_weapon.clone());
+        .insert(EquipmentSlots::MainHand, starting_weapon.clone());
 
     combatant_properties
         .equipment
-        .insert(EquipmentSlots::LeftHand, starting_weapon);
+        .insert(EquipmentSlots::OffHand, starting_weapon);
 
     let total_attributes = combatant_properties.get_total_attributes();
     let max_hp_option = total_attributes.get(&CombatAttributes::Hp);

@@ -1,0 +1,9 @@
+<svg viewBox="0 0 8 31" id="1h-sword" 
+xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" d="M3 5L4 2L5 5V21H3V5Z" />
+  <path fill-rule="evenodd" d="M7 20.9H5H4V22.5H7L7.5 22.1V20.5L7 20.9Z" />
+  <path fill-rule="evenodd" d="M1 20.9H3H4V22.5H1L0.5 22.1V20.5L1 20.9Z" />
+  <path fill-rule="evenodd" d="M4.5 22.5H3.5V28.5H4.5V22.5Z" />
+  <path fill-rule="evenodd" d="M4 30.5H4.5L5 29.5L4.5 28.5" />
+  <path fill-rule="evenodd" d="M4 30.5H3.5L3 29.5L3.5 28.5" />
+</svg>

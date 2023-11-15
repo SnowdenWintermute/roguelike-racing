@@ -1,11 +1,15 @@
 use self::abilities::CombatantAbility;
 use self::abilities::CombatantAbilityNames;
+use crate::app_consts::DEX_TO_ACCURACY_RATIO;
+use crate::app_consts::OFF_HAND_ACCURACY_MODIFIER;
+use crate::app_consts::OFF_HAND_DAMAGE_MODIFIER;
 use crate::items::equipment::weapon_properties::WeaponProperties;
 use crate::items::equipment::EquipmentSlots;
 use crate::items::equipment::EquipmentTraits;
 use crate::items::equipment::EquipmentTypes;
 use crate::items::Item;
 use crate::items::ItemProperties;
+use crate::primatives::Range;
 use crate::status_effects::StatusEffects;
 use core::fmt;
 use serde::Deserialize;
@@ -134,6 +138,16 @@ impl CombatantProperties {
             }
         }
 
+        // derive accuracy from +acc, inherant, and all Dex
+        let total_dex_option = total_attributes.get(&CombatAttributes::Dexterity);
+        let total_acc = total_attributes
+            .get(&CombatAttributes::Accuracy)
+            .unwrap_or_else(|| &0);
+        if let Some(dex) = total_dex_option {
+            let accuracy_from_dex = DEX_TO_ACCURACY_RATIO * dex;
+            total_attributes.insert(CombatAttributes::Accuracy, total_acc + accuracy_from_dex);
+        }
+
         total_attributes
     }
 
@@ -155,6 +169,32 @@ impl CombatantProperties {
             },
             None => None,
         }
+    }
+
+    pub fn get_main_hand_weapon_damage_and_hit_chance(
+        weapon_properties: &WeaponProperties,
+        combatant_base_damage: u16,
+        accuracy: u16,
+    ) -> (Range<u16>, u16) {
+        let modified_min = weapon_properties.damage.min as u16 + combatant_base_damage as u16;
+        let modified_max = weapon_properties.damage.max as u16 + combatant_base_damage as u16;
+        let modified_acc = accuracy;
+        (Range::new(modified_min, modified_max), modified_acc)
+    }
+
+    pub fn get_off_hand_weapon_damage_and_hit_chance(
+        weapon_properties: &WeaponProperties,
+        combatant_base_damage: u16,
+        accuracy: u16,
+    ) -> (Range<u16>, u16) {
+        let modified_min = ((weapon_properties.damage.min as u16 + combatant_base_damage) as f32
+            * OFF_HAND_DAMAGE_MODIFIER)
+            .floor() as u16;
+        let modified_max = ((weapon_properties.damage.max as u16 + combatant_base_damage) as f32
+            * OFF_HAND_DAMAGE_MODIFIER)
+            .floor() as u16;
+        let modified_acc = (accuracy as f32 * OFF_HAND_ACCURACY_MODIFIER).floor() as u16;
+        (Range::new(modified_min, modified_max), modified_acc)
     }
 }
 

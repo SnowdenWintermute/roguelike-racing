@@ -35,7 +35,7 @@ pub fn character_attributes(props: &Props) -> Html {
             <div class="font-bold" >
                 {entity_properties.name.clone()}{format!(" ({})", combatant_properties.combatant_class)}
             </div>
-            <div class="flex" >
+            <div class="flex mb-1" >
                 <ul class="list-none w-1/2 mr-1" >
                     {combatant_attributes_as_vec.iter()
                         .enumerate()
@@ -49,6 +49,7 @@ pub fn character_attributes(props: &Props) -> Html {
                         .map(|(_, (attribute, value))| attribute_list_item(attribute, value)).collect::<Html>()}
                 </ul>
             </div>
+            <div id="divider" class="bg-slate-400 h-[1px] flex mt-2 mr-2 ml-2 mb-2" />
             {hp_and_mp::hp_and_mp(&combatant_properties, &total_attributes)}
             {weapon_damage::weapon_damage(&combatant_properties, &total_attributes)}
         </div>

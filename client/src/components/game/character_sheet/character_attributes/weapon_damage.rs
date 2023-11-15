@@ -1,52 +1,86 @@
-use std::collections::HashMap;
-
 use common::{
     combatants::{CombatAttributes, CombatantProperties},
-    items::equipment::{weapon_properties::WeaponProperties, EquipmentSlots, EquipmentTraits},
+    items::equipment::EquipmentSlots,
 };
+use std::collections::HashMap;
 use yew::{html, Html};
 
 pub fn weapon_damage(
     combatant_properties: &CombatantProperties,
     total_attributes: &HashMap<CombatAttributes, u16>,
 ) -> Html {
-    let rh_weapon_option =
-        combatant_properties.get_equipped_weapon_properties(&EquipmentSlots::RightHand);
-    let lh_weapon_option =
-        combatant_properties.get_equipped_weapon_properties(&EquipmentSlots::LeftHand);
+    let mh_weapon_option =
+        combatant_properties.get_equipped_weapon_properties(&EquipmentSlots::MainHand);
+    let oh_weapon_option =
+        combatant_properties.get_equipped_weapon_properties(&EquipmentSlots::OffHand);
     let base_damage = match total_attributes.get(&CombatAttributes::Damage) {
         Some(value) => *value,
         None => 0,
     };
 
+    let accuracy = total_attributes
+        .get(&CombatAttributes::Accuracy)
+        .unwrap_or_else(|| &0);
+
+    let mh_damage_and_acc_option = if let Some(mh_weapon) = mh_weapon_option {
+        Some(
+            CombatantProperties::get_main_hand_weapon_damage_and_hit_chance(
+                &mh_weapon.0,
+                base_damage,
+                *accuracy,
+            ),
+        )
+    } else {
+        None
+    };
+
+    let modified_oh_damage_and_acc = if let Some(oh_weapon) = oh_weapon_option {
+        Some(
+            CombatantProperties::get_off_hand_weapon_damage_and_hit_chance(
+                &oh_weapon.0,
+                base_damage,
+                *accuracy,
+            ),
+        )
+    } else {
+        None
+    };
+
     html!(
         <div class="flex" >
-            {weapon_damage_entry(rh_weapon_option,base_damage ,&"Right Hand", &"mr-1")}
-            {weapon_damage_entry(lh_weapon_option,base_damage, &"Left Hand", &"ml-1")}
+            {weapon_damage_entry(mh_damage_and_acc_option, &"Main Hand", &"mr-1")}
+            {weapon_damage_entry(modified_oh_damage_and_acc, &"Off Hand", &"ml-1")}
         </div>
     )
 }
 
 fn weapon_damage_entry(
-    weapon_properties_option: Option<(&WeaponProperties, &Option<Vec<EquipmentTraits>>)>,
-    base_damage: u16,
+    damage_and_accuracy_option: Option<(common::primatives::Range<u16>, u16)>,
     label: &str,
     padding_class: &str,
 ) -> Html {
-    if let Some((weapon_properties, _)) = weapon_properties_option {
+    if let Some(damage_and_accuracy) = damage_and_accuracy_option {
+        let damage = damage_and_accuracy.0;
+        let accuracy = damage_and_accuracy.1;
+
         html!(
-        <div class={format!("w-1/2 flex justify-between {}", padding_class )}>
-            <span>
-                {label}
-            </span>
-            <span>
-            {
-                format!("{}-{}",
-                        weapon_properties.damage.min as u16 + base_damage,
-                        weapon_properties.damage.max as u16 + base_damage
-                        )
-            }
-            </span>
+        <div class={format!("w-1/2 {}", padding_class )}>
+            <div class="w-full flex justify-between">
+                <span>
+                    {label}
+                </span>
+                <span>
+                    {format!("{}-{}",damage.min,damage.max)}
+                </span>
+            </div>
+            <div class="w-full flex justify-between">
+                <span>
+                    {"Accuracy"}
+                </span>
+                <span>
+                    {accuracy}
+                </span>
+            </div>
         </div>
         )
     } else {

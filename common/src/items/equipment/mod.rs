@@ -31,8 +31,8 @@ use strum_macros::EnumIter;
 
 #[derive(Debug, Serialize, Deserialize, Clone, Hash, Eq, PartialEq)]
 pub enum EquipmentSlots {
-    LeftHand,
-    RightHand,
+    MainHand,
+    OffHand,
     Head,
     Body,
     LeftRing,

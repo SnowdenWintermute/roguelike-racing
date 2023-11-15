@@ -48,16 +48,32 @@ pub fn combatant(props: &Props) -> Html {
         selected_style
     );
 
+    let total_attributes = combatant_properties.get_total_attributes();
+    let max_hp_option = total_attributes.get(&common::combatants::CombatAttributes::Hp);
+    let max_mp_option = total_attributes.get(&common::combatants::CombatAttributes::Mp);
+
     html!(
         <button class={styles} onclick={handle_click} id={format!("combatant-{}", id)} >
             <div class="pointer-events-none">
             {"entity id: "}{id}
             </div>
             <div class="text-green-700 pointer-events-none" >
-            {"hp: "}{combatant_properties.hit_points.current}{" / "}{combatant_properties.hit_points.max}
+            {
+                if let Some(max_hp) = max_hp_option {
+                    {format!("hp: {} / {}", combatant_properties.hit_points, max_hp)}
+                } else {
+                    {"Immortal Object".to_string()}
+                }
+            }
             </div>
             <div class="text-blue-700 pointer-events-none" >
-            {"hp: "}{combatant_properties.mana.current}{" / "}{combatant_properties.mana.max}
+            {
+                if let Some(max_mp) = max_mp_option {
+                    {format!("mp: {} / {}", combatant_properties.mana, max_mp)}
+                } else {
+                    {"Infinite Mana".to_string()}
+                }
+            }
             </div>
         </button>
     )

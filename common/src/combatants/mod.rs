@@ -1,8 +1,11 @@
 use self::abilities::CombatantAbility;
 use self::abilities::CombatantAbilityNames;
+use crate::items::equipment::weapon_properties::WeaponProperties;
 use crate::items::equipment::EquipmentSlots;
+use crate::items::equipment::EquipmentTraits;
+use crate::items::equipment::EquipmentTypes;
 use crate::items::Item;
-use crate::primatives::MaxAndCurrent;
+use crate::items::ItemProperties;
 use crate::status_effects::StatusEffects;
 use core::fmt;
 use serde::Deserialize;
@@ -84,8 +87,8 @@ impl fmt::Display for CombatAttributes {
 pub struct CombatantProperties {
     pub combatant_class: CombatantClass,
     pub inherent_attributes: HashMap<CombatAttributes, u16>,
-    pub hit_points: MaxAndCurrent<u16>,
-    pub mana: MaxAndCurrent<u16>,
+    pub hit_points: u16,
+    pub mana: u16,
     pub status_effects: Vec<StatusEffects>,
     pub equipment: HashMap<EquipmentSlots, Item>,
     pub abilities: HashMap<CombatantAbilityNames, CombatantAbility>,
@@ -103,8 +106,8 @@ impl CombatantProperties {
         CombatantProperties {
             combatant_class: combatant_class.clone(),
             inherent_attributes: HashMap::new(),
-            hit_points: MaxAndCurrent::new(10, 10),
-            mana: MaxAndCurrent::new(10, 10),
+            hit_points: 0,
+            mana: 0,
             status_effects: vec![],
             equipment: HashMap::new(),
             abilities,
@@ -117,13 +120,7 @@ impl CombatantProperties {
     pub fn get_total_attributes(&self) -> HashMap<CombatAttributes, u16> {
         let mut total_attributes = HashMap::new();
         for attribute in CombatAttributes::iter() {
-            if attribute == CombatAttributes::Hp {
-                total_attributes.insert(attribute, self.hit_points.max);
-            } else if attribute == CombatAttributes::Mp {
-                total_attributes.insert(attribute, self.mana.max);
-            } else {
-                total_attributes.insert(attribute, 0);
-            }
+            total_attributes.insert(attribute, 0);
         }
 
         add_attributes_to_accumulator(&self.inherent_attributes, &mut total_attributes);
@@ -136,12 +133,28 @@ impl CombatantProperties {
                 }
             }
         }
-        println!(
-            "attributes after equipments accumulation: {:#?}",
-            total_attributes
-        );
 
         total_attributes
+    }
+
+    pub fn get_equipped_weapon_properties(
+        &self,
+        slot: &EquipmentSlots,
+    ) -> Option<(&WeaponProperties, &Option<Vec<EquipmentTraits>>)> {
+        match self.equipment.get(slot) {
+            Some(item) => match &item.item_properties {
+                ItemProperties::Consumable(_) => None,
+                ItemProperties::Equipment(properties) => match &properties.equipment_type {
+                    EquipmentTypes::OneHandedMeleeWeapon(_, weapon_properties)
+                    | EquipmentTypes::TwoHandedMeleeWeapon(_, weapon_properties)
+                    | EquipmentTypes::TwoHandedRangedWeapon(_, weapon_properties) => {
+                        Some((&weapon_properties, &properties.traits))
+                    }
+                    _ => None,
+                },
+            },
+            None => None,
+        }
     }
 }
 

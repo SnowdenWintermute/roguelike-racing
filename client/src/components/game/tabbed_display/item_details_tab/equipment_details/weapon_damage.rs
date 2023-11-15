@@ -61,7 +61,7 @@ pub fn weapon_damage(equipment_type: &EquipmentTypes) -> Html {
                 };
                 let damage_type_style = format!("pr-1 pl-1 {}", damage_type_color_style);
                 classification_displays.push(html!(
-                <li class={format!("border pl-1 max-w-fit mb-1 last:mb-0 {}", damage_classification_border_color)}>
+                <li class={format!("border pl-1 max-w-fit mb-1 {}", damage_classification_border_color)}>
                     <span class={format!("inline-block pr-1 border-r h-full {}", damage_classification_border_color)}>{classification_text}{" "}</span>
                     <span class={format!("inline-block h-full {}", damage_type_style)}>{damage_type_text}</span>
                 </li>

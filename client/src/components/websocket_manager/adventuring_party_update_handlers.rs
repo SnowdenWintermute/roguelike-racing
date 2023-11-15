@@ -8,7 +8,6 @@ use common::{
         PlayerCharacterDeletion,
     },
 };
-use gloo::console::log;
 use std::collections::HashSet;
 
 pub fn handle_adventuring_party_created(

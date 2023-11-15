@@ -9,7 +9,7 @@ pub fn set_keyup_listeners(
     button_properties_state: UseStateHandle<Vec<ActionMenuButtonProperties>>,
     keyup_listener_state: UseStateHandle<Option<EventListener>>,
 ) {
-    let listener = EventListener::new(&window(), "keyup", move |event| {
+    let listener = EventListener::new(&window(), "keypress", move |event| {
         let event = event.dyn_ref::<web_sys::KeyboardEvent>().unwrap_throw();
         for (i, properties) in button_properties_state.iter().enumerate() {
             let key = (i + 1).to_string();

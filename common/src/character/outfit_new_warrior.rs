@@ -20,6 +20,7 @@ use std::collections::HashMap;
 pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Character) {
     let combatant_properties = &mut character.combatant_properties;
     let inherent_attributes = &mut combatant_properties.inherent_attributes;
+    inherent_attributes.insert(CombatAttributes::Hp, 10);
     inherent_attributes.insert(CombatAttributes::Damage, 1);
     inherent_attributes.insert(CombatAttributes::Strength, 2);
     inherent_attributes.insert(CombatAttributes::Dexterity, 1);
@@ -40,7 +41,7 @@ pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Charact
         name: String::from("Pointy Stick"),
     };
 
-    let equipment_properties = EquipmentProperties {
+    let mut equipment_properties = EquipmentProperties {
         equipment_type: EquipmentTypes::OneHandedMeleeWeapon(
             OneHandedMeleeWeapons::Stick,
             WeaponProperties {
@@ -56,6 +57,10 @@ pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Charact
         requirements: HashMap::new(),
         traits: None,
     };
+
+    equipment_properties
+        .attributes
+        .insert(CombatAttributes::Hp, 2);
 
     let starting_weapon = Item {
         entity_properties,
@@ -81,5 +86,19 @@ pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Charact
 
     combatant_properties
         .equipment
-        .insert(EquipmentSlots::RightHand, starting_weapon);
+        .insert(EquipmentSlots::RightHand, starting_weapon.clone());
+
+    combatant_properties
+        .equipment
+        .insert(EquipmentSlots::LeftHand, starting_weapon);
+
+    let total_attributes = combatant_properties.get_total_attributes();
+    let max_hp_option = total_attributes.get(&CombatAttributes::Hp);
+    if let Some(max_hp) = max_hp_option {
+        combatant_properties.hit_points = *max_hp
+    }
+    let max_mana_option = total_attributes.get(&CombatAttributes::Mp);
+    if let Some(max_mana) = max_mana_option {
+        combatant_properties.mana = *max_mana
+    }
 }

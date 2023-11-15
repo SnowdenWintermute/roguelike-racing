@@ -51,7 +51,7 @@ pub fn action_page_buttons(props: &Props) -> Html {
     let cloned_prev_page = prev_page.clone();
     let cloned_next_page = next_page.clone();
     use_effect_with(game_state.action_menu_current_page_number, move |_| {
-        let listener = EventListener::new(&window(), "keyup", move |event| {
+        let listener = EventListener::new(&window(), "keypress", move |event| {
             let event = event.dyn_ref::<web_sys::KeyboardEvent>().unwrap_throw();
             if event.code() == "KeyW" {
                 cloned_prev_page();

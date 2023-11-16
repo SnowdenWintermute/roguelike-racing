@@ -20,16 +20,21 @@ pub fn item_details_tab(props: &Props) -> Html {
     };
 
     html!(
-        <div class="h-full w-1/2 relative">
-            {props.item.entity_properties.name.clone()}
-            {display}
-            <svg
-            role="img"
-            aria-hidden="true"
-            class="opacity-50 fill-slate-400 h-40 w-1/2
-            absolute bottom-5 right-3 translate-x-1/4 " >
-                <use href="public/img/equipment-icons/1h-sword-a.svg#1h-sword" />
-            </svg>
+        <div class="w-full h-full flex">
+            <div class="h-full w-1/2 relative">
+                {props.item.entity_properties.name.clone()}
+                {display.clone()}
+                <div class="opacity-50 fill-slate-400 h-40 absolute bottom-5 right-3">
+                    <img src="public/img/equipment-icons/1h-sword-a.svg" class="h-40 filter" />
+                </div>
+            </div>
+            <div class="h-full w-1/2 relative">
+                {props.item.entity_properties.name.clone()}
+                {display}
+                <div class="opacity-50 fill-slate-400 h-40 absolute bottom-5 right-3">
+                    <img src="public/img/equipment-icons/1h-sword-a.svg" class="h-40 filter" />
+                </div>
+            </div>
         </div>
     )
 }

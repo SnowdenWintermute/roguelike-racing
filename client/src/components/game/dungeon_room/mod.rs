@@ -32,7 +32,7 @@ pub fn dungeon_room(props: &Props) -> Html {
     });
 
     let conditional_styles = match game_state.viewing_inventory {
-        true => "w-1/3 max-w-[733px] mr-4",
+        true => "min-w-[350px] w-[350px] mr-4",
         false => "w-full",
     };
 

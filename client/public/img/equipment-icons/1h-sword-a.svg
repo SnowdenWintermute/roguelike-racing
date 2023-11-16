@@ -1,10 +1,9 @@
 <svg 
-    viewBox="0 0 8 31" 
-    id="1h-sword"
     xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 8 31" 
   >
-<path 
-    fill-rule="evenodd"
-    d="M4 22.5H7L7.5 22.1V20.5L7 20.9H4M4 22.5V20.9M4 22.5H1L0.5 22.1V20.5L1 20.9H4M4.5 28.5V22.5H3.5V28.5M4.5 28.5H3.5M4.5 28.5L5 29.5L4.5 30.5H3.5L3 29.5L3.5 28.5M4 2L3 5V21H5V5L4 2Z" 
-  />
+  <path 
+      fill-rule="evenodd"
+      d="M4 22.5H7L7.5 22.1V20.5L7 20.9H4M4 22.5V20.9M4 22.5H1L0.5 22.1V20.5L1 20.9H4M4.5 28.5V22.5H3.5V28.5M4.5 28.5H3.5M4.5 28.5L5 29.5L4.5 30.5H3.5L3 29.5L3.5 28.5M4 2L3 5V21H5V5L4 2Z" 
+    />
 </svg>

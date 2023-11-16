@@ -99,7 +99,7 @@ pub fn action_menu(props: &Props) -> Html {
     let number_of_pages = calculate_number_of_pages(PAGE_SIZE as usize, num_actions);
 
     html!(
-        <section class="w-1/3 max-w-[733px] border border-slate-400 bg-slate-700 mr-4 overflow-y-auto
+        <section class="min-w-[350px] w-[350px] border border-slate-400 bg-slate-700 mr-4 overflow-y-auto
         flex flex-col justify-between">
             <div>
                 {cloned_button_props_on_current_page.deref().iter().enumerate().map(|(i, action)| {

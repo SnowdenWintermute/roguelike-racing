@@ -1,11 +1,9 @@
 use common::{
     combatants::CombatantProperties,
-    errors::AppError,
     game::{getters::get_character, RoguelikeRacerGame},
     items::{equipment::EquipableSlots, Item},
     primatives::EntityProperties,
 };
-use gloo::console::log;
 use yewdux::prelude::*;
 
 #[derive(PartialEq, Clone, Debug)]
@@ -18,6 +16,15 @@ pub struct CombatantDetails {
 pub enum DetailableEntities {
     Combatant(CombatantDetails),
     Item(Item),
+}
+
+impl DetailableEntities {
+    pub fn get_id(&self) -> u32 {
+        match self {
+            DetailableEntities::Combatant(properties) => properties.entity_properties.id,
+            DetailableEntities::Item(properties) => properties.entity_properties.id,
+        }
+    }
 }
 
 #[derive(Store, Default, PartialEq, Clone)]
@@ -54,7 +61,16 @@ pub fn select_item(game_dispatch: Dispatch<GameStore>, item_option: Option<Item>
         store.selected_item = item_option.clone();
         store.hovered_entity = None;
         if let Some(item) = item_option {
-            store.detailed_entity = Some(DetailableEntities::Item(item));
+            if let Some(entity) = &store.detailed_entity {
+                let id = entity.get_id();
+                if id == item.entity_properties.id {
+                    store.detailed_entity = None
+                } else {
+                    store.detailed_entity = Some(DetailableEntities::Item(item));
+                }
+            } else {
+                store.detailed_entity = Some(DetailableEntities::Item(item));
+            }
         }
         store
             .parent_menu_pages
@@ -88,7 +104,7 @@ pub fn set_compared_item<'a>(
                         match &item_considering.item_properties {
                             common::items::ItemProperties::Consumable(_) => None,
                             common::items::ItemProperties::Equipment(equipment_properties) => {
-                                equipment_properties.get_equippable_slots()
+                                Some(equipment_properties.get_equippable_slots())
                             }
                         };
 

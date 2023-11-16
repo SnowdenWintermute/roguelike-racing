@@ -106,6 +106,7 @@ pub struct EquipmentProperties {
     pub traits: Option<Vec<EquipmentTraits>>,
 }
 
+#[derive(PartialEq, Clone, Debug)]
 pub struct EquipableSlots {
     pub main: EquipmentSlots,
     pub alternate: Option<EquipmentSlots>,
@@ -118,30 +119,26 @@ impl EquipableSlots {
 }
 
 impl EquipmentProperties {
-    pub fn get_equippable_slots(&self) -> Option<EquipableSlots> {
+    pub fn get_equippable_slots(&self) -> EquipableSlots {
         match self.equipment_type {
-            EquipmentTypes::BodyArmor(_, _) => {
-                Some(EquipableSlots::new(EquipmentSlots::Body, None))
+            EquipmentTypes::BodyArmor(_, _) => EquipableSlots::new(EquipmentSlots::Body, None),
+            EquipmentTypes::HeadGear(_, _) => EquipableSlots::new(EquipmentSlots::Head, None),
+            EquipmentTypes::Ring => {
+                EquipableSlots::new(EquipmentSlots::RightRing, Some(EquipmentSlots::LeftRing))
             }
-            EquipmentTypes::HeadGear(_, _) => Some(EquipableSlots::new(EquipmentSlots::Head, None)),
-            EquipmentTypes::Ring => Some(EquipableSlots::new(
-                EquipmentSlots::RightRing,
-                Some(EquipmentSlots::LeftRing),
-            )),
-            EquipmentTypes::Amulet => Some(EquipableSlots::new(EquipmentSlots::Amulet, None)),
-            EquipmentTypes::OneHandedMeleeWeapon(_, _) => Some(EquipableSlots::new(
-                EquipmentSlots::MainHand,
-                Some(EquipmentSlots::OffHand),
-            )),
+
+            EquipmentTypes::Amulet => EquipableSlots::new(EquipmentSlots::Amulet, None),
+            EquipmentTypes::OneHandedMeleeWeapon(_, _) => {
+                EquipableSlots::new(EquipmentSlots::MainHand, Some(EquipmentSlots::OffHand))
+            }
+
             EquipmentTypes::TwoHandedMeleeWeapon(_, _) => {
-                Some(EquipableSlots::new(EquipmentSlots::MainHand, None))
+                EquipableSlots::new(EquipmentSlots::MainHand, None)
             }
             EquipmentTypes::TwoHandedRangedWeapon(_, _) => {
-                Some(EquipableSlots::new(EquipmentSlots::MainHand, None))
+                EquipableSlots::new(EquipmentSlots::MainHand, None)
             }
-            EquipmentTypes::Shield(_, _) => {
-                Some(EquipableSlots::new(EquipmentSlots::OffHand, None))
-            }
+            EquipmentTypes::Shield(_, _) => EquipableSlots::new(EquipmentSlots::OffHand, None),
         }
     }
 }

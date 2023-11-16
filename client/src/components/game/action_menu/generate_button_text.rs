@@ -13,7 +13,13 @@ pub fn generate_button_text(action: GameActions, game_state: Rc<GameStore>) -> S
                 "Close inventory".to_string()
             }
         }
-        GameActions::ToggleInventoryOpen => "Inventory".to_string(),
+        GameActions::ToggleInventoryOpen => {
+            if game_state.viewing_inventory {
+                "Close Inventory".to_string()
+            } else {
+                "Open Inventory".to_string()
+            }
+        }
         GameActions::UseAutoinjector => "Use autoinjector".to_string(),
         GameActions::SelectItem(id) => determine_select_item_text(&id, game_state),
         GameActions::OpenTreasureChest => "Open treasure chest".to_string(),

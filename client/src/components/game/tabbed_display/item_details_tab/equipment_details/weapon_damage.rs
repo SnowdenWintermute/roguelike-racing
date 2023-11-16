@@ -54,10 +54,10 @@ pub fn weapon_damage(equipment_type: &EquipmentTypes) -> Html {
                     DamageTypes::Ice => "bg-iceblue",
                     DamageTypes::Lightning => "bg-lightningpurple",
                     DamageTypes::Water => "bg-waterblue",
-                    DamageTypes::Earth => "bg-earthyellow",
-                    DamageTypes::Wind => "bg-windgreen",
+                    DamageTypes::Earth => "bg-earthyellow text-slate-700",
+                    DamageTypes::Wind => "bg-windgreen text-slate-700",
                     DamageTypes::Dark => "bg-darknessblack",
-                    DamageTypes::Light => "bg-lightwhite",
+                    DamageTypes::Light => "bg-lightwhite text-slate-700",
                 };
                 let damage_type_style = format!("pr-1 pl-1 {}", damage_type_color_style);
                 classification_displays.push(html!(

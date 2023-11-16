@@ -1,7 +1,4 @@
 mod equipment_details;
-
-use std::ops::Deref;
-
 use common::items::Item;
 use yew::prelude::*;
 use yewdux::prelude::use_store;

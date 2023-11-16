@@ -1,4 +1,5 @@
 mod paper_doll_slot;
+mod slot_highlighter;
 use common::items::{equipment::EquipmentSlots, Item};
 use std::collections::HashMap;
 use yew::prelude::*;
@@ -20,32 +21,39 @@ pub fn paper_doll(props: &Props) -> Html {
                 <div class="h-24 mb-2 flex justify-between items-end" >
                     <PaperDollSlot
                         item_option={equipment.remove(&EquipmentSlots::RightRing)}
-                        class="border border-slate-400 h-10 w-10" />
+                        slot={EquipmentSlots::RightRing}
+                        class=" h-10 w-10" />
                     <PaperDollSlot
                         item_option={equipment.remove(&EquipmentSlots::LeftRing)}
-                        class="border border-slate-400 h-10 w-10" />
+                        slot={EquipmentSlots::LeftRing}
+                        class=" h-10 w-10" />
                 </div>
                 <PaperDollSlot
                     item_option={equipment.remove(&EquipmentSlots::MainHand)}
-                    class="h-40 w-full border border-slate-400" />
+                    slot={EquipmentSlots::MainHand}
+                    class="h-40 w-full " />
             </div>
             <div class="w-1/3 mr-2 ml-2" >
                 <PaperDollSlot
                     item_option={equipment.remove(&EquipmentSlots::Head)}
-                    class="h-24 w-full border border-slate-400 mb-2" />
+                    slot={EquipmentSlots::Head}
+                    class="h-24 w-full  mb-2" />
                 <PaperDollSlot
                     item_option={equipment.remove(&EquipmentSlots::Body)}
-                    class="h-40 w-full border border-slate-400" />
+                    slot={EquipmentSlots::Body}
+                    class="h-40 w-full " />
             </div>
             <div class="w-1/3" >
                 <div class="h-24 mb-2 flex justify-end items-end" >
                     <PaperDollSlot
                         item_option={equipment.remove(&EquipmentSlots::Amulet)}
-                        class="border border-slate-400 h-10 w-10" />
+                        slot={EquipmentSlots::Amulet}
+                        class=" h-10 w-10" />
                 </div>
                 <PaperDollSlot
                     item_option={equipment.remove(&EquipmentSlots::OffHand)}
-                    class="h-40 w-full border border-slate-400" />
+                    slot={EquipmentSlots::OffHand}
+                    class="h-40 w-full " />
             </div>
         </div>
     )

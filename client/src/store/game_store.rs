@@ -1,5 +1,8 @@
 use common::{
-    combatants::CombatantProperties, game::RoguelikeRacerGame, items::Item,
+    combatants::CombatantProperties,
+    errors::AppError,
+    game::{getters::get_character, RoguelikeRacerGame},
+    items::{equipment::EquipableSlots, Item},
     primatives::EntityProperties,
 };
 use gloo::console::log;
@@ -24,6 +27,7 @@ pub struct GameStore {
     pub detailed_entity: Option<DetailableEntities>,
     pub hovered_entity: Option<DetailableEntities>,
     pub selected_item: Option<Item>,
+    pub compared_item: Option<Item>,
     pub focused_character_id: u32,
     pub viewing_skill_level_up_menu: bool,
     pub viewing_attribute_point_assignment_menu: bool,
@@ -50,7 +54,6 @@ pub fn select_item(game_dispatch: Dispatch<GameStore>, item_option: Option<Item>
         store.selected_item = item_option.clone();
         store.hovered_entity = None;
         if let Some(item) = item_option {
-            log!("setting item as detailed entity");
             store.detailed_entity = Some(DetailableEntities::Item(item));
         }
         store
@@ -58,4 +61,65 @@ pub fn select_item(game_dispatch: Dispatch<GameStore>, item_option: Option<Item>
             .push(store.action_menu_current_page_number);
         store.action_menu_current_page_number = 0;
     })
+}
+
+pub fn set_compared_item<'a>(
+    game_dispatch: Dispatch<GameStore>,
+    item_id: u32,
+    compare_alternate_slot: bool,
+) {
+    game_dispatch.reduce_mut(|store| {
+        if let Some(game) = &mut store.game {
+            if let Some(party_id) = store.current_party_id {
+                if let Some(item_considering) =
+                    game.get_item_in_adventuring_party(party_id, item_id)
+                {
+                    // get the character which we want to compare equipment
+                    let focused_character = get_character(
+                        game,
+                        party_id,
+                        store.focused_character_id,
+                    )
+                    .expect(
+                        "we should only be focusing a character that exists in the player's party",
+                    );
+                    // find the equipment slot of the item
+                    let slots_option: Option<EquipableSlots> =
+                        match &item_considering.item_properties {
+                            common::items::ItemProperties::Consumable(_) => None,
+                            common::items::ItemProperties::Equipment(equipment_properties) => {
+                                equipment_properties.get_equippable_slots()
+                            }
+                        };
+
+                    if let Some(slots) = slots_option {
+                        let slot_to_compare = if let Some(alternate_slot) = slots.alternate {
+                            if compare_alternate_slot {
+                                alternate_slot
+                            } else {
+                                slots.main
+                            }
+                        } else {
+                            slots.main
+                        };
+                        let equiped_item_option = focused_character
+                            .combatant_properties
+                            .equipment
+                            .get(&slot_to_compare);
+                        match equiped_item_option {
+                            Some(item) => {
+                                // don't compare to self
+                                if item.entity_properties.id != item_id {
+                                    store.compared_item = Some(item.clone())
+                                } else {
+                                    store.compared_item = None
+                                }
+                            }
+                            None => store.compared_item = None,
+                        }
+                    }
+                }
+            }
+        }
+    });
 }

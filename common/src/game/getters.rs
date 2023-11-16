@@ -60,3 +60,19 @@ pub fn get_mut_character<'a>(
         })?;
     Ok(character)
 }
+
+pub fn get_character<'a>(
+    game: &'a RoguelikeRacerGame,
+    party_id: u32,
+    character_id: u32,
+) -> Result<&'a Character, AppError> {
+    let party = get_party(game, party_id)?;
+    let character = party
+        .characters
+        .get(&character_id)
+        .ok_or_else(|| AppError {
+            error_type: crate::errors::AppErrorTypes::ServerError,
+            message: error_messages::CHARACTER_NOT_FOUND.to_string(),
+        })?;
+    Ok(character)
+}

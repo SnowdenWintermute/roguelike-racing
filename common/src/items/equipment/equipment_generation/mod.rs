@@ -1,3 +1,4 @@
+pub mod create_starting_equipment;
 mod equipment_blueprints;
 mod equipment_generation_template_properties;
 mod equipment_generation_templates;

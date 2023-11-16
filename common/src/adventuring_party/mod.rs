@@ -1,6 +1,7 @@
 use crate::character::Character;
 use crate::dungeon_rooms::DungeonRoom;
 use crate::dungeon_rooms::DungeonRoomTypes;
+use crate::items::Item;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
@@ -48,5 +49,38 @@ impl AdventuringParty {
             time_of_wipe: None,
             time_of_escape: None,
         }
+    }
+
+    pub fn get_item_by_id<'a>(&'a self, id: u32) -> Option<&'a Item> {
+        for (_, character) in &self.characters {
+            for (_, item) in &character.combatant_properties.equipment {
+                if item.entity_properties.id == id {
+                    return Some(item);
+                }
+            }
+            for item in &character.inventory.items {
+                if item.entity_properties.id == id {
+                    return Some(item);
+                }
+            }
+            if let Some(items) = &self.current_room.items {
+                for item in items {
+                    if item.entity_properties.id == id {
+                        return Some(item);
+                    }
+                }
+            }
+            if let Some(monsters) = &self.current_room.monsters {
+                for monster in monsters {
+                    for (_, item) in &monster.combatant_properties.equipment {
+                        if item.entity_properties.id == id {
+                            return Some(item);
+                        }
+                    }
+                }
+            }
+        }
+
+        None
     }
 }

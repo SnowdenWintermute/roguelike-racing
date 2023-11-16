@@ -4,6 +4,7 @@ use crate::adventuring_party::AdventuringParty;
 use crate::character::Character;
 use crate::errors::AppError;
 use crate::game::id_generator::IdGenerator;
+use crate::items::Item;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
@@ -160,5 +161,17 @@ impl RoguelikeRacerGame {
         // for party in &self.adventuring_parties {
 
         // }
+    }
+
+    pub fn get_item_in_adventuring_party(
+        &self,
+        adventuring_party_id: u32,
+        item_id: u32,
+    ) -> Option<&Item> {
+        let adventuring_party_option = self.adventuring_parties.get(&adventuring_party_id);
+        if let Some(party) = adventuring_party_option {
+            return party.get_item_by_id(item_id);
+        }
+        None
     }
 }

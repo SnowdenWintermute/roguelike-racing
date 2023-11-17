@@ -1,12 +1,5 @@
-use crate::{
-    components::game::character_sheet::paper_doll::slot_highlighter::SlotHighlighter,
-    store::{
-        game_store::{select_item, set_item_hovered, GameStore},
-        ui_store::UIStore,
-    },
-};
+use crate::store::game_store::{select_item, set_item_hovered, GameStore};
 use common::items::{equipment::EquipmentSlots, Item};
-use gloo::console::log;
 use std::ops::Deref;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
@@ -26,31 +19,61 @@ pub fn paper_doll_slot(props: &Props) -> Html {
         class,
     } = props;
     let (game_state, game_dispatch) = use_store::<GameStore>();
-    let (ui_state, _) = use_store::<UIStore>();
     let highlighted_class_state = use_state(|| "".to_string());
 
     let item_display = match item_option {
         Some(item) => item.entity_properties.name.clone(),
         None => "".to_string(),
     };
-
-    let item_id_option = match item_option {
-        Some(item) => Some(item.entity_properties.id),
+    let detailed_entity_id_option = match &game_state.detailed_entity {
+        Some(detailed_entity) => Some(detailed_entity.get_id()).clone(),
+        None => None,
+    };
+    let hovered_entity_id_option = match &game_state.hovered_entity {
+        Some(hovered_entity) => Some(hovered_entity.get_id()).clone(),
         None => None,
     };
 
-    if props.item_option.is_none() {
-        return html!(
-            <button class={class}>
-                <SlotHighlighter
-                    equiped_item_id_option={item_id_option}
-                    slot={slot.clone()}
-                    highlight_class_state={highlighted_class_state}
-                />
-                {item_display}
-            </button>
-        );
-    }
+    // HANDLE BORDER/BG STYLES FOR COMPARED/FOCUSED/HOVERED EQUIPMENT SLOTS
+    let cloned_highlighted_class_state = highlighted_class_state.clone();
+    let cloned_game_state = game_state.clone();
+    let cloned_compared_slot = game_state.compared_slot.clone();
+    let cloned_slot = slot.clone();
+    let cloned_item_in_slot_option = item_option.clone();
+    use_effect_with(
+        (cloned_compared_slot, detailed_entity_id_option),
+        move |_| {
+            let mut bg_class = "";
+            if let Some(compared_slot) = &cloned_game_state.compared_slot {
+                if *compared_slot == cloned_slot {
+                    bg_class = "bg-slate-800";
+                }
+            }
+
+            if let Some(detailed_entity_id) = detailed_entity_id_option {
+                if let Some(item_in_slot) = &cloned_item_in_slot_option {
+                    if item_in_slot.entity_properties.id == detailed_entity_id {
+                        cloned_highlighted_class_state.set("border-yellow-400".to_string());
+                        cloned_highlighted_class_state
+                            .set(format!("{} {}", bg_class, "border-yellow-400"));
+                        return;
+                    }
+                }
+            }
+
+            if let Some(hovered_entity_id) = hovered_entity_id_option {
+                if let Some(item_in_slot) = &cloned_item_in_slot_option {
+                    if item_in_slot.entity_properties.id == hovered_entity_id {
+                        cloned_highlighted_class_state
+                            .set(format!("{} {}", bg_class, "border-white"));
+                        return;
+                    }
+                }
+            }
+
+            cloned_highlighted_class_state.set(format!("{} {}", bg_class, "border-slate-400"));
+        },
+    );
 
     let cloned_dispatch = game_dispatch.clone();
     let cloned_item_option = props.item_option.clone();
@@ -84,6 +107,14 @@ pub fn paper_doll_slot(props: &Props) -> Html {
         select_item(cloned_dispatch, cloned_item_option);
     });
 
+    if props.item_option.is_none() {
+        return html!(
+            <button class={format!("overflow-ellipsis overflow-hidden border {} {}", class, highlighted_class_state.deref())}>
+                {item_display}
+            </button>
+        );
+    }
+
     html!(
         <button class={format!("overflow-ellipsis overflow-hidden border {} {}",class, highlighted_class_state.deref())}
             onmouseenter={handle_mouse_over_item}
@@ -92,11 +123,6 @@ pub fn paper_doll_slot(props: &Props) -> Html {
             onblur={handle_blur_item}
             onclick={handle_click}
         >
-            <SlotHighlighter
-                equiped_item_id_option={item_id_option}
-                slot={slot.clone()}
-                highlight_class_state={highlighted_class_state.clone()}
-            />
             {item_display}
         </button>
     )

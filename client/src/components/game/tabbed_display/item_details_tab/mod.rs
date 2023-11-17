@@ -26,11 +26,15 @@ pub fn item_details_tab(props: &Props) -> Html {
     let cloned_game_dispatch = game_dispatch.clone();
     let considered_item_id = props.item.entity_properties.id;
     use_effect_with((ui_state.mod_key_held, item_id), move |_| {
+        let cloned_game_dispatch_ii = cloned_game_dispatch.clone();
         set_compared_item(
             cloned_game_dispatch,
             considered_item_id,
             ui_state.mod_key_held,
-        )
+        );
+        move || {
+            cloned_game_dispatch_ii.reduce_mut(|store| store.compared_slot = None);
+        }
     });
 
     let display = match &props.item.item_properties {

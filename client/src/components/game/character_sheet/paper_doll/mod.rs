@@ -1,5 +1,4 @@
 mod paper_doll_slot;
-mod slot_highlighter;
 use common::items::{equipment::EquipmentSlots, Item};
 use std::collections::HashMap;
 use yew::prelude::*;

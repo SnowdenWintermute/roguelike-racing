@@ -1,7 +1,10 @@
 use common::{
     combatants::CombatantProperties,
     game::{getters::get_character, RoguelikeRacerGame},
-    items::{equipment::EquipableSlots, Item},
+    items::{
+        equipment::{EquipableSlots, EquipmentSlots},
+        Item,
+    },
     primatives::EntityProperties,
 };
 use yewdux::prelude::*;
@@ -35,6 +38,7 @@ pub struct GameStore {
     pub hovered_entity: Option<DetailableEntities>,
     pub selected_item: Option<Item>,
     pub compared_item: Option<Item>,
+    pub compared_slot: Option<EquipmentSlots>,
     pub focused_character_id: u32,
     pub viewing_skill_level_up_menu: bool,
     pub viewing_attribute_point_assignment_menu: bool,
@@ -118,6 +122,7 @@ pub fn set_compared_item<'a>(
                         } else {
                             slots.main
                         };
+                        store.compared_slot = Some(slot_to_compare.clone());
                         let equiped_item_option = focused_character
                             .combatant_properties
                             .equipment

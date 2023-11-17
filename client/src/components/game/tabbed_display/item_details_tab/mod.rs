@@ -1,8 +1,4 @@
 mod equipment_details;
-use common::items::Item;
-use yew::prelude::*;
-use yewdux::prelude::use_store;
-
 use crate::{
     components::game::tabbed_display::item_details_tab::equipment_details::EquipmentDetails,
     store::{
@@ -10,6 +6,10 @@ use crate::{
         ui_store::UIStore,
     },
 };
+use common::items::{equipment::EquipmentSlots, Item};
+use std::rc::Rc;
+use yew::prelude::*;
+use yewdux::prelude::use_store;
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
@@ -37,6 +37,17 @@ pub fn item_details_tab(props: &Props) -> Html {
         }
     });
 
+    let mod_key_tooltip = if should_display_mod_tooltip(&game_state, &props.item) {
+        html!(
+            <span>
+                {" "}
+                <span class="border border-slate-400 rounded-md pr-1 pl-1" >{ "shift" }</span>
+            </span>
+        )
+    } else {
+        html!()
+    };
+
     let display = match &props.item.item_properties {
         common::items::ItemProperties::Consumable(_) => html!({ "Consumable item" }),
         common::items::ItemProperties::Equipment(properties) => {
@@ -62,6 +73,10 @@ pub fn item_details_tab(props: &Props) -> Html {
     html!(
         <div class="w-full h-full flex">
             <div class="h-full w-1/2 relative">
+                <span>
+                    {"Item considering"}
+                </span>
+                <div class="mr-2 mb-1 mt-1 h-[1px] bg-slate-400" />
                 {props.item.entity_properties.name.clone()}
                 {display.clone()}
                 <div class="opacity-50 fill-slate-400 h-40 absolute bottom-5 right-3">
@@ -70,6 +85,11 @@ pub fn item_details_tab(props: &Props) -> Html {
             </div>
             <div class="h-full w-1/2 relative">
             if let Some(compared_display) = compared_display_option {
+                <span class="flex justify-between pr-2">
+                    {"Currently equipped"}
+                {mod_key_tooltip}
+                </span>
+                <div class="mr-2 mb-1 mt-1 h-[1px] bg-slate-400" />
                 {compared_item_name}
                 {compared_display}
                 <div class="opacity-50 fill-slate-400 h-40 absolute bottom-5 right-3">
@@ -79,4 +99,24 @@ pub fn item_details_tab(props: &Props) -> Html {
             </div>
         </div>
     )
+}
+
+fn should_display_mod_tooltip(game_state: &Rc<GameStore>, equipped_item: &Item) -> bool {
+    if game_state.compared_slot == Some(EquipmentSlots::RightRing)
+        || game_state.compared_slot == Some(EquipmentSlots::MainHand)
+    {
+        match &equipped_item.item_properties {
+            common::items::ItemProperties::Consumable(_) => false,
+            common::items::ItemProperties::Equipment(equipment_properties) => {
+                match equipment_properties.equipment_type {
+                    common::items::equipment::EquipmentTypes::Ring => true,
+                    common::items::equipment::EquipmentTypes::OneHandedMeleeWeapon(_, _) => true,
+
+                    _ => false,
+                }
+            }
+        }
+    } else {
+        false
+    }
 }

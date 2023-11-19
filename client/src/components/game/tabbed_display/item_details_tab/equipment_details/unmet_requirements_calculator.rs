@@ -1,14 +1,19 @@
-use common::combatants::CombatAttributes;
+use crate::store::game_store::GameStore;
+use common::{combatants::CombatAttributes, game::getters::get_character};
+use std::{
+    collections::{HashMap, HashSet},
+    ops::Deref,
+};
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
-    pub equipment_requirements: HashMap<CombatAttributes, u16>,
+    pub equipment_requirements: HashMap<CombatAttributes, u8>,
     pub entity_id: u32,
 }
 
-#[function_component(EquipmentDetails)]
+#[function_component(UnmetRequirementsCalculator)]
 pub fn unmet_requirements_calculator(props: &Props) -> Html {
     let (game_state, game_dispatch) = use_store::<GameStore>();
 
@@ -27,12 +32,8 @@ pub fn unmet_requirements_calculator(props: &Props) -> Html {
     let cloned_game_dispatch = game_dispatch.clone();
     let entity_id = props.entity_id;
     use_effect_with(
-        (
-            cloned_focused_character_combat_attributes,
-            entity_id,
-            is_compared_item,
-        ),
-        move |(character_attributes, _, _)| {
+        (cloned_focused_character_combat_attributes, entity_id),
+        move |(character_attributes, _)| {
             let mut unmet_requirement_attributes = HashSet::new();
             for (attribute, value) in &cloned_equipment_requirements {
                 let character_attribute_option = character_attributes.get(attribute);

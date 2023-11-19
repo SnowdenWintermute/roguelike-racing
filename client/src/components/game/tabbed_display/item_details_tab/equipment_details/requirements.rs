@@ -2,6 +2,8 @@ use common::combatants::CombatAttributes;
 use std::collections::HashMap;
 use yew::{html, virtual_dom::VNode};
 
+const UNMET_REQUIREMENT_TEXT_COLOR: &str = "text-red-400";
+
 pub fn requirements(
     requirements: &HashMap<CombatAttributes, u8>,
     combatant_attributes: &HashMap<CombatAttributes, u16>,
@@ -22,10 +24,10 @@ pub fn requirements(
                 if *attr_value >= *requirement_value as u16 {
                     ""
                 } else {
-                    "text-red-500"
+                    UNMET_REQUIREMENT_TEXT_COLOR
                 }
             }
-            None => "text-red-500",
+            None => UNMET_REQUIREMENT_TEXT_COLOR,
         };
         displays.push(html!(
         <div class={format!("{}", unmet_requirement_class)}>

@@ -1,10 +1,17 @@
 mod hp_and_mp;
 mod weapon_damage;
+use std::rc::Rc;
+
 use common::{
     combatants::{CombatAttributes, CombatantProperties},
     primatives::EntityProperties,
 };
 use yew::{prelude::*, virtual_dom::VNode};
+use yewdux::prelude::use_store;
+
+use crate::{
+    components::client_consts::UNMET_REQUIREMENT_TEXT_COLOR, store::game_store::GameStore,
+};
 
 #[derive(Properties, Eq, PartialEq)]
 pub struct Props {
@@ -18,6 +25,7 @@ pub fn character_attributes(props: &Props) -> Html {
         combatant_properties,
         entity_properties,
     } = props;
+    let (game_state, _) = use_store::<GameStore>();
     let total_attributes = combatant_properties.get_total_attributes();
     let mut combatant_attributes_as_vec = total_attributes
         .iter()
@@ -40,13 +48,13 @@ pub fn character_attributes(props: &Props) -> Html {
                     {combatant_attributes_as_vec.iter()
                         .enumerate()
                         .filter(|( i, _ )| i < &half_num_attributes)
-                        .map(|(_, (attribute, value))| attribute_list_item(attribute, value)).collect::<Html>()}
+                        .map(|(_, (attribute, value))| attribute_list_item(attribute, value, &game_state)).collect::<Html>()}
                 </ul>
                 <ul class="list-none w-1/2 ml-1" >
                     {combatant_attributes_as_vec.iter()
                         .enumerate()
                         .filter(|( i, _)| i >= &half_num_attributes)
-                        .map(|(_, (attribute, value))| attribute_list_item(attribute, value)).collect::<Html>()}
+                        .map(|(_, (attribute, value))| attribute_list_item(attribute, value, &game_state)).collect::<Html>()}
                 </ul>
             </div>
             <div id="divider" class="bg-slate-400 h-[1px] flex mt-2 mr-2 ml-2 mb-2" />
@@ -60,9 +68,24 @@ fn is_custom_displayed_attribute(attribute: &CombatAttributes) -> bool {
     attribute == &CombatAttributes::Hp || attribute == &CombatAttributes::Mp
 }
 
-fn attribute_list_item(attribute: &CombatAttributes, value: &u16) -> VNode {
+fn attribute_list_item(
+    attribute: &CombatAttributes,
+    value: &u16,
+    game_state: &Rc<GameStore>,
+) -> VNode {
+    let is_unmet_requirement = match &game_state.considered_item_unmet_requirements {
+        Some(unmet_attribute_requirements) => unmet_attribute_requirements.get(attribute).is_some(),
+        None => false,
+    };
+
+    let highlight_class = if is_unmet_requirement {
+        UNMET_REQUIREMENT_TEXT_COLOR
+    } else {
+        ""
+    };
+
     html!(
-        <li class="flex justify-between" >
+        <li class={ format!( "flex justify-between {}", highlight_class  ) }>
             <span>{format!("{}", attribute)}</span>
             <span>{format!("{}", value)}</span>
         </li>

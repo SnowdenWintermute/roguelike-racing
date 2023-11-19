@@ -51,7 +51,7 @@ pub fn item_details_tab(props: &Props) -> Html {
     let display = match &props.item.item_properties {
         common::items::ItemProperties::Consumable(_) => html!({ "Consumable item" }),
         common::items::ItemProperties::Equipment(properties) => {
-            html!(<EquipmentDetails equipment_properties={properties.clone()} />)
+            html!(<EquipmentDetails equipment_properties={properties.clone()} entity_id={item_id} is_compared_item={false} />)
         }
     };
 
@@ -63,9 +63,9 @@ pub fn item_details_tab(props: &Props) -> Html {
     let compared_display_option = match &compared_item {
         Some(compared_item) => match &compared_item.item_properties {
             common::items::ItemProperties::Consumable(_) => None,
-            common::items::ItemProperties::Equipment(properties) => {
-                Some(html!(<EquipmentDetails equipment_properties={properties.clone()} />))
-            }
+            common::items::ItemProperties::Equipment(properties) => Some(
+                html!(<EquipmentDetails equipment_properties={properties.clone()} entity_id={compared_item.entity_properties.id} is_compared_item={true} />),
+            ),
         },
         None => None,
     };

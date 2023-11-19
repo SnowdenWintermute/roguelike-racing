@@ -1,5 +1,7 @@
+use std::collections::HashSet;
+
 use common::{
-    combatants::CombatantProperties,
+    combatants::{CombatAttributes, CombatantProperties},
     game::{getters::get_character, RoguelikeRacerGame},
     items::{
         equipment::{EquipableSlots, EquipmentSlots},
@@ -39,6 +41,7 @@ pub struct GameStore {
     pub selected_item: Option<Item>,
     pub compared_item: Option<Item>,
     pub compared_slot: Option<EquipmentSlots>,
+    pub considered_item_unmet_requirements: Option<HashSet<CombatAttributes>>,
     pub focused_character_id: u32,
     pub viewing_skill_level_up_menu: bool,
     pub viewing_attribute_point_assignment_menu: bool,

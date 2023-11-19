@@ -7,3 +7,4 @@
 // const WATER_BLUE: &str = "332e92";
 // const DARKNESS_BLACK: &str = "2e2514";
 // const LIGHT_WHITE: &str = "a7a08d";
+pub const UNMET_REQUIREMENT_TEXT_COLOR: &str = "text-red-400";

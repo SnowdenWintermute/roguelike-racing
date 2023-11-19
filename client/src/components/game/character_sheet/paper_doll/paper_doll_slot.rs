@@ -46,7 +46,11 @@ pub fn paper_doll_slot(props: &Props) -> Html {
             let mut bg_class = "";
             if let Some(compared_slot) = &cloned_game_state.compared_slot {
                 if *compared_slot == cloned_slot {
-                    bg_class = "bg-slate-800";
+                    if game_state.considered_item_unmet_requirements.is_some() {
+                        bg_class = "bg-red-800 opacity-50";
+                    } else {
+                        bg_class = "bg-slate-800";
+                    }
                 }
             }
 

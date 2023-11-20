@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 use common::{
     combatants::{CombatAttributes, CombatantProperties},
     game::{getters::get_character, RoguelikeRacerGame},
@@ -9,6 +7,7 @@ use common::{
     },
     primatives::EntityProperties,
 };
+use std::collections::HashSet;
 use yewdux::prelude::*;
 
 #[derive(PartialEq, Clone, Debug)]
@@ -46,6 +45,7 @@ pub struct GameStore {
     pub viewing_skill_level_up_menu: bool,
     pub viewing_attribute_point_assignment_menu: bool,
     pub viewing_inventory: bool,
+    pub viewing_equiped_items: bool,
     pub selecting_injection_type: bool,
     pub viewing_items_on_ground: bool,
     pub parent_menu_pages: Vec<u8>,

@@ -17,7 +17,7 @@ pub fn create_action_handler<'a>(
     game_action: GameActions,
     game_dispatch: Dispatch<GameStore>,
     game_state: Rc<GameStore>,
-    websocket_state: Rc<WebsocketStore>,
+    _websocket_state: Rc<WebsocketStore>,
 ) -> Box<dyn Fn()> {
     match game_action {
             GameActions::ToggleReadyToExplore => Box::new(|| (log!("ready to explore selected"))),
@@ -29,6 +29,11 @@ pub fn create_action_handler<'a>(
             }),
             GameActions::ToggleInventoryOpen => Box::new(move || {
                 game_dispatch.reduce_mut(|game_state| game_state.viewing_inventory = !game_state.viewing_inventory);
+                game_dispatch.reduce_mut(|game_state| game_state.viewing_equiped_items = false);
+            }),
+            GameActions::ToggleViewingEquipedItems => Box::new(move || {
+                game_dispatch.reduce_mut(|game_state| game_state.viewing_equiped_items = !game_state.viewing_equiped_items);
+
             }),
             GameActions::DeselectItem => Box::new(move || {
                 game_dispatch.reduce_mut(|game_state| game_state.selected_item = None);

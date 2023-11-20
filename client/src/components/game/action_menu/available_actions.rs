@@ -11,6 +11,7 @@ pub enum MenuTypes {
     LevelUpAbilities,
     AttributePointAssignment,
     InventoryOpen,
+    ViewingEquipedItems,
     ItemSelected(u32),
     ItemsOnGround,
     UnopenedChest,
@@ -21,6 +22,7 @@ pub enum GameActions {
     ToggleReadyToExplore,
     SetInventoryOpen(bool),
     ToggleInventoryOpen,
+    ToggleViewingEquipedItems,
     UseAutoinjector,
     SelectItem(u32),
     OpenTreasureChest,
@@ -41,7 +43,7 @@ pub enum GameActions {
 impl MenuTypes {
     pub fn get_menu(
         menu_types: &Vec<MenuTypes>,
-        item_ids_in_inventory: Option<Vec<u32>>,
+        item_ids: Option<Vec<u32>>,
         abilities: Option<Vec<CombatantAbilityNames>>,
     ) -> Vec<GameActions> {
         let mut menu_items: Vec<GameActions> = Vec::new();
@@ -69,7 +71,17 @@ impl MenuTypes {
                 }
                 MenuTypes::InventoryOpen => {
                     menu_items.push(GameActions::ToggleInventoryOpen);
-                    if let Some(item_ids) = &item_ids_in_inventory {
+                    menu_items.push(GameActions::ToggleViewingEquipedItems);
+                    if let Some(item_ids) = &item_ids {
+                        for id in item_ids {
+                            menu_items.push(GameActions::SelectItem(*id))
+                        }
+                    }
+                }
+                MenuTypes::ViewingEquipedItems => {
+                    menu_items.push(GameActions::ToggleInventoryOpen);
+                    menu_items.push(GameActions::ToggleViewingEquipedItems);
+                    if let Some(item_ids) = &item_ids {
                         for id in item_ids {
                             menu_items.push(GameActions::SelectItem(*id))
                         }

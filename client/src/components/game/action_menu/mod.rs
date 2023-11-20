@@ -68,6 +68,7 @@ pub fn action_menu(props: &Props) -> Html {
         (
             game_state.focused_character_id,
             game_state.viewing_inventory,
+            game_state.viewing_equiped_items,
             selected_item_id,
             game_state.viewing_items_on_ground,
             game_state.viewing_skill_level_up_menu,

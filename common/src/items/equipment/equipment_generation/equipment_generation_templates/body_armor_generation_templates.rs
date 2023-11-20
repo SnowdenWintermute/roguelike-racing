@@ -18,7 +18,7 @@ fn body_armor_template_from_base_item(
             Range::new(2, 6),
             Some(6),
             ArmorCategories::Cloth,
-            requirements,
+            Some(requirements),
             None,
             None,
         ),
@@ -27,7 +27,7 @@ fn body_armor_template_from_base_item(
             Range::new(5, 10),
             Some(12),
             ArmorCategories::Cloth,
-            requirements,
+            Some(requirements),
             None,
             None,
         ),
@@ -36,7 +36,7 @@ fn body_armor_template_from_base_item(
             Range::new(10, 14),
             Some(18),
             ArmorCategories::Cloth,
-            requirements,
+            Some(requirements),
             None,
             None,
         ),
@@ -47,7 +47,7 @@ fn body_armor_template_from_base_item(
                 Range::new(18, 22),
                 Some(24),
                 ArmorCategories::Cloth,
-                requirements,
+                Some(requirements),
                 None,
                 None,
             )
@@ -59,7 +59,7 @@ fn body_armor_template_from_base_item(
                 Range::new(30, 40),
                 Some(30),
                 ArmorCategories::Cloth,
-                requirements,
+                Some(requirements),
                 None,
                 None,
             )
@@ -71,7 +71,7 @@ fn body_armor_template_from_base_item(
                 Range::new(15, 22),
                 Some(8),
                 ArmorCategories::Leather,
-                requirements,
+                Some(requirements),
                 None,
                 None,
             )
@@ -83,7 +83,7 @@ fn body_armor_template_from_base_item(
                 Range::new(25, 35),
                 Some(15),
                 ArmorCategories::Leather,
-                requirements,
+                Some(requirements),
                 None,
                 None,
             )
@@ -95,7 +95,7 @@ fn body_armor_template_from_base_item(
                 Range::new(30, 45),
                 Some(24),
                 ArmorCategories::Leather,
-                requirements,
+                Some(requirements),
                 None,
                 None,
             )
@@ -107,7 +107,7 @@ fn body_armor_template_from_base_item(
                 Range::new(55, 65),
                 Some(40),
                 ArmorCategories::Leather,
-                requirements,
+                Some(requirements),
                 None,
                 None,
             )
@@ -120,7 +120,7 @@ fn body_armor_template_from_base_item(
                 Range::new(20, 24),
                 Some(12),
                 ArmorCategories::Mail,
-                requirements,
+                Some(requirements),
                 None,
                 None,
             )
@@ -134,7 +134,7 @@ fn body_armor_template_from_base_item(
                 Range::new(28, 36),
                 Some(18),
                 ArmorCategories::Mail,
-                requirements,
+                Some(requirements),
                 None,
                 None,
             )
@@ -147,7 +147,7 @@ fn body_armor_template_from_base_item(
                 Range::new(34, 45),
                 Some(24),
                 ArmorCategories::Mail,
-                requirements,
+                Some(requirements),
                 None,
                 None,
             )
@@ -160,7 +160,7 @@ fn body_armor_template_from_base_item(
                 Range::new(48, 60),
                 Some(30),
                 ArmorCategories::Mail,
-                requirements,
+                Some(requirements),
                 None,
                 None,
             )
@@ -174,7 +174,7 @@ fn body_armor_template_from_base_item(
                 Range::new(1, 1),
                 Some(50),
                 ArmorCategories::Mail,
-                requirements,
+                Some(requirements),
                 None,
                 None,
             )
@@ -186,7 +186,7 @@ fn body_armor_template_from_base_item(
                 Range::new(30, 40),
                 Some(18),
                 ArmorCategories::Plate,
-                requirements,
+                Some(requirements),
                 None,
                 None,
             )
@@ -198,7 +198,7 @@ fn body_armor_template_from_base_item(
                 Range::new(40, 45),
                 Some(24),
                 ArmorCategories::Plate,
-                requirements,
+                Some(requirements),
                 None,
                 None,
             )
@@ -210,7 +210,7 @@ fn body_armor_template_from_base_item(
                 Range::new(50, 60),
                 Some(30),
                 ArmorCategories::Plate,
-                requirements,
+                Some(requirements),
                 None,
                 None,
             )
@@ -222,7 +222,7 @@ fn body_armor_template_from_base_item(
                 Range::new(60, 75),
                 Some(50),
                 ArmorCategories::Plate,
-                requirements,
+                Some(requirements),
                 None,
                 None,
             )
@@ -234,7 +234,7 @@ fn body_armor_template_from_base_item(
                 Range::new(80, 100),
                 Some(80),
                 ArmorCategories::Plate,
-                requirements,
+                Some(requirements),
                 None,
                 None,
             )

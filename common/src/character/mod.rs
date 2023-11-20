@@ -1,10 +1,13 @@
 use self::inventory::CharacterInventory;
 use self::outfit_new_warrior::outfit_new_warrior;
+use crate::app_consts::error_messages;
 use crate::combatants::abilities::CombatantAbility;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::CombatantClass;
 use crate::combatants::CombatantProperties;
+use crate::errors::AppError;
 use crate::game::RoguelikeRacerGame;
+use crate::items::Item;
 use crate::primatives::EntityProperties;
 use serde::Deserialize;
 use serde::Serialize;
@@ -54,5 +57,43 @@ impl Character {
         }
 
         character
+    }
+
+    pub fn equip_item(&self, item_id: u32) -> Result<(), AppError> {
+        let mut item = None;
+        for item_in_inventory in &self.inventory.items {
+            if item_in_inventory.entity_properties.id == item_id {
+                item = Some(item_in_inventory);
+            }
+        }
+        if item == None {
+            return Err(AppError {
+                error_type: crate::errors::AppErrorTypes::InvalidInput,
+                message: error_messages::INVALID_ITEM_ID.to_string(),
+            });
+        }
+        Ok(())
+    }
+
+    pub fn character_can_use_item(&self, item: Item) -> bool {
+        let total_character_attributes = self.combatant_properties.get_total_attributes();
+        if let Some(requirements) = &item.requirements {
+            for (attribute, value) in requirements {
+                let character_attribute_option = total_character_attributes.get(attribute);
+                match character_attribute_option {
+                    Some(attr_value) => {
+                        if *attr_value >= *value as u16 {
+                            continue;
+                        } else {
+                            return false;
+                        }
+                    }
+                    None => return false,
+                };
+            }
+        } else {
+            return true;
+        }
+        true
     }
 }

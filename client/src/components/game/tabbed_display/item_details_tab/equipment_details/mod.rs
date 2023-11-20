@@ -1,10 +1,12 @@
+use std::collections::HashMap;
+
 use self::armor::*;
 use self::unmet_requirements_calculator::UnmetRequirementsCalculator;
 use crate::{
     components::game::tabbed_display::item_details_tab::equipment_details::equipment_durability::EquipmentDurability,
     store::game_store::GameStore,
 };
-use common::items::equipment::EquipmentProperties;
+use common::{combatants::CombatAttributes, items::equipment::EquipmentProperties};
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 mod armor;
@@ -18,6 +20,7 @@ mod weapon_damage;
 #[derive(Properties, PartialEq)]
 pub struct Props {
     pub equipment_properties: EquipmentProperties,
+    pub requirements: Option<HashMap<CombatAttributes, u8>>,
     pub entity_id: u32,
     pub is_compared_item: bool,
 }
@@ -45,12 +48,12 @@ pub fn equipment_details(props: &Props) -> Html {
                 />
                 {combat_attributes::combat_attributes(&props.equipment_properties)}
                 {traits::traits(&props.equipment_properties.traits)}
-                {requirements::requirements(&props.equipment_properties.requirements, cloned_game_state)}
+                {requirements::requirements(&props.requirements, cloned_game_state)}
                 {
                     if !props.is_compared_item {
                         html!(
                             <UnmetRequirementsCalculator
-                                equipment_requirements={props.equipment_properties.requirements.clone()}
+                                equipment_requirements={props.requirements.clone()}
                                 entity_id={props.entity_id}
                                 />
                             )

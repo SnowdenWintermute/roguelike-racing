@@ -15,13 +15,12 @@ use crate::{
     primatives::Range,
 };
 use rand::Rng;
-use std::collections::HashMap;
 
 pub fn jewelry_blueprint_from_base_item<'a>(_base_item: Jewelries) -> EquipmentBlueprint<'a> {
     let template_properties = EquipmentGenerationTemplateProperties {
         level_range: Range::new(1, DEEPEST_FLOOR),
         max_durability: None,
-        requirements: HashMap::new(),
+        requirements: None,
         affix_modifiers: None,
         traits: None,
     };

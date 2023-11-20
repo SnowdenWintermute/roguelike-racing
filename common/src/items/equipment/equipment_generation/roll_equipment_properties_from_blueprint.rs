@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use super::equipment_generation_template_properties::EquipmentGenerationTemplateProperties;
 use super::generate_affixes::generate_affixes;
 use super::generate_durability::generate_durability;
@@ -5,6 +7,7 @@ use super::generate_equipment_combat_attributes::generate_equipment_combat_attri
 use super::generate_equipment_traits::generate_equipment_traits;
 use super::make_indestructable_if_max_tier_durablity::make_indestructable_if_max_tier_durability;
 use super::select_random_affix_types::select_random_affix_types;
+use super::EquipmentPropertiesAndRequirements;
 use crate::items::equipment::affixes::PrefixTypes;
 use crate::items::equipment::affixes::SuffixTypes;
 use crate::items::equipment::EquipmentProperties;
@@ -18,7 +21,7 @@ pub fn roll_equipment_properties_from_blueprint(
     possible_suffixes: &Vec<&(SuffixTypes, u8)>,
     num_prefixes: u8,
     num_suffixes: u8,
-) -> EquipmentProperties {
+) -> EquipmentPropertiesAndRequirements {
     let requirements = template_properties.requirements.clone();
     let mut durability = generate_durability(template_properties.max_durability);
     let affix_modifiers = template_properties.get_affix_modifers();
@@ -40,12 +43,14 @@ pub fn roll_equipment_properties_from_blueprint(
     let traits = generate_equipment_traits(&affixes);
     let attributes = generate_equipment_combat_attributes(&affixes);
 
-    EquipmentProperties {
-        equipment_type,
-        durability,
-        attributes,
+    EquipmentPropertiesAndRequirements {
+        equipment_properties: EquipmentProperties {
+            equipment_type,
+            durability,
+            attributes,
+            affixes,
+            traits,
+        },
         requirements,
-        affixes,
-        traits,
     }
 }

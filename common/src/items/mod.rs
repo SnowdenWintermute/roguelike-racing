@@ -4,12 +4,15 @@ pub mod items_by_level;
 use self::consumables::ConsumableProperties;
 use self::equipment::equipment_generation::generate_equipment_properties_from_base_item;
 use self::equipment::equipment_generation::name_equipment::name_equipment;
+use self::equipment::equipment_generation::EquipmentPropertiesAndRequirements;
 use self::equipment::EquipmentProperties;
 use crate::game::id_generator::IdGenerator;
 use crate::primatives::EntityProperties;
 use serde::Deserialize;
 use serde::Serialize;
 mod generate_consumable_properties;
+use crate::combatants::CombatAttributes;
+use std::collections::HashMap;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum ItemProperties {
@@ -21,6 +24,7 @@ pub enum ItemProperties {
 pub struct Item {
     pub entity_properties: EntityProperties,
     pub item_level: u8,
+    pub requirements: Option<HashMap<CombatAttributes, u8>>,
     pub item_properties: ItemProperties,
 }
 
@@ -28,7 +32,10 @@ pub struct Item {
 
 impl Item {
     pub fn generate(id_generator: &mut IdGenerator, level: u8) -> Item {
-        let equipment_properties = generate_equipment_properties_from_base_item(level);
+        let EquipmentPropertiesAndRequirements {
+            equipment_properties,
+            requirements,
+        } = generate_equipment_properties_from_base_item(level);
         let item_name = name_equipment(&equipment_properties);
 
         Item {
@@ -37,6 +44,7 @@ impl Item {
                 name: item_name,
             },
             item_level: level as u8,
+            requirements,
             item_properties: ItemProperties::Equipment(equipment_properties),
         }
     }

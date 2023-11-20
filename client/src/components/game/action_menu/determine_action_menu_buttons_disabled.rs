@@ -26,23 +26,20 @@ pub fn determine_action_menu_buttons_disabled(
                 .expect("")
                 .combatant_properties
                 .get_total_attributes();
-            match &item.item_properties {
-                common::items::ItemProperties::Consumable(_) => return false,
-                common::items::ItemProperties::Equipment(equipment_properties) => {
-                    for (attribute, value) in &equipment_properties.requirements {
-                        let character_attribute_option =
-                            focused_character_combat_attributes.get(attribute);
-                        match character_attribute_option {
-                            Some(attr_value) => {
-                                if *attr_value >= *value as u16 {
-                                    continue;
-                                } else {
-                                    return true;
-                                }
+            if let Some(requirements) = &item.requirements {
+                for (attribute, value) in requirements {
+                    let character_attribute_option =
+                        focused_character_combat_attributes.get(attribute);
+                    match character_attribute_option {
+                        Some(attr_value) => {
+                            if *attr_value >= *value as u16 {
+                                continue;
+                            } else {
+                                return true;
                             }
-                            None => return true,
-                        };
-                    }
+                        }
+                        None => return true,
+                    };
                 }
             }
             false

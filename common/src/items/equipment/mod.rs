@@ -102,7 +102,6 @@ pub struct EquipmentProperties {
     pub durability: Option<MaxAndCurrent<u8>>,
     pub attributes: HashMap<CombatAttributes, u16>,
     pub affixes: Vec<Affix>,
-    pub requirements: HashMap<CombatAttributes, u8>,
     pub traits: Option<Vec<EquipmentTraits>>,
 }
 

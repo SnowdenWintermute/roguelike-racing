@@ -9,7 +9,7 @@ use yewdux::prelude::use_store;
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
-    pub equipment_requirements: HashMap<CombatAttributes, u8>,
+    pub equipment_requirements: Option<HashMap<CombatAttributes, u8>>,
     pub entity_id: u32,
 }
 
@@ -35,18 +35,20 @@ pub fn unmet_requirements_calculator(props: &Props) -> Html {
         (cloned_focused_character_combat_attributes, entity_id),
         move |(character_attributes, _)| {
             let mut unmet_requirement_attributes = HashSet::new();
-            for (attribute, value) in &cloned_equipment_requirements {
-                let character_attribute_option = character_attributes.get(attribute);
-                match character_attribute_option {
-                    Some(attr_value) => {
-                        if *attr_value >= *value as u16 {
-                            continue;
-                        } else {
-                            unmet_requirement_attributes.insert(attribute.clone())
+            if let Some(requirements) = cloned_equipment_requirements {
+                for (attribute, value) in &requirements {
+                    let character_attribute_option = character_attributes.get(attribute);
+                    match character_attribute_option {
+                        Some(attr_value) => {
+                            if *attr_value >= *value as u16 {
+                                continue;
+                            } else {
+                                unmet_requirement_attributes.insert(attribute.clone())
+                            }
                         }
-                    }
-                    None => unmet_requirement_attributes.insert(attribute.clone()),
-                };
+                        None => unmet_requirement_attributes.insert(attribute.clone()),
+                    };
+                }
             }
             if unmet_requirement_attributes.len() > 0 {
                 cloned_game_dispatch.reduce_mut(|store| {

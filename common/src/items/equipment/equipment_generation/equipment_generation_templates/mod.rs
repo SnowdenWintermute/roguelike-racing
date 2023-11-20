@@ -35,7 +35,7 @@ impl ArmorGenerationTemplate {
         ac_range: Range<u8>,
         max_durability: Option<u8>,
         category: ArmorCategories,
-        requirements: HashMap<CombatAttributes, u8>,
+        requirements: Option<HashMap<CombatAttributes, u8>>,
         affix_modifiers: Option<EquipmentGenerationTemplateAffixModifiers>,
         traits: Option<Vec<EquipmentTraits>>,
     ) -> ArmorGenerationTemplate {
@@ -67,7 +67,7 @@ impl WeaponGenerationTemplate {
         max_durability: Option<u8>,
         possbile_damage_classifications: Vec<DamageClassifications>,
         num_damage_classifications: u8,
-        requirements: HashMap<CombatAttributes, u8>,
+        requirements: Option<HashMap<CombatAttributes, u8>>,
         affix_modifiers: Option<EquipmentGenerationTemplateAffixModifiers>,
         traits: Option<Vec<EquipmentTraits>>,
     ) -> WeaponGenerationTemplate {
@@ -98,7 +98,7 @@ impl ShieldGenerationTemplate {
         ac_range: Range<u8>,
         size: ShieldSizes,
         max_durability: Option<u8>,
-        requirements: HashMap<CombatAttributes, u8>,
+        requirements: Option<HashMap<CombatAttributes, u8>>,
         affix_modifiers: Option<EquipmentGenerationTemplateAffixModifiers>,
         traits: Option<Vec<EquipmentTraits>>,
     ) -> ShieldGenerationTemplate {

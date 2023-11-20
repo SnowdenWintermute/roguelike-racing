@@ -30,7 +30,6 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
         durability: Some(MaxAndCurrent::new(4, 4)),
         attributes: HashMap::new(),
         affixes: vec![],
-        requirements: HashMap::new(),
         traits: None,
     };
 
@@ -42,6 +41,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
     let chest = Item {
         entity_properties: chest_entity_properties,
         item_level: 0,
+        requirements: None,
         item_properties: ItemProperties::Equipment(chest_properties),
     };
 
@@ -56,7 +56,6 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
         durability: Some(MaxAndCurrent::new(2, 2)),
         attributes: HashMap::new(),
         affixes: vec![],
-        requirements: HashMap::new(),
         traits: None,
     };
 
@@ -68,6 +67,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
     let head = Item {
         entity_properties: head_entity_properties,
         item_level: 0,
+        requirements: None,
         item_properties: ItemProperties::Equipment(head_properties),
     };
 
@@ -82,7 +82,6 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
         durability: Some(MaxAndCurrent::new(2, 2)),
         attributes: HashMap::new(),
         affixes: vec![],
-        requirements: HashMap::new(),
         traits: None,
     };
 
@@ -94,6 +93,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
     let main_hand = Item {
         entity_properties: main_hand_entity_properties,
         item_level: 0,
+        requirements: None,
         item_properties: ItemProperties::Equipment(main_hand_properties),
     };
 
@@ -108,7 +108,6 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
         durability: Some(MaxAndCurrent::new(2, 2)),
         attributes: HashMap::new(),
         affixes: vec![],
-        requirements: HashMap::new(),
         traits: None,
     };
 
@@ -120,6 +119,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
     let off_hand = Item {
         entity_properties: off_hand_entity_properties,
         item_level: 0,
+        requirements: None,
         item_properties: ItemProperties::Equipment(off_hand_properties),
     };
 
@@ -128,7 +128,6 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
         durability: None,
         attributes: HashMap::new(),
         affixes: vec![],
-        requirements: HashMap::new(),
         traits: None,
     };
 
@@ -144,6 +143,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
     let right_ring = Item {
         entity_properties: right_ring_entity_properties,
         item_level: 0,
+        requirements: None,
         item_properties: ItemProperties::Equipment(right_ring_properties),
     };
 
@@ -152,7 +152,6 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
         durability: None,
         attributes: HashMap::new(),
         affixes: vec![],
-        requirements: HashMap::new(),
         traits: None,
     };
 
@@ -168,6 +167,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
     let left_ring = Item {
         entity_properties: left_ring_entity_properties,
         item_level: 0,
+        requirements: None,
         item_properties: ItemProperties::Equipment(left_ring_properties),
     };
 
@@ -176,7 +176,6 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
         durability: None,
         attributes: HashMap::new(),
         affixes: vec![],
-        requirements: HashMap::new(),
         traits: None,
     };
 
@@ -192,6 +191,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
     let amulet = Item {
         entity_properties: amulet_entity_properties,
         item_level: 0,
+        requirements: None,
         item_properties: ItemProperties::Equipment(amulet_properties),
     };
 

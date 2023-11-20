@@ -13,6 +13,10 @@ pub mod name_equipment;
 pub mod print_random_equipments;
 mod roll_equipment_properties_from_blueprint;
 mod select_random_affix_types;
+use std::collections::HashMap;
+
+use crate::combatants::CombatAttributes;
+
 use self::equipment_blueprints::body_armor_blueprints::body_armor_blueprint_from_base_item;
 use self::equipment_blueprints::head_gear_blueprints::head_gear_blueprint_from_base_item;
 use self::equipment_blueprints::jewelry_blueprints::jewelry_blueprint_from_base_item;
@@ -27,7 +31,14 @@ use self::generate_weapon_damage_classifications::generate_weapon_damage_classif
 use self::roll_equipment_properties_from_blueprint::roll_equipment_properties_from_blueprint;
 use super::EquipmentProperties;
 
-pub fn generate_equipment_properties_from_base_item(level: u8) -> EquipmentProperties {
+pub struct EquipmentPropertiesAndRequirements {
+    pub equipment_properties: EquipmentProperties,
+    pub requirements: Option<HashMap<CombatAttributes, u8>>,
+}
+
+pub fn generate_equipment_properties_from_base_item(
+    level: u8,
+) -> EquipmentPropertiesAndRequirements {
     let base_item = generate_base_equipment(level);
     // let base_item = BaseEquipment::OneHandedMeleeWeapon(OneHandedMeleeWeapons::RuneSword);
     // determine num prefixes and suffixes

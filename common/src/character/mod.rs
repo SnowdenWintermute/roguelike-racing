@@ -72,10 +72,24 @@ impl Character {
                 message: error_messages::INVALID_ITEM_ID.to_string(),
             });
         }
+        if !self.can_use_item(&item.expect("early return if None")) {
+            return Err(AppError {
+                error_type: crate::errors::AppErrorTypes::InvalidInput,
+                message: error_messages::ITEM_REQUIREMENTS_NOT_MET.to_string(),
+            });
+        }
+        // @TODO: Check if equiping the item would necessitate unequiping multiple items,
+        // (as with equiping a 2h weapon when wielding two 1h items) and
+        // if so, check if there is space in the inventory to accomodate unequiping those
+        // items. Reject if not.
+
+        // store their currently equiped item(s) if any in a variable
+        // remove currently equiped item(s)
+        //
         Ok(())
     }
 
-    pub fn character_can_use_item(&self, item: Item) -> bool {
+    pub fn can_use_item(&self, item: &Item) -> bool {
         let total_character_attributes = self.combatant_properties.get_total_attributes();
         if let Some(requirements) = &item.requirements {
             for (attribute, value) in requirements {

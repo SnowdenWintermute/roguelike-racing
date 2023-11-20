@@ -22,25 +22,11 @@ pub fn determine_action_menu_buttons_disabled(
             let current_party_id = game_state.clone().current_party_id.expect("party to exist");
             let focused_character_id = game_state.clone().focused_character_id;
             let focused_character = get_character(*game, current_party_id, focused_character_id);
-            let focused_character_combat_attributes = &focused_character
-                .expect("")
-                .combatant_properties
-                .get_total_attributes();
-            if let Some(requirements) = &item.requirements {
-                for (attribute, value) in requirements {
-                    let character_attribute_option =
-                        focused_character_combat_attributes.get(attribute);
-                    match character_attribute_option {
-                        Some(attr_value) => {
-                            if *attr_value >= *value as u16 {
-                                continue;
-                            } else {
-                                return true;
-                            }
-                        }
-                        None => return true,
-                    };
-                }
+            if !focused_character
+                .expect("should always be a focused characer in a game")
+                .can_use_item(&item)
+            {
+                return true;
             }
             false
         }

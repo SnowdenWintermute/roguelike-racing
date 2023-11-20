@@ -18,5 +18,5 @@ pub const CHARACTER_NOT_OWNED: &str =
     "A character with the provided id was not found in the player's list of owned characters";
 pub const INVALID_ITEM_ID: &str =
     "No item with the provided id was found in the currently focused player's posession";
-pub const EQUIPMENT_REQUIREMENTS_UNMET: &str =
-    "You do not meet the requirements to equip that item";
+pub const ITEM_REQUIREMENTS_NOT_MET: &str =
+    "You do not meet the requirements to equip or use that item";

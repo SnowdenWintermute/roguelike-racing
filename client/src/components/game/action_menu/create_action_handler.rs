@@ -22,7 +22,7 @@ pub fn create_action_handler<'a>(
     match game_action {
             GameActions::ToggleReadyToExplore => Box::new(|| (log!("ready to explore selected"))),
             GameActions::UseAutoinjector => Box::new(move || {
-                send_client_input(&websocket_state.websocket, PlayerInputs::RequestGameList)
+                // send_client_input(&websocket_state.websocket, PlayerInputs::RequestGameList)
             }),
             GameActions::SetInventoryOpen(status) =>Box::new(move || {
                 game_dispatch.reduce_mut(|game_state| game_state.viewing_inventory = status.clone());

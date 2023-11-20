@@ -2,6 +2,7 @@ use super::{
     create_action_handler::create_action_handler,
     create_action_mouse_enter_handler::create_action_mouse_enter_handler,
     create_action_mouse_leave_handler::create_action_mouse_leave_handler,
+    determine_action_menu_buttons_disabled::determine_action_menu_buttons_disabled,
     generate_action_menu_items::generate_action_menu_items,
     generate_button_text::generate_button_text,
 };
@@ -20,7 +21,7 @@ pub struct ActionMenuButtonProperties {
     pub blur_handler: Callback<FocusEvent>,
     pub mouse_enter_handler: Callback<MouseEvent>,
     pub mouse_leave_handler: Callback<MouseEvent>,
-    // pub hotkey_handler: Box<dyn Fn()>,
+    pub should_be_disabled: bool,
 }
 
 pub fn set_up_actions<'a>(
@@ -37,12 +38,6 @@ pub fn set_up_actions<'a>(
         let cloned_action = action.clone();
         let cloned_game_state = game_state.clone();
         let cloned_game_dispatch = game_dispatch.clone();
-        // let hotkey_handler = create_action_handler(
-        //     cloned_action.clone(),
-        //     cloned_game_dispatch.clone(),
-        //     cloned_game_state.clone(),
-        //     cloned_websocket_state.clone(),
-        // );
         let click_handler = Callback::from(move |_| {
             create_action_handler(
                 cloned_action.clone(),
@@ -94,6 +89,8 @@ pub fn set_up_actions<'a>(
         let cloned_game_state = game_state.clone();
         let text = generate_button_text(action.clone(), cloned_game_state);
 
+        let should_be_disabled = determine_action_menu_buttons_disabled(&action, &game_state);
+
         button_properties.push(ActionMenuButtonProperties {
             text,
             click_handler,
@@ -101,7 +98,7 @@ pub fn set_up_actions<'a>(
             mouse_leave_handler,
             focus_handler,
             blur_handler,
-            // hotkey_handler,
+            should_be_disabled,
         })
     }
 

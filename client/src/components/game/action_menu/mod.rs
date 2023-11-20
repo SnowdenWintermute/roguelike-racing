@@ -4,6 +4,7 @@ mod available_actions;
 mod create_action_handler;
 mod create_action_mouse_enter_handler;
 mod create_action_mouse_leave_handler;
+mod determine_action_menu_buttons_disabled;
 mod generate_action_menu_items;
 mod generate_button_text;
 mod get_character_owned_item_by_id;
@@ -58,11 +59,16 @@ pub fn action_menu(props: &Props) -> Html {
 
     let cloned_action_button_properties = action_button_properties.clone();
     let cloned_game_state = game_state.clone();
+    let selected_item_id = match &game_state.selected_item {
+        Some(item) => Some(item.entity_properties.id),
+        None => None,
+    };
+
     use_effect_with(
         (
             game_state.focused_character_id,
             game_state.viewing_inventory,
-            game_state.selected_item.is_some(),
+            selected_item_id,
             game_state.viewing_items_on_ground,
             game_state.viewing_skill_level_up_menu,
             game_state.viewing_attribute_point_assignment_menu,

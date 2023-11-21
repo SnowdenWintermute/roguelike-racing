@@ -38,7 +38,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
         name: "Old Sack".to_string(),
     };
 
-    let chest = Item {
+    let _chest = Item {
         entity_properties: chest_entity_properties,
         item_level: 0,
         requirements: None,

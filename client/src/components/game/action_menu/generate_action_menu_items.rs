@@ -16,13 +16,8 @@ pub fn generate_action_menu_items(
         menu_items.push(MenuTypes::ItemsOnGround);
         new_actions = MenuTypes::get_menu(&menu_items, None, None);
         //
-    } else if game_state.selected_item.is_some() {
-        let id = game_state
-            .selected_item
-            .clone()
-            .expect("is_some checked")
-            .entity_properties
-            .id;
+    } else if let Some(selected_item) = &game_state.selected_item {
+        let id = selected_item.clone().entity_properties.id;
         menu_items.push(MenuTypes::ItemSelected(id));
         new_actions = MenuTypes::get_menu(&menu_items, None, None);
         //

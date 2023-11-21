@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use super::equipment_generation_template_properties::EquipmentGenerationTemplateProperties;
 use super::generate_affixes::generate_affixes;
 use super::generate_durability::generate_durability;

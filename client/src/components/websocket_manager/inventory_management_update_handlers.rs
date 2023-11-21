@@ -1,9 +1,9 @@
+use crate::store::game_store::{DetailableEntities, GameStore};
 use common::{
     app_consts::error_messages, errors::AppError, game::getters::get_mut_party,
     packets::server_to_client::CharacterEquippedItemPacket,
 };
-
-use crate::store::game_store::GameStore;
+use yewdux::prelude::Dispatch;
 
 pub fn handle_character_equipped_item(
     game_store: &mut GameStore,
@@ -31,7 +31,28 @@ pub fn handle_character_equipped_item(
             message: error_messages::CHARACTER_NOT_FOUND.to_string(),
         })?;
 
-    character.equip_item(item_id, alt_slot)?;
+    let unequipped_item_ids = character.equip_item(item_id, alt_slot)?;
+    let item_to_select = match unequipped_item_ids.get(0) {
+        Some(id) => {
+            let mut item = None;
+            for item_in_inventory in &character.inventory.items {
+                if item_in_inventory.entity_properties.id == *id {
+                    item = Some(item_in_inventory)
+                }
+            }
+            item
+        }
+        None => None,
+    };
+
+    match item_to_select {
+        Some(item) => {
+            game_store.selected_item = Some(item.clone());
+            game_store.detailed_entity = Some(DetailableEntities::Item(item.clone()));
+            game_store.hovered_entity = None;
+        }
+        None => (),
+    }
 
     Ok(())
 }

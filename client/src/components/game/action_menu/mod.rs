@@ -17,6 +17,7 @@ use crate::store::ui_store::UIStore;
 use crate::store::{game_store::GameStore, websocket_store::WebsocketStore};
 use common::adventuring_party::AdventuringParty;
 use common::utils::calculate_number_of_pages;
+use gloo::console::log;
 use gloo::events::EventListener;
 use std::ops::Deref;
 use yew::prelude::*;
@@ -65,6 +66,24 @@ pub fn action_menu(props: &Props) -> Html {
         Some(item) => Some(item.entity_properties.id),
         None => None,
     };
+
+    let focused_character = party.characters.get(&game_state.focused_character_id);
+    let focused_character_equipment_ids = match focused_character {
+        Some(character) => Some(
+            character
+                .combatant_properties
+                .equipment
+                .iter()
+                .map(|(_slot, item)| item.entity_properties.id)
+                .collect::<Vec<u32>>(),
+        ),
+        None => None,
+    };
+    log!(format!(
+        "focused_character_equipment_ids: {:#?}",
+        focused_character_equipment_ids
+    ));
+
     let cloned_ui_state = ui_state.clone();
 
     use_effect_with(
@@ -78,6 +97,7 @@ pub fn action_menu(props: &Props) -> Html {
             game_state.viewing_attribute_point_assignment_menu,
             party.current_room.monsters.is_some(),
             cloned_ui_state.mod_key_held,
+            focused_character_equipment_ids,
         ),
         move |_| {
             let actions = set_up_actions::set_up_actions(

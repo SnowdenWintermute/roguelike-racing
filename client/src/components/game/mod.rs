@@ -80,7 +80,6 @@ pub fn game() -> Html {
     });
 
     let focused_character = party.characters.get(&game_state.focused_character_id);
-    log!(format!("character: {:#?}", focused_character));
 
     html!(
         <main class="h-screen w-screen p-4 bg-gray-600 text-zinc-300 flex flex-col">

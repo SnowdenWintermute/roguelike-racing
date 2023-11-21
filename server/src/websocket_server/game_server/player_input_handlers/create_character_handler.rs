@@ -22,7 +22,6 @@ impl GameServer {
             message: common::app_consts::error_messages::MISSING_GAME_REFERENCE.to_string(),
         })?;
         let game = get_mut_game(&mut self.games, &current_game_name)?;
-        let next_entity_id = game.id_generator.get_next_entity_id();
         let game_name = game.name.clone();
 
         let player = get_mut_player(game, user.username.clone())?;

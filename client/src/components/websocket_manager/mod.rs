@@ -146,7 +146,7 @@ pub fn websocket_manager(props: &Props) -> Html {
                                     }
                                     GameServerUpdatePackets::CharacterEquippedItem(packet) => {
                                         game_dispatch.clone().reduce_mut(|store| {
-                                            handle_character_equipped_item(store, packet);
+                                            let _ = handle_character_equipped_item(store, packet);
                                         })
                                     }
                                     _ => {

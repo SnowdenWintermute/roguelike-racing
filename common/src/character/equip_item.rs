@@ -2,7 +2,8 @@ use super::Character;
 use crate::{app_consts::error_messages, errors::AppError, items::equipment::EquipmentSlots};
 
 impl Character {
-    pub fn equip_item(&mut self, item_id: u32, alt_slot: bool) -> Result<(), AppError> {
+    /// returns list of ids of any items which were unequipped
+    pub fn equip_item(&mut self, item_id: u32, alt_slot: bool) -> Result<Vec<u32>, AppError> {
         let mut item_and_index_option = None;
         for (i, item_in_inventory) in self.inventory.items.iter().enumerate() {
             if item_in_inventory.entity_properties.id == item_id {
@@ -83,9 +84,11 @@ impl Character {
         for slot in slots_to_unequip {
             unequipped_item_options.push(self.combatant_properties.equipment.remove(&slot))
         }
+        let mut ids_of_unequipped_items = Vec::new();
         for item_option in unequipped_item_options {
             if let Some(item) = item_option {
-                self.inventory.items.push(item)
+                ids_of_unequipped_items.push(item.entity_properties.id);
+                self.inventory.items.push(item);
             }
         }
 
@@ -96,6 +99,6 @@ impl Character {
             .equipment
             .insert(slot, item_to_equip);
 
-        Ok(())
+        Ok(ids_of_unequipped_items)
     }
 }

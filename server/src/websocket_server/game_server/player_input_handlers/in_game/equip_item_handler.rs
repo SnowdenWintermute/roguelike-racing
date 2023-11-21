@@ -41,10 +41,6 @@ impl GameServer {
             message: error_messages::PLAYER_HAS_NO_CHARACTERS.to_string(),
         })?;
 
-        println!("TRYING TO EQUIP ITEM: ",);
-        println!("{:#?}", player_character_ids);
-        println!("{:#?}", character_id);
-
         let character = match player_character_ids.contains(&character_id) {
             true => party
                 .characters

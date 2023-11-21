@@ -1,9 +1,5 @@
 use super::Character;
-use crate::{
-    app_consts::error_messages,
-    errors::AppError,
-    items::equipment::{EquipmentSlots, EquipmentTypes},
-};
+use crate::{app_consts::error_messages, errors::AppError, items::equipment::EquipmentSlots};
 
 impl Character {
     pub fn equip_item(&mut self, item_id: u32, alt_slot: bool) -> Result<(), AppError> {
@@ -38,21 +34,13 @@ impl Character {
         // if so, check if there is space in the inventory to accomodate unequiping those
         // items. Reject if not.
 
-        let equipment_properties = match &item.item_properties {
-            crate::items::ItemProperties::Consumable(_) => {
-                return Err(AppError {
-                    error_type: crate::errors::AppErrorTypes::InvalidInput,
-                    message: error_messages::CANT_EQUIP_NON_EQUIPMENT.to_owned(),
-                })
-            }
-            crate::items::ItemProperties::Equipment(equipment_properties) => equipment_properties,
-        };
+        let equipment_properties = item.get_equipment_properties()?;
 
         let possible_slots = equipment_properties.get_equippable_slots();
         let slot = match alt_slot {
             true => {
-                if possible_slots.alternate.is_some() {
-                    possible_slots.alternate.expect("is_some checked")
+                if let Some(alternate_slot) = possible_slots.alternate {
+                    alternate_slot
                 } else {
                     possible_slots.main
                 }
@@ -62,13 +50,26 @@ impl Character {
 
         let slots_to_unequip = match slot {
             EquipmentSlots::MainHand => {
-                let is_two_handed = match equipment_properties.equipment_type {
-                    EquipmentTypes::TwoHandedMeleeWeapon(_, _)
-                    | EquipmentTypes::TwoHandedRangedWeapon(_, _) => true,
-                    _ => false,
-                };
-                if is_two_handed {
+                if equipment_properties.is_two_handed() {
                     vec![EquipmentSlots::MainHand, EquipmentSlots::OffHand]
+                } else {
+                    vec![slot.clone()]
+                }
+            }
+            EquipmentSlots::OffHand => {
+                if let Some(equipment_in_main_hand) = self
+                    .combatant_properties
+                    .equipment
+                    .get(&EquipmentSlots::MainHand)
+                {
+                    if equipment_in_main_hand
+                        .get_equipment_properties()?
+                        .is_two_handed()
+                    {
+                        vec![EquipmentSlots::MainHand, EquipmentSlots::OffHand]
+                    } else {
+                        vec![slot.clone()]
+                    }
                 } else {
                     vec![slot.clone()]
                 }
@@ -94,6 +95,7 @@ impl Character {
         self.combatant_properties
             .equipment
             .insert(slot, item_to_equip);
+
         Ok(())
     }
 }

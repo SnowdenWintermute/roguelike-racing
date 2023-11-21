@@ -6,6 +6,8 @@ use self::equipment::equipment_generation::generate_equipment_properties_from_ba
 use self::equipment::equipment_generation::name_equipment::name_equipment;
 use self::equipment::equipment_generation::EquipmentPropertiesAndRequirements;
 use self::equipment::EquipmentProperties;
+use crate::app_consts::error_messages;
+use crate::errors::AppError;
 use crate::game::id_generator::IdGenerator;
 use crate::primatives::EntityProperties;
 use serde::Deserialize;
@@ -46,6 +48,20 @@ impl Item {
             item_level: level as u8,
             requirements,
             item_properties: ItemProperties::Equipment(equipment_properties),
+        }
+    }
+
+    pub fn get_equipment_properties(&self) -> Result<&EquipmentProperties, AppError> {
+        match &self.item_properties {
+            crate::items::ItemProperties::Consumable(_) => {
+                return Err(AppError {
+                    error_type: crate::errors::AppErrorTypes::InvalidInput,
+                    message: error_messages::CANT_EQUIP_NON_EQUIPMENT.to_owned(),
+                })
+            }
+            crate::items::ItemProperties::Equipment(equipment_properties) => {
+                Ok(equipment_properties)
+            }
         }
     }
 }

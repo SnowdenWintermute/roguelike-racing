@@ -140,4 +140,12 @@ impl EquipmentProperties {
             EquipmentTypes::Shield(_, _) => EquipableSlots::new(EquipmentSlots::OffHand, None),
         }
     }
+
+    pub fn is_two_handed(&self) -> bool {
+        match self.equipment_type {
+            EquipmentTypes::TwoHandedMeleeWeapon(_, _)
+            | EquipmentTypes::TwoHandedRangedWeapon(_, _) => true,
+            _ => false,
+        }
+    }
 }

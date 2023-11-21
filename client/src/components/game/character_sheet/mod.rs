@@ -8,6 +8,7 @@ use crate::{
     store::game_store::GameStore,
 };
 use common::character::Character;
+use gloo::console::log;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 

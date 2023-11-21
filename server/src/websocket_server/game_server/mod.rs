@@ -90,6 +90,12 @@ impl Handler<ClientBinaryMessage> for GameServer {
                 self.delete_character_handler(message.actor_id, id)
             }
             Ok(PlayerInputs::ToggleReady) => self.toggle_ready_handler(message.actor_id),
+            Ok(PlayerInputs::EquipInventoryItem(packet)) => self.equip_item_handler(
+                message.actor_id,
+                packet.character_id,
+                packet.item_id,
+                packet.alt_slot,
+            ),
             _ => {
                 println! {"unhandled binary message\n {:#?}:",deserialized};
                 Ok(())

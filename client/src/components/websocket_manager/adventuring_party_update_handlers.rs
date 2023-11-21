@@ -8,6 +8,7 @@ use common::{
         PlayerCharacterDeletion,
     },
 };
+use gloo::console::log;
 use std::collections::HashSet;
 
 pub fn handle_adventuring_party_created(
@@ -50,9 +51,13 @@ pub fn handle_character_creation(
 ) -> Result<(), AppError> {
     let game = game_state.game.as_mut().ok_or_else(|| AppError {
         error_type: common::errors::AppErrorTypes::ClientError,
-        message: "Client error".to_string(),
+        message: error_messages::GAME_NOT_FOUND.to_string(),
     })?;
     let party = get_mut_party(game, character_creation.party_id)?;
+    log!(
+        "character created with id: ",
+        character_creation.character.entity_properties.id
+    );
     let character_id = character_creation.character.entity_properties.id;
     party.characters.insert(
         character_creation.character.entity_properties.id,
@@ -80,7 +85,7 @@ pub fn handle_character_deletion(
 ) -> Result<(), AppError> {
     let game = game_state.game.as_mut().ok_or_else(|| AppError {
         error_type: common::errors::AppErrorTypes::ClientError,
-        message: "Client error".to_string(),
+        message: error_messages::GAME_NOT_FOUND.to_string(),
     })?;
     let party = get_mut_party(game, character_deletion.party_id)?;
     party.characters.remove(&character_deletion.character_id);

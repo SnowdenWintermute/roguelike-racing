@@ -13,6 +13,7 @@ mod set_up_actions;
 use crate::components::game::action_menu::action_menu_button::ActionMenuButton;
 use crate::components::game::action_menu::action_page_buttons::ActionPageButtons;
 use crate::components::game::action_menu::set_up_actions::ActionMenuButtonProperties;
+use crate::store::ui_store::UIStore;
 use crate::store::{game_store::GameStore, websocket_store::WebsocketStore};
 use common::adventuring_party::AdventuringParty;
 use common::utils::calculate_number_of_pages;
@@ -30,6 +31,7 @@ const PAGE_SIZE: u8 = 6;
 #[function_component(ActionMenu)]
 pub fn action_menu(props: &Props) -> Html {
     let (game_state, game_dispatch) = use_store::<GameStore>();
+    let (ui_state, _) = use_store::<UIStore>();
     let (websocket_state, _) = use_store::<WebsocketStore>();
     let party = props.adventuring_party.clone();
     let action_button_properties = use_state(|| Vec::<ActionMenuButtonProperties>::new());
@@ -63,23 +65,26 @@ pub fn action_menu(props: &Props) -> Html {
         Some(item) => Some(item.entity_properties.id),
         None => None,
     };
+    let cloned_ui_state = ui_state.clone();
 
     use_effect_with(
         (
             game_state.focused_character_id,
             game_state.viewing_inventory,
-            game_state.viewing_equiped_items,
+            game_state.viewing_equipped_items,
             selected_item_id,
             game_state.viewing_items_on_ground,
             game_state.viewing_skill_level_up_menu,
             game_state.viewing_attribute_point_assignment_menu,
             party.current_room.monsters.is_some(),
+            cloned_ui_state.mod_key_held,
         ),
         move |_| {
             let actions = set_up_actions::set_up_actions(
                 websocket_state.clone(),
                 cloned_game_state,
                 &game_dispatch,
+                cloned_ui_state,
                 &party,
             );
             cloned_action_button_properties.set(actions);

@@ -554,6 +554,10 @@ video {
   right: 0.75rem;
 }
 
+.z-\[1\] {
+  z-index: 1;
+}
+
 .mb-1 {
   margin-bottom: 0.25rem;
 }

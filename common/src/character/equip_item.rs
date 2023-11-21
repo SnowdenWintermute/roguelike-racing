@@ -1,0 +1,99 @@
+use super::Character;
+use crate::{
+    app_consts::error_messages,
+    errors::AppError,
+    items::equipment::{EquipmentSlots, EquipmentTypes},
+};
+
+impl Character {
+    pub fn equip_item(&mut self, item_id: u32, alt_slot: bool) -> Result<(), AppError> {
+        let mut item_and_index_option = None;
+        for (i, item_in_inventory) in self.inventory.items.iter().enumerate() {
+            if item_in_inventory.entity_properties.id == item_id {
+                item_and_index_option = Some((item_in_inventory, i));
+                break;
+            }
+        }
+
+        let item_and_index = match item_and_index_option {
+            Some(item) => item,
+            None => {
+                return Err(AppError {
+                    error_type: crate::errors::AppErrorTypes::InvalidInput,
+                    message: error_messages::INVALID_ITEM_ID.to_string(),
+                });
+            }
+        };
+
+        let (item, item_inventory_index) = item_and_index;
+
+        if !self.can_use_item(&item) {
+            return Err(AppError {
+                error_type: crate::errors::AppErrorTypes::InvalidInput,
+                message: error_messages::ITEM_REQUIREMENTS_NOT_MET.to_string(),
+            });
+        }
+        // @TODO: Check if equiping the item would necessitate unequiping multiple items,
+        // (as with equiping a 2h weapon when wielding two 1h items) and
+        // if so, check if there is space in the inventory to accomodate unequiping those
+        // items. Reject if not.
+
+        let equipment_properties = match &item.item_properties {
+            crate::items::ItemProperties::Consumable(_) => {
+                return Err(AppError {
+                    error_type: crate::errors::AppErrorTypes::InvalidInput,
+                    message: error_messages::CANT_EQUIP_NON_EQUIPMENT.to_owned(),
+                })
+            }
+            crate::items::ItemProperties::Equipment(equipment_properties) => equipment_properties,
+        };
+
+        let possible_slots = equipment_properties.get_equippable_slots();
+        let slot = match alt_slot {
+            true => {
+                if possible_slots.alternate.is_some() {
+                    possible_slots.alternate.expect("is_some checked")
+                } else {
+                    possible_slots.main
+                }
+            }
+            false => possible_slots.main,
+        };
+
+        let slots_to_unequip = match slot {
+            EquipmentSlots::MainHand => {
+                let is_two_handed = match equipment_properties.equipment_type {
+                    EquipmentTypes::TwoHandedMeleeWeapon(_, _)
+                    | EquipmentTypes::TwoHandedRangedWeapon(_, _) => true,
+                    _ => false,
+                };
+                if is_two_handed {
+                    vec![EquipmentSlots::MainHand, EquipmentSlots::OffHand]
+                } else {
+                    vec![slot.clone()]
+                }
+            }
+            _ => vec![slot.clone()],
+        };
+        // store their currently equipped item(s) if any in a temporary variable
+        // remove currently equipped item(s) from equipment hashmap
+        // take the unequipped items from the temporary variable and add them to inventory vec
+        let mut unequipped_item_options = Vec::new();
+        for slot in slots_to_unequip {
+            unequipped_item_options.push(self.combatant_properties.equipment.remove(&slot))
+        }
+        for item_option in unequipped_item_options {
+            if let Some(item) = item_option {
+                self.inventory.items.push(item)
+            }
+        }
+
+        // remove item to equip from inventory
+        let item_to_equip = self.inventory.items.remove(item_inventory_index);
+        // add newly equipped item to equipment hashmap
+        self.combatant_properties
+            .equipment
+            .insert(slot, item_to_equip);
+        Ok(())
+    }
+}

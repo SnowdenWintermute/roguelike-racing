@@ -5,10 +5,11 @@ use crate::{
     components::websocket_manager::send_client_input::send_client_input,
     store::{
         game_store::{select_item, GameStore},
+        ui_store::UIStore,
         websocket_store::WebsocketStore,
     },
 };
-use common::packets::client_to_server::PlayerInputs;
+use common::packets::client_to_server::{EquipItemRequest, PlayerInputs};
 use gloo::console::log;
 use std::rc::Rc;
 use yewdux::prelude::Dispatch;
@@ -17,7 +18,8 @@ pub fn create_action_handler<'a>(
     game_action: GameActions,
     game_dispatch: Dispatch<GameStore>,
     game_state: Rc<GameStore>,
-    _websocket_state: Rc<WebsocketStore>,
+    ui_state: Rc<UIStore>,
+    websocket_state: Rc<WebsocketStore>,
 ) -> Box<dyn Fn()> {
     match game_action {
             GameActions::ToggleReadyToExplore => Box::new(|| (log!("ready to explore selected"))),
@@ -29,10 +31,10 @@ pub fn create_action_handler<'a>(
             }),
             GameActions::ToggleInventoryOpen => Box::new(move || {
                 game_dispatch.reduce_mut(|game_state| game_state.viewing_inventory = !game_state.viewing_inventory);
-                game_dispatch.reduce_mut(|game_state| game_state.viewing_equiped_items = false);
+                game_dispatch.reduce_mut(|game_state| game_state.viewing_equipped_items = false);
             }),
             GameActions::ToggleViewingEquipedItems => Box::new(move || {
-                game_dispatch.reduce_mut(|game_state| game_state.viewing_equiped_items = !game_state.viewing_equiped_items);
+                game_dispatch.reduce_mut(|game_state| game_state.viewing_equipped_items = !game_state.viewing_equipped_items);
 
             }),
             GameActions::DeselectItem => Box::new(move || {
@@ -51,10 +53,22 @@ pub fn create_action_handler<'a>(
                 let cloned_dispatch = game_dispatch.clone();
                 select_item(cloned_dispatch, Some(item));
             }),
+            GameActions::UseItem(_id) => Box::new(move || {
+                let item_option = &game_state.selected_item;
+                let character_id = game_state.focused_character_id;
+                let alt_slot = ui_state.mod_key_held;
+                if let Some(item) = item_option {
+                    send_client_input(
+                        &websocket_state.websocket,
+                        PlayerInputs::EquipInventoryItem(
+                            EquipItemRequest { character_id, item_id: item.entity_properties.id, alt_slot })
+                        )
+                }
+
+            }),
             _ => Box::new(||())
             // GameActions::OpenTreasureChest => || (),
             // GameActions::TakeItem => || (),
-            // GameActions::UseItem => || (),
             // GameActions::DropItem => || (),
             // GameActions::ShardItem => || (),
             // GameActions::Attack => || (),

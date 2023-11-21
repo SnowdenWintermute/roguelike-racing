@@ -26,7 +26,7 @@ pub fn generate_action_menu_items(
         menu_items.push(MenuTypes::ItemSelected(id));
         new_actions = MenuTypes::get_menu(&menu_items, None, None);
         //
-    } else if game_state.viewing_equiped_items {
+    } else if game_state.viewing_equipped_items {
         menu_items.push(MenuTypes::ViewingEquipedItems);
         let focused_character = party.characters.get(&game_state.focused_character_id);
         if let Some(character) = focused_character {

@@ -6,7 +6,7 @@ use super::{
     generate_action_menu_items::generate_action_menu_items,
     generate_button_text::generate_button_text,
 };
-use crate::store::{game_store::GameStore, websocket_store::WebsocketStore};
+use crate::store::{game_store::GameStore, ui_store::UIStore, websocket_store::WebsocketStore};
 use common::adventuring_party::AdventuringParty;
 use std::rc::Rc;
 use web_sys::{FocusEvent, MouseEvent};
@@ -28,6 +28,7 @@ pub fn set_up_actions<'a>(
     websocket_state: Rc<WebsocketStore>,
     game_state: Rc<GameStore>,
     game_dispatch: &'a Dispatch<GameStore>,
+    ui_state: Rc<UIStore>,
     party: &AdventuringParty,
 ) -> Vec<ActionMenuButtonProperties> {
     let new_actions = generate_action_menu_items(&game_state, party);
@@ -38,11 +39,13 @@ pub fn set_up_actions<'a>(
         let cloned_action = action.clone();
         let cloned_game_state = game_state.clone();
         let cloned_game_dispatch = game_dispatch.clone();
+        let cloned_ui_state = ui_state.clone();
         let click_handler = Callback::from(move |_| {
             create_action_handler(
                 cloned_action.clone(),
                 cloned_game_dispatch.clone(),
                 cloned_game_state.clone(),
+                cloned_ui_state.clone(),
                 cloned_websocket_state.clone(),
             )()
         });

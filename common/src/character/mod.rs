@@ -1,17 +1,16 @@
 use self::inventory::CharacterInventory;
 use self::outfit_new_warrior::outfit_new_warrior;
-use crate::app_consts::error_messages;
 use crate::combatants::abilities::CombatantAbility;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::CombatantClass;
 use crate::combatants::CombatantProperties;
-use crate::errors::AppError;
 use crate::game::RoguelikeRacerGame;
 use crate::items::Item;
 use crate::primatives::EntityProperties;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
+pub mod equip_item;
 pub mod inventory;
 pub mod outfit_new_warrior;
 
@@ -57,36 +56,6 @@ impl Character {
         }
 
         character
-    }
-
-    pub fn equip_item(&self, item_id: u32) -> Result<(), AppError> {
-        let mut item = None;
-        for item_in_inventory in &self.inventory.items {
-            if item_in_inventory.entity_properties.id == item_id {
-                item = Some(item_in_inventory);
-            }
-        }
-        if item == None {
-            return Err(AppError {
-                error_type: crate::errors::AppErrorTypes::InvalidInput,
-                message: error_messages::INVALID_ITEM_ID.to_string(),
-            });
-        }
-        if !self.can_use_item(&item.expect("early return if None")) {
-            return Err(AppError {
-                error_type: crate::errors::AppErrorTypes::InvalidInput,
-                message: error_messages::ITEM_REQUIREMENTS_NOT_MET.to_string(),
-            });
-        }
-        // @TODO: Check if equiping the item would necessitate unequiping multiple items,
-        // (as with equiping a 2h weapon when wielding two 1h items) and
-        // if so, check if there is space in the inventory to accomodate unequiping those
-        // items. Reject if not.
-
-        // store their currently equiped item(s) if any in a variable
-        // remove currently equiped item(s)
-        //
-        Ok(())
     }
 
     pub fn can_use_item(&self, item: &Item) -> bool {

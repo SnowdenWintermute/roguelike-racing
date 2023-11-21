@@ -31,6 +31,8 @@ pub enum GameServerUpdatePackets {
     CharacterDeletion(PlayerCharacterDeletion),
     PlayerToggledReady(String),
     GameStarted(u128),
+    // IN GAME
+    CharacterEquippedItem(CharacterEquippedItemPacket),
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Default)]
@@ -120,4 +122,11 @@ pub struct AdventuringPartyCreation {
     pub party_id: u32,
     pub party_name: String,
     pub username_created_by: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+pub struct CharacterEquippedItemPacket {
+    pub character_id: u32,
+    pub item_id: u32,
+    pub alt_slot: bool,
 }

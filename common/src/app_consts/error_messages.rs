@@ -20,3 +20,4 @@ pub const INVALID_ITEM_ID: &str =
     "No item with the provided id was found in the currently focused player's posession";
 pub const ITEM_REQUIREMENTS_NOT_MET: &str =
     "You do not meet the requirements to equip or use that item";
+pub const CANT_EQUIP_NON_EQUIPMENT: &str = "Only equipment items may be equipped";

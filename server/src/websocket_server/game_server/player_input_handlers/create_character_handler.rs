@@ -42,11 +42,11 @@ impl GameServer {
         match &mut player.character_ids {
             None => {
                 let mut new_ids = HashSet::new();
-                new_ids.insert(next_entity_id);
+                new_ids.insert(new_character_id);
                 player.character_ids = Some(new_ids);
             }
             Some(ids) => {
-                ids.insert(next_entity_id);
+                ids.insert(new_character_id);
             }
         }
 

@@ -27,7 +27,7 @@ pub enum PlayerInputs {
     // manage equipment and items
     UnequipEquipmentSlot(EquipmentSlots),
     ShardInventorySlot(u8),
-    EquipInventoryItem(EquipItem),
+    EquipInventoryItem(EquipItemRequest),
     // manage abilities
     LevelUpAbilitySlot(u8),
     // exploration
@@ -68,7 +68,8 @@ pub struct CharacterClassSelection {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct EquipItem {
-    item_slot: u8,
-    equipment_slot: EquipmentSlots,
+pub struct EquipItemRequest {
+    pub character_id: u32,
+    pub item_id: u32,
+    pub alt_slot: bool,
 }

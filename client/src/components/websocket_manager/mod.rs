@@ -1,26 +1,22 @@
 pub mod adventuring_party_update_handlers;
+mod inventory_management_update_handlers;
 pub mod lobby_update_handlers;
 pub mod send_client_input;
 use self::lobby_update_handlers::handle_user_left_game;
-use crate::{
-    components::{
-        alerts::set_alert,
-        websocket_manager::{
-            adventuring_party_update_handlers::{
-                handle_adventuring_party_created, handle_character_creation,
-                handle_character_deletion, handle_player_changed_adventuring_party,
-            },
-            lobby_update_handlers::{
-                handle_game_started, handle_player_toggled_ready, handle_user_joined_game,
-                handle_user_left_room,
-            },
-        },
+use crate::components::alerts::set_alert;
+use crate::components::websocket_manager::inventory_management_update_handlers::handle_character_equipped_item;
+use crate::components::websocket_manager::{
+    adventuring_party_update_handlers::{
+        handle_adventuring_party_created, handle_character_creation, handle_character_deletion,
+        handle_player_changed_adventuring_party,
     },
-    store::{
-        alert_store::AlertStore, game_store::GameStore, lobby_store::LobbyStore,
-        websocket_store::WebsocketStore,
+    lobby_update_handlers::{
+        handle_game_started, handle_player_toggled_ready, handle_user_joined_game,
+        handle_user_left_room,
     },
 };
+use crate::store::websocket_store::WebsocketStore;
+use crate::store::{alert_store::AlertStore, game_store::GameStore, lobby_store::LobbyStore};
 use common::{errors::AppError, packets::server_to_client::GameServerUpdatePackets};
 use gloo::console::log;
 use wasm_bindgen::prelude::Closure;
@@ -146,6 +142,11 @@ pub fn websocket_manager(props: &Props) -> Html {
                                     GameServerUpdatePackets::GameStarted(timestamp) => {
                                         game_dispatch.clone().reduce_mut(move |store| {
                                             handle_game_started(store, timestamp)
+                                        })
+                                    }
+                                    GameServerUpdatePackets::CharacterEquippedItem(packet) => {
+                                        game_dispatch.clone().reduce_mut(|store| {
+                                            handle_character_equipped_item(store, packet);
                                         })
                                     }
                                     _ => {

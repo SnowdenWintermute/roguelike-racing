@@ -21,8 +21,8 @@ pub fn generate_button_text(action: GameActions, game_state: Rc<GameStore>) -> S
             }
         }
         GameActions::ToggleViewingEquipedItems => {
-            if game_state.viewing_equiped_items {
-                "View Unequiped Items".to_string()
+            if game_state.viewing_equipped_items {
+                "View Unequipped Items".to_string()
             } else {
                 "View Equipment".to_string()
             }

@@ -45,7 +45,7 @@ pub struct GameStore {
     pub viewing_skill_level_up_menu: bool,
     pub viewing_attribute_point_assignment_menu: bool,
     pub viewing_inventory: bool,
-    pub viewing_equiped_items: bool,
+    pub viewing_equipped_items: bool,
     pub selecting_injection_type: bool,
     pub viewing_items_on_ground: bool,
     pub parent_menu_pages: Vec<u8>,
@@ -126,11 +126,11 @@ pub fn set_compared_item<'a>(
                             slots.main
                         };
                         store.compared_slot = Some(slot_to_compare.clone());
-                        let equiped_item_option = focused_character
+                        let equipped_item_option = focused_character
                             .combatant_properties
                             .equipment
                             .get(&slot_to_compare);
-                        match equiped_item_option {
+                        match equipped_item_option {
                             Some(item) => {
                                 // don't compare to self
                                 if item.entity_properties.id != item_id {

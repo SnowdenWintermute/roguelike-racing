@@ -1,6 +1,5 @@
 mod character_attributes;
 mod paper_doll;
-// use crate::store::{game_store::GameStore, websocket_store::WebsocketStore};
 use crate::{
     components::game::character_sheet::{
         character_attributes::CharacterAttributes, paper_doll::PaperDoll,
@@ -8,7 +7,6 @@ use crate::{
     store::game_store::GameStore,
 };
 use common::character::Character;
-use gloo::console::log;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
@@ -20,7 +18,6 @@ pub struct Props {
 #[function_component(CharacterSheet)]
 pub fn character_sheet(props: &Props) -> Html {
     let (_, game_dispatch) = use_store::<GameStore>();
-    // let (websocket_state, _) = use_store::<WebsocketStore>();
     let Props { character } = props;
 
     use_effect_with((), move |_| {

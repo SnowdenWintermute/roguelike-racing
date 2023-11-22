@@ -11,7 +11,7 @@ use crate::{
     },
     store::{game_store::GameStore, lobby_store::LobbyStore},
 };
-use gloo::{console::log, events::EventListener};
+use gloo::events::EventListener;
 use gloo_utils::window;
 use wasm_bindgen::{JsCast, UnwrapThrowExt};
 use yew::prelude::*;

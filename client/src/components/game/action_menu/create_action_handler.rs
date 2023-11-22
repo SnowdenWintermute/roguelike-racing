@@ -4,12 +4,12 @@ use super::{
 use crate::{
     components::websocket_manager::send_client_input::send_client_input,
     store::{
-        game_store::{select_item, GameStore},
+        game_store::{get_focused_character, select_item, GameStore},
         ui_store::UIStore,
         websocket_store::WebsocketStore,
     },
 };
-use common::packets::client_to_server::{EquipItemRequest, PlayerInputs};
+use common::packets::client_to_server::{EquipItemRequest, PlayerInputs, UnequipSlotRequest};
 use gloo::console::log;
 use std::rc::Rc;
 use yewdux::prelude::Dispatch;
@@ -58,11 +58,27 @@ pub fn create_action_handler<'a>(
                 let character_id = game_state.focused_character_id;
                 let alt_slot = ui_state.mod_key_held;
                 if let Some(item) = item_option {
-                    send_client_input(
-                        &websocket_state.websocket,
-                        PlayerInputs::EquipInventoryItem(
-                            EquipItemRequest { character_id, item_id: item.entity_properties.id, alt_slot })
-                        )
+                    game_dispatch.reduce_mut(|game_store| {
+                        let focused_character = get_focused_character(game_store)
+                            .expect("to be in game");
+                        let slot_item_is_equipped = focused_character.slot_item_is_equipped(&item.entity_properties.id);
+                        if let Some(slot) = slot_item_is_equipped {
+                        send_client_input(
+                            &websocket_state.websocket,
+                            PlayerInputs::UnequipEquipmentSlot(UnequipSlotRequest { character_id, slot}))
+                        } else {
+                            send_client_input(
+                                &websocket_state.websocket,
+                                PlayerInputs::EquipInventoryItem(
+                                    EquipItemRequest { 
+                                        character_id, 
+                                        item_id: item.entity_properties.id,
+                                        alt_slot 
+                                    }
+                                )
+                            )
+                        }
+                    });
                 }
 
             }),

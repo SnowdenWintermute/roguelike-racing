@@ -96,6 +96,9 @@ impl Handler<ClientBinaryMessage> for GameServer {
                 packet.item_id,
                 packet.alt_slot,
             ),
+            Ok(PlayerInputs::UnequipEquipmentSlot(packet)) => {
+                self.unequip_slot_handler(message.actor_id, packet.character_id, packet.slot)
+            }
             _ => {
                 println! {"unhandled binary message\n {:#?}:",deserialized};
                 Ok(())

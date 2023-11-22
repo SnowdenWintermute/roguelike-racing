@@ -2,6 +2,14 @@ use super::Character;
 use crate::{app_consts::error_messages, errors::AppError, items::equipment::EquipmentSlots};
 
 impl Character {
+    pub fn slot_item_is_equipped(&self, item_id: &u32) -> Option<EquipmentSlots> {
+        for (slot, equipped_item) in &self.combatant_properties.equipment {
+            if &equipped_item.entity_properties.id == item_id {
+                return Some(slot.clone());
+            }
+        }
+        return None;
+    }
     /// returns list of ids of any items which were unequipped
     pub fn equip_item(&mut self, item_id: u32, alt_slot: bool) -> Result<Vec<u32>, AppError> {
         let mut item_and_index_option = None;
@@ -77,21 +85,8 @@ impl Character {
             }
             _ => vec![slot.clone()],
         };
-        // store their currently equipped item(s) if any in a temporary variable
-        // remove currently equipped item(s) from equipment hashmap
-        // take the unequipped items from the temporary variable and add them to inventory vec
-        let mut unequipped_item_options = Vec::new();
-        for slot in slots_to_unequip {
-            unequipped_item_options.push(self.combatant_properties.equipment.remove(&slot))
-        }
-        let mut ids_of_unequipped_items = Vec::new();
-        for item_option in unequipped_item_options {
-            if let Some(item) = item_option {
-                ids_of_unequipped_items.push(item.entity_properties.id);
-                self.inventory.items.push(item);
-            }
-        }
 
+        let ids_of_unequipped_items = self.unequip_slots(&slots_to_unequip);
         // remove item to equip from inventory
         let item_to_equip = self.inventory.items.remove(item_inventory_index);
         // add newly equipped item to equipment hashmap

@@ -6,16 +6,16 @@ use common::{
     app_consts::error_messages,
     errors::AppError,
     game::getters::{get_mut_party, get_mut_player},
-    packets::server_to_client::{CharacterEquippedItemPacket, GameServerUpdatePackets},
+    items::equipment::EquipmentSlots,
+    packets::{client_to_server::UnequipSlotRequest, server_to_client::GameServerUpdatePackets},
 };
 
 impl GameServer {
-    pub fn equip_item_handler(
+    pub fn unequip_slot_handler(
         &mut self,
         actor_id: u32,
         character_id: u32,
-        item_id: u32,
-        alt_slot: bool,
+        slot: EquipmentSlots,
     ) -> Result<(), AppError> {
         let connected_user = get_mut_user(&mut self.sessions, actor_id)?;
         let username = connected_user.username.clone();
@@ -54,14 +54,13 @@ impl GameServer {
                 message: error_messages::CHARACTER_NOT_OWNED.to_string(),
             }),
         }?;
-        character.equip_item(item_id, alt_slot)?;
+        character.unequip_slots(&vec![slot.clone()]);
 
         self.emit_packet(
             &current_game_name,
-            &GameServerUpdatePackets::CharacterEquippedItem(CharacterEquippedItemPacket {
+            &GameServerUpdatePackets::CharacterUnequippedSlot(UnequipSlotRequest {
                 character_id,
-                item_id,
-                alt_slot,
+                slot,
             }),
             None,
         )

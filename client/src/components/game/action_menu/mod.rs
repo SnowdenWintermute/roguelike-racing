@@ -17,7 +17,6 @@ use crate::store::ui_store::UIStore;
 use crate::store::{game_store::GameStore, websocket_store::WebsocketStore};
 use common::adventuring_party::AdventuringParty;
 use common::utils::calculate_number_of_pages;
-use gloo::console::log;
 use gloo::events::EventListener;
 use std::ops::Deref;
 use yew::prelude::*;
@@ -79,10 +78,6 @@ pub fn action_menu(props: &Props) -> Html {
         ),
         None => None,
     };
-    log!(format!(
-        "focused_character_equipment_ids: {:#?}",
-        focused_character_equipment_ids
-    ));
 
     let cloned_ui_state = ui_state.clone();
 

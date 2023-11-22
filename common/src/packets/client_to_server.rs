@@ -25,7 +25,7 @@ pub enum PlayerInputs {
     ChangeTargetIds(Vec<u8>),
     ClearConsumableAndAbilitySelections,
     // manage equipment and items
-    UnequipEquipmentSlot(EquipmentSlots),
+    UnequipEquipmentSlot(UnequipSlotRequest),
     ShardInventorySlot(u8),
     EquipInventoryItem(EquipItemRequest),
     // manage abilities
@@ -72,4 +72,10 @@ pub struct EquipItemRequest {
     pub character_id: u32,
     pub item_id: u32,
     pub alt_slot: bool,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct UnequipSlotRequest {
+    pub character_id: u32,
+    pub slot: EquipmentSlots,
 }

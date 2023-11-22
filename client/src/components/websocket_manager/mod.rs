@@ -4,7 +4,9 @@ pub mod lobby_update_handlers;
 pub mod send_client_input;
 use self::lobby_update_handlers::handle_user_left_game;
 use crate::components::alerts::set_alert;
-use crate::components::websocket_manager::inventory_management_update_handlers::handle_character_equipped_item;
+use crate::components::websocket_manager::inventory_management_update_handlers::{
+    handle_character_equipped_item, handle_character_unequipped_slot,
+};
 use crate::components::websocket_manager::{
     adventuring_party_update_handlers::{
         handle_adventuring_party_created, handle_character_creation, handle_character_deletion,
@@ -147,6 +149,11 @@ pub fn websocket_manager(props: &Props) -> Html {
                                     GameServerUpdatePackets::CharacterEquippedItem(packet) => {
                                         game_dispatch.clone().reduce_mut(|store| {
                                             let _ = handle_character_equipped_item(store, packet);
+                                        })
+                                    }
+                                    GameServerUpdatePackets::CharacterUnequippedSlot(packet) => {
+                                        game_dispatch.clone().reduce_mut(|store| {
+                                            let _ = handle_character_unequipped_slot(store, packet);
                                         })
                                     }
                                     _ => {

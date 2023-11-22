@@ -10,9 +10,10 @@ use crate::primatives::EntityProperties;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
-pub mod equip_item;
+mod equip_item;
 pub mod inventory;
 pub mod outfit_new_warrior;
+mod unequip_item;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Character {

@@ -4,6 +4,8 @@ use crate::game::RoguelikeRacerGame;
 use serde::Deserialize;
 use serde::Serialize;
 
+use super::client_to_server::UnequipSlotRequest;
+
 #[derive(Debug, Serialize, Deserialize)]
 pub enum GameServerUpdatePackets {
     // ERROR
@@ -33,6 +35,7 @@ pub enum GameServerUpdatePackets {
     GameStarted(u128),
     // IN GAME
     CharacterEquippedItem(CharacterEquippedItemPacket),
+    CharacterUnequippedSlot(UnequipSlotRequest),
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Default)]

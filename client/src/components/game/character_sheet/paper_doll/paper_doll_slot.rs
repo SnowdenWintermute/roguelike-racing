@@ -1,6 +1,9 @@
 use crate::store::game_store::{select_item, set_item_hovered, GameStore};
-use common::items::{equipment::EquipmentSlots, Item};
-use std::ops::Deref;
+use common::{
+    combatants::CombatAttributes,
+    items::{equipment::EquipmentSlots, Item},
+};
+use std::{collections::HashMap, ops::Deref};
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
@@ -8,6 +11,7 @@ use yewdux::prelude::use_store;
 pub struct Props {
     pub item_option: Option<Item>,
     pub slot: EquipmentSlots,
+    pub character_attributes: HashMap<CombatAttributes, u16>,
     pub class: String,
 }
 
@@ -17,6 +21,7 @@ pub fn paper_doll_slot(props: &Props) -> Html {
         item_option,
         slot,
         class,
+        character_attributes,
     } = props;
     let (game_state, game_dispatch) = use_store::<GameStore>();
     let highlighted_class_state = use_state(|| "".to_string());
@@ -36,15 +41,43 @@ pub fn paper_doll_slot(props: &Props) -> Html {
 
     // HANDLE BORDER/BG STYLES FOR COMPARED/FOCUSED/HOVERED EQUIPMENT SLOTS
     let cloned_highlighted_class_state = highlighted_class_state.clone();
-    let cloned_game_state = game_state.clone();
     let cloned_compared_slot = game_state.compared_slot.clone();
     let cloned_slot = slot.clone();
     let cloned_item_in_slot_option = item_option.clone();
+    let cloned_character_attributes = character_attributes.clone();
     use_effect_with(
-        (cloned_compared_slot, detailed_entity_id_option),
-        move |_| {
+        (
+            cloned_compared_slot,
+            detailed_entity_id_option,
+            cloned_character_attributes,
+            cloned_item_in_slot_option,
+        ),
+        move |(compared_slot, _, cloned_character_attributes, cloned_item_in_slot_option)| {
             let mut bg_class = "";
-            if let Some(compared_slot) = &cloned_game_state.compared_slot {
+
+            let mut equipped_item_is_usable = true;
+            if let Some(item) = cloned_item_in_slot_option {
+                if let Some(requirements) = &item.requirements {
+                    for (required_attribute, required_value) in requirements {
+                        if let Some(character_attribute) =
+                            cloned_character_attributes.get(&required_attribute)
+                        {
+                            if *character_attribute < *required_value as u16 {
+                                equipped_item_is_usable = false;
+                                break;
+                            }
+                        } else {
+                            equipped_item_is_usable = false;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if !equipped_item_is_usable {
+                bg_class = "bg-red-800 opacity-50";
+            }
+            if let Some(compared_slot) = &compared_slot {
                 if *compared_slot == cloned_slot {
                     if game_state.considered_item_unmet_requirements.is_some() {
                         bg_class = "bg-red-800 opacity-50";

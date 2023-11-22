@@ -5,7 +5,6 @@ use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::CombatantClass;
 use crate::combatants::CombatantProperties;
 use crate::game::RoguelikeRacerGame;
-use crate::items::Item;
 use crate::primatives::EntityProperties;
 use serde::Deserialize;
 use serde::Serialize;
@@ -57,27 +56,5 @@ impl Character {
         }
 
         character
-    }
-
-    pub fn can_use_item(&self, item: &Item) -> bool {
-        let total_character_attributes = self.combatant_properties.get_total_attributes();
-        if let Some(requirements) = &item.requirements {
-            for (attribute, value) in requirements {
-                let character_attribute_option = total_character_attributes.get(attribute);
-                match character_attribute_option {
-                    Some(attr_value) => {
-                        if *attr_value >= *value as u16 {
-                            continue;
-                        } else {
-                            return false;
-                        }
-                    }
-                    None => return false,
-                };
-            }
-        } else {
-            return true;
-        }
-        true
     }
 }

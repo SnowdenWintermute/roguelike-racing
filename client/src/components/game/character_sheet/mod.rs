@@ -30,7 +30,7 @@ pub fn character_sheet(props: &Props) -> Html {
 
     html!(
         <section class="p-2 flex-grow border border-slate-400 bg-slate-700 overflow-y-auto flex">
-            <PaperDoll equipment={character.combatant_properties.equipment.clone()} />
+            <PaperDoll equipment={character.combatant_properties.equipment.clone()} attributes={character.combatant_properties.get_total_attributes()} />
             <CharacterAttributes
                 entity_properties={character.entity_properties.clone()}
                 combatant_properties={character.combatant_properties.clone()}

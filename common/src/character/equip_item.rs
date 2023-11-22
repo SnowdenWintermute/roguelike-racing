@@ -32,7 +32,7 @@ impl Character {
 
         let (item, item_inventory_index) = item_and_index;
 
-        if !self.can_use_item(&item) {
+        if !self.combatant_properties.can_use_item(&item) {
             return Err(AppError {
                 error_type: crate::errors::AppErrorTypes::InvalidInput,
                 message: error_messages::ITEM_REQUIREMENTS_NOT_MET.to_string(),

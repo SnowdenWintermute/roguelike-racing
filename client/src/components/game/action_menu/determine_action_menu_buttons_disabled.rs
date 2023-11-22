@@ -24,6 +24,7 @@ pub fn determine_action_menu_buttons_disabled(
             let focused_character = get_character(*game, current_party_id, focused_character_id);
             if !focused_character
                 .expect("should always be a focused characer in a game")
+                .combatant_properties
                 .can_use_item(&item)
             {
                 return true;

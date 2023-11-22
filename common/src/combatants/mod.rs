@@ -129,11 +129,40 @@ impl CombatantProperties {
 
         add_attributes_to_accumulator(&self.inherent_attributes, &mut total_attributes);
 
-        for (_slot, item) in self.equipment.clone() {
-            match item.item_properties {
+        for (_slot, item) in &self.equipment {
+            match &item.item_properties {
                 crate::items::ItemProperties::Consumable(_) => (),
                 crate::items::ItemProperties::Equipment(equipment) => {
                     add_attributes_to_accumulator(&equipment.attributes, &mut total_attributes)
+                }
+            }
+        }
+        // after adding up attributes, determine if any equipped item still doesn't meet attribute
+        // requirements, if so, remove it's attributes from the total
+        for (_slot, item) in &self.equipment {
+            let mut equipped_item_is_usable = true;
+            if let Some(requirements) = &item.requirements {
+                for (required_attribute, required_value) in requirements {
+                    if let Some(character_attribute) = total_attributes.get(&required_attribute) {
+                        if *character_attribute < *required_value as u16 {
+                            equipped_item_is_usable = false;
+                            break;
+                        }
+                    } else {
+                        equipped_item_is_usable = false;
+                        break;
+                    }
+                }
+            }
+            if !equipped_item_is_usable {
+                match &item.item_properties {
+                    crate::items::ItemProperties::Consumable(_) => (),
+                    crate::items::ItemProperties::Equipment(equipment) => {
+                        remove_attributes_from_accumulator(
+                            &equipment.attributes,
+                            &mut total_attributes,
+                        )
+                    }
                 }
             }
         }
@@ -196,6 +225,28 @@ impl CombatantProperties {
         let modified_acc = (accuracy as f32 * OFF_HAND_ACCURACY_MODIFIER).floor() as u16;
         (Range::new(modified_min, modified_max), modified_acc)
     }
+
+    pub fn can_use_item(&self, item: &Item) -> bool {
+        let total_character_attributes = self.get_total_attributes();
+        if let Some(requirements) = &item.requirements {
+            for (attribute, value) in requirements {
+                let character_attribute_option = total_character_attributes.get(attribute);
+                match character_attribute_option {
+                    Some(attr_value) => {
+                        if *attr_value >= *value as u16 {
+                            continue;
+                        } else {
+                            return false;
+                        }
+                    }
+                    None => return false,
+                };
+            }
+        } else {
+            return true;
+        }
+        true
+    }
 }
 
 pub fn add_attributes_to_accumulator(
@@ -205,6 +256,17 @@ pub fn add_attributes_to_accumulator(
     for (attribute, number) in attr {
         if let Some(value) = acc.get_mut(attribute) {
             *value += number
+        }
+    }
+}
+
+pub fn remove_attributes_from_accumulator(
+    attr: &HashMap<CombatAttributes, u16>,
+    acc: &mut HashMap<CombatAttributes, u16>,
+) {
+    for (attribute, number) in attr {
+        if let Some(value) = acc.get_mut(attribute) {
+            *value -= number
         }
     }
 }

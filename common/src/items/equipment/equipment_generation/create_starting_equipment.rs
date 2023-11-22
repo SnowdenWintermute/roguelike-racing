@@ -45,7 +45,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
         item_properties: ItemProperties::Equipment(chest_properties),
     };
 
-    let head_properties = EquipmentProperties {
+    let mut head_properties = EquipmentProperties {
         equipment_type: EquipmentTypes::HeadGear(
             HeadGears::Cap,
             ArmorProperties {
@@ -59,17 +59,24 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
         traits: None,
     };
 
+    head_properties
+        .attributes
+        .insert(CombatAttributes::Intelligence, 1);
+
     let head_entity_properties = EntityProperties {
         id: id_generator.get_next_entity_id(),
         name: "Newspaper Hat".to_string(),
     };
 
-    let head = Item {
+    let mut head = Item {
         entity_properties: head_entity_properties,
         item_level: 0,
         requirements: None,
         item_properties: ItemProperties::Equipment(head_properties),
     };
+    let mut requirements = HashMap::new();
+    requirements.insert(CombatAttributes::Dexterity, 2);
+    head.requirements = Some(requirements);
 
     let main_hand_properties = EquipmentProperties {
         equipment_type: EquipmentTypes::OneHandedMeleeWeapon(

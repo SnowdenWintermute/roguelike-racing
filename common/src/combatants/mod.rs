@@ -3,7 +3,7 @@ use self::abilities::CombatantAbilityNames;
 use crate::app_consts::DEX_TO_ACCURACY_RATIO;
 use crate::app_consts::OFF_HAND_ACCURACY_MODIFIER;
 use crate::app_consts::OFF_HAND_DAMAGE_MODIFIER;
-use crate::items::equipment::affixes::Affix;
+use crate::items::equipment::trait_effects::get_weapon_percent_damage_increase_trait_damage_modifier::get_weapon_percent_damage_increase_trait_damage_modifier;
 use crate::items::equipment::weapon_properties::WeaponProperties;
 use crate::items::equipment::EquipmentSlots;
 use crate::items::equipment::EquipmentTraits;
@@ -198,45 +198,49 @@ impl CombatantProperties {
         }
     }
 
-    pub fn get_main_hand_weapon_damage_and_hit_chance(
+    pub fn get_weapon_damage_and_hit_chance(
         weapon_properties: &WeaponProperties,
         traits: &Option<Vec<EquipmentTraits>>,
         combatant_base_damage: u16,
         accuracy: u16,
+        is_off_hand: bool,
     ) -> (Range<u16>, u16) {
-        // let percent_damage_trait_option = {
-        // if let Some(affixes) = affixes {
-        //     for ( equipment_trait ) in traits {
-        //         if trait == CombatantTraits::Per
-        //     }
-        // }
-        // None
-        // }
-        let modified_min = weapon_properties.damage.min as u16 + combatant_base_damage as u16;
-        let modified_max = weapon_properties.damage.max as u16 + combatant_base_damage as u16;
-        let modified_acc = accuracy;
-        (Range::new(modified_min, modified_max), modified_acc)
-    }
+        let percent_damage_increase_from_trait =
+            get_weapon_percent_damage_increase_trait_damage_modifier(traits);
+        let mut modified_min = weapon_properties.damage.min as f32 + combatant_base_damage as f32;
+        let mut modified_max = weapon_properties.damage.max as f32 + combatant_base_damage as f32;
+        modified_min *= percent_damage_increase_from_trait;
+        modified_max *= percent_damage_increase_from_trait;
+        let mut modified_acc = accuracy as f32;
 
-    pub fn get_off_hand_weapon_damage_and_hit_chance(
-        weapon_properties: &WeaponProperties,
-        traits: &Option<Vec<EquipmentTraits>>,
-        combatant_base_damage: u16,
-        accuracy: u16,
-    ) -> (Range<u16>, u16) {
-        let modified_min = ((weapon_properties.damage.min as u16 + combatant_base_damage) as f32
-            * OFF_HAND_DAMAGE_MODIFIER)
-            .floor() as u16;
-        let modified_max = ((weapon_properties.damage.max as u16 + combatant_base_damage) as f32
-            * OFF_HAND_DAMAGE_MODIFIER)
-            .floor() as u16;
-        let modified_acc = (accuracy as f32 * OFF_HAND_ACCURACY_MODIFIER).floor() as u16;
-        (Range::new(modified_min, modified_max), modified_acc)
+        if is_off_hand {
+            modified_min *= OFF_HAND_DAMAGE_MODIFIER;
+            modified_max *= OFF_HAND_DAMAGE_MODIFIER;
+            modified_acc *= OFF_HAND_ACCURACY_MODIFIER;
+        }
+
+        (
+            Range::new(modified_min as u16, modified_max as u16),
+            modified_acc as u16,
+        )
     }
 
     pub fn can_use_item(&self, item: &Item) -> bool {
         let total_character_attributes = self.get_total_attributes();
         item.requirements_satisfied_by_attributes(&total_character_attributes)
+    }
+
+    pub fn clamp_curr_hp_to_max(&mut self) {
+        // @TODO optimize to only add up HP
+        let total_attributes = self.get_total_attributes();
+        match total_attributes.get(&CombatAttributes::Hp) {
+            Some(max_hp) => {
+                if max_hp < &self.hit_points {
+                    self.hit_points = *max_hp
+                }
+            }
+            None => (),
+        }
     }
 }
 

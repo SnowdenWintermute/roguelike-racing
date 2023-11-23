@@ -2,7 +2,11 @@ use super::Character;
 use crate::items::equipment::EquipmentSlots;
 
 impl Character {
-    pub fn unequip_slots(&mut self, slots_to_unequip: &Vec<EquipmentSlots>) -> Vec<u32> {
+    pub fn unequip_slots(
+        &mut self,
+        slots_to_unequip: &Vec<EquipmentSlots>,
+        is_due_to_equipment_swap: bool,
+    ) -> Vec<u32> {
         let mut unequipped_item_options = Vec::new();
         for slot in slots_to_unequip {
             unequipped_item_options.push(self.combatant_properties.equipment.remove(&slot))
@@ -14,6 +18,11 @@ impl Character {
                 self.inventory.items.push(item);
             }
         }
+
+        if !is_due_to_equipment_swap {
+            self.combatant_properties.clamp_curr_hp_to_max();
+        }
+
         ids_of_unequipped_items
     }
 }

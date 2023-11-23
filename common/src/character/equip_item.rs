@@ -86,13 +86,15 @@ impl Character {
             _ => vec![slot.clone()],
         };
 
-        let ids_of_unequipped_items = self.unequip_slots(&slots_to_unequip);
+        let ids_of_unequipped_items = self.unequip_slots(&slots_to_unequip, true);
         // remove item to equip from inventory
         let item_to_equip = self.inventory.items.remove(item_inventory_index);
         // add newly equipped item to equipment hashmap
         self.combatant_properties
             .equipment
             .insert(slot, item_to_equip);
+
+        self.combatant_properties.clamp_curr_hp_to_max();
 
         Ok(ids_of_unequipped_items)
     }

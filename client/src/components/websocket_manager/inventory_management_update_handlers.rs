@@ -52,7 +52,7 @@ pub fn handle_character_unequipped_slot(
 ) -> Result<(), AppError> {
     let UnequipSlotRequest { character_id, slot } = packet;
     let character = game_store.get_mut_character(character_id)?;
-    character.unequip_slots(&vec![slot]);
+    character.unequip_slots(&vec![slot], false);
     Ok(())
 }
 

@@ -23,27 +23,25 @@ pub fn weapon_damage(
         .unwrap_or_else(|| &0);
 
     let mh_damage_and_acc_option = if let Some(mh_weapon) = mh_weapon_option {
-        Some(
-            CombatantProperties::get_main_hand_weapon_damage_and_hit_chance(
-                &mh_weapon.0,
-                &mh_weapon.1,
-                base_damage,
-                *accuracy,
-            ),
-        )
+        Some(CombatantProperties::get_weapon_damage_and_hit_chance(
+            &mh_weapon.0,
+            &mh_weapon.1,
+            base_damage,
+            *accuracy,
+            false,
+        ))
     } else {
         None
     };
 
     let modified_oh_damage_and_acc = if let Some(oh_weapon) = oh_weapon_option {
-        Some(
-            CombatantProperties::get_off_hand_weapon_damage_and_hit_chance(
-                &oh_weapon.0,
-                &oh_weapon.1,
-                base_damage,
-                *accuracy,
-            ),
-        )
+        Some(CombatantProperties::get_weapon_damage_and_hit_chance(
+            &oh_weapon.0,
+            &oh_weapon.1,
+            base_damage,
+            *accuracy,
+            true,
+        ))
     } else {
         None
     };

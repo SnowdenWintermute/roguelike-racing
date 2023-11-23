@@ -8,6 +8,7 @@ pub mod jewelries;
 pub mod one_handed_melee_weapons;
 pub mod shield_properties;
 pub mod shields;
+pub mod trait_effects;
 pub mod two_handed_melee_weapons;
 pub mod two_handed_ranged_weapons;
 pub mod weapon_properties;

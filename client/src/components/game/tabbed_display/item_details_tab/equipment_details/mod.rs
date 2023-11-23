@@ -29,7 +29,10 @@ pub struct Props {
 pub fn equipment_details(props: &Props) -> Html {
     let (game_state, _) = use_store::<GameStore>();
     let armor_category_if_any = armor_category(&props.equipment_properties.equipment_type);
-    let armor_class_if_any = armor_class(&props.equipment_properties.equipment_type);
+    let armor_class_if_any = armor_class(
+        &props.equipment_properties.equipment_type,
+        &props.equipment_properties.traits,
+    );
     let weapon_damage_if_any =
         weapon_damage::weapon_damage(&props.equipment_properties.equipment_type);
 

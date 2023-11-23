@@ -54,7 +54,8 @@ impl GameServer {
                 message: error_messages::CHARACTER_NOT_OWNED.to_string(),
             }),
         }?;
-        character.unequip_slots(&vec![slot.clone()]);
+
+        character.unequip_slots(&vec![slot.clone()], false);
 
         self.emit_packet(
             &current_game_name,

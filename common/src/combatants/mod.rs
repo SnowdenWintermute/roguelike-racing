@@ -3,6 +3,7 @@ use self::abilities::CombatantAbilityNames;
 use crate::app_consts::DEX_TO_ACCURACY_RATIO;
 use crate::app_consts::OFF_HAND_ACCURACY_MODIFIER;
 use crate::app_consts::OFF_HAND_DAMAGE_MODIFIER;
+use crate::items::equipment::affixes::Affix;
 use crate::items::equipment::weapon_properties::WeaponProperties;
 use crate::items::equipment::EquipmentSlots;
 use crate::items::equipment::EquipmentTraits;
@@ -133,27 +134,20 @@ impl CombatantProperties {
             match &item.item_properties {
                 crate::items::ItemProperties::Consumable(_) => (),
                 crate::items::ItemProperties::Equipment(equipment) => {
-                    add_attributes_to_accumulator(&equipment.attributes, &mut total_attributes)
+                    add_attributes_to_accumulator(&equipment.attributes, &mut total_attributes);
+                    let base_ac = equipment.get_base_armor_class();
+                    total_attributes
+                        .entry(CombatAttributes::ArmorClass)
+                        .and_modify(|value| *value += base_ac as u16)
+                        .or_insert(base_ac as u16);
                 }
             }
         }
         // after adding up attributes, determine if any equipped item still doesn't meet attribute
         // requirements, if so, remove it's attributes from the total
         for (_slot, item) in &self.equipment {
-            let mut equipped_item_is_usable = true;
-            if let Some(requirements) = &item.requirements {
-                for (required_attribute, required_value) in requirements {
-                    if let Some(character_attribute) = total_attributes.get(&required_attribute) {
-                        if *character_attribute < *required_value as u16 {
-                            equipped_item_is_usable = false;
-                            break;
-                        }
-                    } else {
-                        equipped_item_is_usable = false;
-                        break;
-                    }
-                }
-            }
+            let equipped_item_is_usable =
+                item.requirements_satisfied_by_attributes(&total_attributes);
             if !equipped_item_is_usable {
                 match &item.item_properties {
                     crate::items::ItemProperties::Consumable(_) => (),
@@ -161,7 +155,11 @@ impl CombatantProperties {
                         remove_attributes_from_accumulator(
                             &equipment.attributes,
                             &mut total_attributes,
-                        )
+                        );
+                        let base_ac = equipment.get_base_armor_class();
+                        total_attributes
+                            .entry(CombatAttributes::ArmorClass)
+                            .and_modify(|value| *value -= base_ac as u16);
                     }
                 }
             }
@@ -202,9 +200,18 @@ impl CombatantProperties {
 
     pub fn get_main_hand_weapon_damage_and_hit_chance(
         weapon_properties: &WeaponProperties,
+        traits: &Option<Vec<EquipmentTraits>>,
         combatant_base_damage: u16,
         accuracy: u16,
     ) -> (Range<u16>, u16) {
+        // let percent_damage_trait_option = {
+        // if let Some(affixes) = affixes {
+        //     for ( equipment_trait ) in traits {
+        //         if trait == CombatantTraits::Per
+        //     }
+        // }
+        // None
+        // }
         let modified_min = weapon_properties.damage.min as u16 + combatant_base_damage as u16;
         let modified_max = weapon_properties.damage.max as u16 + combatant_base_damage as u16;
         let modified_acc = accuracy;
@@ -213,6 +220,7 @@ impl CombatantProperties {
 
     pub fn get_off_hand_weapon_damage_and_hit_chance(
         weapon_properties: &WeaponProperties,
+        traits: &Option<Vec<EquipmentTraits>>,
         combatant_base_damage: u16,
         accuracy: u16,
     ) -> (Range<u16>, u16) {
@@ -228,24 +236,7 @@ impl CombatantProperties {
 
     pub fn can_use_item(&self, item: &Item) -> bool {
         let total_character_attributes = self.get_total_attributes();
-        if let Some(requirements) = &item.requirements {
-            for (attribute, value) in requirements {
-                let character_attribute_option = total_character_attributes.get(attribute);
-                match character_attribute_option {
-                    Some(attr_value) => {
-                        if *attr_value >= *value as u16 {
-                            continue;
-                        } else {
-                            return false;
-                        }
-                    }
-                    None => return false,
-                };
-            }
-        } else {
-            return true;
-        }
-        true
+        item.requirements_satisfied_by_attributes(&total_character_attributes)
     }
 }
 

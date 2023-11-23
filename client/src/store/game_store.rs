@@ -87,7 +87,8 @@ pub fn select_item(game_dispatch: Dispatch<GameStore>, item_option: Option<Item>
             if let Some(entity) = &store.detailed_entity {
                 let id = entity.get_id();
                 if id == item.entity_properties.id {
-                    store.detailed_entity = None
+                    store.detailed_entity = None;
+                    store.selected_item = None
                 } else {
                     store.detailed_entity = Some(DetailableEntities::Item(item));
                 }

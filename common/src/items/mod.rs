@@ -64,4 +64,22 @@ impl Item {
             }
         }
     }
+
+    pub fn requirements_satisfied_by_attributes(
+        &self,
+        attributes: &HashMap<CombatAttributes, u16>,
+    ) -> bool {
+        if let Some(requirements) = &self.requirements {
+            for (required_attribute, required_value) in requirements {
+                if let Some(character_attribute) = attributes.get(&required_attribute) {
+                    if *character_attribute < *required_value as u16 {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+        }
+        true
+    }
 }

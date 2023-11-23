@@ -105,6 +105,17 @@ pub struct EquipmentProperties {
     pub traits: Option<Vec<EquipmentTraits>>,
 }
 
+impl EquipmentProperties {
+    pub fn get_base_armor_class(&self) -> u8 {
+        match &self.equipment_type {
+            EquipmentTypes::BodyArmor(_, armor_properties) => armor_properties.armor_class,
+            EquipmentTypes::HeadGear(_, armor_properties) => armor_properties.armor_class,
+            EquipmentTypes::Shield(_, shield_properties) => shield_properties.armor_class,
+            _ => 0,
+        }
+    }
+}
+
 #[derive(PartialEq, Clone, Debug)]
 pub struct EquipableSlots {
     pub main: EquipmentSlots,

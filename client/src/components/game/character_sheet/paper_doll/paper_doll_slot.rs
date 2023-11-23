@@ -57,21 +57,8 @@ pub fn paper_doll_slot(props: &Props) -> Html {
 
             let mut equipped_item_is_usable = true;
             if let Some(item) = cloned_item_in_slot_option {
-                if let Some(requirements) = &item.requirements {
-                    for (required_attribute, required_value) in requirements {
-                        if let Some(character_attribute) =
-                            cloned_character_attributes.get(&required_attribute)
-                        {
-                            if *character_attribute < *required_value as u16 {
-                                equipped_item_is_usable = false;
-                                break;
-                            }
-                        } else {
-                            equipped_item_is_usable = false;
-                            break;
-                        }
-                    }
-                }
+                equipped_item_is_usable =
+                    item.requirements_satisfied_by_attributes(cloned_character_attributes);
             }
 
             if !equipped_item_is_usable {

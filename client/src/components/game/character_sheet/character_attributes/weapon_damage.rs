@@ -26,6 +26,7 @@ pub fn weapon_damage(
         Some(
             CombatantProperties::get_main_hand_weapon_damage_and_hit_chance(
                 &mh_weapon.0,
+                &mh_weapon.1,
                 base_damage,
                 *accuracy,
             ),
@@ -38,6 +39,7 @@ pub fn weapon_damage(
         Some(
             CombatantProperties::get_off_hand_weapon_damage_and_hit_chance(
                 &oh_weapon.0,
+                &oh_weapon.1,
                 base_damage,
                 *accuracy,
             ),

@@ -59,7 +59,7 @@ pub fn handle_character_creation(
         character_creation.character,
     );
 
-    let player = get_mut_player(game, character_creation.username.clone())?;
+    let player = get_mut_player(game, &character_creation.username)?;
     match &mut player.character_ids {
         None => {
             let mut new_ids = HashSet::new();
@@ -84,7 +84,7 @@ pub fn handle_character_deletion(
     })?;
     let party = get_mut_party(game, character_deletion.party_id)?;
     party.characters.remove(&character_deletion.character_id);
-    let player = get_mut_player(game, character_deletion.username.clone())?;
+    let player = get_mut_player(game, &character_deletion.username)?;
     let player_character_ids_option = player.character_ids.clone();
     let mut player_character_ids = player_character_ids_option.ok_or_else(|| AppError {
         error_type: common::errors::AppErrorTypes::ServerError,
@@ -93,7 +93,7 @@ pub fn handle_character_deletion(
 
     player_character_ids.remove(&character_deletion.character_id);
 
-    let player = get_mut_player(game, character_deletion.username.clone())?;
+    let player = get_mut_player(game, &character_deletion.username)?;
     if player_character_ids.len() > 1 {
         player.character_ids = Some(player_character_ids);
     } else {

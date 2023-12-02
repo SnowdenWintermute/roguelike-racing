@@ -27,7 +27,7 @@ impl GameServer {
         let game_name = game.name.clone();
 
         // only allow readying if they have at least one character
-        let player = get_mut_player(game, username.clone())?;
+        let player = get_mut_player(game, &username)?;
         let _ = player.character_ids.clone().ok_or_else(|| AppError {
             error_type: common::errors::AppErrorTypes::InvalidInput,
             message: error_messages::PLAYER_HAS_NO_CHARACTERS.to_string(),

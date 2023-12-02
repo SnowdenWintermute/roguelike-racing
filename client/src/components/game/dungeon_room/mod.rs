@@ -1,6 +1,14 @@
-use common::{character::Character, game::RoguelikeRacerGame};
+use common::{character::Character, dungeon_rooms::DungeonRoomTypes, game::RoguelikeRacerGame};
 pub mod combatant;
-use crate::{components::game::dungeon_room::combatant::Combatant, store::game_store::GameStore};
+mod monster_lair;
+mod players_ready_to_explore;
+use crate::{
+    components::game::dungeon_room::{
+        combatant::Combatant, monster_lair::MonsterLair,
+        players_ready_to_explore::PlayersReadyToExplore,
+    },
+    store::game_store::GameStore,
+};
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
@@ -38,13 +46,19 @@ pub fn dungeon_room(props: &Props) -> Html {
 
     html!(
         <section class={format!("h-full border border-slate-400 bg-slate-700 overflow-y-auto flex {}", conditional_styles)} >
-            <div class="w-1/2" >
-                <div class="p-2 flex flex-col" >
+            <div class="w-1/2 flex p-2" >
+                <div class="flex flex-col mr-2" >
                     {characters.iter().map(|(_id, character)|
                         html!{<Combatant
                             entity_properties={character.entity_properties.clone()}
                             combatant_properties={character.combatant_properties.clone()} />}).collect::<Html>()}
                 </div>
+                if party.current_room.monsters.is_none() {
+                    <PlayersReadyToExplore
+                        players_ready={party.players_ready_to_explore.clone()}
+                        players={party.player_usernames.clone()}
+                    />
+                }
             </div>
             if !game_state.viewing_inventory {
             <div class="w-1/2 border-l border-slate-400" >
@@ -53,6 +67,9 @@ pub fn dungeon_room(props: &Props) -> Html {
                     {": "}
                     {format!("{}", party.current_room.room_type)}
                 </div>
+                if party.current_room.room_type == DungeonRoomTypes::MonsterLair {
+                    <MonsterLair room={party.current_room.clone()} />
+                }
             </div>
             }
         </section>

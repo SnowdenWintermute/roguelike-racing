@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use crate::combatants::CombatantClass;
 use serde::Deserialize;
 use serde::Serialize;
@@ -6,13 +8,14 @@ use serde::Serialize;
 pub enum TargetingScheme {
     Single,
     Area,
-    CentralizedArea,
+    TargetAndAdjacent,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum ValidTargets {
     Opponent,
-    AllyOrSelf,
+    User,
+    Friendly,
     Any,
 }
 
@@ -61,6 +64,18 @@ pub enum CombatantAbilityNames {
     ArmorBreak,
     ShootArrow,
     Heal,
+}
+
+impl Display for CombatantAbilityNames {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            CombatantAbilityNames::Attack => write!(f, "Attack"),
+            CombatantAbilityNames::HeatLance => write!(f, "Heat Lance"),
+            CombatantAbilityNames::ArmorBreak => write!(f, "Armor Break"),
+            CombatantAbilityNames::ShootArrow => write!(f, "Shoot Arrow"),
+            CombatantAbilityNames::Heal => write!(f, "Heal"),
+        }
+    }
 }
 
 impl CombatantAbility {

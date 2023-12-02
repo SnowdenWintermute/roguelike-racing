@@ -21,3 +21,5 @@ pub const INVALID_ITEM_ID: &str =
 pub const ITEM_REQUIREMENTS_NOT_MET: &str =
     "You do not meet the requirements to equip or use that item";
 pub const CANT_EQUIP_NON_EQUIPMENT: &str = "Only equipment items may be equipped";
+pub const CANT_EXPLORE_WHEN_MONSTERS_ARE_PRESENT: &str =
+    "Defeat the monsters before exploring the next room";

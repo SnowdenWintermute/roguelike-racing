@@ -1,9 +1,10 @@
 use crate::store::game_store::{DetailableEntities, GameStore};
 use common::{
+    adventuring_party::AdventuringParty,
     app_consts::error_messages,
     character::Character,
     errors::AppError,
-    game::getters::get_mut_party,
+    game::{getters::get_mut_party, RoguelikeRacerGame},
     packets::{
         client_to_server::UnequipSlotRequest, server_to_client::CharacterEquippedItemPacket,
     },
@@ -77,5 +78,21 @@ impl GameStore {
                 error_type: common::errors::AppErrorTypes::ClientError,
                 message: error_messages::CHARACTER_NOT_FOUND.to_string(),
             })
+    }
+
+    pub fn get_current_game_mut<'a>(&'a mut self) -> Result<&'a mut RoguelikeRacerGame, AppError> {
+        self.game.as_mut().ok_or_else(|| AppError {
+            error_type: common::errors::AppErrorTypes::ClientError,
+            message: error_messages::GAME_NOT_FOUND.to_string(),
+        })
+    }
+
+    pub fn get_current_party_mut<'a>(&'a mut self) -> Result<&'a mut AdventuringParty, AppError> {
+        let current_party_id = self.current_party_id.ok_or_else(|| AppError {
+            error_type: common::errors::AppErrorTypes::ClientError,
+            message: error_messages::MISSING_PARTY_REFERENCE.to_string(),
+        })?;
+        let game = self.get_current_game_mut()?;
+        get_mut_party(game, current_party_id)
     }
 }

@@ -36,7 +36,7 @@ pub fn generate_button_text(action: GameActions, game_state: Rc<GameStore>) -> S
         GameActions::DeselectItem => "Cancel".to_string(),
         GameActions::ShardItem(_) => "Convert to shard".to_string(),
         GameActions::Attack => "Attack".to_string(),
-        GameActions::UseAbility(_name) => "Use ability".to_string(),
+        GameActions::UseAbility(name) => format!("{}", name),
         GameActions::LevelUpAbility(_name) => "Level up ability".to_string(),
         GameActions::SetAssignAttributePointsMenuOpen(_open_status) => {
             "Assign attributes".to_string()

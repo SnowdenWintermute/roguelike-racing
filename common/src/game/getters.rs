@@ -8,9 +8,9 @@ use crate::errors::AppErrorTypes;
 
 pub fn get_mut_player<'a>(
     game: &'a mut RoguelikeRacerGame,
-    username: String,
+    username: &String,
 ) -> Result<&'a mut RoguelikeRacerPlayer, AppError> {
-    let player = game.players.get_mut(&username).ok_or_else(|| AppError {
+    let player = game.players.get_mut(username).ok_or_else(|| AppError {
         error_type: AppErrorTypes::ServerError,
         message: error_messages::PLAYER_NOT_FOUND.to_string(),
     })?;

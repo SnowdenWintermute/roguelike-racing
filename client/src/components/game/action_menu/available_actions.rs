@@ -61,9 +61,8 @@ impl MenuTypes {
                 MenuTypes::ItemsOnGround => menu_items.push(GameActions::TakeItem),
                 MenuTypes::InCombat => {
                     menu_items.push(GameActions::ToggleInventoryOpen);
-                    menu_items.push(GameActions::Attack);
-                    menu_items.push(GameActions::UseAutoinjector);
                     add_abilities_to_menu(&abilities, &mut menu_items);
+                    menu_items.push(GameActions::UseAutoinjector);
                 }
                 MenuTypes::LevelUpAbilities => {
                     menu_items.push(GameActions::SetAssignAttributePointsMenuOpen(true));

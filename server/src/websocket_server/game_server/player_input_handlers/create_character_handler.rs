@@ -24,7 +24,7 @@ impl GameServer {
         let game = get_mut_game(&mut self.games, &current_game_name)?;
         let game_name = game.name.clone();
 
-        let player = get_mut_player(game, user.username.clone())?;
+        let player = get_mut_player(game, &user.username)?;
         let party_id = player.party_id.ok_or_else(|| AppError {
             error_type: common::errors::AppErrorTypes::ServerError,
             message: common::app_consts::error_messages::MISSING_PARTY_REFERENCE.to_string(),
@@ -37,7 +37,7 @@ impl GameServer {
             username.clone(),
         )?;
 
-        let player = get_mut_player(game, user.username.clone())?;
+        let player = get_mut_player(game, &user.username)?;
         match &mut player.character_ids {
             None => {
                 let mut new_ids = HashSet::new();

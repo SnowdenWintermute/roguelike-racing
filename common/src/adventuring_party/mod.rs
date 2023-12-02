@@ -1,3 +1,5 @@
+mod generate_next_room;
+
 use crate::character::Character;
 use crate::dungeon_rooms::DungeonRoom;
 use crate::dungeon_rooms::DungeonRoomTypes;
@@ -18,6 +20,7 @@ pub struct AdventuringParty {
     pub id: u32,
     pub name: String,
     pub player_usernames: HashSet<String>,
+    pub players_ready_to_explore: HashSet<String>,
     pub characters: HashMap<u32, Character>,
     pub active_combatant_id: Option<u32>,
     pub current_floor: u8,
@@ -33,6 +36,7 @@ impl AdventuringParty {
             id,
             name,
             player_usernames: HashSet::new(),
+            players_ready_to_explore: HashSet::new(),
             characters: HashMap::new(),
             active_combatant_id: None,
             current_floor: 1,

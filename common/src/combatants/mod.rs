@@ -25,7 +25,7 @@ pub enum CombatantClass {
     Warrior,
     Mage,
     Rogue,
-    Monster,
+    None,
 }
 
 impl fmt::Display for CombatantClass {
@@ -34,7 +34,7 @@ impl fmt::Display for CombatantClass {
             CombatantClass::Warrior => write!(f, "Warrior"),
             CombatantClass::Mage => write!(f, "Mage"),
             CombatantClass::Rogue => write!(f, "Rogue"),
-            CombatantClass::Monster => write!(f, "Monster"),
+            CombatantClass::None => write!(f, "None"),
         }
     }
 }
@@ -98,7 +98,6 @@ pub struct CombatantProperties {
     pub equipment: HashMap<EquipmentSlots, Item>,
     pub abilities: HashMap<CombatantAbilityNames, CombatantAbility>,
     // pub traits: HashSet<CombatantTraits>
-    pub target_ids: Option<Vec<u32>>,
     pub selected_ability_slot: Option<u8>,
     pub selected_item_slot: Option<u8>,
 }
@@ -118,7 +117,6 @@ impl CombatantProperties {
             abilities,
             selected_item_slot: None,
             selected_ability_slot: None,
-            target_ids: None,
         }
     }
 

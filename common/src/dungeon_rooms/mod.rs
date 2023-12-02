@@ -1,9 +1,9 @@
-#![allow(dead_code)]
-use core::fmt;
-
+mod treasure_chest;
+use crate::dungeon_rooms::treasure_chest::TreasureChest;
 use crate::game::id_generator::IdGenerator;
 use crate::items::Item;
-use crate::monster::Monster;
+use crate::monsters::Monster;
+use core::fmt;
 use rand::prelude::*;
 use serde::Deserialize;
 use serde::Serialize;
@@ -25,37 +25,6 @@ impl fmt::Display for DungeonRoomTypes {
             DungeonRoomTypes::Treasure => write!(f, "Treasure Room"),
             DungeonRoomTypes::Stairs => write!(f, "Staircase"),
             DungeonRoomTypes::Empty => write!(f, "Empty"),
-        }
-    }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub struct TreasureChest {
-    pub is_opened: bool,
-    pub is_locked: bool,
-    pub is_trapped: bool,
-    pub level: u8,
-}
-
-impl TreasureChest {
-    pub fn generate(level: u8) -> TreasureChest {
-        let mut rng = rand::thread_rng();
-
-        let mut is_locked = false;
-        if rng.gen_range(1..=5) > 3 {
-            is_locked = true;
-        }
-
-        let mut is_trapped = false;
-        if rng.gen_range(1..=5) > 3 {
-            is_trapped = true;
-        }
-
-        TreasureChest {
-            is_opened: false,
-            is_locked,
-            is_trapped,
-            level,
         }
     }
 }
@@ -96,7 +65,11 @@ impl DungeonRoom {
 
         let mut monsters = None;
         if room_type == DungeonRoomTypes::MonsterLair {
-            monsters = Some(vec![Monster::generate(id_generator, floor)]);
+            let mut monsters_vec = vec![];
+            for _ in 0..=2 {
+                monsters_vec.push(Monster::generate(id_generator, floor));
+            }
+            monsters = Some(monsters_vec);
         }
 
         DungeonRoom {

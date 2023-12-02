@@ -28,7 +28,7 @@ impl GameServer {
                 })?;
         let game = get_mut_game(&mut self.games, &current_game_name)?;
         let game_name = game.name.clone();
-        let player = get_mut_player(game, username.clone())?;
+        let player = get_mut_player(game, &username)?;
         let player_character_ids_option = player.character_ids.clone();
         let party_id = player.party_id.ok_or_else(|| AppError {
             error_type: common::errors::AppErrorTypes::ServerError,
@@ -46,7 +46,7 @@ impl GameServer {
             party.characters.remove(&character_id);
             player_character_ids.remove(&character_id);
 
-            let player = get_mut_player(game, username.clone())?;
+            let player = get_mut_player(game, &username)?;
             if player_character_ids.len() >= 1 {
                 player.character_ids = Some(player_character_ids);
             } else {

@@ -21,7 +21,7 @@ impl Item {
             combat_use_only: true,
             requires_combat_turn: true,
             targeting_schemes: vec![TargetingScheme::Single],
-            valid_targets: ValidTargets::AllyOrSelf,
+            valid_targets: ValidTargets::Friendly,
         })
     }
 }

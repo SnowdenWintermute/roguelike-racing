@@ -19,7 +19,7 @@ impl GameServer {
                 })?;
 
         let game = get_mut_game(&mut self.games, &current_game_name)?;
-        let player = get_mut_player(game, username.clone())?;
+        let player = get_mut_player(game, &username)?;
         let username = player.username.clone();
         game.remove_player_from_adventuring_party(username.clone())?;
 

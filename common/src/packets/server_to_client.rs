@@ -1,5 +1,6 @@
 use crate::character::Character;
 use crate::combatants::CombatantClass;
+use crate::dungeon_rooms::DungeonRoom;
 use crate::game::RoguelikeRacerGame;
 use serde::Deserialize;
 use serde::Serialize;
@@ -36,6 +37,8 @@ pub enum GameServerUpdatePackets {
     // IN GAME
     CharacterEquippedItem(CharacterEquippedItemPacket),
     CharacterUnequippedSlot(UnequipSlotRequest),
+    PlayerToggledReadyToExplore(String),
+    DungeonRoomUpdate(DungeonRoom),
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Default)]

@@ -1,7 +1,10 @@
 use common::{
     app_consts::error_messages::{self},
     character::Character,
-    combatants::{CombatAttributes, CombatantProperties},
+    combatants::{
+        abilities::{CombatantAbility, TargetingScheme},
+        CombatAttributes, CombatantProperties,
+    },
     errors::AppError,
     game::{getters::get_character, RoguelikeRacerGame},
     items::{
@@ -40,6 +43,8 @@ pub struct GameStore {
     pub current_party_id: Option<u32>,
     pub detailed_entity: Option<DetailableEntities>,
     pub hovered_entity: Option<DetailableEntities>,
+    pub selected_ability: Option<CombatantAbility>,
+    pub targeted_combatant_ids: Vec<u32>,
     pub selected_item: Option<Item>,
     pub compared_item: Option<Item>,
     pub compared_slot: Option<EquipmentSlots>,

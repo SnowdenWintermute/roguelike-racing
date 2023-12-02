@@ -81,7 +81,7 @@ impl RoguelikeRacerGame {
         let party = get_mut_party(self, party_id)?;
         party.player_usernames.insert(username.clone());
 
-        let player_to_move = get_mut_player(self, username)?;
+        let player_to_move = get_mut_player(self, &username)?;
         player_to_move.party_id = Some(party_id);
 
         Ok(())
@@ -91,7 +91,7 @@ impl RoguelikeRacerGame {
         &mut self,
         username: String,
     ) -> Result<(), AppError> {
-        let player = get_mut_player(self, username.clone())?;
+        let player = get_mut_player(self, &username)?;
         if player.party_id.is_none() {
             return Ok(());
         }
@@ -131,7 +131,7 @@ impl RoguelikeRacerGame {
         &mut self,
         username: String,
     ) -> Result<HashMap<u32, Character>, AppError> {
-        let player = get_mut_player(self, username)?;
+        let player = get_mut_player(self, &username)?;
         let party_id_option = player.party_id;
         let character_ids = player.character_ids.clone();
         let mut characters = HashMap::new();

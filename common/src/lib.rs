@@ -7,7 +7,7 @@ pub mod dungeon_rooms;
 pub mod errors;
 pub mod game;
 pub mod items;
-pub mod monster;
+pub mod monsters;
 pub mod packets;
 pub mod primatives;
 pub mod status_effects;

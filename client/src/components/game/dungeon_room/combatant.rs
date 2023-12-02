@@ -1,5 +1,9 @@
-use crate::store::game_store::{self, DetailableEntities, GameStore};
+use crate::{
+    components::common_components::atoms::targeting_indicator::TargetingIndicator,
+    store::game_store::{self, DetailableEntities, GameStore},
+};
 use common::{combatants::CombatantProperties, primatives::EntityProperties};
+
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
@@ -30,21 +34,19 @@ pub fn combatant(props: &Props) -> Html {
         });
     });
 
-    let selected_style = match &game_state.detailed_entity {
-        Some(entity) => match entity {
+    let is_selected = match &game_state.detailed_entity {
+        Some(combatant_details) => match combatant_details {
             DetailableEntities::Combatant(combatant_details) => {
-                if combatant_details.entity_properties.id == id {
-                    "border-yellow-400"
-                } else {
-                    ""
-                }
+                combatant_details.entity_properties.id == id
             }
-            DetailableEntities::Item(_) => "",
+            DetailableEntities::Item(_) => false,
         },
-        None => "",
+        None => false,
     };
+    let selected_style = if is_selected { "border-yellow-400" } else { "" };
+
     let styles = format!(
-        "text-left border border-slate-400 p-2 mb-2 last:mb-0 w-40 {}",
+        "text-left border border-slate-400 p-2 mb-2 last:mb-0 w-40 relative {}",
         selected_style
     );
 
@@ -54,6 +56,12 @@ pub fn combatant(props: &Props) -> Html {
 
     html!(
         <button class={styles} onclick={handle_click} id={format!("combatant-{}", id)} >
+            if is_selected{
+                <div class="absolute top-[-1.5rem] left-1/2 -translate-x-1/2
+                    " >
+                    <TargetingIndicator />
+                </div>
+            }
             <div class="pointer-events-none">
             {"entity id: "}{id}
             </div>

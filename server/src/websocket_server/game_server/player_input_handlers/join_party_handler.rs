@@ -23,7 +23,7 @@ impl GameServer {
                     message: error_messages::MISSING_GAME_REFERENCE.to_string(),
                 })?;
         let game = get_mut_game(&mut self.games, &current_game_name)?;
-        let player = get_mut_player(game, username.clone())?;
+        let player = get_mut_player(game, &username)?;
 
         if player.party_id.is_some() {
             return Err(AppError {

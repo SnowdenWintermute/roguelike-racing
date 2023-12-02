@@ -24,7 +24,7 @@ impl GameServer {
                 })?;
 
         let game = get_mut_game(&mut self.games, &current_game_name)?;
-        let player = get_mut_player(game, connected_user.username.clone())?;
+        let player = get_mut_player(game, &connected_user.username)?;
 
         if player.party_id.is_some() {
             return Err(AppError {

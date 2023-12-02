@@ -1,9 +1,13 @@
-pub mod adventuring_party_update_handlers;
+mod adventuring_party_update_handlers;
+mod in_game_party_update_handlers;
 mod inventory_management_update_handlers;
-pub mod lobby_update_handlers;
+mod lobby_update_handlers;
 pub mod send_client_input;
 use self::lobby_update_handlers::handle_user_left_game;
 use crate::components::alerts::set_alert;
+use crate::components::websocket_manager::in_game_party_update_handlers::{
+    handle_new_dungeon_room, handle_player_toggled_ready_to_explore,
+};
 use crate::components::websocket_manager::inventory_management_update_handlers::{
     handle_character_equipped_item, handle_character_unequipped_slot,
 };
@@ -154,6 +158,17 @@ pub fn websocket_manager(props: &Props) -> Html {
                                     GameServerUpdatePackets::CharacterUnequippedSlot(packet) => {
                                         game_dispatch.clone().reduce_mut(|store| {
                                             let _ = handle_character_unequipped_slot(store, packet);
+                                        })
+                                    }
+                                    GameServerUpdatePackets::PlayerToggledReadyToExplore(
+                                        username,
+                                    ) => game_dispatch.clone().reduce_mut(|store| {
+                                        let _ =
+                                            handle_player_toggled_ready_to_explore(store, username);
+                                    }),
+                                    GameServerUpdatePackets::DungeonRoomUpdate(new_room) => {
+                                        game_dispatch.clone().reduce_mut(|store| {
+                                            let _ = handle_new_dungeon_room(store, new_room);
                                         })
                                     }
                                     _ => {

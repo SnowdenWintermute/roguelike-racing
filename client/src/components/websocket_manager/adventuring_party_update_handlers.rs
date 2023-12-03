@@ -84,6 +84,17 @@ pub fn handle_character_deletion(
     })?;
     let party = get_mut_party(game, character_deletion.party_id)?;
     party.characters.remove(&character_deletion.character_id);
+
+    let mut index_to_remove = None;
+    for (index, id) in party.character_positions.iter().enumerate() {
+        if id == &character_deletion.character_id {
+            index_to_remove = Some(index);
+        }
+    }
+    if let Some(index) = index_to_remove {
+        party.character_positions.remove(index);
+    }
+
     let player = get_mut_player(game, &character_deletion.username)?;
     let player_character_ids_option = player.character_ids.clone();
     let mut player_character_ids = player_character_ids_option.ok_or_else(|| AppError {

@@ -10,6 +10,7 @@ mod generate_button_text;
 mod get_character_owned_item_by_id;
 mod set_keyup_listeners;
 mod set_up_actions;
+pub mod action_handlers;
 use crate::components::game::action_menu::action_menu_button::ActionMenuButton;
 use crate::components::game::action_menu::action_page_buttons::ActionPageButtons;
 use crate::components::game::action_menu::set_up_actions::ActionMenuButtonProperties;

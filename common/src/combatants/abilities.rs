@@ -8,7 +8,6 @@ use serde::Serialize;
 pub enum TargetingScheme {
     Single,
     Area,
-    TargetAndAdjacent,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -38,6 +37,7 @@ pub struct CombatantAbility {
     pub usable_context: AbilityUsableContext,
     pub targeting_schemes: Vec<TargetingScheme>,
     pub valid_targets: ValidTargets,
+    pub most_recently_targeted: Option<Vec<u32>>,
 }
 
 impl Default for CombatantAbility {
@@ -53,6 +53,7 @@ impl Default for CombatantAbility {
             usable_context: AbilityUsableContext::InCombat,
             targeting_schemes: vec![TargetingScheme::Single],
             valid_targets: ValidTargets::Opponent,
+            most_recently_targeted: None,
         }
     }
 }

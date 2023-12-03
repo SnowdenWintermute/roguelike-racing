@@ -1,3 +1,4 @@
+use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::CombatantClass;
 use crate::items::equipment::EquipmentSlots;
 use serde::Deserialize;
@@ -20,9 +21,9 @@ pub enum PlayerInputs {
     // use items and abilities
     SelectConsumable(u8),
     UseSelectedConsumable,
-    SelectAbilitySlot(u8),
+    SelectAbility(ClientSelectAbilityPacket),
     UseSelectedAbility,
-    ChangeTargetIds(Vec<u8>),
+    ChangeTargetIds(Option<Vec<u32>>),
     ClearConsumableAndAbilitySelections,
     // manage equipment and items
     UnequipEquipmentSlot(UnequipSlotRequest),
@@ -78,4 +79,10 @@ pub struct EquipItemRequest {
 pub struct UnequipSlotRequest {
     pub character_id: u32,
     pub slot: EquipmentSlots,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct ClientSelectAbilityPacket {
+    pub character_id: u32,
+    pub ability_name_option: Option<CombatantAbilityNames>,
 }

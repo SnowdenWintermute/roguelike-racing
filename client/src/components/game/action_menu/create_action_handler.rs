@@ -1,6 +1,7 @@
 use super::{
     available_actions::GameActions, get_character_owned_item_by_id::get_character_owned_item_by_id,
 };
+use crate::components::game::action_menu::action_handlers::handle_select_ability::handle_select_ability;
 use crate::{
     components::websocket_manager::send_client_input::send_client_input,
     store::{
@@ -85,17 +86,8 @@ pub fn create_action_handler<'a>(
 
             }),
             GameActions::SelectAbility(ability_name) => Box::new(move || {
-                game_dispatch.reduce_mut(|game_store| {
-                    let game = game_store.game.as_ref().expect("only use abilities in game");
-                    let party_id = game_store.current_party_id.expect("only use abilities in party");
-                    let focused_character = 
-                        get_character(&game, party_id, game_state.focused_character_id)
-                        .expect("to have a focused character");
-                    let ability = focused_character.combatant_properties.abilities.get(&ability_name).expect("the character to have selected an ability they own");
-                    log!("selected ability");
-
-                    game_store.selected_ability = Some(ability.clone());
-                })
+                let cloned_dispatch = game_dispatch.clone();
+                handle_select_ability(cloned_dispatch,  &websocket_state.websocket, ability_name.clone());
             }),
             GameActions::DeselectAbility => Box::new(move|| {
                 game_dispatch.reduce_mut(|game_store| game_store.selected_ability = None);

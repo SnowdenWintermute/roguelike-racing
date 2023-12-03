@@ -23,3 +23,4 @@ pub const ITEM_REQUIREMENTS_NOT_MET: &str =
 pub const CANT_EQUIP_NON_EQUIPMENT: &str = "Only equipment items may be equipped";
 pub const CANT_EXPLORE_WHEN_MONSTERS_ARE_PRESENT: &str =
     "Defeat the monsters before exploring the next room";
+pub const ABILITY_NOT_OWNED: &str = "That character doesn't have that ability";

@@ -19,6 +19,8 @@ use std::collections::HashMap;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 pub mod abilities;
+mod get_default_target_ids;
+mod last_targets_are_still_valid;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub enum CombatantClass {
@@ -98,8 +100,9 @@ pub struct CombatantProperties {
     pub equipment: HashMap<EquipmentSlots, Item>,
     pub abilities: HashMap<CombatantAbilityNames, CombatantAbility>,
     // pub traits: HashSet<CombatantTraits>
-    pub selected_ability_slot: Option<u8>,
     pub selected_item_slot: Option<u8>,
+    pub selected_ability_name: Option<CombatantAbilityNames>,
+    pub ability_target_ids: Option<Vec<u32>>,
 }
 
 impl CombatantProperties {
@@ -116,7 +119,8 @@ impl CombatantProperties {
             equipment: HashMap::new(),
             abilities,
             selected_item_slot: None,
-            selected_ability_slot: None,
+            selected_ability_name: None,
+            ability_target_ids: None,
         }
     }
 

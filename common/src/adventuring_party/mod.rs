@@ -22,6 +22,7 @@ pub struct AdventuringParty {
     pub player_usernames: HashSet<String>,
     pub players_ready_to_explore: HashSet<String>,
     pub characters: HashMap<u32, Character>,
+    pub character_positions: Vec<u32>,
     pub active_combatant_id: Option<u32>,
     pub current_floor: u8,
     pub rooms_explored: RoomsExplored,
@@ -38,6 +39,7 @@ impl AdventuringParty {
             player_usernames: HashSet::new(),
             players_ready_to_explore: HashSet::new(),
             characters: HashMap::new(),
+            character_positions: Vec::new(),
             active_combatant_id: None,
             current_floor: 1,
             rooms_explored: RoomsExplored {

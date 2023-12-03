@@ -30,6 +30,7 @@ impl RoguelikeRacerGame {
         party
             .characters
             .insert(new_character.entity_properties.id, new_character);
+        party.character_positions.push(character_id);
         Ok(character_id)
     }
 }

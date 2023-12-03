@@ -36,12 +36,19 @@ pub fn generate_button_text(action: GameActions, game_state: Rc<GameStore>) -> S
         GameActions::DeselectItem => "Cancel".to_string(),
         GameActions::ShardItem(_) => "Convert to shard".to_string(),
         GameActions::Attack => "Attack".to_string(),
-        GameActions::UseAbility(name) => format!("{}", name),
+        GameActions::SelectAbility(name) => format!("{}", name),
         GameActions::LevelUpAbility(_name) => "Level up ability".to_string(),
         GameActions::SetAssignAttributePointsMenuOpen(_open_status) => {
             "Assign attributes".to_string()
         }
         GameActions::AssignAttributePoint(_attribute) => "Increase attribute".to_string(),
+        GameActions::CycleTargets(direction) => match direction {
+            common::primatives::NextOrPrevious::Next => "Next target".to_string(),
+            common::primatives::NextOrPrevious::Previous => "Prev target".to_string(),
+        },
+        GameActions::CycleTargetingScheme => "Targeting scheme".to_string(),
+        GameActions::DeselectAbility => "Cancel".to_string(),
+        GameActions::UseSelectedAbility => "Execute".to_string(),
     }
 }
 

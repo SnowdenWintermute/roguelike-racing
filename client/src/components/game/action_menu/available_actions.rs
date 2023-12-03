@@ -3,10 +3,12 @@
 use common::{
     combatants::{abilities::CombatantAbilityNames, CombatAttributes},
     items::Item,
+    primatives::NextOrPrevious,
 };
 use gloo::console::log;
 pub enum MenuTypes {
     InCombat,
+    AbilitySelected,
     OutOfCombat,
     LevelUpAbilities,
     AttributePointAssignment,
@@ -34,7 +36,11 @@ pub enum GameActions {
     DeselectItem,
     // InCombat
     Attack,
-    UseAbility(CombatantAbilityNames),
+    SelectAbility(CombatantAbilityNames),
+    DeselectAbility,
+    CycleTargets(NextOrPrevious),
+    CycleTargetingScheme,
+    UseSelectedAbility,
     LevelUpAbility(CombatantAbilityNames),
     SetAssignAttributePointsMenuOpen(bool),
     AssignAttributePoint(CombatAttributes),
@@ -60,9 +66,15 @@ impl MenuTypes {
                 MenuTypes::UnopenedChest => menu_items.push(GameActions::OpenTreasureChest),
                 MenuTypes::ItemsOnGround => menu_items.push(GameActions::TakeItem),
                 MenuTypes::InCombat => {
-                    menu_items.push(GameActions::ToggleInventoryOpen);
                     add_abilities_to_menu(&abilities, &mut menu_items);
                     menu_items.push(GameActions::UseAutoinjector);
+                    menu_items.push(GameActions::ToggleInventoryOpen);
+                }
+                MenuTypes::AbilitySelected => {
+                    menu_items.push(GameActions::DeselectAbility);
+                    menu_items.push(GameActions::CycleTargets(NextOrPrevious::Next));
+                    menu_items.push(GameActions::CycleTargets(NextOrPrevious::Previous));
+                    menu_items.push(GameActions::UseSelectedAbility);
                 }
                 MenuTypes::LevelUpAbilities => {
                     menu_items.push(GameActions::SetAssignAttributePointsMenuOpen(true));
@@ -108,7 +120,7 @@ fn add_abilities_to_menu(
 ) {
     if let Some(names) = ability_names.clone() {
         for ability_name in names {
-            menu_items.push(GameActions::UseAbility(ability_name))
+            menu_items.push(GameActions::SelectAbility(ability_name))
         }
     }
 }

@@ -80,12 +80,14 @@ pub fn action_menu(props: &Props) -> Html {
     };
 
     let cloned_ui_state = ui_state.clone();
+    let has_selected_ability = game_state.selected_ability.is_some();
 
     use_effect_with(
         (
             game_state.focused_character_id,
             game_state.viewing_inventory,
             game_state.viewing_equipped_items,
+            has_selected_ability,
             selected_item_id,
             game_state.viewing_items_on_ground,
             game_state.viewing_skill_level_up_menu,

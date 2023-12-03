@@ -3,7 +3,7 @@ use super::{
     create_action_mouse_enter_handler::create_action_mouse_enter_handler,
     create_action_mouse_leave_handler::create_action_mouse_leave_handler,
     determine_action_menu_buttons_disabled::determine_action_menu_buttons_disabled,
-    generate_action_menu_items::generate_action_menu_items,
+    generate_action_menu_items::generate_action_menu_types,
     generate_button_text::generate_button_text,
 };
 use crate::store::{game_store::GameStore, ui_store::UIStore, websocket_store::WebsocketStore};
@@ -31,7 +31,7 @@ pub fn set_up_actions<'a>(
     ui_state: Rc<UIStore>,
     party: &AdventuringParty,
 ) -> Vec<ActionMenuButtonProperties> {
-    let new_actions = generate_action_menu_items(&game_state, party);
+    let new_actions = generate_action_menu_types(&game_state, party);
     let mut button_properties = Vec::new();
 
     for action in new_actions {

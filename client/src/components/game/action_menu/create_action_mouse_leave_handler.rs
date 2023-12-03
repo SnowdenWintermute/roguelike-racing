@@ -19,7 +19,6 @@ pub fn create_action_mouse_leave_handler(
             // GameActions::DropItem => || (),
             // GameActions::ShardItem => || (),
             // GameActions::Attack => || (),
-            // GameActions::UseAbility(_) => || (),
             // GameActions::LevelUpAbility(_) => || (),
             // GameActions::SetAssignAttributePointsMenuOpen(_) => || (),
             // GameActions::AssignAttributePoint(_) => || (),

@@ -9,7 +9,7 @@ use crate::{
         websocket_store::WebsocketStore,
     },
 };
-use common::packets::client_to_server::{EquipItemRequest, PlayerInputs, UnequipSlotRequest};
+use common::{packets::client_to_server::{EquipItemRequest, PlayerInputs, UnequipSlotRequest}, game::getters::get_character};
 use gloo::console::log;
 use std::rc::Rc;
 use yewdux::prelude::Dispatch;
@@ -23,9 +23,8 @@ pub fn create_action_handler<'a>(
 ) -> Box<dyn Fn()> {
     match game_action {
             GameActions::ToggleReadyToExplore => Box::new(move || 
-
-                                                          send_client_input(&websocket_state.websocket, PlayerInputs::ToggleReadyToExplore)
-                                                          ),
+                  send_client_input(&websocket_state.websocket, PlayerInputs::ToggleReadyToExplore)
+                  ),
             GameActions::UseAutoinjector => Box::new(move || {
                 //
             }),
@@ -85,13 +84,29 @@ pub fn create_action_handler<'a>(
                 }
 
             }),
+            GameActions::SelectAbility(ability_name) => Box::new(move || {
+                game_dispatch.reduce_mut(|game_store| {
+                    let game = game_store.game.as_ref().expect("only use abilities in game");
+                    let party_id = game_store.current_party_id.expect("only use abilities in party");
+                    let focused_character = 
+                        get_character(&game, party_id, game_state.focused_character_id)
+                        .expect("to have a focused character");
+                    let ability = focused_character.combatant_properties.abilities.get(&ability_name).expect("the character to have selected an ability they own");
+                    log!("selected ability");
+
+                    game_store.selected_ability = Some(ability.clone());
+                })
+            }),
+            GameActions::DeselectAbility => Box::new(move|| {
+                game_dispatch.reduce_mut(|game_store| game_store.selected_ability = None);
+            })
+            ,
             _ => Box::new(||())
             // GameActions::OpenTreasureChest => || (),
             // GameActions::TakeItem => || (),
             // GameActions::DropItem => || (),
             // GameActions::ShardItem => || (),
             // GameActions::Attack => || (),
-            // GameActions::UseAbility(_) => || (),
             // GameActions::LevelUpAbility(_) => || (),
             // GameActions::SetAssignAttributePointsMenuOpen(_) => || (),
             // GameActions::AssignAttributePoint(_) => || (),

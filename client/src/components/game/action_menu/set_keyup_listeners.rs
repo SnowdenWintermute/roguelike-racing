@@ -1,5 +1,5 @@
 use super::set_up_actions::ActionMenuButtonProperties;
-use gloo::{console::log, events::EventListener};
+use gloo::events::EventListener;
 use gloo_utils::window;
 use wasm_bindgen::{JsCast, UnwrapThrowExt};
 use web_sys::MouseEvent;
@@ -14,7 +14,6 @@ pub fn set_keyup_listeners(
         for (i, properties) in button_properties_state.iter().enumerate() {
             let key = (i + 1).to_string();
             let event_key_as_number = shifted_number_key_to_number_key(event.key());
-            log!("key as number", &event_key_as_number, event.key());
             if event_key_as_number == key {
                 properties
                     .click_handler

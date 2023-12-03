@@ -25,6 +25,12 @@ pub enum UpOrDown {
     Down,
 }
 
+#[derive(PartialEq, Eq, Clone, Hash)]
+pub enum NextOrPrevious {
+    Next,
+    Previous,
+}
+
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq, Default)]
 pub struct Range<T> {
     pub min: T,

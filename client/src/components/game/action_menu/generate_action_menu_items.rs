@@ -5,73 +5,75 @@ use common::combatants::abilities::AbilityUsableContext;
 use common::combatants::abilities::CombatantAbilityNames;
 use std::rc::Rc;
 
-pub fn generate_action_menu_items(
+pub fn generate_action_menu_types(
     game_state: &Rc<GameStore>,
     party: &AdventuringParty,
 ) -> Vec<GameActions> {
-    let mut menu_items: Vec<MenuTypes> = Vec::new();
+    let mut menu_types: Vec<MenuTypes> = Vec::new();
     let mut new_actions: Vec<GameActions> = Vec::new();
 
     if game_state.viewing_items_on_ground {
-        menu_items.push(MenuTypes::ItemsOnGround);
-        new_actions = MenuTypes::get_menu(&menu_items, None, None);
+        menu_types.push(MenuTypes::ItemsOnGround);
+        new_actions = MenuTypes::get_menu(&menu_types, None, None);
         //
     } else if let Some(selected_item) = &game_state.selected_item {
         let id = selected_item.clone().entity_properties.id;
-        menu_items.push(MenuTypes::ItemSelected(id));
-        new_actions = MenuTypes::get_menu(&menu_items, None, None);
+        menu_types.push(MenuTypes::ItemSelected(id));
+        new_actions = MenuTypes::get_menu(&menu_types, None, None);
         //
     } else if game_state.viewing_equipped_items {
-        menu_items.push(MenuTypes::ViewingEquipedItems);
+        menu_types.push(MenuTypes::ViewingEquipedItems);
         let focused_character = party.characters.get(&game_state.focused_character_id);
         if let Some(character) = focused_character {
             let mut ids = Vec::new();
             for (_slot, item) in &character.combatant_properties.equipment {
                 ids.push(item.entity_properties.id);
             }
-            new_actions = MenuTypes::get_menu(&menu_items, Some(ids), None)
+            new_actions = MenuTypes::get_menu(&menu_types, Some(ids), None)
         }
     } else if game_state.viewing_inventory {
-        menu_items.push(MenuTypes::InventoryOpen);
+        menu_types.push(MenuTypes::InventoryOpen);
         let focused_character = party.characters.get(&game_state.focused_character_id);
         if let Some(character) = focused_character {
             let mut ids = Vec::new();
             for item in &character.inventory.items {
                 ids.push(item.entity_properties.id);
             }
-            new_actions = MenuTypes::get_menu(&menu_items, Some(ids), None);
+            new_actions = MenuTypes::get_menu(&menu_types, Some(ids), None);
         }
         //
     } else if game_state.viewing_skill_level_up_menu
         || game_state.viewing_attribute_point_assignment_menu
     {
-        menu_items.push(MenuTypes::LevelUpAbilities);
+        menu_types.push(MenuTypes::LevelUpAbilities);
         let ability_names = get_ability_menu_names(&party, game_state.focused_character_id, None);
-        new_actions = MenuTypes::get_menu(&menu_items, None, Some(ability_names));
+        new_actions = MenuTypes::get_menu(&menu_types, None, Some(ability_names));
         //
     } else if party.current_room.monsters.is_none() {
-        menu_items.push(MenuTypes::OutOfCombat);
+        menu_types.push(MenuTypes::OutOfCombat);
         let ability_names = get_ability_menu_names(
             &party,
             game_state.focused_character_id,
             Some(AbilityUsableContext::InCombat),
         );
         if party.current_room.treasure_chest.is_some() {
-            menu_items.push(MenuTypes::UnopenedChest);
+            menu_types.push(MenuTypes::UnopenedChest);
         }
         if party.current_room.items.is_some() {
-            menu_items.push(MenuTypes::ItemsOnGround);
+            menu_types.push(MenuTypes::ItemsOnGround);
         }
-        new_actions = MenuTypes::get_menu(&menu_items, None, Some(ability_names));
-        //
+        new_actions = MenuTypes::get_menu(&menu_types, None, Some(ability_names));
+    } else if game_state.selected_ability.is_some() {
+        menu_types.push(MenuTypes::AbilitySelected);
+        new_actions = MenuTypes::get_menu(&menu_types, None, None);
     } else {
-        menu_items.push(MenuTypes::InCombat);
+        menu_types.push(MenuTypes::InCombat);
         let ability_names = get_ability_menu_names(
             &party,
             game_state.focused_character_id,
             Some(AbilityUsableContext::OutOfCombat),
         );
-        new_actions = MenuTypes::get_menu(&menu_items, None, Some(ability_names));
+        new_actions = MenuTypes::get_menu(&menu_types, None, Some(ability_names));
     }
 
     new_actions

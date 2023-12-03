@@ -21,7 +21,7 @@ impl CombatantAbility {
                     }
                 }
             }
-            None => return true,
+            None => return false,
         }
         true
     }

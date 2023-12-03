@@ -6,7 +6,8 @@ pub mod send_client_input;
 use self::lobby_update_handlers::handle_user_left_game;
 use crate::components::alerts::set_alert;
 use crate::components::websocket_manager::in_game_party_update_handlers::{
-    handle_new_dungeon_room, handle_player_toggled_ready_to_explore,
+    handle_character_ability_selection, handle_new_dungeon_room,
+    handle_player_toggled_ready_to_explore,
 };
 use crate::components::websocket_manager::inventory_management_update_handlers::{
     handle_character_equipped_item, handle_character_unequipped_slot,
@@ -172,7 +173,10 @@ pub fn websocket_manager(props: &Props) -> Html {
                                         })
                                     }
                                     GameServerUpdatePackets::CharacterSelectedAbility(packet) => {
-                                        //
+                                        game_dispatch.clone().reduce_mut(|store| {
+                                            let _ =
+                                                handle_character_ability_selection(store, packet);
+                                        })
                                     }
                                     _ => {
                                         log!(format!("unhandled packet: {:#?}", data))

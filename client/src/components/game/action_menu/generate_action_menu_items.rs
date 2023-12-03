@@ -11,6 +11,17 @@ pub fn generate_action_menu_types(
 ) -> Vec<GameActions> {
     let mut menu_types: Vec<MenuTypes> = Vec::new();
     let mut new_actions: Vec<GameActions> = Vec::new();
+    let focused_character_is_selecting_ability = {
+        let focused_character = party.characters.get(&game_state.focused_character_id);
+        if let Some(character) = focused_character {
+            character
+                .combatant_properties
+                .selected_ability_name
+                .is_some()
+        } else {
+            false
+        }
+    };
 
     if game_state.viewing_items_on_ground {
         menu_types.push(MenuTypes::ItemsOnGround);
@@ -63,7 +74,8 @@ pub fn generate_action_menu_types(
             menu_types.push(MenuTypes::ItemsOnGround);
         }
         new_actions = MenuTypes::get_menu(&menu_types, None, Some(ability_names));
-    } else if game_state.selected_ability.is_some() {
+        //
+    } else if focused_character_is_selecting_ability {
         menu_types.push(MenuTypes::AbilitySelected);
         new_actions = MenuTypes::get_menu(&menu_types, None, None);
     } else {

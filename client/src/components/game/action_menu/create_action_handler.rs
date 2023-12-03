@@ -10,6 +10,7 @@ use crate::{
         websocket_store::WebsocketStore,
     },
 };
+use common::packets::client_to_server::ClientSelectAbilityPacket;
 use common::{packets::client_to_server::{EquipItemRequest, PlayerInputs, UnequipSlotRequest}, game::getters::get_character};
 use gloo::console::log;
 use std::rc::Rc;
@@ -90,7 +91,17 @@ pub fn create_action_handler<'a>(
                 handle_select_ability(cloned_dispatch,  &websocket_state.websocket, ability_name.clone());
             }),
             GameActions::DeselectAbility => Box::new(move|| {
-                game_dispatch.reduce_mut(|game_store| game_store.selected_ability = None);
+                game_dispatch.reduce_mut(|game_store| {
+                    let focused_character: _ = game_store
+                        .get_mut_character(game_store.focused_character_id)
+                        .expect("to have a valid focused character");
+                    focused_character.combatant_properties.selected_ability_name = None;
+                    focused_character.combatant_properties.ability_target_ids = None;
+                    send_client_input(&websocket_state.websocket, PlayerInputs::SelectAbility(ClientSelectAbilityPacket{
+                        character_id: focused_character.entity_properties.id,
+                        ability_name_option: None,
+                    }))
+                });
             })
             ,
             _ => Box::new(||())

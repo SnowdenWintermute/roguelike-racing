@@ -43,8 +43,9 @@ pub fn handle_character_ability_selection(
         ability_name_option,
         target_ids_option,
     } = packet;
-    // get character
-    // set selected ability name
-    // set target_ids
+
+    let character = game_store.get_mut_character(character_id)?;
+    character.combatant_properties.selected_ability_name = ability_name_option;
+    character.combatant_properties.ability_target_ids = target_ids_option;
     Ok(())
 }

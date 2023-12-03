@@ -33,7 +33,6 @@ pub fn handle_select_ability(
             .abilities
             .get(&ability_name)
             .expect("the character to have selected an ability they own");
-        game_store.selected_ability = Some(ability.clone());
         let previous_targets_are_still_valid = ability.last_targets_are_still_valid(&party);
 
         let new_target_ids = if previous_targets_are_still_valid {

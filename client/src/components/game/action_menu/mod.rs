@@ -1,3 +1,4 @@
+pub mod action_handlers;
 mod action_menu_button;
 mod action_page_buttons;
 mod available_actions;
@@ -10,7 +11,6 @@ mod generate_button_text;
 mod get_character_owned_item_by_id;
 mod set_keyup_listeners;
 mod set_up_actions;
-pub mod action_handlers;
 use crate::components::game::action_menu::action_menu_button::ActionMenuButton;
 use crate::components::game::action_menu::action_page_buttons::ActionPageButtons;
 use crate::components::game::action_menu::set_up_actions::ActionMenuButtonProperties;
@@ -67,10 +67,10 @@ pub fn action_menu(props: &Props) -> Html {
         None => None,
     };
 
-    let focused_character = party.characters.get(&game_state.focused_character_id);
-    let focused_character_equipment_ids = match focused_character {
-        Some(character) => Some(
-            character
+    let focused_character_option = party.characters.get(&game_state.focused_character_id);
+    let focused_character_equipment_ids = match focused_character_option {
+        Some(focused_character) => Some(
+            focused_character
                 .combatant_properties
                 .equipment
                 .iter()
@@ -80,15 +80,22 @@ pub fn action_menu(props: &Props) -> Html {
         None => None,
     };
 
-    let cloned_ui_state = ui_state.clone();
-    let has_selected_ability = game_state.selected_ability.is_some();
+    let ability_target_ids = match focused_character_option {
+        Some(focused_character) => focused_character
+            .combatant_properties
+            .ability_target_ids
+            .clone(),
 
+        None => None,
+    };
+
+    let cloned_ui_state = ui_state.clone();
     use_effect_with(
         (
             game_state.focused_character_id,
             game_state.viewing_inventory,
             game_state.viewing_equipped_items,
-            has_selected_ability,
+            ability_target_ids,
             selected_item_id,
             game_state.viewing_items_on_ground,
             game_state.viewing_skill_level_up_menu,

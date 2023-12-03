@@ -3,8 +3,12 @@ use crate::websocket_server::game_server::{
     GameServer,
 };
 use common::{
-    app_consts::error_messages, errors::AppError,
-    packets::client_to_server::ClientSelectAbilityPacket,
+    app_consts::error_messages,
+    errors::AppError,
+    packets::{
+        client_to_server::ClientSelectAbilityPacket,
+        server_to_client::{CharacterSelectedAbilityPacket, GameServerUpdatePackets},
+    },
 };
 
 impl GameServer {
@@ -15,9 +19,8 @@ impl GameServer {
     ) -> Result<(), AppError> {
         let ActorIdAssociatedGameData {
             party,
-            current_game_name,
-            username,
             player_character_ids_option,
+            current_game_name,
             ..
         } = get_mut_party_game_name_and_character_ids_from_actor_id(self, actor_id)?;
 
@@ -78,6 +81,8 @@ impl GameServer {
             }),
         }?;
 
+        let character_id = character.entity_properties.id;
+
         // set the new targets
         character.combatant_properties.ability_target_ids = new_target_ids.clone();
         // set the new ability selected
@@ -96,8 +101,14 @@ impl GameServer {
             ability.most_recently_targeted = new_target_ids.clone();
         }
 
-        //
-        // emit to party the changes
-        Ok(())
+        self.emit_packet(
+            &current_game_name,
+            &GameServerUpdatePackets::CharacterSelectedAbility(CharacterSelectedAbilityPacket {
+                character_id,
+                ability_name_option: packet.ability_name_option,
+                target_ids_option: new_target_ids,
+            }),
+            Some(actor_id),
+        )
     }
 }

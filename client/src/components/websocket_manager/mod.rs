@@ -171,6 +171,9 @@ pub fn websocket_manager(props: &Props) -> Html {
                                             let _ = handle_new_dungeon_room(store, new_room);
                                         })
                                     }
+                                    GameServerUpdatePackets::CharacterSelectedAbility(packet) => {
+                                        //
+                                    }
                                     _ => {
                                         log!(format!("unhandled packet: {:#?}", data))
                                     }

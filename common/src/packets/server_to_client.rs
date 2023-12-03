@@ -1,11 +1,11 @@
+use super::client_to_server::UnequipSlotRequest;
 use crate::character::Character;
+use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::CombatantClass;
 use crate::dungeon_rooms::DungeonRoom;
 use crate::game::RoguelikeRacerGame;
 use serde::Deserialize;
 use serde::Serialize;
-
-use super::client_to_server::UnequipSlotRequest;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum GameServerUpdatePackets {
@@ -39,6 +39,7 @@ pub enum GameServerUpdatePackets {
     CharacterUnequippedSlot(UnequipSlotRequest),
     PlayerToggledReadyToExplore(String),
     DungeonRoomUpdate(DungeonRoom),
+    CharacterSelectedAbility(CharacterSelectedAbilityPacket),
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Default)]
@@ -135,4 +136,11 @@ pub struct CharacterEquippedItemPacket {
     pub character_id: u32,
     pub item_id: u32,
     pub alt_slot: bool,
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+pub struct CharacterSelectedAbilityPacket {
+    pub character_id: u32,
+    pub ability_name_option: Option<CombatantAbilityNames>,
+    pub target_ids_option: Option<Vec<u32>>,
 }

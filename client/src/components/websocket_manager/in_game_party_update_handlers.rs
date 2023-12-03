@@ -1,8 +1,10 @@
-use std::collections::HashSet;
-
 use crate::store::game_store::GameStore;
-use common::{dungeon_rooms::DungeonRoom, errors::AppError};
+use common::{
+    dungeon_rooms::DungeonRoom, errors::AppError,
+    packets::server_to_client::CharacterSelectedAbilityPacket,
+};
 use gloo::console::log;
+use std::collections::HashSet;
 
 pub fn handle_player_toggled_ready_to_explore(
     game_store: &mut GameStore,
@@ -29,5 +31,20 @@ pub fn handle_new_dungeon_room(
     party.players_ready_to_explore = HashSet::new();
     party.current_room = packet;
 
+    Ok(())
+}
+
+pub fn handle_character_ability_selection(
+    game_store: &mut GameStore,
+    packet: CharacterSelectedAbilityPacket,
+) -> Result<(), AppError> {
+    let CharacterSelectedAbilityPacket {
+        character_id,
+        ability_name_option,
+        target_ids_option,
+    } = packet;
+    // get character
+    // set selected ability name
+    // set target_ids
     Ok(())
 }

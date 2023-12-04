@@ -2,7 +2,6 @@ use common::{
     app_consts::error_messages::{self},
     character::Character,
     combatants::{
-        abilities::{CombatantAbility, TargetingScheme},
         CombatAttributes, CombatantProperties,
     },
     errors::AppError,
@@ -58,7 +57,20 @@ pub struct GameStore {
     pub action_menu_current_page_number: u8,
 }
 
-pub fn get_focused_character<'a>(game_state: &'a mut GameStore) -> Result<&'a Character, AppError> {
+// pub fn get_focused_character_mut<'a>(game_state: &'a mut GameStore) -> Result<&'a mut Character, AppError> {
+//     let game = game_state.game.as_mut().ok_or_else(|| AppError {
+//         error_type: common::errors::AppErrorTypes::ClientError,
+//         message: error_messages::MISSING_GAME_REFERENCE.to_string(),
+//     })?;
+//     let party_id = game_state.current_party_id.ok_or_else(|| AppError {
+//         error_type: common::errors::AppErrorTypes::ClientError,
+//         message: error_messages::MISSING_PARTY_REFERENCE.to_string(),
+//     })?;
+//     let focused_character = get_character(&mut game, party_id, game_state.focused_character_id);
+//     focused_character
+// }
+
+pub fn get_focused_character<'a>(game_state: &'a GameStore) -> Result<&'a Character, AppError> {
     let game = game_state.game.as_ref().ok_or_else(|| AppError {
         error_type: common::errors::AppErrorTypes::ClientError,
         message: error_messages::MISSING_GAME_REFERENCE.to_string(),

@@ -1,6 +1,9 @@
 use crate::{
-    components::common_components::atoms::targeting_indicator::TargetingIndicator,
-    store::game_store::{self, DetailableEntities, GameStore},
+    components::{
+        common_components::atoms::targeting_indicator::TargetingIndicator,
+        game::dungeon_room::focus_character_button::FocusCharacterButton,
+    },
+    store::game_store::{self, get_focused_character, DetailableEntities, GameStore},
 };
 use common::{combatants::CombatantProperties, primatives::EntityProperties};
 
@@ -46,7 +49,7 @@ pub fn combatant(props: &Props) -> Html {
     let selected_style = if is_selected { "border-yellow-400" } else { "" };
 
     let styles = format!(
-        "text-left border border-slate-400 p-2 mb-2 last:mb-0 w-40 relative {}",
+        "text-left border border-slate-400 p-2 mb-2 last:mb-0 w-40 relative cursor-help {}",
         selected_style
     );
 
@@ -57,11 +60,12 @@ pub fn combatant(props: &Props) -> Html {
     html!(
         <button class={styles} onclick={handle_click} id={format!("combatant-{}", id)} >
             if is_selected{
-                <div class="absolute top-[-1.5rem] left-1/2 -translate-x-1/2
+                <div class="absolute top-[-1.5rem] left-1/2 -translate-x-1/2 z-20
                     " >
                     <TargetingIndicator />
                 </div>
             }
+            <FocusCharacterButton id={id} />
             <div class="pointer-events-none">
             {"entity id: "}{id}
             </div>

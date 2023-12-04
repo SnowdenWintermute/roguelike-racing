@@ -2,6 +2,7 @@ use common::{character::Character, dungeon_rooms::DungeonRoomTypes, game::Roguel
 pub mod combatant;
 mod monster_lair;
 mod players_ready_to_explore;
+mod focus_character_button;
 use crate::{
     components::game::dungeon_room::{
         combatant::Combatant, monster_lair::MonsterLair,
@@ -45,7 +46,7 @@ pub fn dungeon_room(props: &Props) -> Html {
     };
 
     html!(
-        <section class={format!("h-full border border-slate-400 bg-slate-700 overflow-y-auto flex {}", conditional_styles)} >
+        <section class={format!("h-full border border-slate-400 bg-slate-700 flex {}", conditional_styles)} >
             <div class="w-1/2 flex p-2" >
                 <div class="flex flex-col mr-2" >
                     {characters.iter().map(|(_id, character)|

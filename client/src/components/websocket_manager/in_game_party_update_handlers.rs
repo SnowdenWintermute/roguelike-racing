@@ -30,6 +30,8 @@ pub fn handle_new_dungeon_room(
     let party = game_store.get_current_party_mut()?;
     party.players_ready_to_explore = HashSet::new();
     party.current_room = packet;
+    party.rooms_explored.on_current_floor += 1;
+    party.rooms_explored.total += 1;
 
     Ok(())
 }

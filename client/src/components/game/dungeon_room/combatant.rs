@@ -3,7 +3,7 @@ use crate::{
         common_components::atoms::targeting_indicator::TargetingIndicator,
         game::dungeon_room::focus_character_button::FocusCharacterButton,
     },
-    store::game_store::{self, get_focused_character, DetailableEntities, GameStore},
+    store::game_store::{self, DetailableEntities, GameStore},
 };
 use common::{combatants::CombatantProperties, primatives::EntityProperties};
 
@@ -20,6 +20,7 @@ pub struct Props {
 pub fn combatant(props: &Props) -> Html {
     let (game_state, game_dispatch) = use_store::<GameStore>();
     let id = props.entity_properties.id;
+    let name = props.entity_properties.name.clone();
     let combatant_properties = props.combatant_properties.clone();
 
     let _combat_attributes = combatant_properties.clone().get_total_attributes();
@@ -37,6 +38,23 @@ pub fn combatant(props: &Props) -> Html {
         });
     });
 
+    let is_ally = {
+        let mut value = false;
+        if let Some(game) = &game_state.game {
+            if let Some(party) = game
+                .adventuring_parties
+                .get(&game_state.current_party_id.expect("to be in a party"))
+            {
+                for (character_id, _) in party.characters.iter() {
+                    if character_id == &id {
+                        value = true;
+                    }
+                }
+            }
+        }
+        value
+    };
+
     let is_selected = match &game_state.detailed_entity {
         Some(combatant_details) => match combatant_details {
             DetailableEntities::Combatant(combatant_details) => {
@@ -49,7 +67,7 @@ pub fn combatant(props: &Props) -> Html {
     let selected_style = if is_selected { "border-yellow-400" } else { "" };
 
     let styles = format!(
-        "text-left border border-slate-400 p-2 mb-2 last:mb-0 w-40 relative cursor-help {}",
+        "flex border border-slate-400 mb-2 last:mb-0 w-40 relative {}",
         selected_style
     );
 
@@ -58,35 +76,39 @@ pub fn combatant(props: &Props) -> Html {
     let max_mp_option = total_attributes.get(&common::combatants::CombatAttributes::Mp);
 
     html!(
-        <button class={styles} onclick={handle_click} id={format!("combatant-{}", id)} >
+        <div class={styles}>
             if is_selected{
                 <div class="absolute top-[-1.5rem] left-1/2 -translate-x-1/2 z-20
                     " >
                     <TargetingIndicator />
+                    </div>
+            }
+            <button class={"text-left p-2 cursor-help w-full overflow-hidden"} onclick={handle_click} id={format!("combatant-{}", id)} >
+                <div class="pointer-events-none">
+                    {name}
                 </div>
-            }
-            <FocusCharacterButton id={id} />
-            <div class="pointer-events-none">
-            {"entity id: "}{id}
-            </div>
-            <div class="text-green-700 pointer-events-none" >
-            {
-                if let Some(max_hp) = max_hp_option {
-                    {format!("hp: {} / {}", combatant_properties.hit_points, max_hp)}
-                } else {
-                    {"Immortal Object".to_string()}
+                <div class="text-green-700 pointer-events-none" >
+                {
+                    if let Some(max_hp) = max_hp_option {
+                        {format!("hp: {} / {}", combatant_properties.hit_points, max_hp)}
+                    } else {
+                        {"Immortal Object".to_string()}
+                    }
                 }
-            }
-            </div>
-            <div class="text-blue-700 pointer-events-none" >
-            {
-                if let Some(max_mp) = max_mp_option {
-                    {format!("mp: {} / {}", combatant_properties.mana, max_mp)}
-                } else {
-                    {"Infinite Mana".to_string()}
+                </div>
+                <div class="text-blue-700 pointer-events-none" >
+                {
+                    if let Some(max_mp) = max_mp_option {
+                        {format!("mp: {} / {}", combatant_properties.mana, max_mp)}
+                    } else {
+                        {"Infinite Mana".to_string()}
+                    }
                 }
+                </div>
+            </button>
+            if is_ally {
+                <FocusCharacterButton id={id} is_ally={is_ally} />
             }
-            </div>
-        </button>
+        </div>
     )
 }

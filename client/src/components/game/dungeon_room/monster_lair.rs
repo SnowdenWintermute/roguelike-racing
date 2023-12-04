@@ -1,8 +1,6 @@
+use crate::components::game::dungeon_room::combatant::Combatant;
 use common::dungeon_rooms::DungeonRoom;
 use yew::prelude::*;
-use yewdux::prelude::*;
-
-use crate::{components::game::dungeon_room::combatant::Combatant, store::game_store::GameStore};
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
@@ -11,12 +9,12 @@ pub struct Props {
 
 #[function_component(MonsterLair)]
 pub fn monster_lair(props: &Props) -> Html {
-    let (game_state, _) = use_store::<GameStore>();
+    // let (game_state, _) = use_store::<GameStore>();
     let empty_vec = vec![];
     let monsters = props.room.monsters.as_ref().unwrap_or(&empty_vec);
 
     html!(
-        <div>
+        <div class="flex flex-col items-end whitespace-nowrap" >
             {monsters.iter().map(|monster| {
                 html!(
                     <Combatant

@@ -23,8 +23,8 @@ pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Charact
 
     // ABILITIES
     combatant_properties.abilities.insert(
-        CombatantAbilityNames::ArmorBreak,
-        CombatantAbility::new(&CombatantAbilityNames::ArmorBreak),
+        CombatantAbilityNames::Fire,
+        CombatantAbility::new(&CombatantAbilityNames::Fire),
     );
     combatant_properties.abilities.insert(
         CombatantAbilityNames::Heal,

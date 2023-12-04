@@ -4,16 +4,18 @@ mod combat_log;
 mod combatant_detail_tab;
 mod dungeon_room;
 mod tabbed_display;
+mod top_info_bar;
 use crate::{
     components::game::{
         action_menu::ActionMenu, character_sheet::CharacterSheet, dungeon_room::DungeonRoom,
-        tabbed_display::TabbedDisplay,
+        tabbed_display::TabbedDisplay, top_info_bar::TopInfoBar,
     },
     store::{game_store::GameStore, lobby_store::LobbyStore},
 };
-use gloo::events::EventListener;
+use gloo::{console::log, events::EventListener};
 use gloo_utils::window;
 use wasm_bindgen::{JsCast, UnwrapThrowExt};
+use web_sys::HtmlElement;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
@@ -38,23 +40,6 @@ pub fn game() -> Html {
         .get(&party_id)
         .expect("must have a party id")
         .clone();
-
-    // let click_listener_state = use_state(|| None::<EventListener>);
-    // let cloned_dispatch = game_dispatch.clone();
-    // use_effect_with((), move |_| {
-    //     let listener = EventListener::new(&window(), "click", move |event| {
-    //         let event = event.dyn_ref::<web_sys::MouseEvent>().unwrap_throw();
-    //         let target = event.target();
-    //         if let Some(target) = target {
-    //             let element = target.unchecked_into::<HtmlElement>();
-    //             let id_tag = element.id().split("-").collect::<Vec<&str>>()[0].to_string();
-    //             // if id_tag != "combatant".to_string() {
-    //             //     cloned_dispatch.reduce_mut(|store| store.detailed_entity = None);
-    //             // };
-    //         }
-    //     });
-    //     click_listener_state.set(Some(listener));
-    // });
 
     let cloned_dispatch = game_dispatch.clone();
     let keyup_listener_state = use_state(|| None::<EventListener>);
@@ -82,7 +67,13 @@ pub fn game() -> Html {
     let focused_character = party.characters.get(&game_state.focused_character_id);
 
     html!(
-        <main class="h-screen w-screen p-4 bg-gray-600 text-zinc-300 flex flex-col">
+        <main class="h-screen w-screen p-4 bg-gray-600 text-zinc-300 flex flex-col relative">
+
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 z-40 bg-slate-700" >
+            if !game_state.viewing_inventory {
+                <TopInfoBar />
+            }
+            </div>
             <div class="h-1/2 flex mb-4" >
                 <DungeonRoom game={game} party_id={party_id} />
                 if game_state.viewing_inventory && focused_character.is_some(){

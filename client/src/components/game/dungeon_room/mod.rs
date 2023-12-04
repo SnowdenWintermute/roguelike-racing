@@ -1,8 +1,8 @@
 use common::{character::Character, dungeon_rooms::DungeonRoomTypes, game::RoguelikeRacerGame};
 pub mod combatant;
+mod focus_character_button;
 mod monster_lair;
 mod players_ready_to_explore;
-mod focus_character_button;
 use crate::{
     components::game::dungeon_room::{
         combatant::Combatant, monster_lair::MonsterLair,
@@ -62,12 +62,7 @@ pub fn dungeon_room(props: &Props) -> Html {
                 }
             </div>
             if !game_state.viewing_inventory {
-            <div class="w-1/2 border-l border-slate-400" >
-                <div class="p-2 border-b border-slate-400 w-full text-center" >
-                    {"Floor "}{party.current_floor}{", room "}{party.rooms_explored.on_current_floor}
-                    {": "}
-                    {format!("{}", party.current_room.room_type)}
-                </div>
+            <div class="w-1/2 border-l border-slate-400 p-2" >
                 if party.current_room.room_type == DungeonRoomTypes::MonsterLair {
                     <MonsterLair room={party.current_room.clone()} />
                 }

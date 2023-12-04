@@ -1,9 +1,8 @@
 use common::{
+    adventuring_party::AdventuringParty,
     app_consts::error_messages::{self},
     character::Character,
-    combatants::{
-        CombatAttributes, CombatantProperties,
-    },
+    combatants::{CombatAttributes, CombatantProperties},
     errors::AppError,
     game::{getters::get_character, RoguelikeRacerGame},
     items::{
@@ -69,6 +68,19 @@ pub struct GameStore {
 //     let focused_character = get_character(&mut game, party_id, game_state.focused_character_id);
 //     focused_character
 // }
+pub fn get_current_party_option<'a>(game_state: &'a GameStore) -> Option<&'a AdventuringParty> {
+    let game_option = &game_state.game;
+    match game_option {
+        Some(game) => match game_state.current_party_id {
+            Some(party_id) => match game.adventuring_parties.get(&party_id) {
+                Some(party) => Some(party),
+                None => None,
+            },
+            None => None,
+        },
+        None => None,
+    }
+}
 
 pub fn get_focused_character<'a>(game_state: &'a GameStore) -> Result<&'a Character, AppError> {
     let game = game_state.game.as_ref().ok_or_else(|| AppError {

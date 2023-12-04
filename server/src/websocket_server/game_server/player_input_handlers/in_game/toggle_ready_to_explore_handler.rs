@@ -73,6 +73,9 @@ impl GameServer {
         let party = get_mut_party(game, party_id)?;
         if let Some(room) = new_room {
             party.current_room = room.clone();
+            party.rooms_explored.on_current_floor += 1;
+            party.rooms_explored.total += 1;
+
             self.emit_packet(
                 &game_name,
                 &GameServerUpdatePackets::DungeonRoomUpdate(room),

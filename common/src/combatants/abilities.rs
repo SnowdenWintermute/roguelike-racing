@@ -58,11 +58,12 @@ impl Default for CombatantAbility {
     }
 }
 
-#[derive(Debug, Clone, Hash, Eq, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Serialize, Deserialize, PartialOrd, Ord)]
 pub enum CombatantAbilityNames {
     Attack,
-    HeatLance,
     ArmorBreak,
+    HeatLance,
+    Fire,
     ShootArrow,
     Heal,
 }
@@ -75,6 +76,7 @@ impl Display for CombatantAbilityNames {
             CombatantAbilityNames::ArmorBreak => write!(f, "Armor Break"),
             CombatantAbilityNames::ShootArrow => write!(f, "Shoot Arrow"),
             CombatantAbilityNames::Heal => write!(f, "Heal"),
+            CombatantAbilityNames::Fire => write!(f, "Fire"),
         }
     }
 }
@@ -111,6 +113,13 @@ impl CombatantAbility {
                 class: Some(CombatantClass::Warrior),
                 mana_cost: 1,
                 usable_context: AbilityUsableContext::OutOfCombat,
+                ..Default::default()
+            },
+            CombatantAbilityNames::Fire => CombatantAbility {
+                ability_type: CombatantAbilityNames::Fire,
+                class: Some(CombatantClass::Warrior),
+                mana_cost: 1,
+                targeting_schemes: vec![TargetingScheme::Single, TargetingScheme::Area],
                 ..Default::default()
             },
         }

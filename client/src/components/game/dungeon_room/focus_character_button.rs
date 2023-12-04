@@ -5,6 +5,7 @@ use yewdux::prelude::use_store;
 #[derive(Properties, PartialEq)]
 pub struct Props {
     pub id: u32,
+    pub is_ally: bool,
 }
 
 #[function_component(FocusCharacterButton)]
@@ -22,32 +23,26 @@ pub fn focus_character_button(props: &Props) -> Html {
         Err(_) => false,
     };
 
-    let is_ally = {
-        let mut value = false;
-        if let Some(game) = &game_state.game {
-            if let Some(party) = game
-                .adventuring_parties
-                .get(&game_state.current_party_id.expect("to be in a party"))
-            {
-                for (character_id, _) in party.characters.iter() {
-                    if character_id == &props.id {
-                        value = true;
-                    }
-                }
-            }
-        }
-        value
+    let id = props.id;
+    let handle_click =
+        Callback::from(move |_| game_dispatch.reduce_mut(|store| store.focused_character_id = id));
+    let conditional_styles = if is_focused_character {
+        "bg-green-700"
+    } else {
+        ""
     };
 
     html!(
-        if is_focused_character {
-            <div class="absolute bottom-0 right-0 border border-slate-400 p-2 z-10 bg-green-700" >
-                {"focused"}
-            </div>
-        } else if is_ally {
-            <button class="absolute bottom-0 right-0 border border-slate-400 p-2 z-10" >
-            {"focus"}
-            </button>
-        }
+        <div class={format!("border-l border-slate-400 w-10 max-w-10 min-w-10 {}", conditional_styles)} >
+            if is_focused_character {
+                <button class="flex items-center justify-center w-full h-full">
+                {"X"}
+                </button>
+            } else if props.is_ally {
+                <button class="flex items-center justify-center w-full h-full m-0" onclick={handle_click} >
+                {"O"}
+                </button>
+            }
+        </div>
     )
 }

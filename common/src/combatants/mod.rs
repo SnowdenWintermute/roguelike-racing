@@ -1,5 +1,6 @@
 use self::abilities::CombatantAbility;
 use self::abilities::CombatantAbilityNames;
+use crate::app_consts::AGI_TO_SPEED_RATIO;
 use crate::app_consts::DEX_TO_ACCURACY_RATIO;
 use crate::app_consts::OFF_HAND_ACCURACY_MODIFIER;
 use crate::app_consts::OFF_HAND_DAMAGE_MODIFIER;
@@ -45,28 +46,31 @@ impl fmt::Display for CombatantClass {
     Debug, EnumIter, Clone, Copy, Hash, Eq, PartialEq, Serialize, Deserialize, PartialOrd, Ord,
 )]
 pub enum CombatAttributes {
-    Damage,
-    ArmorPenetration,
-    Accuracy,
-    Focus,
-    ArmorClass,
-    Evasion,
-    Obscurity,
-    Hp,
-    Mp,
-    Dexterity,
-    Intelligence,
-    Strength,
-    Vitality,
-    Resilience,
+    Damage,           // flat bonus to physical damage
+    ArmorPenetration, // negates armor class
+    ArmorClass,       // compared with final damage of physical attack, reduces damage on a curve
+    Accuracy,         // chance to hit with physical attacks and abilities
+    Evasion,          // dodge an attack
+    Focus,            // magical accuracy
+    Obscurity,        // chance to fully resist a magical ability
+    Speed,            // determines turn order
+    Hp,               // if reduced to 0 or below, combatant is "dead"
+    Mp,               // a resource for ability use
+    Dexterity,        // ranged damage, accuracy with physical attacks, physical crit chance, armor
+    // penetration for ranged piercing weapons
+    Intelligence, // mp, magic ability damage, obscurity, focus
+    Strength,     // damage with melee attacks, melee crit multiplier, melee armor penetration for
+    // piercing and slashing weapons
+    Vitality,   // hp and %damage reduction after AC damage reduction
+    Resilience, // %magic damage reduction, healing received, magical crit damage reduction
+    Agility,    // movement speed, evasion, physical crit damage reduction
 }
 
-pub const CORE_ATTRIBUTES: [CombatAttributes; 5] = [
+pub const CORE_ATTRIBUTES: [CombatAttributes; 4] = [
     CombatAttributes::Dexterity,
     CombatAttributes::Intelligence,
     CombatAttributes::Strength,
     CombatAttributes::Vitality,
-    CombatAttributes::Resilience,
 ];
 
 impl fmt::Display for CombatAttributes {
@@ -79,10 +83,12 @@ impl fmt::Display for CombatAttributes {
             CombatAttributes::Intelligence => write!(f, "Intelligence"),
             CombatAttributes::Vitality => write!(f, "Vitality"),
             CombatAttributes::Resilience => write!(f, "Resilience"),
+            CombatAttributes::Agility => write!(f, "Agility"),
             CombatAttributes::Accuracy => write!(f, "Accuracy"),
             CombatAttributes::Focus => write!(f, "Focus"),
             CombatAttributes::Evasion => write!(f, "Evasion"),
             CombatAttributes::Obscurity => write!(f, "Obscurity"),
+            CombatAttributes::Speed => write!(f, "Speed"),
             CombatAttributes::Hp => write!(f, "HP"),
             CombatAttributes::Mp => write!(f, "MP"),
             CombatAttributes::ArmorPenetration => write!(f, "Armor Pen."),
@@ -175,6 +181,16 @@ impl CombatantProperties {
         if let Some(dex) = total_dex_option {
             let accuracy_from_dex = DEX_TO_ACCURACY_RATIO * dex;
             total_attributes.insert(CombatAttributes::Accuracy, total_acc + accuracy_from_dex);
+        }
+
+        // derrive speed from agility and +speed
+        let total_agility_option = total_attributes.get(&CombatAttributes::Agility);
+        let total_speed = total_attributes
+            .get(&CombatAttributes::Speed)
+            .unwrap_or_else(|| &0);
+        if let Some(agility) = total_agility_option {
+            let speed_from_agility = AGI_TO_SPEED_RATIO * agility;
+            total_attributes.insert(CombatAttributes::Speed, total_speed + speed_from_agility);
         }
 
         total_attributes

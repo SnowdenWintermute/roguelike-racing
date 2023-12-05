@@ -43,7 +43,7 @@ impl GameServer {
 
         let mut should_unready_player = false;
         if player_character_ids.contains(&character_id) {
-            party.characters.remove(&character_id);
+            party.remove_character(character_id);
             player_character_ids.remove(&character_id);
 
             let player = get_mut_player(game, &username)?;

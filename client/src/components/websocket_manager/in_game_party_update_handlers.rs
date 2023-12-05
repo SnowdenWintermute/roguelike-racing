@@ -32,6 +32,10 @@ pub fn handle_new_dungeon_room(
     party.current_room = packet;
     party.rooms_explored.on_current_floor += 1;
     party.rooms_explored.total += 1;
+    if party.current_room.monsters.is_some() {
+        let turn_trackers = party.get_combat_turn_order();
+        party.combatant_turn_trackers = Some(turn_trackers);
+    }
 
     Ok(())
 }

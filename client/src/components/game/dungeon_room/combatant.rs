@@ -3,10 +3,9 @@ use crate::{
         common_components::atoms::targeting_indicator::TargetingIndicator,
         game::dungeon_room::focus_character_button::FocusCharacterButton,
     },
-    store::game_store::{self, DetailableEntities, GameStore},
+    store::game_store::{self, get_current_party_option, DetailableEntities, GameStore},
 };
 use common::{combatants::CombatantProperties, primatives::EntityProperties};
-
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
@@ -64,12 +63,31 @@ pub fn combatant(props: &Props) -> Html {
         },
         None => false,
     };
+
+    let party_option = get_current_party_option(&game_state);
+    let is_active_combatant = match party_option {
+        Some(party) => match &party.combatant_turn_trackers {
+            Some(trackers) => match trackers.get(0) {
+                Some(combat_turn_tracker) => combat_turn_tracker.entity_id == id,
+                None => false,
+            },
+            None => false,
+        },
+        None => false,
+    };
+
     let selected_style = if is_selected { "border-yellow-400" } else { "" };
 
     let styles = format!(
         "flex border border-slate-400 mb-2 last:mb-0 w-40 relative {}",
         selected_style
     );
+
+    let turn_indicator_style = if is_ally {
+        "-right-2 translate-x-full"
+    } else {
+        "-left-2 -translate-x-full"
+    };
 
     let total_attributes = combatant_properties.get_total_attributes();
     let max_hp_option = total_attributes.get(&common::combatants::CombatAttributes::Hp);
@@ -82,6 +100,12 @@ pub fn combatant(props: &Props) -> Html {
                     " >
                     <TargetingIndicator />
                     </div>
+            }
+            if is_active_combatant {
+                <div class={format!("absolute top-1/2 -translate-y-1/2 {}
+                                    pr-2 pl-2 border border-slate-400 bg-slate-700", turn_indicator_style)} >
+                    {"active"}
+                </div>
             }
             <button class={"text-left p-2 cursor-help w-full overflow-hidden"} onclick={handle_click} id={format!("combatant-{}", id)} >
                 <div class="pointer-events-none">

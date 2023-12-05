@@ -104,16 +104,7 @@ impl RoguelikeRacerGame {
         match &character_ids {
             Some(character_ids) => {
                 for character_id in character_ids {
-                    party.characters.remove(&character_id);
-                    let mut index_to_remove = None;
-                    for (index, id) in party.character_positions.iter().enumerate() {
-                        if id == character_id {
-                            index_to_remove = Some(index);
-                        }
-                    }
-                    if let Some(index) = index_to_remove {
-                        party.character_positions.remove(index);
-                    }
+                    party.remove_character(*character_id)
                 }
             }
             _ => (),

@@ -1,4 +1,4 @@
-mod character_attributes;
+pub mod character_attributes;
 mod paper_doll;
 use crate::{
     components::game::character_sheet::{

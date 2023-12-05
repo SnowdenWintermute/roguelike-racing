@@ -1,5 +1,6 @@
 mod generate_next_room;
-
+pub mod init_combat;
+use self::init_combat::CombatantTurnTracker;
 use crate::character::Character;
 use crate::dungeon_rooms::DungeonRoom;
 use crate::dungeon_rooms::DungeonRoomTypes;
@@ -23,7 +24,7 @@ pub struct AdventuringParty {
     pub players_ready_to_explore: HashSet<String>,
     pub characters: HashMap<u32, Character>,
     pub character_positions: Vec<u32>,
-    pub active_combatant_id: Option<u32>,
+    pub combatant_turn_trackers: Option<Vec<CombatantTurnTracker>>,
     pub current_floor: u8,
     pub rooms_explored: RoomsExplored,
     pub current_room: DungeonRoom,
@@ -40,7 +41,7 @@ impl AdventuringParty {
             players_ready_to_explore: HashSet::new(),
             characters: HashMap::new(),
             character_positions: Vec::new(),
-            active_combatant_id: None,
+            combatant_turn_trackers: None,
             current_floor: 1,
             rooms_explored: RoomsExplored {
                 total: 1,
@@ -88,5 +89,18 @@ impl AdventuringParty {
         }
 
         None
+    }
+
+    pub fn remove_character(&mut self, character_id: u32) {
+        self.characters.remove(&character_id);
+        let mut index_to_remove = None;
+        for (index, id) in self.character_positions.iter().enumerate() {
+            if *id == character_id {
+                index_to_remove = Some(index);
+            }
+        }
+        if let Some(index) = index_to_remove {
+            self.character_positions.remove(index);
+        }
     }
 }

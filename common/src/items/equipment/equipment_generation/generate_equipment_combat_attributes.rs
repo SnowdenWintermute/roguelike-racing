@@ -1,4 +1,5 @@
 use crate::combatants::CombatAttributes;
+use crate::combatants::CORE_ATTRIBUTES;
 use crate::items::equipment::affixes::Affix;
 use crate::items::equipment::affixes::PrefixTypes;
 use crate::items::equipment::affixes::SuffixTypes;
@@ -123,14 +124,7 @@ pub fn generate_equipment_combat_attributes(
                         let max = tier * 1.0;
                         let attribute_value =
                             rand::thread_rng().gen_range(min.round() as u16..=max.round() as u16);
-                        let base_attributes = vec![
-                            CombatAttributes::Strength,
-                            CombatAttributes::Dexterity,
-                            CombatAttributes::Intelligence,
-                            CombatAttributes::Vitality,
-                            CombatAttributes::Resilience,
-                        ];
-                        for attribute in base_attributes {
+                        for attribute in CORE_ATTRIBUTES {
                             // if some attribute already exists in the hashmap, add it's value to
                             // the roll before overwriting
                             let mut existing_attribute = 0;

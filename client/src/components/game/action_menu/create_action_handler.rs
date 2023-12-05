@@ -11,8 +11,7 @@ use crate::{
     },
 };
 use common::packets::client_to_server::ClientSelectAbilityPacket;
-use common::{packets::client_to_server::{EquipItemRequest, PlayerInputs, UnequipSlotRequest}, game::getters::get_character};
-use gloo::console::log;
+use common::packets::client_to_server::{EquipItemRequest, PlayerInputs, UnequipSlotRequest}; 
 use std::rc::Rc;
 use yewdux::prelude::Dispatch;
 

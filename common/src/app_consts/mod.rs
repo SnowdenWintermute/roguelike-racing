@@ -7,5 +7,6 @@ pub const MAIN_CHAT_ROOM: &str = "main";
 
 // ATTRIBUTES
 pub const DEX_TO_ACCURACY_RATIO: u16 = 2;
+pub const AGI_TO_SPEED_RATIO: u16 = 1;
 pub const OFF_HAND_ACCURACY_MODIFIER: f32 = 0.75;
 pub const OFF_HAND_DAMAGE_MODIFIER: f32 = 0.60;

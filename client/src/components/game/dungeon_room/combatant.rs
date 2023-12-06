@@ -6,6 +6,7 @@ use crate::{
     store::game_store::{self, get_current_party_option, DetailableEntities, GameStore},
 };
 use common::{combatants::CombatantProperties, primatives::EntityProperties};
+use std::collections::HashMap;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
@@ -13,6 +14,7 @@ use yewdux::prelude::use_store;
 pub struct Props {
     pub entity_properties: EntityProperties,
     pub combatant_properties: CombatantProperties,
+    pub all_targets_option: Option<HashMap<u32, Vec<u32>>>,
 }
 
 #[function_component(Combatant)]
@@ -64,15 +66,24 @@ pub fn combatant(props: &Props) -> Html {
         None => false,
     };
 
+    // @TODO: change to multi targeting system after combat
+    let is_targeted = match &props.all_targets_option {
+        Some(targets_by_entity) => {
+            let mut to_return = false;
+            for (_, target_ids) in targets_by_entity {
+                if target_ids.contains(&id) {
+                    to_return = true;
+                    break;
+                }
+            }
+            to_return
+        }
+        None => false,
+    };
+
     let party_option = get_current_party_option(&game_state);
     let is_active_combatant = match party_option {
-        Some(party) => match &party.combatant_turn_trackers {
-            Some(trackers) => match trackers.get(0) {
-                Some(combat_turn_tracker) => combat_turn_tracker.entity_id == id,
-                None => false,
-            },
-            None => false,
-        },
+        Some(party) => party.combatant_is_first_in_turn_order(id),
         None => false,
     };
 
@@ -95,7 +106,7 @@ pub fn combatant(props: &Props) -> Html {
 
     html!(
         <div class={styles}>
-            if is_selected{
+            if is_targeted{
                 <div class="absolute top-[-1.5rem] left-1/2 -translate-x-1/2 z-20
                     " >
                     <TargetingIndicator />

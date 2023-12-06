@@ -5,7 +5,10 @@ use super::{
     determine_action_menu_buttons_disabled::determine_action_menu_buttons_disabled,
     generate_action_menu_items, generate_button_text::generate_button_text,
 };
-use crate::store::{game_store::GameStore, ui_store::UIStore, websocket_store::WebsocketStore};
+use crate::store::{
+    game_store::GameStore, lobby_store::LobbyStore, ui_store::UIStore,
+    websocket_store::WebsocketStore,
+};
 use common::adventuring_party::AdventuringParty;
 use std::rc::Rc;
 use web_sys::{FocusEvent, MouseEvent};
@@ -28,6 +31,7 @@ pub fn set_up_actions<'a>(
     game_state: Rc<GameStore>,
     game_dispatch: &'a Dispatch<GameStore>,
     ui_state: Rc<UIStore>,
+    lobby_state: Rc<LobbyStore>,
     party: &AdventuringParty,
 ) -> Vec<ActionMenuButtonProperties> {
     let new_actions = generate_action_menu_items::generate_action_menu_items(&game_state, party);
@@ -91,7 +95,8 @@ pub fn set_up_actions<'a>(
         let cloned_game_state = game_state.clone();
         let text = generate_button_text(action.clone(), cloned_game_state);
 
-        let should_be_disabled = determine_action_menu_buttons_disabled(&action, &game_state);
+        let should_be_disabled =
+            determine_action_menu_buttons_disabled(&action, &game_state, &lobby_state);
 
         button_properties.push(ActionMenuButtonProperties {
             text,

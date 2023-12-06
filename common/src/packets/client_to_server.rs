@@ -23,7 +23,7 @@ pub enum PlayerInputs {
     UseSelectedConsumable,
     SelectAbility(ClientSelectAbilityPacket),
     UseSelectedAbility,
-    ChangeTargetIds(Option<Vec<u32>>),
+    ChangeTargetIds(ClientChangeTargetsPacket),
     ClearConsumableAndAbilitySelections,
     // manage equipment and items
     UnequipEquipmentSlot(UnequipSlotRequest),
@@ -85,4 +85,10 @@ pub struct UnequipSlotRequest {
 pub struct ClientSelectAbilityPacket {
     pub character_id: u32,
     pub ability_name_option: Option<CombatantAbilityNames>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct ClientChangeTargetsPacket {
+    pub character_id: u32,
+    pub target_ids: Vec<u32>,
 }

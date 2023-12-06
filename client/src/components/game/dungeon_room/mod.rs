@@ -8,7 +8,7 @@ use crate::{
         combatant::Combatant, monster_lair::MonsterLair,
         players_ready_to_explore::PlayersReadyToExplore,
     },
-    store::game_store::GameStore,
+    store::game_store::{DetailableEntities, GameStore},
 };
 use yew::prelude::*;
 use yewdux::prelude::use_store;
@@ -45,6 +45,8 @@ pub fn dungeon_room(props: &Props) -> Html {
         false => "w-full",
     };
 
+    let all_targets_option = party.get_all_targeted_ids_by_combatant_id();
+
     html!(
         <section class={format!("h-full border border-slate-400 bg-slate-700 flex {}", conditional_styles)} >
             <div class="w-1/2 flex p-2" >
@@ -52,7 +54,10 @@ pub fn dungeon_room(props: &Props) -> Html {
                     {characters.iter().map(|(_id, character)|
                         html!{<Combatant
                             entity_properties={character.entity_properties.clone()}
-                            combatant_properties={character.combatant_properties.clone()} />}).collect::<Html>()}
+                            combatant_properties={character.combatant_properties.clone()}
+                            all_targets_option={all_targets_option.clone()}
+                            />}).collect::<Html>()
+                    }
                 </div>
                 if party.current_room.monsters.is_none() {
                     <PlayersReadyToExplore
@@ -64,7 +69,10 @@ pub fn dungeon_room(props: &Props) -> Html {
             if !game_state.viewing_inventory {
             <div class="w-1/2 border-l border-slate-400 p-2" >
                 if party.current_room.room_type == DungeonRoomTypes::MonsterLair {
-                    <MonsterLair room={party.current_room.clone()} />
+                    <MonsterLair
+                        room={party.current_room.clone()}
+                        all_targets_option={all_targets_option.clone()}
+                    />
                 }
             </div>
             }

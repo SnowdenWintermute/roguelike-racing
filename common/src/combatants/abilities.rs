@@ -36,8 +36,28 @@ pub struct CombatantAbility {
     pub requires_combat_turn: bool,
     pub usable_context: AbilityUsableContext,
     pub targeting_schemes: Vec<TargetingScheme>,
+    pub selected_targeting_scheme: TargetingScheme,
     pub valid_targets: ValidTargets,
     pub most_recently_targeted: Option<Vec<u32>>,
+}
+
+impl CombatantAbility {
+    pub fn new() -> Self {
+        CombatantAbility {
+            ability_type: todo!(),
+            class: todo!(),
+            level: todo!(),
+            mana_cost: todo!(),
+            mana_cost_level_multiplier: todo!(),
+            shard_cost: todo!(),
+            requires_combat_turn: todo!(),
+            usable_context: todo!(),
+            targeting_schemes: todo!(),
+            selected_targeting_scheme: todo!(),
+            valid_targets: todo!(),
+            most_recently_targeted: todo!(),
+        }
+    }
 }
 
 impl Default for CombatantAbility {
@@ -52,6 +72,7 @@ impl Default for CombatantAbility {
             requires_combat_turn: true,
             usable_context: AbilityUsableContext::InCombat,
             targeting_schemes: vec![TargetingScheme::Single],
+            selected_targeting_scheme: TargetingScheme::Single,
             valid_targets: ValidTargets::Opponent,
             most_recently_targeted: None,
         }
@@ -120,6 +141,7 @@ impl CombatantAbility {
                 class: Some(CombatantClass::Warrior),
                 mana_cost: 1,
                 targeting_schemes: vec![TargetingScheme::Single, TargetingScheme::Area],
+                selected_targeting_scheme: TargetingScheme::Single,
                 ..Default::default()
             },
         }

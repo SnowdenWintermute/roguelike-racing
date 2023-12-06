@@ -103,4 +103,49 @@ impl AdventuringParty {
             self.character_positions.remove(index);
         }
     }
+
+    pub fn player_owns_character(&self, player_username: String, character_id: u32) -> bool {
+        if let Some(character) = self.characters.get(&character_id) {
+            if character.name_of_controlling_user == player_username {
+                return true;
+            }
+        }
+        false
+    }
+
+    pub fn combatant_is_first_in_turn_order(&self, entity_id: u32) -> bool {
+        match &self.combatant_turn_trackers {
+            Some(trackers) => match trackers.get(0) {
+                Some(combat_turn_tracker) => combat_turn_tracker.entity_id == entity_id,
+                None => false,
+            },
+            None => false,
+        }
+    }
+
+    // @TODO - optimize a second function to only get target ids for active combatant
+    pub fn get_all_targeted_ids_by_combatant_id(&self) -> Option<HashMap<u32, Vec<u32>>> {
+        let mut ability_targets_by_combatant_id = HashMap::new();
+        for (id, character) in &self.characters {
+            let targets_option = &character.combatant_properties.ability_target_ids;
+            if let Some(targets) = targets_option {
+                ability_targets_by_combatant_id.insert(*id, targets.clone());
+            }
+        }
+        if let Some(monsters) = &self.current_room.monsters {
+            for monster in monsters {
+                let targets_option = &monster.combatant_properties.ability_target_ids;
+                if let Some(targets) = targets_option {
+                    ability_targets_by_combatant_id
+                        .insert(monster.entity_properties.id, targets.clone());
+                }
+            }
+        }
+
+        if ability_targets_by_combatant_id.len() > 0 {
+            Some(ability_targets_by_combatant_id)
+        } else {
+            None
+        }
+    }
 }

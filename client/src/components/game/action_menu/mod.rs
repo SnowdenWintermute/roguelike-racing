@@ -14,6 +14,7 @@ mod set_up_actions;
 use crate::components::game::action_menu::action_menu_button::ActionMenuButton;
 use crate::components::game::action_menu::action_page_buttons::ActionPageButtons;
 use crate::components::game::action_menu::set_up_actions::ActionMenuButtonProperties;
+use crate::store::lobby_store::LobbyStore;
 use crate::store::ui_store::UIStore;
 use crate::store::{game_store::GameStore, websocket_store::WebsocketStore};
 use common::adventuring_party::AdventuringParty;
@@ -33,6 +34,7 @@ const PAGE_SIZE: u8 = 6;
 pub fn action_menu(props: &Props) -> Html {
     let (game_state, game_dispatch) = use_store::<GameStore>();
     let (ui_state, _) = use_store::<UIStore>();
+    let (lobby_state, _) = use_store::<LobbyStore>();
     let (websocket_state, _) = use_store::<WebsocketStore>();
     let party = props.adventuring_party.clone();
     let action_button_properties = use_state(|| Vec::<ActionMenuButtonProperties>::new());
@@ -110,6 +112,7 @@ pub fn action_menu(props: &Props) -> Html {
                 cloned_game_state,
                 &game_dispatch,
                 cloned_ui_state,
+                lobby_state,
                 &party,
             );
             cloned_action_button_properties.set(actions);

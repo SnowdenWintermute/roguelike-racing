@@ -103,6 +103,9 @@ pub fn create_action_handler<'a>(
                 });
             })
             ,
+GameActions::CycleTargets(next_or_previous) => Box::new(move||{
+    //
+}),
             _ => Box::new(||())
             // GameActions::OpenTreasureChest => || (),
             // GameActions::TakeItem => || (),

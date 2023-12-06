@@ -1,11 +1,12 @@
 use super::available_actions::GameActions;
-use crate::store::game_store::GameStore;
+use crate::store::{game_store::GameStore, lobby_store::LobbyStore};
 use common::game::getters::get_character;
 use std::{ops::Deref, rc::Rc};
 
 pub fn determine_action_menu_buttons_disabled(
     action: &GameActions,
     game_state: &Rc<GameStore>,
+    lobby_state: &Rc<LobbyStore>,
 ) -> bool {
     match action {
         GameActions::UseItem(_) => {
@@ -28,6 +29,26 @@ pub fn determine_action_menu_buttons_disabled(
                     .slot_item_is_equipped(&item.entity_properties.id)
                     .is_none()
             {
+                return true;
+            }
+            false
+        }
+        GameActions::SelectAbility(_) => {
+            let game = &game_state
+                .deref()
+                .game
+                .as_ref()
+                .expect("game to be in progress");
+            let current_party_id = game_state.clone().current_party_id.expect("party to exist");
+            let party = game
+                .adventuring_parties
+                .get(&current_party_id)
+                .expect("to have valid party ref");
+            let focused_character_id = game_state.clone().focused_character_id;
+            if !party.player_owns_character(lobby_state.username.clone(), focused_character_id) {
+                return true;
+            }
+            if !party.combatant_is_first_in_turn_order(focused_character_id) {
                 return true;
             }
             false

@@ -1,3 +1,4 @@
+use super::action_handlers::handle_cycle_targeting_schemes::handle_cycle_targeting_schemes;
 use super::action_handlers::handle_cycle_targets::handle_cycle_targets;
 use super::{
     available_actions::GameActions, get_character_owned_item_by_id::get_character_owned_item_by_id,
@@ -105,7 +106,12 @@ pub fn create_action_handler<'a>(
             }),
             GameActions::CycleTargets(next_or_previous) => Box::new(move||{
                 let cloned_dispatch = game_dispatch.clone();
-                handle_cycle_targets(cloned_dispatch,&websocket_state.websocket, &next_or_previous )
+                handle_cycle_targets(cloned_dispatch,&websocket_state.websocket, &next_or_previous)
+            }),
+            GameActions::CycleTargetingScheme => Box::new(move|| {
+                game_dispatch.reduce_mut(|store| {
+                    handle_cycle_targeting_schemes(store,&websocket_state.websocket)
+                })
             }),
             _ => Box::new(||())
             // GameActions::OpenTreasureChest => || (),

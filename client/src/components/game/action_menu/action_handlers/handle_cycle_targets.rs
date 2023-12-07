@@ -3,7 +3,10 @@ use crate::{
     store::game_store::GameStore,
 };
 use common::{
-    combatants::abilities::get_combatant_ability_attributes::{TargetCategories, TargetingScheme},
+    combatants::abilities::{
+        get_combatant_ability_attributes::{TargetCategories, TargetingScheme},
+        targets_are_valid::is_id_of_existing_opponent,
+    },
     game::getters::get_mut_party,
     packets::client_to_server::{ClientChangeTargetsPacket, PlayerInputs},
     primatives::NextOrPrevious,
@@ -100,7 +103,25 @@ pub fn handle_cycle_targets(
                     )]
                 }
             },
-            TargetingScheme::Area => todo!(),
+            TargetingScheme::Area => match ability_attributes.valid_target_categories {
+                TargetCategories::Opponent
+                | TargetCategories::User
+                | TargetCategories::Friendly => current_target_ids,
+                TargetCategories::Any => {
+                    if is_id_of_existing_opponent(&party, &current_target_ids[0]) {
+                        party.character_positions.clone()
+                    } else {
+                        party
+                            .current_room
+                            .monsters
+                            .as_ref()
+                            .expect("to be in combat")
+                            .iter()
+                            .map(|monster| monster.entity_properties.id)
+                            .collect::<Vec<u32>>()
+                    }
+                }
+            },
         };
 
         send_client_input(

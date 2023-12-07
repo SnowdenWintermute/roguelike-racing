@@ -90,7 +90,7 @@ impl CombatantAbility {
     }
 }
 
-fn is_id_of_existing_opponent(party: &AdventuringParty, id: &u32) -> bool {
+pub fn is_id_of_existing_opponent(party: &AdventuringParty, id: &u32) -> bool {
     match &party.current_room.monsters {
         Some(monsters) => monsters
             .iter()

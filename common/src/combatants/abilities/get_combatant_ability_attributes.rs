@@ -51,6 +51,7 @@ impl CombatantAbilityNames {
         match self {
             CombatantAbilityNames::Attack => CombatantAbilityAttributes {
                 mana_cost: 0,
+                valid_target_categories: TargetCategories::Any,
                 ..Default::default()
             },
             CombatantAbilityNames::ArmorBreak => CombatantAbilityAttributes {
@@ -65,6 +66,7 @@ impl CombatantAbilityNames {
                 ..Default::default()
             },
             CombatantAbilityNames::Heal => CombatantAbilityAttributes {
+                targeting_schemes: vec![TargetingScheme::Single, TargetingScheme::Area],
                 valid_target_categories: TargetCategories::Friendly,
                 ..Default::default()
             },

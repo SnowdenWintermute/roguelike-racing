@@ -1,6 +1,6 @@
 pub mod get_combatant_ability_attributes;
 mod get_default_target_ids;
-mod targets_are_valid;
+pub mod targets_are_valid;
 use self::get_combatant_ability_attributes::TargetingScheme;
 use serde::Deserialize;
 use serde::Serialize;
@@ -11,7 +11,8 @@ pub struct CombatantAbility {
     pub ability_name: CombatantAbilityNames,
     pub level: u8,
     pub selected_targeting_scheme: TargetingScheme,
-    pub most_recently_targeted: Option<Vec<u32>>,
+    pub most_recently_targeted_single: Option<Vec<u32>>,
+    pub most_recently_targeted_area: Option<Vec<u32>>,
 }
 
 impl CombatantAbility {
@@ -30,7 +31,8 @@ impl Default for CombatantAbility {
             ability_name: CombatantAbilityNames::Attack,
             level: 0,
             selected_targeting_scheme: TargetingScheme::Single,
-            most_recently_targeted: None,
+            most_recently_targeted_single: None,
+            most_recently_targeted_area: None,
         }
     }
 }

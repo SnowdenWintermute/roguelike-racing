@@ -1,10 +1,9 @@
-use crate::combatants::abilities::TargetingScheme;
-use crate::combatants::abilities::ValidTargets;
-
 use super::consumables::ConsumableTypes;
 use super::ConsumableProperties;
 use super::Item;
 use super::ItemProperties;
+use crate::combatants::abilities::get_combatant_ability_attributes::TargetCategories;
+use crate::combatants::abilities::get_combatant_ability_attributes::TargetingScheme;
 use rand::prelude::*;
 use std::vec;
 use strum::IntoEnumIterator;
@@ -21,7 +20,7 @@ impl Item {
             combat_use_only: true,
             requires_combat_turn: true,
             targeting_schemes: vec![TargetingScheme::Single],
-            valid_targets: ValidTargets::Friendly,
+            valid_targets: TargetCategories::Friendly,
         })
     }
 }

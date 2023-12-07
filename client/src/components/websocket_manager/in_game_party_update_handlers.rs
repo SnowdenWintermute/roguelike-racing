@@ -1,7 +1,11 @@
 use crate::store::game_store::GameStore;
 use common::{
-    dungeon_rooms::DungeonRoom, errors::AppError,
-    packets::server_to_client::CharacterSelectedAbilityPacket,
+    dungeon_rooms::DungeonRoom,
+    errors::AppError,
+    packets::{
+        client_to_server::ClientChangeTargetsPacket,
+        server_to_client::CharacterSelectedAbilityPacket,
+    },
 };
 use gloo::console::log;
 use std::collections::HashSet;
@@ -17,7 +21,6 @@ pub fn handle_player_toggled_ready_to_explore(
     } else {
         party.players_ready_to_explore.insert(username.clone());
     };
-
     log!(format!("player {} toggled ready to explore", username));
 
     Ok(())
@@ -53,5 +56,28 @@ pub fn handle_character_ability_selection(
     let character = game_store.get_mut_character(character_id)?;
     character.combatant_properties.selected_ability_name = ability_name_option;
     character.combatant_properties.ability_target_ids = target_ids_option;
+    Ok(())
+}
+
+pub fn handle_character_changed_targets(
+    game_store: &mut GameStore,
+    packet: ClientChangeTargetsPacket,
+) -> Result<(), AppError> {
+    let ClientChangeTargetsPacket {
+        character_id,
+        target_ids,
+    } = packet;
+    let character = game_store.get_mut_character(character_id)?;
+    character.combatant_properties.ability_target_ids = Some(target_ids.clone());
+    let selected_ability_name_option = character.combatant_properties.selected_ability_name.clone();
+    if let Some(ability_name) = selected_ability_name_option {
+        let ability_option = character
+            .combatant_properties
+            .abilities
+            .get_mut(&ability_name);
+        if let Some(ability) = ability_option {
+            ability.most_recently_targeted = Some(target_ids)
+        }
+    }
     Ok(())
 }

@@ -1,9 +1,13 @@
 mod generate_next_room;
 pub mod init_combat;
 use self::init_combat::CombatantTurnTracker;
+use crate::app_consts::error_messages;
 use crate::character::Character;
+use crate::combatants::abilities::CombatantAbility;
 use crate::dungeon_rooms::DungeonRoom;
 use crate::dungeon_rooms::DungeonRoomTypes;
+use crate::errors::AppError;
+use crate::errors::AppErrorTypes;
 use crate::items::Item;
 use serde::Deserialize;
 use serde::Serialize;
@@ -147,5 +151,103 @@ impl AdventuringParty {
         } else {
             None
         }
+    }
+
+    pub fn get_mut_character_if_owned<'a>(
+        &'a mut self,
+        player_character_ids_option: Option<HashSet<u32>>,
+        character_id: u32,
+    ) -> Result<&'a mut Character, AppError> {
+        let player_character_ids = player_character_ids_option.ok_or_else(|| AppError {
+            error_type: crate::errors::AppErrorTypes::ServerError,
+            message: error_messages::PLAYER_HAS_NO_CHARACTERS.to_string(),
+        })?;
+        match player_character_ids.contains(&character_id) {
+            true => self
+                .characters
+                .get_mut(&character_id)
+                .ok_or_else(|| AppError {
+                    error_type: AppErrorTypes::ServerError,
+                    message: error_messages::CHARACTER_NOT_FOUND.to_string(),
+                }),
+            false => Err(AppError {
+                error_type: AppErrorTypes::ServerError,
+                message: error_messages::CHARACTER_NOT_OWNED.to_string(),
+            }),
+        }
+    }
+
+    pub fn get_character_if_owned<'a>(
+        &'a self,
+        player_character_ids_option: Option<HashSet<u32>>,
+        character_id: u32,
+    ) -> Result<&'a Character, AppError> {
+        let player_character_ids = player_character_ids_option.ok_or_else(|| AppError {
+            error_type: crate::errors::AppErrorTypes::ServerError,
+            message: error_messages::PLAYER_HAS_NO_CHARACTERS.to_string(),
+        })?;
+        match player_character_ids.contains(&character_id) {
+            true => self.characters.get(&character_id).ok_or_else(|| AppError {
+                error_type: AppErrorTypes::ServerError,
+                message: error_messages::CHARACTER_NOT_FOUND.to_string(),
+            }),
+            false => Err(AppError {
+                error_type: AppErrorTypes::ServerError,
+                message: error_messages::CHARACTER_NOT_OWNED.to_string(),
+            }),
+        }
+    }
+
+    pub fn get_mut_character_selected_ability<'a>(
+        &'a mut self,
+        player_character_ids_option: Option<HashSet<u32>>,
+        character_id: u32,
+    ) -> Result<&'a mut CombatantAbility, AppError> {
+        let character =
+            self.get_mut_character_if_owned(player_character_ids_option, character_id)?;
+
+        let ability_name = character
+            .combatant_properties
+            .selected_ability_name
+            .as_ref()
+            .ok_or_else(|| AppError {
+                error_type: AppErrorTypes::ServerError,
+                message: error_messages::MISSING_ABILITY_REFERENCE.to_string(),
+            })?;
+
+        character
+            .combatant_properties
+            .abilities
+            .get_mut(&ability_name)
+            .ok_or_else(|| AppError {
+                error_type: AppErrorTypes::InvalidInput,
+                message: error_messages::ABILITY_NOT_OWNED.to_string(),
+            })
+    }
+
+    pub fn get_character_selected_ability<'a>(
+        &'a self,
+        player_character_ids_option: Option<HashSet<u32>>,
+        character_id: u32,
+    ) -> Result<&'a CombatantAbility, AppError> {
+        let character = self.get_character_if_owned(player_character_ids_option, character_id)?;
+
+        let ability_name = character
+            .combatant_properties
+            .selected_ability_name
+            .as_ref()
+            .ok_or_else(|| AppError {
+                error_type: AppErrorTypes::ServerError,
+                message: error_messages::MISSING_ABILITY_REFERENCE.to_string(),
+            })?;
+
+        character
+            .combatant_properties
+            .abilities
+            .get(&ability_name)
+            .ok_or_else(|| AppError {
+                error_type: AppErrorTypes::InvalidInput,
+                message: error_messages::ABILITY_NOT_OWNED.to_string(),
+            })
     }
 }

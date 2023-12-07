@@ -1,3 +1,4 @@
+mod character_changes_ability_targets_handler;
 mod character_selects_ability_handler;
 mod equip_item_handler;
 mod toggle_ready_to_explore_handler;

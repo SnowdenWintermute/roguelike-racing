@@ -1,3 +1,4 @@
+use super::action_handlers::handle_cycle_targets::handle_cycle_targets;
 use super::{
     available_actions::GameActions, get_character_owned_item_by_id::get_character_owned_item_by_id,
 };
@@ -101,11 +102,11 @@ pub fn create_action_handler<'a>(
                         ability_name_option: None,
                     }))
                 });
-            })
-            ,
-GameActions::CycleTargets(next_or_previous) => Box::new(move||{
-    //
-}),
+            }),
+            GameActions::CycleTargets(next_or_previous) => Box::new(move||{
+                let cloned_dispatch = game_dispatch.clone();
+                handle_cycle_targets(cloned_dispatch,&websocket_state.websocket, &next_or_previous )
+            }),
             _ => Box::new(||())
             // GameActions::OpenTreasureChest => || (),
             // GameActions::TakeItem => || (),

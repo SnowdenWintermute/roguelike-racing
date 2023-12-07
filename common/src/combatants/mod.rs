@@ -1,3 +1,4 @@
+pub mod abilities;
 use self::abilities::CombatantAbility;
 use self::abilities::CombatantAbilityNames;
 use crate::app_consts::AGI_TO_SPEED_RATIO;
@@ -19,9 +20,6 @@ use serde::Serialize;
 use std::collections::HashMap;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
-pub mod abilities;
-mod get_default_target_ids;
-mod last_targets_are_still_valid;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub enum CombatantClass {

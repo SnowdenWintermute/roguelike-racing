@@ -1,5 +1,5 @@
-use crate::combatants::abilities::TargetingScheme;
-use crate::combatants::abilities::ValidTargets;
+use crate::combatants::abilities::get_combatant_ability_attributes::TargetCategories;
+use crate::combatants::abilities::get_combatant_ability_attributes::TargetingScheme;
 use serde::Deserialize;
 use serde::Serialize;
 use strum_macros::EnumIter;
@@ -24,5 +24,5 @@ pub struct ConsumableProperties {
     pub combat_use_only: bool,
     pub requires_combat_turn: bool,
     pub targeting_schemes: Vec<TargetingScheme>,
-    pub valid_targets: ValidTargets,
+    pub valid_targets: TargetCategories,
 }

@@ -24,23 +24,8 @@ impl GameServer {
             ..
         } = get_mut_party_game_name_and_character_ids_from_actor_id(self, actor_id)?;
 
-        let player_character_ids = player_character_ids_option.ok_or_else(|| AppError {
-            error_type: common::errors::AppErrorTypes::ServerError,
-            message: error_messages::PLAYER_HAS_NO_CHARACTERS.to_string(),
-        })?;
-        let character = match player_character_ids.contains(&packet.character_id) {
-            true => party
-                .characters
-                .get(&packet.character_id)
-                .ok_or_else(|| AppError {
-                    error_type: common::errors::AppErrorTypes::ServerError,
-                    message: error_messages::CHARACTER_NOT_FOUND.to_string(),
-                }),
-            false => Err(AppError {
-                error_type: common::errors::AppErrorTypes::ServerError,
-                message: error_messages::CHARACTER_NOT_OWNED.to_string(),
-            }),
-        }?;
+        let character = party
+            .get_character_if_owned(player_character_ids_option.clone(), packet.character_id)?;
 
         let new_target_ids = match &packet.ability_name_option {
             Some(ability_name) => {
@@ -53,12 +38,14 @@ impl GameServer {
                         error_type: common::errors::AppErrorTypes::InvalidInput,
                         message: error_messages::ABILITY_NOT_OWNED.to_string(),
                     })?;
-                let previous_targets_are_still_valid = ability.last_targets_are_still_valid(&party);
+                let cloned_ability = ability.clone();
+                let previous_targets_are_still_valid = cloned_ability
+                    .targets_are_valid(&cloned_ability.most_recently_targeted, &party);
 
                 let new_target_ids = if previous_targets_are_still_valid {
-                    ability.most_recently_targeted.clone()
+                    cloned_ability.most_recently_targeted.clone()
                 } else {
-                    ability
+                    cloned_ability
                         .get_default_target_ids(&party, packet.character_id)
                         .clone()
                 };
@@ -67,19 +54,8 @@ impl GameServer {
             None => None,
         };
 
-        let character = match player_character_ids.contains(&packet.character_id) {
-            true => party
-                .characters
-                .get_mut(&packet.character_id)
-                .ok_or_else(|| AppError {
-                    error_type: common::errors::AppErrorTypes::ServerError,
-                    message: error_messages::CHARACTER_NOT_FOUND.to_string(),
-                }),
-            false => Err(AppError {
-                error_type: common::errors::AppErrorTypes::ServerError,
-                message: error_messages::CHARACTER_NOT_OWNED.to_string(),
-            }),
-        }?;
+        let character =
+            party.get_mut_character_if_owned(player_character_ids_option, packet.character_id)?;
 
         let character_id = character.entity_properties.id;
 

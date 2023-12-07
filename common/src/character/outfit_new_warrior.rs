@@ -25,11 +25,11 @@ pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Charact
     // ABILITIES
     combatant_properties.abilities.insert(
         CombatantAbilityNames::Fire,
-        CombatantAbility::new(&CombatantAbilityNames::Fire),
+        CombatantAbility::new(CombatantAbilityNames::Fire),
     );
     combatant_properties.abilities.insert(
         CombatantAbilityNames::Heal,
-        CombatantAbility::new(&CombatantAbilityNames::Heal),
+        CombatantAbility::new(CombatantAbilityNames::Heal),
     );
 
     // TEST INVENTORY ITEMS

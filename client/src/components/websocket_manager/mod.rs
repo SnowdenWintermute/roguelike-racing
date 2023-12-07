@@ -5,22 +5,10 @@ mod lobby_update_handlers;
 pub mod send_client_input;
 use self::lobby_update_handlers::handle_user_left_game;
 use crate::components::alerts::set_alert;
-use crate::components::websocket_manager::in_game_party_update_handlers::{
-    handle_character_ability_selection, handle_new_dungeon_room,
-    handle_player_toggled_ready_to_explore,
-};
-use crate::components::websocket_manager::inventory_management_update_handlers::{
-    handle_character_equipped_item, handle_character_unequipped_slot,
-};
+use crate::components::websocket_manager::in_game_party_update_handlers::*;
+use crate::components::websocket_manager::inventory_management_update_handlers::*;
 use crate::components::websocket_manager::{
-    adventuring_party_update_handlers::{
-        handle_adventuring_party_created, handle_character_creation, handle_character_deletion,
-        handle_player_changed_adventuring_party,
-    },
-    lobby_update_handlers::{
-        handle_game_started, handle_player_toggled_ready, handle_user_joined_game,
-        handle_user_left_room,
-    },
+    adventuring_party_update_handlers::*, lobby_update_handlers::*,
 };
 use crate::store::websocket_store::WebsocketStore;
 use crate::store::{alert_store::AlertStore, game_store::GameStore, lobby_store::LobbyStore};
@@ -176,6 +164,11 @@ pub fn websocket_manager(props: &Props) -> Html {
                                         game_dispatch.clone().reduce_mut(|store| {
                                             let _ =
                                                 handle_character_ability_selection(store, packet);
+                                        })
+                                    }
+                                    GameServerUpdatePackets::CharacterChangedTargets(packet) => {
+                                        game_dispatch.clone().reduce_mut(|store| {
+                                            let _ = handle_character_changed_targets(store, packet);
                                         })
                                     }
                                     _ => {

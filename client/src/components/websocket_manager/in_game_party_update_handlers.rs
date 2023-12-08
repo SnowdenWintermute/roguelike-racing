@@ -1,5 +1,6 @@
 use crate::store::game_store::GameStore;
 use common::{
+    combatants::abilities::get_combatant_ability_attributes::TargetingScheme,
     dungeon_rooms::DungeonRoom,
     errors::AppError,
     packets::{
@@ -76,7 +77,10 @@ pub fn handle_character_changed_targets(
             .abilities
             .get_mut(&ability_name);
         if let Some(ability) = ability_option {
-            ability.most_recently_targeted = Some(target_ids)
+            match ability.selected_targeting_scheme {
+                TargetingScheme::Single => ability.most_recently_targeted_single = Some(target_ids),
+                TargetingScheme::Area => ability.most_recently_targeted_area = Some(target_ids),
+            }
         }
     }
     Ok(())

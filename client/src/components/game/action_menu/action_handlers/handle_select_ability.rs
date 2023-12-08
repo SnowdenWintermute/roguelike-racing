@@ -3,7 +3,9 @@ use crate::{
     store::game_store::GameStore,
 };
 use common::{
-    combatants::abilities::CombatantAbilityNames,
+    combatants::abilities::{
+        get_combatant_ability_attributes::TargetingScheme, CombatantAbilityNames,
+    },
     game::getters::get_mut_party,
     packets::client_to_server::{ClientSelectAbilityPacket, PlayerInputs},
 };
@@ -33,11 +35,13 @@ pub fn handle_select_ability(
             .abilities
             .get(&ability_name)
             .expect("the character to have selected an ability they own");
-        let previous_targets_are_still_valid =
-            ability.targets_are_valid(&ability.most_recently_targeted, &party);
-
+        let previous_targets = match ability.selected_targeting_scheme {
+            TargetingScheme::Single => ability.most_recently_targeted_single,
+            TargetingScheme::Area => ability.most_recently_targeted_area,
+        };
+        let previous_targets_are_still_valid = ability.targets_are_valid(&previous_targets, &party);
         let new_target_ids = if previous_targets_are_still_valid {
-            ability.most_recently_targeted.clone()
+            previous_targets.clone()
         } else {
             ability
                 .get_default_target_ids(&party, game_store.focused_character_id)
@@ -55,7 +59,12 @@ pub fn handle_select_ability(
             .abilities
             .get_mut(&ability_name)
             .expect("the character to have selected an ability they own");
-        ability.most_recently_targeted = new_target_ids.clone();
+        match ability.selected_targeting_scheme {
+            TargetingScheme::Single => {
+                ability.most_recently_targeted_single = new_target_ids.clone()
+            }
+            TargetingScheme::Area => ability.most_recently_targeted_area = new_target_ids.clone(),
+        }
 
         send_client_input(
             websocket_option,

@@ -4,6 +4,7 @@ use crate::websocket_server::game_server::{
 };
 use common::{
     app_consts::error_messages,
+    combatants::abilities::get_combatant_ability_attributes::TargetingScheme,
     errors::AppError,
     packets::{
         client_to_server::ClientSelectAbilityPacket,
@@ -39,11 +40,16 @@ impl GameServer {
                         message: error_messages::ABILITY_NOT_OWNED.to_string(),
                     })?;
                 let cloned_ability = ability.clone();
-                let previous_targets_are_still_valid = cloned_ability
-                    .targets_are_valid(&cloned_ability.most_recently_targeted, &party);
+                let targeting_scheme = &ability.selected_targeting_scheme;
+                let most_recently_targeted = match targeting_scheme {
+                    TargetingScheme::Single => &ability.most_recently_targeted_single,
+                    TargetingScheme::Area => &ability.most_recently_targeted_area,
+                };
+                let previous_targets_are_still_valid =
+                    cloned_ability.targets_are_valid(&most_recently_targeted, &party);
 
                 let new_target_ids = if previous_targets_are_still_valid {
-                    cloned_ability.most_recently_targeted.clone()
+                    most_recently_targeted.clone()
                 } else {
                     cloned_ability
                         .get_default_target_ids(&party, packet.character_id)
@@ -74,7 +80,14 @@ impl GameServer {
                     message: error_messages::ABILITY_NOT_OWNED.to_string(),
                 })?;
 
-            ability.most_recently_targeted = new_target_ids.clone();
+            match ability.selected_targeting_scheme {
+                TargetingScheme::Single => {
+                    ability.most_recently_targeted_single = new_target_ids.clone()
+                }
+                TargetingScheme::Area => {
+                    ability.most_recently_targeted_area = new_target_ids.clone()
+                }
+            };
         }
 
         self.emit_packet(

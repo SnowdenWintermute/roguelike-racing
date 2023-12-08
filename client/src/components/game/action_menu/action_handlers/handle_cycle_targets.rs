@@ -44,18 +44,18 @@ pub fn handle_cycle_targets(
             .expect("the character to have selected an ability they own");
 
         let ability_attributes = ability.ability_name.get_attributes();
-        let current_target_is_valid =
-            ability.targets_are_valid(&ability.most_recently_targeted, &party);
+        let most_recently_targeted = match ability.selected_targeting_scheme {
+            TargetingScheme::Single => ability.most_recently_targeted_single,
+            TargetingScheme::Area => ability.most_recently_targeted_area,
+        };
+        let current_target_is_valid = ability.targets_are_valid(&most_recently_targeted, &party);
 
         let current_target_ids = if !current_target_is_valid {
             ability
                 .get_default_target_ids(&party, focused_character.entity_properties.id)
                 .expect("to get valid default target ids")
         } else {
-            ability
-                .most_recently_targeted
-                .clone()
-                .expect("to have valid ids")
+            most_recently_targeted.clone().expect("to have valid ids")
         };
 
         let new_target_ids = match ability.selected_targeting_scheme {

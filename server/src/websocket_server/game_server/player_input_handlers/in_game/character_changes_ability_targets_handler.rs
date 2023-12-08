@@ -3,6 +3,7 @@ use crate::websocket_server::game_server::{
     GameServer,
 };
 use common::{
+    combatants::abilities::get_combatant_ability_attributes::TargetingScheme,
     errors::AppError,
     packets::{
         client_to_server::ClientChangeTargetsPacket, server_to_client::GameServerUpdatePackets,
@@ -44,7 +45,13 @@ impl GameServer {
             player_character_ids_option.clone(),
             character_id,
         )?;
-        ability.most_recently_targeted = new_target_ids.clone();
+
+        match ability.selected_targeting_scheme {
+            TargetingScheme::Single => {
+                ability.most_recently_targeted_single = new_target_ids.clone()
+            }
+            TargetingScheme::Area => ability.most_recently_targeted_area = new_target_ids.clone(),
+        };
         let character =
             party.get_mut_character_if_owned(player_character_ids_option, character_id)?;
         character.combatant_properties.ability_target_ids = new_target_ids.clone();

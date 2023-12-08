@@ -3,9 +3,11 @@ use crate::{
     store::game_store::GameStore,
 };
 use common::{
+    app_consts::error_messages,
     combatants::abilities::{
         get_combatant_ability_attributes::TargetingScheme, CombatantAbilityNames,
     },
+    errors::AppError,
     game::getters::get_mut_party,
     packets::client_to_server::{ClientSelectAbilityPacket, PlayerInputs},
 };
@@ -18,60 +20,68 @@ pub fn handle_select_ability(
     ability_name: CombatantAbilityNames,
 ) {
     game_dispatch.reduce_mut(|game_store| {
-        let game = game_store
-            .game
-            .as_mut()
-            .expect("only use abilities in game");
-        let party_id = game_store
-            .current_party_id
-            .expect("only use abilities in party");
-        let party = get_mut_party(game, party_id).expect("only use in party");
-        let focused_character = party
-            .characters
-            .get(&game_store.focused_character_id)
-            .expect("to have a character");
-        let ability = focused_character
-            .combatant_properties
-            .abilities
-            .get(&ability_name)
-            .expect("the character to have selected an ability they own");
-        let previous_targets = match ability.selected_targeting_scheme {
-            TargetingScheme::Single => ability.most_recently_targeted_single,
-            TargetingScheme::Area => ability.most_recently_targeted_area,
-        };
-        let previous_targets_are_still_valid = ability.targets_are_valid(&previous_targets, &party);
-        let new_target_ids = if previous_targets_are_still_valid {
-            previous_targets.clone()
-        } else {
-            ability
-                .get_default_target_ids(&party, game_store.focused_character_id)
-                .clone()
-        };
+        let result = move || -> Result<(), AppError> {
+            let game = game_store.game.as_mut().ok_or_else(|| AppError {
+                error_type: common::errors::AppErrorTypes::ClientError,
+                message: error_messages::MISSING_GAME_REFERENCE.to_string(),
+            })?;
+            let party_id = game_store.current_party_id.ok_or_else(|| AppError {
+                error_type: common::errors::AppErrorTypes::ClientError,
+                message: error_messages::MISSING_PARTY_REFERENCE.to_string(),
+            })?;
+            let party = get_mut_party(game, party_id)?;
+            let focused_character = party
+                .characters
+                .get(&game_store.focused_character_id)
+                .ok_or_else(|| AppError {
+                    error_type: common::errors::AppErrorTypes::ClientError,
+                    message: error_messages::CHARACTER_NOT_FOUND.to_string(),
+                })?;
+            let ability = focused_character
+                .combatant_properties
+                .abilities
+                .get(&ability_name)
+                .ok_or_else(|| AppError {
+                    error_type: common::errors::AppErrorTypes::ClientError,
+                    message: error_messages::ABILITY_NOT_OWNED.to_string(),
+                })?;
 
-        let focused_character = party
-            .characters
-            .get_mut(&game_store.focused_character_id)
-            .expect("to have a character");
-        focused_character.combatant_properties.selected_ability_name = Some(ability_name.clone());
-        focused_character.combatant_properties.ability_target_ids = new_target_ids.clone();
-        let ability = focused_character
-            .combatant_properties
-            .abilities
-            .get_mut(&ability_name)
-            .expect("the character to have selected an ability they own");
-        match ability.selected_targeting_scheme {
-            TargetingScheme::Single => {
-                ability.most_recently_targeted_single = new_target_ids.clone()
-            }
-            TargetingScheme::Area => ability.most_recently_targeted_area = new_target_ids.clone(),
-        }
+            let target_preferences = &focused_character
+                .combatant_properties
+                .ability_target_preferences;
 
-        send_client_input(
-            websocket_option,
-            PlayerInputs::SelectAbility(ClientSelectAbilityPacket {
-                character_id: focused_character.entity_properties.id,
-                ability_name_option: Some(ability_name),
-            }),
-        );
-    })
+            let targets = ability_name.targets_by_saved_preference_or_default(
+                focused_character.entity_properties.id,
+                &target_preferences,
+                party,
+            )?;
+
+            let new_target_preferences =
+                target_preferences.get_updated_preferences(&ability_name, &targets, party);
+
+            let focused_character = party
+                .characters
+                .get_mut(&game_store.focused_character_id)
+                .ok_or_else(|| AppError {
+                    error_type: common::errors::AppErrorTypes::ClientError,
+                    message: error_messages::CHARACTER_NOT_FOUND.to_string(),
+                })?;
+            focused_character.combatant_properties.selected_ability_name =
+                Some(ability_name.clone());
+            focused_character.combatant_properties.ability_target_ids = new_target_ids.clone();
+            focused_character
+                .combatant_properties
+                .ability_target_preferences = new_target_preferences;
+
+            send_client_input(
+                websocket_option,
+                PlayerInputs::SelectAbility(ClientSelectAbilityPacket {
+                    character_id: focused_character.entity_properties.id,
+                    ability_name_option: Some(ability_name),
+                }),
+            );
+
+            Ok(())
+        };
+    });
 }

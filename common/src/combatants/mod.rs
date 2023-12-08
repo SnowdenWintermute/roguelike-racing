@@ -1,6 +1,10 @@
 pub mod abilities;
+mod set_new_ability_target_preferences;
+use self::abilities::AbilityTarget;
 use self::abilities::CombatantAbility;
 use self::abilities::CombatantAbilityNames;
+use self::abilities::FriendOrFoe;
+use self::abilities::get_combatant_ability_attributes::TargetingScheme;
 use crate::app_consts::AGI_TO_SPEED_RATIO;
 use crate::app_consts::DEX_TO_ACCURACY_RATIO;
 use crate::app_consts::OFF_HAND_ACCURACY_MODIFIER;
@@ -95,6 +99,27 @@ impl fmt::Display for CombatAttributes {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct AbilityTargetPreferences {
+    friendly_single: Option<u32>,
+    hostile_single: Option<u32>,
+    category_of_last_single: Option<FriendOrFoe>,
+    category_of_last_area: Option<FriendOrFoe>,
+    targeting_scheme_preference: TargetingScheme,
+}
+
+impl Default for AbilityTargetPreferences {
+    fn default() -> Self {
+        AbilityTargetPreferences {
+            friendly_single: None,
+            hostile_single: None,
+            category_of_last_single: None,
+            category_of_last_area: None,
+            targeting_scheme_preference: TargetingScheme::Single,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct CombatantProperties {
     pub combatant_class: CombatantClass,
     pub inherent_attributes: HashMap<CombatAttributes, u16>,
@@ -106,7 +131,8 @@ pub struct CombatantProperties {
     // pub traits: HashSet<CombatantTraits>
     pub selected_item_slot: Option<u8>,
     pub selected_ability_name: Option<CombatantAbilityNames>,
-    pub ability_target_ids: Option<Vec<u32>>,
+    pub ability_targets: Option<AbilityTarget>,
+    pub ability_target_preferences: AbilityTargetPreferences,
 }
 
 impl CombatantProperties {
@@ -124,7 +150,8 @@ impl CombatantProperties {
             abilities,
             selected_item_slot: None,
             selected_ability_name: None,
-            ability_target_ids: None,
+            ability_targets: None,
+            ability_target_preferences: AbilityTargetPreferences::default(),
         }
     }
 

@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 pub enum TargetingScheme {
     Single,
     Area,
+    All,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]

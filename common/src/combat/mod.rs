@@ -8,12 +8,6 @@ use crate::status_effects::StatusEffects;
 use std::vec;
 
 #[derive(Debug)]
-pub enum CombatAction<'a> {
-    UseCombatantAbility(&'a CombatantAbility),
-    UseItem(&'a Item),
-}
-
-#[derive(Debug)]
 pub enum CombatActionTypes {
     AbilityUsed(CombatantAbilityNames),
     ItemUsed(ConsumableTypes),

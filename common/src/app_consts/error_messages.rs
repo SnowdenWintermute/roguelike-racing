@@ -25,3 +25,6 @@ pub const CANT_EXPLORE_WHEN_MONSTERS_ARE_PRESENT: &str =
     "Defeat the monsters before exploring the next room";
 pub const ABILITY_NOT_OWNED: &str = "That character doesn't have that ability";
 pub const MISSING_ABILITY_REFERENCE: &str = "The character has no ability selected";
+pub const ENEMY_COMBATANTS_NOT_FOUND: &str = "No enemy combatants found";
+pub const NO_CHARACTERS_IN_PARTY: &str = "There are no characters in the party";
+pub const ABILITY_HAS_NO_TARGETING_SCHEME: &str = "The selected ability has no targeting scheme";

@@ -1,24 +1,31 @@
 pub mod get_combatant_ability_attributes;
-mod get_default_target_ids;
-pub mod targets_are_valid;
-use self::get_combatant_ability_attributes::TargetingScheme;
+pub mod targets_by_saved_preference_or_default;
 use serde::Deserialize;
 use serde::Serialize;
 use std::fmt::Display;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum FriendOrFoe {
+    Friendly,
+    Hostile,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum AbilityTarget {
+    Single(u32),
+    Group(FriendOrFoe),
+    All,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct CombatantAbility {
     pub ability_name: CombatantAbilityNames,
     pub level: u8,
-    pub selected_targeting_scheme: TargetingScheme,
-    pub most_recently_targeted_single: Option<Vec<u32>>,
-    pub most_recently_targeted_area: Option<Vec<u32>>,
 }
 
 impl CombatantAbility {
     pub fn new(ability_name: CombatantAbilityNames) -> Self {
         CombatantAbility {
-            selected_targeting_scheme: ability_name.get_attributes().targeting_schemes[0].clone(),
             ability_name,
             ..Default::default()
         }
@@ -30,9 +37,6 @@ impl Default for CombatantAbility {
         CombatantAbility {
             ability_name: CombatantAbilityNames::Attack,
             level: 0,
-            selected_targeting_scheme: TargetingScheme::Single,
-            most_recently_targeted_single: None,
-            most_recently_targeted_area: None,
         }
     }
 }

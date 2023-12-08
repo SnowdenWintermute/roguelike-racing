@@ -127,6 +127,17 @@ impl AdventuringParty {
         }
     }
 
+    pub fn get_monster_ids(&self) -> Result<Vec<u32>, AppError> {
+        let monsters = self.current_room.monsters.ok_or_else(|| AppError {
+            error_type: crate::errors::AppErrorTypes::ClientError,
+            message: error_messages::ENEMY_COMBATANTS_NOT_FOUND.to_string(),
+        })?;
+        Ok(monsters
+            .iter()
+            .map(|monster| monster.entity_properties.id)
+            .collect::<Vec<u32>>())
+    }
+
     // @TODO - optimize a second function to only get target ids for active combatant
     pub fn get_all_targeted_ids_by_combatant_id(&self) -> Option<HashMap<u32, Vec<u32>>> {
         let mut ability_targets_by_combatant_id = HashMap::new();

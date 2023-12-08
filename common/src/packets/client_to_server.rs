@@ -1,3 +1,4 @@
+use crate::combatants::abilities::AbilityTarget;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::CombatantClass;
 use crate::items::equipment::EquipmentSlots;
@@ -88,7 +89,7 @@ pub struct ClientSelectAbilityPacket {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct ClientChangeTargetsPacket {
+pub struct ChangeTargetsPacket {
     pub character_id: u32,
-    pub target_ids: Vec<u32>,
+    pub new_targets: AbilityTarget,
 }

@@ -28,74 +28,47 @@ impl GameServer {
         let character = party
             .get_character_if_owned(player_character_ids_option.clone(), packet.character_id)?;
 
-        let new_target_ids = match &packet.ability_name_option {
-            Some(ability_name) => {
-                // check if ability is valid
-                let ability = character
-                    .combatant_properties
-                    .abilities
-                    .get(&ability_name)
-                    .ok_or_else(|| AppError {
-                        error_type: common::errors::AppErrorTypes::InvalidInput,
-                        message: error_messages::ABILITY_NOT_OWNED.to_string(),
-                    })?;
-                let cloned_ability = ability.clone();
-                let targeting_scheme = &ability.selected_targeting_scheme;
-                let most_recently_targeted = match targeting_scheme {
-                    TargetingScheme::Single => &ability.most_recently_targeted_single,
-                    TargetingScheme::Area => &ability.most_recently_targeted_area,
-                };
-                let previous_targets_are_still_valid =
-                    cloned_ability.targets_are_valid(&most_recently_targeted, &party);
+        let new_targets_and_preferences_option = {
+            if let Some(ability_name) = packet.ability_name_option {
+                let target_preferences = &character.combatant_properties.ability_target_preferences;
 
-                let new_target_ids = if previous_targets_are_still_valid {
-                    most_recently_targeted.clone()
-                } else {
-                    cloned_ability
-                        .get_default_target_ids(&party, packet.character_id)
-                        .clone()
-                };
-                new_target_ids
+                let new_targets = ability_name.targets_by_saved_preference_or_default(
+                    character.entity_properties.id,
+                    &target_preferences,
+                    party,
+                )?;
+
+                let new_target_preferences =
+                    target_preferences.get_updated_preferences(&ability_name, &targets, party);
+                Some((new_targets, new_target_preferences))
+            } else {
+                None
             }
-            None => None,
         };
 
         let character =
             party.get_mut_character_if_owned(player_character_ids_option, packet.character_id)?;
-
-        let character_id = character.entity_properties.id;
-
-        // set the new targets
-        character.combatant_properties.ability_target_ids = new_target_ids.clone();
-        // set the new ability selected
         character.combatant_properties.selected_ability_name = packet.ability_name_option.clone();
-        // save prev targets
-        if let Some(ability_name) = &packet.ability_name_option {
-            let ability = character
-                .combatant_properties
-                .abilities
-                .get_mut(&ability_name)
-                .ok_or_else(|| AppError {
-                    error_type: common::errors::AppErrorTypes::InvalidInput,
-                    message: error_messages::ABILITY_NOT_OWNED.to_string(),
-                })?;
 
-            match ability.selected_targeting_scheme {
-                TargetingScheme::Single => {
-                    ability.most_recently_targeted_single = new_target_ids.clone()
-                }
-                TargetingScheme::Area => {
-                    ability.most_recently_targeted_area = new_target_ids.clone()
-                }
-            };
+        if let Some((new_targets, new_target_preferences)) = new_targets_and_preferences_option {
+            character.combatant_properties.ability_targets = Some(new_targets);
+            character.combatant_properties.ability_target_preferences =
+                Some(new_target_preferences);
+        } else {
+            character.combatant_properties.ability_targets = None
         }
+
+        let targets_option = match new_targets_and_preferences_option {
+            Some((new_targets, new_target_preferences)) => Some(new_targets),
+            None => None,
+        };
 
         self.emit_packet(
             &current_game_name,
             &GameServerUpdatePackets::CharacterSelectedAbility(CharacterSelectedAbilityPacket {
-                character_id,
+                character_id: packet.character_id,
                 ability_name_option: packet.ability_name_option,
-                target_ids_option: new_target_ids,
+                targets_option,
             }),
             Some(actor_id),
         )

@@ -3,18 +3,15 @@ use crate::websocket_server::game_server::{
     GameServer,
 };
 use common::{
-    combatants::abilities::get_combatant_ability_attributes::TargetingScheme,
-    errors::AppError,
-    packets::{
-        client_to_server::ClientChangeTargetsPacket, server_to_client::GameServerUpdatePackets,
-    },
+    combatants::abilities::get_combatant_ability_attributes::TargetingScheme, errors::AppError,
+    packets::server_to_client::GameServerUpdatePackets,
 };
 
 impl GameServer {
     pub fn character_changes_ability_targets_handler(
         &mut self,
         actor_id: u32,
-        packet: ClientChangeTargetsPacket,
+        packet: ChangeTargetsPacket,
     ) -> Result<(), AppError> {
         let ActorIdAssociatedGameData {
             party,
@@ -22,7 +19,7 @@ impl GameServer {
             current_game_name,
             ..
         } = get_mut_party_game_name_and_character_ids_from_actor_id(self, actor_id)?;
-        let ClientChangeTargetsPacket {
+        let ChangeTargetsPacket {
             character_id,
             target_ids,
         } = packet;

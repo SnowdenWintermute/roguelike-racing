@@ -7,6 +7,7 @@ pub enum AppErrorTypes {
     InsufficientResources,
     ServerError,
     ClientError,
+    Generic,
     IO,
 }
 
@@ -16,6 +17,7 @@ impl fmt::Display for AppErrorTypes {
             AppErrorTypes::InvalidInput => "Invalid Input",
             AppErrorTypes::ServerError => "Server Error",
             AppErrorTypes::ClientError => "Client Error",
+            AppErrorTypes::Generic => "Generic Error",
             AppErrorTypes::InsufficientResources => "InsufficientResources",
             AppErrorTypes::IO => "IO",
         };
@@ -39,6 +41,7 @@ impl fmt::Display for AppError {
                 "Insufficient resources to perform the requested action"
             }
             AppErrorTypes::ClientError => "Client error",
+            AppErrorTypes::Generic => "Something went wrong",
             AppErrorTypes::ServerError => GENERIC_SERVER_ERROR_MESSAGE,
             AppErrorTypes::IO => GENERIC_SERVER_ERROR_MESSAGE,
         };

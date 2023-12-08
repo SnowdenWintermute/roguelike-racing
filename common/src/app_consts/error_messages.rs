@@ -28,3 +28,5 @@ pub const MISSING_ABILITY_REFERENCE: &str = "The character has no ability select
 pub const ENEMY_COMBATANTS_NOT_FOUND: &str = "No enemy combatants found";
 pub const NO_CHARACTERS_IN_PARTY: &str = "There are no characters in the party";
 pub const ABILITY_HAS_NO_TARGETING_SCHEME: &str = "The selected ability has no targeting scheme";
+pub const NO_POSSIBLE_TARGETS_PROVIDED: &str =
+    "No possible targets were found for the selected ability";

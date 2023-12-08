@@ -1,6 +1,7 @@
 use super::client_to_server::ClientChangeTargetsPacket;
 use super::client_to_server::UnequipSlotRequest;
 use crate::character::Character;
+use crate::combatants::abilities::AbilityTarget;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::CombatantClass;
 use crate::dungeon_rooms::DungeonRoom;
@@ -144,5 +145,5 @@ pub struct CharacterEquippedItemPacket {
 pub struct CharacterSelectedAbilityPacket {
     pub character_id: u32,
     pub ability_name_option: Option<CombatantAbilityNames>,
-    pub target_ids_option: Option<Vec<u32>>,
+    pub targets_option: Option<AbilityTarget>,
 }

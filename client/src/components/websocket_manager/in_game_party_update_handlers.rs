@@ -1,11 +1,9 @@
 use crate::store::game_store::GameStore;
 use common::{
-    combatants::abilities::get_combatant_ability_attributes::TargetingScheme,
     dungeon_rooms::DungeonRoom,
     errors::AppError,
     packets::{
-        client_to_server::ClientChangeTargetsPacket,
-        server_to_client::CharacterSelectedAbilityPacket,
+        client_to_server::ChangeTargetsPacket, server_to_client::CharacterSelectedAbilityPacket,
     },
 };
 use gloo::console::log;
@@ -51,37 +49,25 @@ pub fn handle_character_ability_selection(
     let CharacterSelectedAbilityPacket {
         character_id,
         ability_name_option,
-        target_ids_option,
+        targets_option,
     } = packet;
 
     let character = game_store.get_mut_character(character_id)?;
     character.combatant_properties.selected_ability_name = ability_name_option;
-    character.combatant_properties.ability_target_ids = target_ids_option;
+    character.combatant_properties.ability_targets = targets_option;
     Ok(())
 }
 
 pub fn handle_character_changed_targets(
     game_store: &mut GameStore,
-    packet: ClientChangeTargetsPacket,
+    packet: ChangeTargetsPacket,
 ) -> Result<(), AppError> {
-    let ClientChangeTargetsPacket {
+    let ChangeTargetsPacket {
         character_id,
-        target_ids,
+        new_targets,
     } = packet;
     let character = game_store.get_mut_character(character_id)?;
-    character.combatant_properties.ability_target_ids = Some(target_ids.clone());
-    let selected_ability_name_option = character.combatant_properties.selected_ability_name.clone();
-    if let Some(ability_name) = selected_ability_name_option {
-        let ability_option = character
-            .combatant_properties
-            .abilities
-            .get_mut(&ability_name);
-        if let Some(ability) = ability_option {
-            match ability.selected_targeting_scheme {
-                TargetingScheme::Single => ability.most_recently_targeted_single = Some(target_ids),
-                TargetingScheme::Area => ability.most_recently_targeted_area = Some(target_ids),
-            }
-        }
-    }
+    character.combatant_properties.ability_targets = Some(new_targets.clone());
+
     Ok(())
 }

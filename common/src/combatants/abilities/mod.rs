@@ -1,5 +1,7 @@
 pub mod get_combatant_ability_attributes;
+mod get_default_targets;
 mod get_next_or_previous_targets;
+mod targets_are_valid;
 pub mod targets_by_saved_preference_or_default;
 use serde::Deserialize;
 use serde::Serialize;

@@ -3,10 +3,17 @@ use crate::{
         common_components::atoms::targeting_indicator::TargetingIndicator,
         game::dungeon_room::focus_character_button::FocusCharacterButton,
     },
-    store::game_store::{self, get_current_party_option, DetailableEntities, GameStore},
+    store::game_store::{
+        self, get_current_party_option, get_focused_character, DetailableEntities, GameStore,
+    },
 };
-use common::{combatants::CombatantProperties, primatives::EntityProperties};
-use std::collections::HashMap;
+use common::{
+    combatants::{
+        abilities::{AbilityTarget, FriendOrFoe},
+        CombatantProperties,
+    },
+    primatives::EntityProperties,
+};
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
@@ -14,12 +21,24 @@ use yewdux::prelude::use_store;
 pub struct Props {
     pub entity_properties: EntityProperties,
     pub combatant_properties: CombatantProperties,
-    pub all_targets_option: Option<HashMap<u32, Vec<u32>>>,
 }
 
 #[function_component(Combatant)]
 pub fn combatant(props: &Props) -> Html {
     let (game_state, game_dispatch) = use_store::<GameStore>();
+    let game_option = &game_state.game;
+    let party_id_option = game_state.current_party_id;
+    if game_option.is_none() | party_id_option.is_none() {
+        return html!({ "no game found" });
+    }
+    let game = game_option.as_ref().expect("is_none checked");
+    let party_id = party_id_option.expect("is_none checked");
+    let party_option = game.adventuring_parties.get(&party_id);
+    if party_option.is_none() {
+        return html!("no party found");
+    }
+    let party = party_option.expect("is_none checked");
+
     let id = props.entity_properties.id;
     let name = props.entity_properties.name.clone();
     let combatant_properties = props.combatant_properties.clone();
@@ -66,19 +85,31 @@ pub fn combatant(props: &Props) -> Html {
         None => false,
     };
 
-    // @TODO: change to multi targeting system after combat
-    let is_targeted = match &props.all_targets_option {
-        Some(targets_by_entity) => {
-            let mut to_return = false;
-            for (_, target_ids) in targets_by_entity {
-                if target_ids.contains(&id) {
-                    to_return = true;
-                    break;
+    let is_targeted = {
+        let focused_character_result = get_focused_character(&game_state);
+        if let Ok(focused_character) = focused_character_result {
+            let targets_option = &focused_character.combatant_properties.ability_targets;
+            if let Some(targets) = targets_option {
+                match targets {
+                    AbilityTarget::Single(targeted_id) => &id == targeted_id,
+                    AbilityTarget::Group(category) => match category {
+                        FriendOrFoe::Friendly => party.character_positions.contains(&id),
+                        FriendOrFoe::Hostile => {
+                            if let Ok(monster_ids) = party.get_monster_ids() {
+                                monster_ids.contains(&id)
+                            } else {
+                                false
+                            }
+                        }
+                    },
+                    AbilityTarget::All => true,
                 }
+            } else {
+                false
             }
-            to_return
+        } else {
+            false
         }
-        None => false,
     };
 
     let party_option = get_current_party_option(&game_state);

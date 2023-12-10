@@ -21,15 +21,15 @@ impl AbilityTargetPreferences {
             AbilityTarget::Single(id) => {
                 if is_id_of_existing_opponent(party, &id) {
                     new_preferences.hostile_single = Some(*id);
-                    new_preferences.category_of_last_single = Some(FriendOrFoe::Hostile);
+                    new_preferences.category_of_last_target = Some(FriendOrFoe::Hostile);
                 } else if party.character_positions.contains(&id) {
                     new_preferences.friendly_single = Some(*id);
-                    new_preferences.category_of_last_single = Some(FriendOrFoe::Friendly);
+                    new_preferences.category_of_last_target = Some(FriendOrFoe::Friendly);
                 }
             }
             AbilityTarget::Group(category) => {
                 if ability_attributes.targeting_schemes.len() > 1 {
-                    new_preferences.category_of_last_area = Some(category.clone());
+                    new_preferences.category_of_last_target = Some(category.clone());
                     new_preferences.targeting_scheme_preference = TargetingScheme::Area;
                 } else {
                     // they had no choice, don't update prefs

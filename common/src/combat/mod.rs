@@ -1,11 +1,8 @@
-use crate::combatants::abilities::CombatantAbility;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::CombatantProperties;
 use crate::errors::AppError;
 use crate::items::consumables::ConsumableTypes;
-use crate::items::Item;
 use crate::status_effects::StatusEffects;
-use std::vec;
 
 #[derive(Debug)]
 pub enum CombatActionTypes {

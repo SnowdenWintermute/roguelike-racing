@@ -30,3 +30,6 @@ pub const NO_CHARACTERS_IN_PARTY: &str = "There are no characters in the party";
 pub const ABILITY_HAS_NO_TARGETING_SCHEME: &str = "The selected ability has no targeting scheme";
 pub const NO_POSSIBLE_TARGETS_PROVIDED: &str =
     "No possible targets were found for the selected ability";
+pub const TRIED_TO_CYCLE_TARGETS_WHEN_NO_TARGETS: &str =
+    "Client tried to cycle targets but they weren't targeting anything";
+pub const NO_TARGETING_SCHEMES: &str = "The selected ability has no targeting schemes";

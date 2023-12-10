@@ -24,7 +24,7 @@ pub enum PlayerInputs {
     UseSelectedConsumable,
     SelectAbility(ClientSelectAbilityPacket),
     UseSelectedAbility,
-    ChangeTargetIds(ClientChangeTargetsPacket),
+    ChangeTargets(ChangeTargetsPacket),
     ClearConsumableAndAbilitySelections,
     // manage equipment and items
     UnequipEquipmentSlot(UnequipSlotRequest),

@@ -10,8 +10,8 @@ use crate::{
 impl CombatantAbilityNames {
     pub fn get_next_or_previous_targets(
         &self,
-        current_targets: AbilityTarget,
-        direction: NextOrPrevious,
+        current_targets: &AbilityTarget,
+        direction: &NextOrPrevious,
         character_id: &u32,
         party: &AdventuringParty,
     ) -> Result<AbilityTarget, AppError> {
@@ -22,7 +22,7 @@ impl CombatantAbilityNames {
                     let possible_target_ids = party.get_monster_ids()?;
                     let new_target_id = get_next_or_prev_id_from_ordered_id_list(
                         &possible_target_ids,
-                        id,
+                        *id,
                         &direction,
                     )?;
                     Ok(AbilityTarget::Single(new_target_id))
@@ -31,17 +31,17 @@ impl CombatantAbilityNames {
                 TargetCategories::Friendly => {
                     let new_target_id = get_next_or_prev_id_from_ordered_id_list(
                         &party.character_positions,
-                        id,
+                        *id,
                         &direction,
                     )?;
                     Ok(AbilityTarget::Single(new_target_id))
                 }
                 TargetCategories::Any => {
                     let mut possible_target_ids = party.get_monster_ids()?;
-                    possible_target_ids.extend(party.character_positions);
+                    possible_target_ids.extend(party.character_positions.clone());
                     let new_target_id = get_next_or_prev_id_from_ordered_id_list(
                         &possible_target_ids,
-                        id,
+                        *id,
                         &direction,
                     )?;
                     Ok(AbilityTarget::Single(new_target_id))

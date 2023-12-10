@@ -4,13 +4,12 @@ use crate::{
 };
 use common::{
     app_consts::error_messages,
-    combatants::abilities::{
-        get_combatant_ability_attributes::TargetingScheme, CombatantAbilityNames,
-    },
+    combatants::abilities::CombatantAbilityNames,
     errors::AppError,
     game::getters::get_mut_party,
     packets::client_to_server::{ClientSelectAbilityPacket, PlayerInputs},
 };
+use gloo::console::log;
 use web_sys::WebSocket;
 use yewdux::prelude::Dispatch;
 
@@ -20,7 +19,7 @@ pub fn handle_select_ability(
     ability_name: CombatantAbilityNames,
 ) {
     game_dispatch.reduce_mut(|game_store| {
-        let result = move || -> Result<(), AppError> {
+        let closure = move || -> Result<(), AppError> {
             let game = game_store.game.as_mut().ok_or_else(|| AppError {
                 error_type: common::errors::AppErrorTypes::ClientError,
                 message: error_messages::MISSING_GAME_REFERENCE.to_string(),
@@ -36,14 +35,6 @@ pub fn handle_select_ability(
                 .ok_or_else(|| AppError {
                     error_type: common::errors::AppErrorTypes::ClientError,
                     message: error_messages::CHARACTER_NOT_FOUND.to_string(),
-                })?;
-            let ability = focused_character
-                .combatant_properties
-                .abilities
-                .get(&ability_name)
-                .ok_or_else(|| AppError {
-                    error_type: common::errors::AppErrorTypes::ClientError,
-                    message: error_messages::ABILITY_NOT_OWNED.to_string(),
                 })?;
 
             let target_preferences = &focused_character
@@ -68,7 +59,7 @@ pub fn handle_select_ability(
                 })?;
             focused_character.combatant_properties.selected_ability_name =
                 Some(ability_name.clone());
-            focused_character.combatant_properties.ability_target_ids = new_target_ids.clone();
+            focused_character.combatant_properties.ability_targets = Some(targets.clone());
             focused_character
                 .combatant_properties
                 .ability_target_preferences = new_target_preferences;
@@ -83,5 +74,11 @@ pub fn handle_select_ability(
 
             Ok(())
         };
+        let result = closure();
+        if result.is_ok() {
+            ()
+        } else {
+            log!("an unhandled client error occured");
+        }
     });
 }

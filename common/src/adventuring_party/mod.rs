@@ -128,40 +128,18 @@ impl AdventuringParty {
     }
 
     pub fn get_monster_ids(&self) -> Result<Vec<u32>, AppError> {
-        let monsters = self.current_room.monsters.ok_or_else(|| AppError {
-            error_type: crate::errors::AppErrorTypes::ClientError,
-            message: error_messages::ENEMY_COMBATANTS_NOT_FOUND.to_string(),
-        })?;
+        let monsters = self
+            .current_room
+            .monsters
+            .as_ref()
+            .ok_or_else(|| AppError {
+                error_type: crate::errors::AppErrorTypes::ClientError,
+                message: error_messages::ENEMY_COMBATANTS_NOT_FOUND.to_string(),
+            })?;
         Ok(monsters
             .iter()
             .map(|monster| monster.entity_properties.id)
             .collect::<Vec<u32>>())
-    }
-
-    // @TODO - optimize a second function to only get target ids for active combatant
-    pub fn get_all_targeted_ids_by_combatant_id(&self) -> Option<HashMap<u32, Vec<u32>>> {
-        let mut ability_targets_by_combatant_id = HashMap::new();
-        for (id, character) in &self.characters {
-            let targets_option = &character.combatant_properties.ability_target_ids;
-            if let Some(targets) = targets_option {
-                ability_targets_by_combatant_id.insert(*id, targets.clone());
-            }
-        }
-        if let Some(monsters) = &self.current_room.monsters {
-            for monster in monsters {
-                let targets_option = &monster.combatant_properties.ability_target_ids;
-                if let Some(targets) = targets_option {
-                    ability_targets_by_combatant_id
-                        .insert(monster.entity_properties.id, targets.clone());
-                }
-            }
-        }
-
-        if ability_targets_by_combatant_id.len() > 0 {
-            Some(ability_targets_by_combatant_id)
-        } else {
-            None
-        }
     }
 
     pub fn get_mut_character_if_owned<'a>(

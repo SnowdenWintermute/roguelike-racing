@@ -52,7 +52,6 @@ impl CombatantAbilityNames {
         match self {
             CombatantAbilityNames::Attack => CombatantAbilityAttributes {
                 mana_cost: 0,
-                valid_target_categories: TargetCategories::Any,
                 ..Default::default()
             },
             CombatantAbilityNames::ArmorBreak => CombatantAbilityAttributes {

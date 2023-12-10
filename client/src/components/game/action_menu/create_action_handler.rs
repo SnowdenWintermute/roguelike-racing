@@ -97,7 +97,7 @@ pub fn create_action_handler<'a>(
                         .get_mut_character(game_store.focused_character_id)
                         .expect("to have a valid focused character");
                     focused_character.combatant_properties.selected_ability_name = None;
-                    focused_character.combatant_properties.ability_target_ids = None;
+                    focused_character.combatant_properties.ability_targets = None;
                     send_client_input(&websocket_state.websocket, PlayerInputs::SelectAbility(ClientSelectAbilityPacket{
                         character_id: focused_character.entity_properties.id,
                         ability_name_option: None,

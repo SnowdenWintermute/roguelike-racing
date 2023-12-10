@@ -82,10 +82,10 @@ pub fn action_menu(props: &Props) -> Html {
         None => None,
     };
 
-    let ability_target_ids = match focused_character_option {
+    let ability_targets = match focused_character_option {
         Some(focused_character) => focused_character
             .combatant_properties
-            .ability_target_ids
+            .ability_targets
             .clone(),
 
         None => None,
@@ -97,7 +97,7 @@ pub fn action_menu(props: &Props) -> Html {
             game_state.focused_character_id,
             game_state.viewing_inventory,
             game_state.viewing_equipped_items,
-            ability_target_ids,
+            ability_targets,
             selected_item_id,
             game_state.viewing_items_on_ground,
             game_state.viewing_skill_level_up_menu,

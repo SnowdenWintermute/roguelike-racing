@@ -100,11 +100,11 @@ impl fmt::Display for CombatAttributes {
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct AbilityTargetPreferences {
-    friendly_single: Option<u32>,
-    hostile_single: Option<u32>,
-    category_of_last_single: Option<FriendOrFoe>,
-    category_of_last_area: Option<FriendOrFoe>,
-    targeting_scheme_preference: TargetingScheme,
+    pub friendly_single: Option<u32>,
+    pub hostile_single: Option<u32>,
+    pub category_of_last_target: Option<FriendOrFoe>,
+    pub category_of_last_area: Option<FriendOrFoe>,
+    pub targeting_scheme_preference: TargetingScheme,
 }
 
 impl Default for AbilityTargetPreferences {
@@ -112,7 +112,7 @@ impl Default for AbilityTargetPreferences {
         AbilityTargetPreferences {
             friendly_single: None,
             hostile_single: None,
-            category_of_last_single: None,
+            category_of_last_target: None,
             category_of_last_area: None,
             targeting_scheme_preference: TargetingScheme::Single,
         }

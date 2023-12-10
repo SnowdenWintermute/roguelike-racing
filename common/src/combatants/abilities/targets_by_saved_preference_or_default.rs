@@ -65,7 +65,7 @@ fn targeting_scheme_targets_or_defaults(
                 &target_preferences,
                 &party,
             ),
-            TargetCategories::Any => match target_preferences.category_of_last_single {
+            TargetCategories::Any => match &target_preferences.category_of_last_target {
                 Some(category) => match category {
                     FriendOrFoe::Friendly => preferred_single_target_or_default(
                         FriendOrFoe::Friendly,
@@ -85,7 +85,7 @@ fn targeting_scheme_targets_or_defaults(
             TargetCategories::Opponent => Ok(AbilityTarget::Group(FriendOrFoe::Hostile)),
             TargetCategories::User => Ok(AbilityTarget::Single(character_id)),
             TargetCategories::Friendly => Ok(AbilityTarget::Group(FriendOrFoe::Friendly)),
-            TargetCategories::Any => match target_preferences.category_of_last_area {
+            TargetCategories::Any => match &target_preferences.category_of_last_target {
                 Some(category) => match category {
                     FriendOrFoe::Friendly => Ok(AbilityTarget::Group(FriendOrFoe::Friendly)),
                     FriendOrFoe::Hostile => Ok(AbilityTarget::Group(FriendOrFoe::Hostile)),

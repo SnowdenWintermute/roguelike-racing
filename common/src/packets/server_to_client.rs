@@ -1,4 +1,4 @@
-use super::client_to_server::ClientChangeTargetsPacket;
+use super::client_to_server::ChangeTargetsPacket;
 use super::client_to_server::UnequipSlotRequest;
 use crate::character::Character;
 use crate::combatants::abilities::AbilityTarget;
@@ -42,7 +42,7 @@ pub enum GameServerUpdatePackets {
     PlayerToggledReadyToExplore(String),
     DungeonRoomUpdate(DungeonRoom),
     CharacterSelectedAbility(CharacterSelectedAbilityPacket),
-    CharacterChangedTargets(ClientChangeTargetsPacket),
+    CharacterChangedTargets(ChangeTargetsPacket),
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Default)]

@@ -13,12 +13,16 @@ use common::{
 pub fn handle_character_equipped_item(
     game_store: &mut GameStore,
     packet: CharacterEquippedItemPacket,
+    player_username: &String,
 ) -> Result<(), AppError> {
     let CharacterEquippedItemPacket {
         character_id,
         item_id,
         alt_slot,
     } = packet;
+    let player_owns_character = game_store
+        .get_current_party_mut()?
+        .player_owns_character(player_username, character_id);
     let character = game_store.get_mut_character(character_id)?;
 
     let unequipped_item_ids = character.equip_item(item_id, alt_slot)?;
@@ -35,13 +39,15 @@ pub fn handle_character_equipped_item(
         None => None,
     };
 
-    match item_to_select {
-        Some(item) => {
-            game_store.selected_item = Some(item.clone());
-            game_store.detailed_entity = Some(DetailableEntities::Item(item.clone()));
-            game_store.hovered_entity = None;
+    if player_owns_character {
+        match item_to_select {
+            Some(item) => {
+                game_store.selected_item = Some(item.clone());
+                game_store.detailed_entity = Some(DetailableEntities::Item(item.clone()));
+                game_store.hovered_entity = None;
+            }
+            None => (),
         }
-        None => (),
     }
 
     Ok(())

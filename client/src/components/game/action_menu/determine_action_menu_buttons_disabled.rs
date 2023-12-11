@@ -8,22 +8,36 @@ pub fn determine_action_menu_buttons_disabled(
     game_state: &Rc<GameStore>,
     lobby_state: &Rc<LobbyStore>,
 ) -> bool {
+    let game_option = &game_state.deref().game.as_ref();
+    if game_option.is_none() {
+        return true;
+    }
+    let game = game_option.expect("none checked");
+    let current_party_id = game_state.clone().current_party_id.expect("party to exist");
+    let party = game
+        .adventuring_parties
+        .get(&current_party_id)
+        .expect("to have valid party ref");
+    let focused_character_id = game_state.clone().focused_character_id;
+    let focused_character_result = get_character(game, current_party_id, focused_character_id);
+    if focused_character_result.is_err() {
+        return true;
+    }
+    let focused_character = focused_character_result.expect("is_none checked");
+
+    let player_owns_character =
+        party.player_owns_character(&lobby_state.username, focused_character_id);
+
     match action {
         GameActions::UseItem(_) => {
+            if !player_owns_character {
+                return true;
+            }
             let item = &game_state
                 .deref()
                 .selected_item
                 .as_ref()
                 .expect("button should only be shown when item is selected");
-            let game = &game_state
-                .deref()
-                .game
-                .as_ref()
-                .expect("game to be in progress");
-            let current_party_id = game_state.clone().current_party_id.expect("party to exist");
-            let focused_character_id = game_state.clone().focused_character_id;
-            let focused_character = get_character(*game, current_party_id, focused_character_id)
-                .expect("should always be a focused characer in a game");
             if !focused_character.combatant_properties.can_use_item(&item)
                 && focused_character
                     .slot_item_is_equipped(&item.entity_properties.id)
@@ -34,18 +48,7 @@ pub fn determine_action_menu_buttons_disabled(
             false
         }
         GameActions::SelectAbility(_) => {
-            let game = &game_state
-                .deref()
-                .game
-                .as_ref()
-                .expect("game to be in progress");
-            let current_party_id = game_state.clone().current_party_id.expect("party to exist");
-            let party = game
-                .adventuring_parties
-                .get(&current_party_id)
-                .expect("to have valid party ref");
-            let focused_character_id = game_state.clone().focused_character_id;
-            if !party.player_owns_character(lobby_state.username.clone(), focused_character_id) {
+            if !player_owns_character {
                 return true;
             }
             if !party.combatant_is_first_in_turn_order(focused_character_id) {
@@ -53,6 +56,14 @@ pub fn determine_action_menu_buttons_disabled(
             }
             false
         }
+        GameActions::UseAutoinjector => {
+            if !player_owns_character {
+                return true;
+            }
+            false
+        }
+        GameActions::ShardItem(_) => !player_owns_character,
+
         _ => false,
     }
 }

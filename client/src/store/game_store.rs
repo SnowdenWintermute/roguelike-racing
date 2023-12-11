@@ -95,6 +95,21 @@ pub fn get_focused_character<'a>(game_state: &'a GameStore) -> Result<&'a Charac
     focused_character
 }
 
+pub fn get_active_character<'a>(
+    game_state: &'a GameStore,
+) -> Result<Option<&'a Character>, AppError> {
+    let party = get_current_party_option(game_state).ok_or_else(|| AppError {
+        error_type: common::errors::AppErrorTypes::ClientError,
+        message: error_messages::MISSING_PARTY_REFERENCE.to_string(),
+    })?;
+    for (id, character) in &party.characters {
+        if party.combatant_is_first_in_turn_order(*id) {
+            return Ok(Some(character));
+        }
+    }
+    Ok(None)
+}
+
 pub fn set_item_hovered(game_dispatch: Dispatch<GameStore>, item_option: Option<Item>) {
     game_dispatch.reduce_mut(|store| {
         if let Some(item) = item_option {

@@ -1,20 +1,24 @@
 use super::available_actions::{GameActions, MenuTypes};
 use crate::store::game_store::GameStore;
+use crate::store::lobby_store::LobbyStore;
 use common::adventuring_party::AdventuringParty;
 use common::combatants::abilities::get_combatant_ability_attributes::AbilityUsableContext;
 use common::combatants::abilities::CombatantAbilityNames;
-use gloo::console::log;
 use std::rc::Rc;
 
 pub fn generate_action_menu_items(
     game_state: &Rc<GameStore>,
+    lobby_state: &Rc<LobbyStore>,
     party: &AdventuringParty,
 ) -> Vec<GameActions> {
     let mut menu_types: Vec<MenuTypes> = Vec::new();
     let mut new_actions: Vec<GameActions> = Vec::new();
+
+    let focused_character_option = party.characters.get(&game_state.focused_character_id);
+    let player_owns_character =
+        party.player_owns_character(&lobby_state.username, game_state.focused_character_id);
     let focused_character_is_selecting_ability = {
-        let focused_character = party.characters.get(&game_state.focused_character_id);
-        if let Some(character) = focused_character {
+        if let Some(character) = focused_character_option {
             character
                 .combatant_properties
                 .selected_ability_name
@@ -45,8 +49,7 @@ pub fn generate_action_menu_items(
         }
     } else if game_state.viewing_inventory {
         menu_types.push(MenuTypes::InventoryOpen);
-        let focused_character = party.characters.get(&game_state.focused_character_id);
-        if let Some(character) = focused_character {
+        if let Some(character) = focused_character_option {
             let mut ids = Vec::new();
             for item in &character.inventory.items {
                 ids.push(item.entity_properties.id);
@@ -79,7 +82,7 @@ pub fn generate_action_menu_items(
         }
         new_actions = MenuTypes::get_menu(&menu_types, None, Some(ability_names));
         //
-    } else if focused_character_is_selecting_ability {
+    } else if focused_character_is_selecting_ability && player_owns_character {
         menu_types.push(MenuTypes::AbilitySelected);
         new_actions = MenuTypes::get_menu(&menu_types, None, None);
     } else {
@@ -92,7 +95,6 @@ pub fn generate_action_menu_items(
         ability_names.sort_by(|a, b| a.partial_cmp(&b).unwrap());
         new_actions = MenuTypes::get_menu(&menu_types, None, Some(ability_names));
     }
-
     new_actions
 }
 

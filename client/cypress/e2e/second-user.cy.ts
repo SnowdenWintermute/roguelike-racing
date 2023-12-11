@@ -13,6 +13,6 @@ describe("a test test", () => {
     cy.findByRole("button", { name: "Create Character" }).click();
     cy.task("checkpoint", "second player character created");
     cy.findByRole("button", { name: "Ready" }).click();
-    // cy.findByRole("button", { name: "Ready to explore" }).click();
+    cy.findByText("Ready to explore").click();
   });
 });

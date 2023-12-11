@@ -34,7 +34,8 @@ pub fn set_up_actions<'a>(
     lobby_state: Rc<LobbyStore>,
     party: &AdventuringParty,
 ) -> Vec<ActionMenuButtonProperties> {
-    let new_actions = generate_action_menu_items::generate_action_menu_items(&game_state, party);
+    let new_actions =
+        generate_action_menu_items::generate_action_menu_items(&game_state, &lobby_state, party);
     let mut button_properties = Vec::new();
 
     for action in new_actions {

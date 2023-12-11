@@ -4,7 +4,8 @@ use crate::{
         game::dungeon_room::focus_character_button::FocusCharacterButton,
     },
     store::game_store::{
-        self, get_current_party_option, get_focused_character, DetailableEntities, GameStore,
+        self, get_active_character, get_current_party_option, get_focused_character,
+        DetailableEntities, GameStore,
     },
 };
 use common::{
@@ -86,23 +87,27 @@ pub fn combatant(props: &Props) -> Html {
     };
 
     let is_targeted = {
-        let focused_character_result = get_focused_character(&game_state);
-        if let Ok(focused_character) = focused_character_result {
-            let targets_option = &focused_character.combatant_properties.ability_targets;
-            if let Some(targets) = targets_option {
-                match targets {
-                    AbilityTarget::Single(targeted_id) => &id == targeted_id,
-                    AbilityTarget::Group(category) => match category {
-                        FriendOrFoe::Friendly => party.character_positions.contains(&id),
-                        FriendOrFoe::Hostile => {
-                            if let Ok(monster_ids) = party.get_monster_ids() {
-                                monster_ids.contains(&id)
-                            } else {
-                                false
+        let active_character_result = get_active_character(&game_state);
+        if let Ok(active_character_option) = active_character_result {
+            if let Some(active_character) = active_character_option {
+                let targets_option = &active_character.combatant_properties.ability_targets;
+                if let Some(targets) = targets_option {
+                    match targets {
+                        AbilityTarget::Single(targeted_id) => &id == targeted_id,
+                        AbilityTarget::Group(category) => match category {
+                            FriendOrFoe::Friendly => party.character_positions.contains(&id),
+                            FriendOrFoe::Hostile => {
+                                if let Ok(monster_ids) = party.get_monster_ids() {
+                                    monster_ids.contains(&id)
+                                } else {
+                                    false
+                                }
                             }
-                        }
-                    },
-                    AbilityTarget::All => true,
+                        },
+                        AbilityTarget::All => true,
+                    }
+                } else {
+                    false
                 }
             } else {
                 false

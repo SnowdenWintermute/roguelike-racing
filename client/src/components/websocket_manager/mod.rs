@@ -31,7 +31,7 @@ pub struct CustomFormData {}
 #[function_component(WebsocketManager)]
 pub fn websocket_manager(props: &Props) -> Html {
     let (_, websocket_dispatch) = use_store::<WebsocketStore>();
-    let (_, lobby_dispatch) = use_store::<LobbyStore>();
+    let (lobby_state, lobby_dispatch) = use_store::<LobbyStore>();
     let (_, game_dispatch) = use_store::<GameStore>();
     let (_, alert_dispatch) = use_store::<AlertStore>();
     let server_url = props.server_url.clone();
@@ -141,7 +141,11 @@ pub fn websocket_manager(props: &Props) -> Html {
                                     }
                                     GameServerUpdatePackets::CharacterEquippedItem(packet) => {
                                         game_dispatch.clone().reduce_mut(|store| {
-                                            let _ = handle_character_equipped_item(store, packet);
+                                            let _ = handle_character_equipped_item(
+                                                store,
+                                                packet,
+                                                &lobby_state.username,
+                                            );
                                         })
                                     }
                                     GameServerUpdatePackets::CharacterUnequippedSlot(packet) => {

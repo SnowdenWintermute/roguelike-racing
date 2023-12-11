@@ -108,9 +108,9 @@ impl AdventuringParty {
         }
     }
 
-    pub fn player_owns_character(&self, player_username: String, character_id: u32) -> bool {
+    pub fn player_owns_character(&self, player_username: &String, character_id: u32) -> bool {
         if let Some(character) = self.characters.get(&character_id) {
-            if character.name_of_controlling_user == player_username {
+            if &character.name_of_controlling_user == player_username {
                 return true;
             }
         }

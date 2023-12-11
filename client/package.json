@@ -7,13 +7,19 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "cypress:firefox": "env-cmd -f .env.test.local cypress open --e2e --browser firefox",
     "cypress:first": "env-cmd -f .env.test.local cypress open --e2e -b firefox --config-file cypress-first-user.config.ts",
-    "cypress:second": "env-cmd -f .env.test.local cypress open --e2e -b chromium --config-file cypress-second-user.config.ts"
+    "cypress:second": "env-cmd -f .env.test.local cypress open --e2e -b chromium --config-file cypress-second-user.config.ts",
+    "cypress:two-users": "concurrently 'node ./cypress/support/multiCypressSyncServer.js' npm:cypress:first npm:cypress:second"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "cypress": "^13.3.3",
     "env-cmd": "^10.1.0",
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2"
   }
 }

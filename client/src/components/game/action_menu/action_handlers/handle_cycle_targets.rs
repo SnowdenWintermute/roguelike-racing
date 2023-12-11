@@ -20,7 +20,6 @@ pub fn handle_cycle_targets(
 ) {
     game_dispatch.reduce_mut(|game_store| {
         let mut closure = move || -> Result<(), AppError> {
-            log!("cycled targets");
             let game = game_store.game.as_mut().ok_or_else(|| AppError {
                 error_type: common::errors::AppErrorTypes::ClientError,
                 message: error_messages::MISSING_GAME_REFERENCE.to_string(),

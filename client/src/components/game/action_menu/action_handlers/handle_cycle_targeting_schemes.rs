@@ -128,6 +128,7 @@ pub fn handle_cycle_targeting_schemes(
                 error_type: common::errors::AppErrorTypes::ClientError,
                 message: error_messages::CHARACTER_NOT_FOUND.to_string(),
             })?;
+
         focused_character
             .combatant_properties
             .ability_target_preferences = new_preferences;

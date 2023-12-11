@@ -31,6 +31,10 @@ pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Charact
         CombatantAbilityNames::Heal,
         CombatantAbility::new(CombatantAbilityNames::Heal),
     );
+    combatant_properties.abilities.insert(
+        CombatantAbilityNames::RainStorm,
+        CombatantAbility::new(CombatantAbilityNames::RainStorm),
+    );
 
     // TEST INVENTORY ITEMS
     for _ in 0..8 {

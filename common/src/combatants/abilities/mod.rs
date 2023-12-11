@@ -50,6 +50,7 @@ pub enum CombatantAbilityNames {
     ArmorBreak,
     HeatLance,
     Fire,
+    RainStorm,
     Heal,
 }
 
@@ -61,6 +62,7 @@ impl Display for CombatantAbilityNames {
             CombatantAbilityNames::ArmorBreak => write!(f, "Armor Break"),
             CombatantAbilityNames::Heal => write!(f, "Heal"),
             CombatantAbilityNames::Fire => write!(f, "Fire"),
+            CombatantAbilityNames::RainStorm => write!(f, "Rain Storm"),
         }
     }
 }

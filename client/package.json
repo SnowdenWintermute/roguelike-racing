@@ -5,7 +5,9 @@
   "main": "index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "cypress:firefox": "env-cmd -f .env.test.local cypress open --e2e --browser firefox"
+    "cypress:firefox": "env-cmd -f .env.test.local cypress open --e2e --browser firefox",
+    "cypress:first": "env-cmd -f .env.test.local cypress open --e2e -b firefox --config-file cypress-first-user.config.ts",
+    "cypress:second": "env-cmd -f .env.test.local cypress open --e2e -b chromium --config-file cypress-second-user.config.ts"
   },
   "author": "",
   "license": "ISC",

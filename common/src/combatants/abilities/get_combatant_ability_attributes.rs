@@ -70,6 +70,15 @@ impl CombatantAbilityNames {
                 valid_target_categories: TargetCategories::Friendly,
                 ..Default::default()
             },
+            CombatantAbilityNames::RainStorm => CombatantAbilityAttributes {
+                targeting_schemes: vec![
+                    TargetingScheme::Single,
+                    TargetingScheme::Area,
+                    TargetingScheme::All,
+                ],
+                valid_target_categories: TargetCategories::Any,
+                ..Default::default()
+            },
         }
     }
 }

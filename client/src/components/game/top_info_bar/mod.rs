@@ -1,4 +1,7 @@
-use crate::store::game_store::{get_current_party_option, GameStore};
+use crate::{
+    components::game::turn_order_bar::TurnOrderBar,
+    store::game_store::{get_current_party_option, GameStore},
+};
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
@@ -8,12 +11,18 @@ pub fn game() -> Html {
     let party_option = get_current_party_option(&game_state);
 
     html!(
-    <div class="p-2 border-b border-r border-l border-slate-400 bg-slate-700 w-full text-center" >
+    <div class="border-b border-r border-l border-slate-400 bg-slate-700 w-full text-center" >
     if let Some(party) = party_option {
-        {"Floor "}{party.current_floor}{", room "}{party.rooms_explored.on_current_floor}
-        {": "}
-        {format!("{}", party.current_room.room_type)}
+        if party.combatant_turn_trackers.is_some() {
+            <TurnOrderBar />
+        } else {
+            <div class="m-2">
+                {"Floor "}{party.current_floor}{", room "}{party.rooms_explored.on_current_floor}
+                {": "}
+                {format!("{}", party.current_room.room_type)}
+            </div>
         }
+    }
     </div>
     )
 }

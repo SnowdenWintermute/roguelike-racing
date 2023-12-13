@@ -13,7 +13,7 @@ pub fn set_keyup_listeners(
         let event = event.dyn_ref::<web_sys::KeyboardEvent>().unwrap_throw();
         for (i, properties) in button_properties_state.iter().enumerate() {
             if properties.should_be_disabled {
-                return;
+                continue;
             }
             let key = (i + 1).to_string();
             let event_key_as_number = shifted_number_key_to_number_key(event.key());

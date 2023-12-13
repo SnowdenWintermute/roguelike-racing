@@ -4,7 +4,10 @@ use common::{
     app_consts::error_messages,
     character::Character,
     errors::AppError,
-    game::{getters::get_mut_party, RoguelikeRacerGame},
+    game::{
+        getters::{get_mut_party, get_party},
+        RoguelikeRacerGame,
+    },
     packets::{
         client_to_server::UnequipSlotRequest, server_to_client::CharacterEquippedItemPacket,
     },
@@ -86,6 +89,13 @@ impl GameStore {
             })
     }
 
+    pub fn get_current_game<'a>(&'a self) -> Result<&'a RoguelikeRacerGame, AppError> {
+        self.game.as_ref().ok_or_else(|| AppError {
+            error_type: common::errors::AppErrorTypes::ClientError,
+            message: error_messages::GAME_NOT_FOUND.to_string(),
+        })
+    }
+
     pub fn get_current_game_mut<'a>(&'a mut self) -> Result<&'a mut RoguelikeRacerGame, AppError> {
         self.game.as_mut().ok_or_else(|| AppError {
             error_type: common::errors::AppErrorTypes::ClientError,
@@ -100,5 +110,14 @@ impl GameStore {
         })?;
         let game = self.get_current_game_mut()?;
         get_mut_party(game, current_party_id)
+    }
+
+    pub fn get_current_party<'a>(&'a self) -> Result<&'a AdventuringParty, AppError> {
+        let current_party_id = self.current_party_id.ok_or_else(|| AppError {
+            error_type: common::errors::AppErrorTypes::ClientError,
+            message: error_messages::MISSING_PARTY_REFERENCE.to_string(),
+        })?;
+        let game = self.get_current_game()?;
+        get_party(game, current_party_id)
     }
 }

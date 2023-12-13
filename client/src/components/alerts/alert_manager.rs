@@ -29,7 +29,7 @@ pub fn alert_manager() -> Html {
     });
 
     html!(
-        <ul class="absolute z-[1] p-3 list-none flex flex-col-reverse">
+        <ul class="absolute z-50 p-3 list-none flex flex-col-reverse">
             {alert_state.alerts.iter().map(|alert|
                 html!{
                     <li>

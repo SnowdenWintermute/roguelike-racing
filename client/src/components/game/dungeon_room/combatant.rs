@@ -4,8 +4,7 @@ use crate::{
         game::dungeon_room::focus_character_button::FocusCharacterButton,
     },
     store::game_store::{
-        self, get_active_character, get_current_party_option, get_focused_character,
-        DetailableEntities, GameStore,
+        self, get_active_character, get_current_party_option, DetailableEntities, GameStore,
     },
 };
 use common::{

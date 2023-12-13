@@ -618,8 +618,16 @@ video {
   z-index: 40;
 }
 
+.z-50 {
+  z-index: 50;
+}
+
 .m-0 {
   margin: 0px;
+}
+
+.m-2 {
+  margin: 0.5rem;
 }
 
 .mb-1 {
@@ -1215,6 +1223,10 @@ video {
 
 .last\:mb-0:last-child {
   margin-bottom: 0px;
+}
+
+.last\:border-r-0:last-child {
+  border-right-width: 0px;
 }
 
 .hover\:bg-slate-950:hover {

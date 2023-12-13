@@ -5,6 +5,7 @@ mod combatant_detail_tab;
 mod dungeon_room;
 mod tabbed_display;
 mod top_info_bar;
+pub mod turn_order_bar;
 use crate::{
     components::game::{
         action_menu::ActionMenu, character_sheet::CharacterSheet, dungeon_room::DungeonRoom,

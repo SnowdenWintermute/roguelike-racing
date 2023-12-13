@@ -4,11 +4,13 @@ use self::init_combat::CombatantTurnTracker;
 use crate::app_consts::error_messages;
 use crate::character::Character;
 use crate::combatants::abilities::CombatantAbility;
+use crate::combatants::CombatantProperties;
 use crate::dungeon_rooms::DungeonRoom;
 use crate::dungeon_rooms::DungeonRoomTypes;
 use crate::errors::AppError;
 use crate::errors::AppErrorTypes;
 use crate::items::Item;
+use crate::primatives::EntityProperties;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
@@ -238,5 +240,60 @@ impl AdventuringParty {
                 error_type: AppErrorTypes::InvalidInput,
                 message: error_messages::ABILITY_NOT_OWNED.to_string(),
             })
+    }
+
+    pub fn get_combatant_by_id(
+        &self,
+        id: u32,
+    ) -> Result<(&EntityProperties, &CombatantProperties), AppError> {
+        if let Some(character) = self.characters.get(&id) {
+            return Ok((
+                &character.entity_properties,
+                &character.combatant_properties,
+            ));
+        } else if let Some(monsters) = &self.current_room.monsters {
+            for monster in monsters {
+                if monster.entity_properties.id == id {
+                    return Ok((&monster.entity_properties, &monster.combatant_properties));
+                }
+                return Err(AppError {
+                    error_type: AppErrorTypes::ServerError,
+                    message: error_messages::COMBATANT_NOT_FOUND.to_string(),
+                });
+            }
+        }
+        return Err(AppError {
+            error_type: AppErrorTypes::ServerError,
+            message: error_messages::COMBATANT_NOT_FOUND.to_string(),
+        });
+    }
+
+    pub fn get_mut_combatant_by_id(
+        &mut self,
+        id: u32,
+    ) -> Result<(&mut EntityProperties, &mut CombatantProperties), AppError> {
+        if let Some(character) = self.characters.get_mut(&id) {
+            return Ok((
+                &mut character.entity_properties,
+                &mut character.combatant_properties,
+            ));
+        } else if let Some(monsters) = &mut self.current_room.monsters {
+            for monster in monsters {
+                if monster.entity_properties.id == id {
+                    return Ok((
+                        &mut monster.entity_properties,
+                        &mut monster.combatant_properties,
+                    ));
+                }
+                return Err(AppError {
+                    error_type: AppErrorTypes::ServerError,
+                    message: error_messages::COMBATANT_NOT_FOUND.to_string(),
+                });
+            }
+        }
+        return Err(AppError {
+            error_type: AppErrorTypes::ServerError,
+            message: error_messages::COMBATANT_NOT_FOUND.to_string(),
+        });
     }
 }

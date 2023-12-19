@@ -139,11 +139,7 @@ fn preferred_single_target_or_default(
 
 pub fn is_id_of_existing_opponent(party: &AdventuringParty, id: &u32) -> bool {
     match &party.current_room.monsters {
-        Some(monsters) => monsters
-            .iter()
-            .map(|monster| monster.entity_properties.id)
-            .collect::<Vec<u32>>()
-            .contains(id),
+        Some(monsters) => monsters.get(id).is_some(),
         None => false,
     }
 }

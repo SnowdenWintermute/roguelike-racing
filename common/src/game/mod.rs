@@ -2,6 +2,7 @@ use self::getters::get_mut_party;
 use self::getters::get_mut_player;
 use crate::adventuring_party::AdventuringParty;
 use crate::character::Character;
+use crate::combat::Battle;
 use crate::errors::AppError;
 use crate::game::id_generator::IdGenerator;
 use crate::items::Item;
@@ -43,6 +44,7 @@ pub struct RoguelikeRacerGame {
     pub players: HashMap<String, RoguelikeRacerPlayer>,
     pub players_readied: HashSet<String>,
     pub adventuring_parties: HashMap<u32, AdventuringParty>,
+    pub battles: HashMap<u32, Battle>,
     pub time_started: Option<u128>,
     pub id_generator: IdGenerator,
 }
@@ -55,6 +57,7 @@ impl RoguelikeRacerGame {
             players: HashMap::new(),
             players_readied: HashSet::new(),
             adventuring_parties: HashMap::new(),
+            battles: HashMap::new(),
             time_started: None,
             id_generator: IdGenerator::new(),
         };

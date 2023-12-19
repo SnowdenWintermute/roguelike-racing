@@ -7,6 +7,7 @@ use core::fmt;
 use rand::prelude::*;
 use serde::Deserialize;
 use serde::Serialize;
+use std::collections::hash_map::HashMap;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
@@ -34,7 +35,7 @@ pub struct DungeonRoom {
     pub room_type: DungeonRoomTypes,
     pub treasure_chest: Option<TreasureChest>,
     pub items: Option<Vec<Item>>,
-    pub monsters: Option<Vec<Monster>>,
+    pub monsters: Option<HashMap<u32, Monster>>,
 }
 
 impl DungeonRoom {
@@ -65,11 +66,12 @@ impl DungeonRoom {
 
         let mut monsters = None;
         if room_type == DungeonRoomTypes::MonsterLair {
-            let mut monsters_vec = vec![];
+            let mut new_monsters = HashMap::new();
             for _ in 0..=2 {
-                monsters_vec.push(Monster::generate(id_generator, floor));
+                let new_monster = Monster::generate(id_generator, floor);
+                new_monsters.insert(new_monster.entity_properties.id, new_monster);
             }
-            monsters = Some(monsters_vec);
+            monsters = Some(new_monsters);
         }
 
         DungeonRoom {

@@ -1,6 +1,4 @@
 mod generate_next_room;
-pub mod init_combat;
-use self::init_combat::CombatantTurnTracker;
 use crate::app_consts::error_messages;
 use crate::character::Character;
 use crate::combatants::abilities::CombatantAbility;
@@ -30,10 +28,10 @@ pub struct AdventuringParty {
     pub players_ready_to_explore: HashSet<String>,
     pub characters: HashMap<u32, Character>,
     pub character_positions: Vec<u32>,
-    pub combatant_turn_trackers: Option<Vec<CombatantTurnTracker>>,
     pub current_floor: u8,
     pub rooms_explored: RoomsExplored,
     pub current_room: DungeonRoom,
+    pub battle_id: Option<u32>,
     pub time_of_wipe: Option<u64>,
     pub time_of_escape: Option<u64>,
 }
@@ -47,7 +45,6 @@ impl AdventuringParty {
             players_ready_to_explore: HashSet::new(),
             characters: HashMap::new(),
             character_positions: Vec::new(),
-            combatant_turn_trackers: None,
             current_floor: 1,
             rooms_explored: RoomsExplored {
                 total: 1,
@@ -59,6 +56,7 @@ impl AdventuringParty {
                 items: None,
                 monsters: None,
             },
+            battle_id: None,
             time_of_wipe: None,
             time_of_escape: None,
         }
@@ -84,9 +82,9 @@ impl AdventuringParty {
                 }
             }
             if let Some(monsters) = &self.current_room.monsters {
-                for monster in monsters {
+                for (id, monster) in monsters.iter() {
                     for (_, item) in &monster.combatant_properties.equipment {
-                        if item.entity_properties.id == id {
+                        if item.entity_properties.id == *id {
                             return Some(item);
                         }
                     }
@@ -119,16 +117,6 @@ impl AdventuringParty {
         false
     }
 
-    pub fn combatant_is_first_in_turn_order(&self, entity_id: u32) -> bool {
-        match &self.combatant_turn_trackers {
-            Some(trackers) => match trackers.get(0) {
-                Some(combat_turn_tracker) => combat_turn_tracker.entity_id == entity_id,
-                None => false,
-            },
-            None => false,
-        }
-    }
-
     pub fn get_monster_ids(&self) -> Result<Vec<u32>, AppError> {
         let monsters = self
             .current_room
@@ -138,10 +126,7 @@ impl AdventuringParty {
                 error_type: crate::errors::AppErrorTypes::ClientError,
                 message: error_messages::ENEMY_COMBATANTS_NOT_FOUND.to_string(),
             })?;
-        Ok(monsters
-            .iter()
-            .map(|monster| monster.entity_properties.id)
-            .collect::<Vec<u32>>())
+        Ok(monsters.iter().map(|(id, _)| *id).collect::<Vec<u32>>())
     }
 
     pub fn get_mut_character_if_owned<'a>(
@@ -246,54 +231,46 @@ impl AdventuringParty {
         &self,
         id: u32,
     ) -> Result<(&EntityProperties, &CombatantProperties), AppError> {
+        let mut to_return = Err(AppError {
+            error_type: AppErrorTypes::ServerError,
+            message: error_messages::COMBATANT_NOT_FOUND.to_string(),
+        });
+
         if let Some(character) = self.characters.get(&id) {
-            return Ok((
+            to_return = Ok((
                 &character.entity_properties,
                 &character.combatant_properties,
             ));
         } else if let Some(monsters) = &self.current_room.monsters {
-            for monster in monsters {
-                if monster.entity_properties.id == id {
-                    return Ok((&monster.entity_properties, &monster.combatant_properties));
-                }
-                return Err(AppError {
-                    error_type: AppErrorTypes::ServerError,
-                    message: error_messages::COMBATANT_NOT_FOUND.to_string(),
-                });
+            if let Some(monster) = &monsters.get(&id) {
+                to_return = Ok((&monster.entity_properties, &monster.combatant_properties));
             }
         }
-        return Err(AppError {
-            error_type: AppErrorTypes::ServerError,
-            message: error_messages::COMBATANT_NOT_FOUND.to_string(),
-        });
+        to_return
     }
 
     pub fn get_mut_combatant_by_id(
         &mut self,
         id: u32,
     ) -> Result<(&mut EntityProperties, &mut CombatantProperties), AppError> {
+        let mut to_return = Err(AppError {
+            error_type: AppErrorTypes::ServerError,
+            message: error_messages::COMBATANT_NOT_FOUND.to_string(),
+        });
+
         if let Some(character) = self.characters.get_mut(&id) {
-            return Ok((
+            to_return = Ok((
                 &mut character.entity_properties,
                 &mut character.combatant_properties,
             ));
         } else if let Some(monsters) = &mut self.current_room.monsters {
-            for monster in monsters {
-                if monster.entity_properties.id == id {
-                    return Ok((
-                        &mut monster.entity_properties,
-                        &mut monster.combatant_properties,
-                    ));
-                }
-                return Err(AppError {
-                    error_type: AppErrorTypes::ServerError,
-                    message: error_messages::COMBATANT_NOT_FOUND.to_string(),
-                });
+            if let Some(monster) = monsters.get_mut(&id) {
+                to_return = Ok((
+                    &mut monster.entity_properties,
+                    &mut monster.combatant_properties,
+                ));
             }
         }
-        return Err(AppError {
-            error_type: AppErrorTypes::ServerError,
-            message: error_messages::COMBATANT_NOT_FOUND.to_string(),
-        });
+        to_return
     }
 }

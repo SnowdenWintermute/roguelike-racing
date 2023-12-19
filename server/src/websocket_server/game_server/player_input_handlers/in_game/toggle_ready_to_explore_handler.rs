@@ -6,6 +6,7 @@ use crate::websocket_server::game_server::{
 };
 use common::{
     app_consts::error_messages,
+    combat::{BattleGroup, BattleGroupTypes},
     dungeon_rooms::{DungeonRoom, DungeonRoomTypes},
     errors::AppError,
     game::getters::{get_mut_party, get_mut_player},
@@ -68,6 +69,7 @@ impl GameServer {
                 false,
                 Some(DungeonRoomTypes::MonsterLair),
             ));
+            //
         }
 
         let party = get_mut_party(game, party_id)?;
@@ -77,8 +79,21 @@ impl GameServer {
             party.rooms_explored.total += 1;
 
             if room.monsters.is_some() {
-                let turn_trackers = party.get_combat_turn_order();
-                party.combatant_turn_trackers = Some(turn_trackers);
+                let group_a = BattleGroup {
+                    name: format!("{}", party.name).to_string(),
+                    party_id: party.id,
+                    combatant_ids: party.character_positions.clone(),
+                    group_type: BattleGroupTypes::PlayerControlled,
+                };
+                let mut monster_ids = party.get_monster_ids()?;
+                monster_ids.sort();
+                let group_b = BattleGroup {
+                    name: format!("{}-monsters", party.name).to_string(),
+                    party_id,
+                    combatant_ids: monster_ids,
+                    group_type: BattleGroupTypes::ComputerControlled,
+                };
+                game.initiate_battle(group_a, group_b)?;
             }
 
             self.emit_packet(

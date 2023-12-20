@@ -1,9 +1,14 @@
 use crate::websocket_server::game_server::{
-    getters::{get_mut_party_game_name_and_character_ids_from_actor_id, ActorIdAssociatedGameData},
+    getters::{
+        get_mut_game, get_mut_party_game_name_and_character_ids_from_actor_id, get_mut_user,
+        get_user, ActorIdAssociatedGameData,
+    },
     GameServer,
 };
 use common::{
+    app_consts::error_messages::{self},
     errors::AppError,
+    game::getters::{get_mut_party, get_mut_player},
     packets::{client_to_server::ChangeTargetsPacket, server_to_client::GameServerUpdatePackets},
 };
 
@@ -13,16 +18,30 @@ impl GameServer {
         actor_id: u32,
         packet: ChangeTargetsPacket,
     ) -> Result<(), AppError> {
-        let ActorIdAssociatedGameData {
-            party,
-            player_character_ids_option,
-            current_game_name,
-            ..
-        } = get_mut_party_game_name_and_character_ids_from_actor_id(self, actor_id)?;
         let ChangeTargetsPacket {
             character_id,
             new_targets,
         } = packet;
+
+        let connected_user = get_user(&self.sessions, actor_id)?;
+        let username = connected_user.username.clone();
+        let current_game_name =
+            connected_user
+                .current_game_name
+                .as_ref()
+                .ok_or_else(|| AppError {
+                    error_type: common::errors::AppErrorTypes::ServerError,
+                    message: error_messages::MISSING_GAME_REFERENCE.to_string(),
+                })?;
+        let game = get_mut_game(&mut self.games, &current_game_name)?;
+        let player = get_mut_player(game, &username)?;
+        let player_character_ids_option = player.character_ids.clone();
+        let party_id = player.party_id.ok_or_else(|| AppError {
+            error_type: common::errors::AppErrorTypes::ServerError,
+            message: error_messages::MISSING_PARTY_REFERENCE.to_string(),
+        })?;
+
+        let party = get_mut_party(game, party_id)?;
         let ability =
             party.get_character_selected_ability(player_character_ids_option, character_id)?;
         let ability_name = ability.ability_name.clone();
@@ -36,7 +55,7 @@ impl GameServer {
             } else {
                 ability
                     .ability_name
-                    .get_default_targets(character_id, party)?
+                    .get_default_targets(character_id, game, party_id)?
             };
 
         let ActorIdAssociatedGameData {

@@ -26,6 +26,7 @@ pub const CANT_EXPLORE_WHEN_MONSTERS_ARE_PRESENT: &str =
 pub const ABILITY_NOT_OWNED: &str = "That character doesn't have that ability";
 pub const MISSING_ABILITY_REFERENCE: &str = "The character has no ability selected";
 pub const ENEMY_COMBATANTS_NOT_FOUND: &str = "No enemy combatants found";
+pub const ALLY_COMBATANTS_NOT_FOUND: &str = "No allied combatants found";
 pub const COMBATANT_NOT_FOUND: &str = "No combatant was found by the provided ID";
 pub const NO_CHARACTERS_IN_PARTY: &str = "There are no characters in the party";
 pub const ABILITY_HAS_NO_TARGETING_SCHEME: &str = "The selected ability has no targeting scheme";
@@ -34,3 +35,7 @@ pub const NO_POSSIBLE_TARGETS_PROVIDED: &str =
 pub const TRIED_TO_CYCLE_TARGETS_WHEN_NO_TARGETS: &str =
     "Client tried to cycle targets but they weren't targeting anything";
 pub const NO_TARGETING_SCHEMES: &str = "The selected ability has no targeting schemes";
+pub const MISSING_BATTLE_REFERENCE: &str = "Missing a battle reference";
+pub const BATTLE_NOT_FOUND: &str = "No battle was found by the provided ID";
+pub const COMBATANT_BATTLE_MISMATCH: &str =
+    "A combatant attempted to take action in a battle that they are not a part of";

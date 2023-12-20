@@ -25,7 +25,8 @@ use std::collections::HashMap;
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct Battle {
     pub id: u32,
-    pub groups: HashMap<String, BattleGroup>,
+    pub group_a: BattleGroup,
+    pub group_b: BattleGroup,
     pub combatant_turn_trackers: Option<Vec<CombatantTurnTracker>>,
 }
 
@@ -47,12 +48,10 @@ impl RoguelikeRacerGame {
         group_a: BattleGroup,
         group_b: BattleGroup,
     ) -> Result<(), AppError> {
-        let mut groups = HashMap::new();
-        groups.insert(group_a.name.clone(), group_a);
-        groups.insert(group_b.name.clone(), group_b);
         let mut battle = Battle {
             id: self.id_generator.get_next_entity_id(),
-            groups,
+            group_a,
+            group_b,
             combatant_turn_trackers: None,
         };
 

@@ -1,5 +1,5 @@
 use crate::websocket_server::game_server::{
-    getters::{get_mut_party_game_name_and_character_ids_from_actor_id, ActorIdAssociatedGameData},
+    getters::{get_mut_party_game_name_and_character_ids_from_actor_id, ActorIdAssociatedPartyData},
     GameServer,
 };
 use common::{
@@ -16,7 +16,7 @@ impl GameServer {
         character_id: u32,
         slot: EquipmentSlots,
     ) -> Result<(), AppError> {
-        let ActorIdAssociatedGameData {
+        let ActorIdAssociatedPartyData {
             party,
             current_game_name,
             player_character_ids_option,

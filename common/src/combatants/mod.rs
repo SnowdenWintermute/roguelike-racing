@@ -9,6 +9,8 @@ use crate::app_consts::AGI_TO_SPEED_RATIO;
 use crate::app_consts::DEX_TO_ACCURACY_RATIO;
 use crate::app_consts::OFF_HAND_ACCURACY_MODIFIER;
 use crate::app_consts::OFF_HAND_DAMAGE_MODIFIER;
+use crate::app_consts::error_messages;
+use crate::errors::AppError;
 use crate::items::equipment::trait_effects::get_weapon_percent_damage_increase_trait_damage_modifier::get_weapon_percent_damage_increase_trait_damage_modifier;
 use crate::items::equipment::weapon_properties::WeaponProperties;
 use crate::items::equipment::EquipmentSlots;
@@ -284,6 +286,28 @@ impl CombatantProperties {
             }
             None => (),
         }
+    }
+
+    pub fn get_mut_ability_if_owned<'a>(
+        &self,
+        ability_name: &CombatantAbilityNames,
+    ) -> Result<&'a mut CombatantAbility, AppError> {
+        self.abilities
+            .get_mut(ability_name)
+            .ok_or_else(|| AppError {
+                error_type: crate::errors::AppErrorTypes::InvalidInput,
+                message: error_messages::ABILITY_NOT_OWNED.to_string(),
+            })
+    }
+
+    pub fn get_ability_if_owned<'a>(
+        &self,
+        ability_name: &CombatantAbilityNames,
+    ) -> Result<&'a CombatantAbility, AppError> {
+        self.abilities.get(ability_name).ok_or_else(|| AppError {
+            error_type: crate::errors::AppErrorTypes::InvalidInput,
+            message: error_messages::ABILITY_NOT_OWNED.to_string(),
+        })
     }
 }
 

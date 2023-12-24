@@ -174,59 +174,6 @@ impl AdventuringParty {
         }
     }
 
-    pub fn get_mut_character_selected_ability<'a>(
-        &'a mut self,
-        player_character_ids_option: Option<HashSet<u32>>,
-        character_id: u32,
-    ) -> Result<&'a mut CombatantAbility, AppError> {
-        let character =
-            self.get_mut_character_if_owned(player_character_ids_option, character_id)?;
-
-        let ability_name = character
-            .combatant_properties
-            .selected_ability_name
-            .as_ref()
-            .ok_or_else(|| AppError {
-                error_type: AppErrorTypes::ServerError,
-                message: error_messages::MISSING_ABILITY_REFERENCE.to_string(),
-            })?;
-
-        character
-            .combatant_properties
-            .abilities
-            .get_mut(&ability_name)
-            .ok_or_else(|| AppError {
-                error_type: AppErrorTypes::InvalidInput,
-                message: error_messages::ABILITY_NOT_OWNED.to_string(),
-            })
-    }
-
-    pub fn get_character_selected_ability<'a>(
-        &'a self,
-        player_character_ids_option: Option<HashSet<u32>>,
-        character_id: u32,
-    ) -> Result<&'a CombatantAbility, AppError> {
-        let character = self.get_character_if_owned(player_character_ids_option, character_id)?;
-
-        let ability_name = character
-            .combatant_properties
-            .selected_ability_name
-            .as_ref()
-            .ok_or_else(|| AppError {
-                error_type: AppErrorTypes::ServerError,
-                message: error_messages::MISSING_ABILITY_REFERENCE.to_string(),
-            })?;
-
-        character
-            .combatant_properties
-            .abilities
-            .get(&ability_name)
-            .ok_or_else(|| AppError {
-                error_type: AppErrorTypes::InvalidInput,
-                message: error_messages::ABILITY_NOT_OWNED.to_string(),
-            })
-    }
-
     pub fn get_combatant_by_id(
         &self,
         id: u32,

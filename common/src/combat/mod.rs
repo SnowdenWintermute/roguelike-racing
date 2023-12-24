@@ -11,16 +11,6 @@ use crate::items::Item;
 use crate::primatives::EntityProperties;
 use crate::status_effects::StatusEffects;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-
-// combat takes place between groups of combatants
-// combatants' physical positions in battle can be expressed by their entity ids in combatant
-// position vectors, or "groups" which have a group name
-// in order to facilitate pvp, combatant groups are stored in "combat arenas"
-// adventuring parties store a ref to a combat arena when they enter combat
-// groups hold refs to the adventuring party they were generated from
-// groups of player character combatants are named after their party name
-// groups of monster combatants are named after the adventuring party
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct Battle {
@@ -39,6 +29,45 @@ impl Battle {
             },
             None => false,
         }
+    }
+
+    pub fn get_ally_ids_and_opponent_ids_option(
+        &self,
+        combatant_id: u32,
+    ) -> Result<(Vec<u32>, Option<Vec<u32>>), AppError> {
+        let opponent_ids_option = if self.group_a.combatant_ids.contains(&combatant_id) {
+            Some(self.group_b.combatant_ids.clone())
+        } else if self.group_b.combatant_ids.contains(&combatant_id) {
+            Some(self.group_a.combatant_ids.clone())
+        } else {
+            None
+        };
+
+        let ally_ids = if self.group_a.combatant_ids.contains(&combatant_id) {
+            Some(self.group_a.combatant_ids.clone())
+        } else if self.group_b.combatant_ids.contains(&combatant_id) {
+            Some(self.group_b.combatant_ids.clone())
+        } else {
+            None
+        }
+        .ok_or_else(|| AppError {
+            error_type: crate::errors::AppErrorTypes::Generic,
+            message: error_messages::ALLY_COMBATANTS_NOT_FOUND.to_string(),
+        })?;
+
+        Ok((ally_ids, opponent_ids_option))
+    }
+
+    pub fn is_id_of_existing_opponent(&self, combatant_id: u32, target_id: u32) -> bool {
+        let mut to_return = false;
+        if let Ok((ally_ids, opponent_ids_option)) =
+            self.get_ally_ids_and_opponent_ids_option(combatant_id)
+        {
+            if let Some(opponent_ids) = opponent_ids_option {
+                to_return = opponent_ids.contains(&target_id)
+            }
+        }
+        to_return
     }
 }
 
@@ -78,6 +107,32 @@ pub struct BattleGroup {
     pub group_type: BattleGroupTypes,
 }
 
+impl BattleGroup {
+    pub fn get_battle_group_entity_belongs_to(
+        ally_battle_group: BattleGroup,
+        opponent_battle_group_option: Option<BattleGroup>,
+        id: &u32,
+    ) -> Result<BattleGroup, AppError> {
+        if ally_battle_group.combatant_ids.contains(id) {
+            Ok(ally_battle_group)
+        } else if let Some(opponent_battle_group) = opponent_battle_group_option {
+            if opponent_battle_group.combatant_ids.contains(id) {
+                Ok(opponent_battle_group)
+            } else {
+                Err(AppError {
+                    error_type: AppErrorTypes::Generic,
+                    message: error_messages::COMBATANT_NOT_FOUND.to_string(),
+                })
+            }
+        } else {
+            Err(AppError {
+                error_type: AppErrorTypes::Generic,
+                message: error_messages::COMBATANT_NOT_FOUND.to_string(),
+            })
+        }
+    }
+}
+
 impl RoguelikeRacerGame {
     pub fn get_mut_combatant_in_battle_group_by_id(
         &mut self,
@@ -110,6 +165,7 @@ pub enum CombatActionEffect {
     CurrentMpChange(i16, u32),
     StatusEffectGained(StatusEffects, u32),
     StatusEffectLost(StatusEffects, u32),
+    CombatantDeath(u32),
     EndTurn,
 }
 
@@ -130,22 +186,50 @@ impl AdventuringParty {
             CombatAction::ItemUsed(_, _) => todo!(),
         }
     }
+}
 
+impl RoguelikeRacerGame {
     pub fn get_ability_used_combat_action_effects(
-        &mut self,
-        combatant_id: u32,
+        &self,
+        ability_user_id: u32,
         ability: &CombatantAbility,
-        _: &AbilityTarget,
+        ability_target: &AbilityTarget,
+        ally_battle_group: BattleGroup,
+        opponent_battle_group_option: Option<BattleGroup>,
     ) -> Result<Vec<CombatActionEffect>, AppError> {
-        let effects = vec![];
-        let _ = self.get_combatant_by_id(combatant_id)?;
-        // get their arena
-        // get their group
-        // the group that isn't theirs is the "hostile" group
+        let mut effects = vec![];
+        let ability_user_party = self
+            .adventuring_parties
+            .get(&ally_battle_group.party_id)
+            .ok_or_else(|| AppError {
+                error_type: AppErrorTypes::Generic,
+                message: error_messages::PARTY_NOT_FOUND.to_string(),
+            })?;
+
+        let ability_user = ability_user_party.get_combatant_by_id(ability_user_id)?;
         match ability.ability_name {
-            CombatantAbilityNames::Attack => {
-                //
-            }
+            CombatantAbilityNames::Attack => match ability_target {
+                AbilityTarget::Single(id) => {
+                    let target_battle_group = BattleGroup::get_battle_group_entity_belongs_to(
+                        ally_battle_group,
+                        opponent_battle_group_option,
+                        id,
+                    )?;
+                    let (targeted_entity_properties, targeted_combatant_properties) =
+                        self.get_mut_combatant_in_battle_group_by_id(&target_battle_group, *id)?;
+                    effects.push(CombatActionEffect::AbilityUsed(
+                        CombatantAbilityNames::Attack,
+                        vec![*id],
+                    ));
+                    effects.push(CombatActionEffect::CurrentHpChange(-10, *id));
+                }
+                _ => {
+                    return Err(AppError {
+                        error_type: AppErrorTypes::InvalidInput,
+                        message: error_messages::INVALID_TARGETING_SCHEME.to_string(),
+                    })
+                }
+            },
             CombatantAbilityNames::ArmorBreak => todo!(),
             CombatantAbilityNames::HeatLance => todo!(),
             CombatantAbilityNames::Fire => todo!(),
@@ -156,3 +240,8 @@ impl AdventuringParty {
         Ok(effects)
     }
 }
+
+// characters should be able to use abilities on their allies when not in combat
+// ability single targets validatable based on target current hp (rez spell)
+// target groups such as "friendly" or "hostile" should be easily resolvable to combatant ids
+// regardless of whether the user is a player or ai

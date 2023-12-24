@@ -2,17 +2,15 @@ use super::{
     get_combatant_ability_attributes::{TargetCategories, TargetingScheme},
     AbilityTarget, CombatantAbilityNames, FriendOrFoe,
 };
-use crate::{
-    adventuring_party::AdventuringParty, app_consts::error_messages,
-    combatants::AbilityTargetPreferences, errors::AppError,
-};
+use crate::{app_consts::error_messages, combatants::AbilityTargetPreferences, errors::AppError};
 
 impl CombatantAbilityNames {
     pub fn targets_by_saved_preference_or_default(
         &self,
         character_id: u32,
         target_preferences: &AbilityTargetPreferences,
-        party: &AdventuringParty,
+        ally_ids: Vec<u32>,
+        opponent_ids_option: Option<Vec<u32>>,
     ) -> Result<AbilityTarget, AppError> {
         let ability_attributes = self.get_attributes();
         if ability_attributes
@@ -24,7 +22,8 @@ impl CombatantAbilityNames {
                 &ability_attributes.valid_target_categories,
                 target_preferences,
                 character_id,
-                party,
+                ally_ids,
+                opponent_ids_option,
             )
         } else {
             let default_targeting_scheme = ability_attributes
@@ -39,7 +38,8 @@ impl CombatantAbilityNames {
                 &ability_attributes.valid_target_categories,
                 target_preferences,
                 character_id,
-                party,
+                ally_ids,
+                opponent_ids_option,
             )
         }
     }
@@ -50,35 +50,46 @@ fn targeting_scheme_targets_or_defaults(
     valid_target_categories: &TargetCategories,
     target_preferences: &AbilityTargetPreferences,
     character_id: u32,
-    party: &AdventuringParty,
+    ally_ids: Vec<u32>,
+    opponent_ids_option: Option<Vec<u32>>,
 ) -> Result<AbilityTarget, AppError> {
     match targeting_scheme {
         TargetingScheme::Single => match valid_target_categories {
             TargetCategories::Opponent => preferred_single_target_or_default(
                 FriendOrFoe::Hostile,
                 &target_preferences,
-                &party,
+                ally_ids,
+                opponent_ids_option,
             ),
             TargetCategories::User => Ok(AbilityTarget::Single(character_id)),
             TargetCategories::Friendly => preferred_single_target_or_default(
                 FriendOrFoe::Friendly,
                 &target_preferences,
-                &party,
+                ally_ids,
+                opponent_ids_option,
             ),
             TargetCategories::Any => match &target_preferences.category_of_last_target {
                 Some(category) => match category {
                     FriendOrFoe::Friendly => preferred_single_target_or_default(
                         FriendOrFoe::Friendly,
                         &target_preferences,
-                        &party,
+                        ally_ids,
+                        opponent_ids_option,
                     ),
                     FriendOrFoe::Hostile => preferred_single_target_or_default(
                         FriendOrFoe::Hostile,
                         &target_preferences,
-                        &party,
+                        ally_ids,
+                        opponent_ids_option,
                     ),
                 },
-                None => Ok(AbilityTarget::Single(party.get_monster_ids()?[0])),
+                None => {
+                    if let Some(opponent_ids) = opponent_ids_option {
+                        Ok(AbilityTarget::Single(opponent_ids[0]))
+                    } else {
+                        Ok(AbilityTarget::Single(ally_ids[0]))
+                    }
+                }
             },
         },
         TargetingScheme::Area => match valid_target_categories {
@@ -100,16 +111,17 @@ fn targeting_scheme_targets_or_defaults(
 fn preferred_single_target_or_default(
     category: FriendOrFoe,
     target_preferences: &AbilityTargetPreferences,
-    party: &AdventuringParty,
+    ally_ids: Vec<u32>,
+    opponent_ids_option: Option<Vec<u32>>,
 ) -> Result<AbilityTarget, AppError> {
     match category {
         FriendOrFoe::Friendly => {
-            let default_ally_id = party.character_positions.first().ok_or_else(|| AppError {
+            let default_ally_id = ally_ids.first().ok_or_else(|| AppError {
                 error_type: crate::errors::AppErrorTypes::ClientError,
-                message: error_messages::NO_CHARACTERS_IN_PARTY.to_string(),
+                message: error_messages::ALLY_COMBATANTS_NOT_FOUND.to_string(),
             })?;
             if let Some(previously_targeted_id) = target_preferences.friendly_single {
-                if party.character_positions.contains(&previously_targeted_id) {
+                if ally_ids.contains(&previously_targeted_id) {
                     Ok(AbilityTarget::Single(previously_targeted_id))
                 } else {
                     Ok(AbilityTarget::Single(*default_ally_id))
@@ -119,27 +131,23 @@ fn preferred_single_target_or_default(
             }
         }
         FriendOrFoe::Hostile => {
-            let monster_ids = party.get_monster_ids()?;
-            let default_monster_id = monster_ids.first().ok_or_else(|| AppError {
+            let opponent_ids = opponent_ids_option.ok_or_else(|| AppError {
+                error_type: crate::errors::AppErrorTypes::Generic,
+                message: error_messages::ENEMY_COMBATANTS_NOT_FOUND.to_string(),
+            })?;
+            let default_opponent_id = opponent_ids.first().ok_or_else(|| AppError {
                 error_type: crate::errors::AppErrorTypes::ClientError,
                 message: error_messages::ENEMY_COMBATANTS_NOT_FOUND.to_string(),
             })?;
             if let Some(previously_targeted_id) = target_preferences.hostile_single {
-                if monster_ids.contains(&previously_targeted_id) {
+                if opponent_ids.contains(&previously_targeted_id) {
                     Ok(AbilityTarget::Single(previously_targeted_id))
                 } else {
-                    Ok(AbilityTarget::Single(*default_monster_id))
+                    Ok(AbilityTarget::Single(*default_opponent_id))
                 }
             } else {
-                Ok(AbilityTarget::Single(*default_monster_id))
+                Ok(AbilityTarget::Single(*default_opponent_id))
             }
         }
-    }
-}
-
-pub fn is_id_of_existing_opponent(party: &AdventuringParty, id: &u32) -> bool {
-    match &party.current_room.monsters {
-        Some(monsters) => monsters.get(id).is_some(),
-        None => false,
     }
 }

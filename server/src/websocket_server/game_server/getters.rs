@@ -54,7 +54,7 @@ pub fn get_mut_game<'a>(
     Ok(game)
 }
 
-pub struct ActorIdAssociatedGameData<'a> {
+pub struct ActorIdAssociatedPartyData<'a> {
     pub party: &'a mut AdventuringParty,
     pub party_id: u32,
     pub current_game_name: String,
@@ -65,7 +65,7 @@ pub struct ActorIdAssociatedGameData<'a> {
 pub fn get_mut_party_game_name_and_character_ids_from_actor_id<'a>(
     game_server: &'a mut GameServer,
     actor_id: u32,
-) -> Result<ActorIdAssociatedGameData, AppError> {
+) -> Result<ActorIdAssociatedPartyData, AppError> {
     let connected_user = get_mut_user(&mut game_server.sessions, actor_id)?;
     let username = connected_user.username.clone();
     let current_game_name = connected_user
@@ -84,8 +84,46 @@ pub fn get_mut_party_game_name_and_character_ids_from_actor_id<'a>(
     })?;
     let party = get_mut_party(game, party_id)?;
 
-    Ok(ActorIdAssociatedGameData {
+    Ok(ActorIdAssociatedPartyData {
         party,
+        party_id,
+        current_game_name: current_game_name.clone(),
+        username,
+        player_character_ids_option,
+    })
+}
+
+pub struct ActorIdAssociatedGameData<'a> {
+    pub game: &'a mut RoguelikeRacerGame,
+    pub party_id: u32,
+    pub current_game_name: String,
+    pub username: String,
+    pub player_character_ids_option: Option<HashSet<u32>>,
+}
+
+pub fn get_mut_game_data_from_actor_id<'a>(
+    game_server: &'a mut GameServer,
+    actor_id: u32,
+) -> Result<ActorIdAssociatedGameData, AppError> {
+    let connected_user = get_user(&self.sessions, actor_id)?;
+    let username = connected_user.username.clone();
+    let current_game_name = connected_user
+        .current_game_name
+        .as_ref()
+        .ok_or_else(|| AppError {
+            error_type: common::errors::AppErrorTypes::ServerError,
+            message: error_messages::MISSING_GAME_REFERENCE.to_string(),
+        })?;
+    let game = get_mut_game(&mut self.games, &current_game_name)?;
+    let player = get_mut_player(game, &username)?;
+    let player_character_ids_option = player.character_ids.clone();
+    let party_id = player.party_id.ok_or_else(|| AppError {
+        error_type: common::errors::AppErrorTypes::ServerError,
+        message: error_messages::MISSING_PARTY_REFERENCE.to_string(),
+    })?;
+
+    Ok(ActorIdAssociatedGameData {
+        game,
         party_id,
         current_game_name: current_game_name.clone(),
         username,

@@ -1,13 +1,13 @@
 use crate::websocket_server::game_server::{
     getters::{
         get_mut_game, get_mut_party_game_name_and_character_ids_from_actor_id, get_mut_user,
-        get_user, ActorIdAssociatedGameData,
+        get_user, ActorIdAssociatedPartyData,
     },
     GameServer,
 };
 use common::{
     app_consts::error_messages::{self},
-    errors::AppError,
+    errors::{AppError, AppErrorTypes},
     game::getters::{get_mut_party, get_mut_player},
     packets::{client_to_server::ChangeTargetsPacket, server_to_client::GameServerUpdatePackets},
 };
@@ -42,23 +42,36 @@ impl GameServer {
         })?;
 
         let party = get_mut_party(game, party_id)?;
-        let ability =
-            party.get_character_selected_ability(player_character_ids_option, character_id)?;
+        let (_, combatant) = party.get_mut_combatant_by_id(character_id)?;
+        let ability = combatant.get_ability_if_owned(combatant.selected_ability_name)?;
         let ability_name = ability.ability_name.clone();
 
-        let new_targets =
-            if ability
-                .ability_name
-                .targets_are_valid(character_id, &new_targets, party)
-            {
-                new_targets
-            } else {
-                ability
-                    .ability_name
-                    .get_default_targets(character_id, game, party_id)?
-            };
+        let battle_id_option = party.battle_id;
+        let (ally_ids, opponent_ids_option) = if let Some(battle_id) = battle_id_option {
+            let battle = game.battles.get(&battle_id).ok_or_else(|| AppError {
+                error_type: AppErrorTypes::Generic,
+                message: error_messages::BATTLE_NOT_FOUND.to_string(),
+            })?;
 
-        let ActorIdAssociatedGameData {
+            battle.get_ally_ids_and_opponent_ids_option(character_id)?
+        } else {
+            (party.character_positions, None)
+        };
+
+        let new_targets = if ability.ability_name.targets_are_valid(
+            character_id,
+            &new_targets,
+            ally_ids,
+            opponent_ids_option,
+        ) {
+            new_targets
+        } else {
+            ability
+                .ability_name
+                .get_default_targets(character_id, ally_ids, opponent_ids_option)?
+        };
+
+        let ActorIdAssociatedPartyData {
             party,
             player_character_ids_option,
             ..

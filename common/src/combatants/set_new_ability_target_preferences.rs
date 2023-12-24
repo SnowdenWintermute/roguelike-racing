@@ -1,28 +1,34 @@
 use super::{
     abilities::{
-        get_combatant_ability_attributes::TargetingScheme,
-        targets_by_saved_preference_or_default::is_id_of_existing_opponent, AbilityTarget,
-        CombatantAbilityNames, FriendOrFoe,
+        get_combatant_ability_attributes::TargetingScheme, AbilityTarget, CombatantAbilityNames,
+        FriendOrFoe,
     },
     AbilityTargetPreferences,
 };
-use crate::adventuring_party::AdventuringParty;
 
 impl AbilityTargetPreferences {
     pub fn get_updated_preferences(
         &self,
         selected_ability_name: &CombatantAbilityNames,
         new_targets: &AbilityTarget,
-        party: &AdventuringParty,
+        ally_ids: Vec<u32>,
+        opponent_ids_option: Option<Vec<u32>>,
     ) -> AbilityTargetPreferences {
         let mut new_preferences = self.clone();
         let ability_attributes = selected_ability_name.get_attributes();
         match new_targets {
             AbilityTarget::Single(id) => {
-                if is_id_of_existing_opponent(party, &id) {
+                let is_opponent_id = {
+                    if let Some(opponent_ids) = opponent_ids_option {
+                        opponent_ids.contains(id)
+                    } else {
+                        false
+                    }
+                };
+                if is_opponent_id {
                     new_preferences.hostile_single = Some(*id);
                     new_preferences.category_of_last_target = Some(FriendOrFoe::Hostile);
-                } else if party.character_positions.contains(&id) {
+                } else if ally_ids.contains(&id) {
                     new_preferences.friendly_single = Some(*id);
                     new_preferences.category_of_last_target = Some(FriendOrFoe::Friendly);
                 }

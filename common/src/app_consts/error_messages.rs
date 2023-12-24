@@ -23,18 +23,25 @@ pub const ITEM_REQUIREMENTS_NOT_MET: &str =
 pub const CANT_EQUIP_NON_EQUIPMENT: &str = "Only equipment items may be equipped";
 pub const CANT_EXPLORE_WHEN_MONSTERS_ARE_PRESENT: &str =
     "Defeat the monsters before exploring the next room";
-pub const ABILITY_NOT_OWNED: &str = "That character doesn't have that ability";
-pub const MISSING_ABILITY_REFERENCE: &str = "The character has no ability selected";
 pub const ENEMY_COMBATANTS_NOT_FOUND: &str = "No enemy combatants found";
 pub const ALLY_COMBATANTS_NOT_FOUND: &str = "No allied combatants found";
 pub const COMBATANT_NOT_FOUND: &str = "No combatant was found by the provided ID";
 pub const NO_CHARACTERS_IN_PARTY: &str = "There are no characters in the party";
+// ABILITIES
+pub const ABILITY_NOT_OWNED: &str = "That character doesn't have that ability";
+pub const NO_ABILITY_SELECTED: &str = "No ability is selected";
+pub const MISSING_ABILITY_REFERENCE: &str = "The character has no ability selected";
 pub const ABILITY_HAS_NO_TARGETING_SCHEME: &str = "The selected ability has no targeting scheme";
+pub const INVALID_ABILITY_CONTEXT: &str = "The selected ability can not be used in this context";
+// TARGETING
 pub const NO_POSSIBLE_TARGETS_PROVIDED: &str =
     "No possible targets were found for the selected ability";
 pub const TRIED_TO_CYCLE_TARGETS_WHEN_NO_TARGETS: &str =
     "Client tried to cycle targets but they weren't targeting anything";
 pub const NO_TARGETING_SCHEMES: &str = "The selected ability has no targeting schemes";
+pub const INVALID_TARGETING_SCHEME: &str = "An invalid targeting scheme was selected";
+pub const INVALID_TARGETS_SELECTED: &str = "Invalid ability targets provided";
+// BATTLES
 pub const MISSING_BATTLE_REFERENCE: &str = "Missing a battle reference";
 pub const BATTLE_NOT_FOUND: &str = "No battle was found by the provided ID";
 pub const COMBATANT_BATTLE_MISMATCH: &str =

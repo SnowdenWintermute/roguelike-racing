@@ -23,7 +23,7 @@ pub enum PlayerInputs {
     SelectConsumable(u8),
     UseSelectedConsumable,
     SelectAbility(ClientSelectAbilityPacket),
-    UseSelectedAbility,
+    UseSelectedAbility(u32),
     ChangeTargets(ChangeTargetsPacket),
     ClearConsumableAndAbilitySelections,
     // manage equipment and items

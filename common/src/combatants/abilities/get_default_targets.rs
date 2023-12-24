@@ -2,31 +2,15 @@ use super::{
     get_combatant_ability_attributes::{TargetCategories, TargetingScheme},
     AbilityTarget, CombatantAbilityNames, FriendOrFoe,
 };
-use crate::{app_consts::error_messages, errors::AppError, game::RoguelikeRacerGame};
+use crate::{app_consts::error_messages, errors::AppError};
 
 impl CombatantAbilityNames {
     pub fn get_default_targets(
         &self,
         ability_user_id: u32,
-        game: &RoguelikeRacerGame,
-        party_id: u32,
+        ally_ids: Vec<u32>,
+        opponent_ids_option: Option<Vec<u32>>,
     ) -> Result<AbilityTarget, AppError> {
-        let party = game
-            .adventuring_parties
-            .get(&party_id)
-            .ok_or_else(|| AppError {
-                error_type: crate::errors::AppErrorTypes::Generic,
-                message: error_messages::PARTY_NOT_FOUND.to_string(),
-            })?;
-
-        let battle_id = party.battle_id.ok_or_else(|| AppError {
-            error_type: crate::errors::AppErrorTypes::Generic,
-            message: error_messages::MISSING_BATTLE_REFERENCE.to_string(),
-        })?;
-        let battle = game.battles.get(&battle_id).ok_or_else(|| AppError {
-            error_type: crate::errors::AppErrorTypes::Generic,
-            message: error_messages::BATTLE_NOT_FOUND.to_string(),
-        })?;
         let ability_attributes = self.get_attributes();
         let default_targeting_scheme =
             ability_attributes
@@ -36,26 +20,6 @@ impl CombatantAbilityNames {
                     error_type: crate::errors::AppErrorTypes::ClientError,
                     message: error_messages::ABILITY_HAS_NO_TARGETING_SCHEME.to_string(),
                 })?;
-
-        let opponent_ids_option = if battle.group_a.combatant_ids.contains(&ability_user_id) {
-            Some(battle.group_b.combatant_ids)
-        } else if battle.group_b.combatant_ids.contains(&ability_user_id) {
-            Some(battle.group_a.combatant_ids)
-        } else {
-            None
-        };
-
-        let ally_ids = if battle.group_a.combatant_ids.contains(&ability_user_id) {
-            Some(battle.group_a.combatant_ids)
-        } else if battle.group_b.combatant_ids.contains(&ability_user_id) {
-            Some(battle.group_b.combatant_ids)
-        } else {
-            None
-        }
-        .ok_or_else(|| AppError {
-            error_type: crate::errors::AppErrorTypes::Generic,
-            message: error_messages::ALLY_COMBATANTS_NOT_FOUND.to_string(),
-        })?;
 
         match default_targeting_scheme {
             TargetingScheme::Single => match ability_attributes.valid_target_categories {

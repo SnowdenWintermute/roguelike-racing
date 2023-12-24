@@ -108,6 +108,9 @@ impl Handler<ClientBinaryMessage> for GameServer {
             Ok(PlayerInputs::ChangeTargets(packet)) => {
                 self.character_changes_ability_targets_handler(message.actor_id, packet)
             }
+            Ok(PlayerInputs::UseSelectedAbility(character_id)) => {
+                self.character_uses_selected_ability_handler(message.actor_id, character_id)
+            }
             _ => {
                 println! {"unhandled binary message\n {:#?}:",deserialized};
                 Ok(())

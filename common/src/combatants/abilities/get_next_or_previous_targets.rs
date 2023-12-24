@@ -2,24 +2,26 @@ use super::{
     get_combatant_ability_attributes::TargetCategories, AbilityTarget, CombatantAbilityNames,
     FriendOrFoe,
 };
-use crate::{
-    adventuring_party::AdventuringParty, app_consts::error_messages, errors::AppError,
-    primatives::NextOrPrevious,
-};
+use crate::{app_consts::error_messages, errors::AppError, primatives::NextOrPrevious};
 
 impl CombatantAbilityNames {
     pub fn get_next_or_previous_targets(
         &self,
         current_targets: &AbilityTarget,
         direction: &NextOrPrevious,
-        character_id: &u32,
-        party: &AdventuringParty,
+        ability_user_id: &u32,
+        ally_ids: Vec<u32>,
+        opponent_ids_option: Option<Vec<u32>>,
     ) -> Result<AbilityTarget, AppError> {
         let ability_attributes = self.get_attributes();
+
         match current_targets {
             AbilityTarget::Single(id) => match ability_attributes.valid_target_categories {
                 TargetCategories::Opponent => {
-                    let possible_target_ids = party.get_monster_ids()?;
+                    let possible_target_ids = opponent_ids_option.ok_or_else(|| AppError {
+                        error_type: crate::errors::AppErrorTypes::Generic,
+                        message: error_messages::ENEMY_COMBATANTS_NOT_FOUND.to_string(),
+                    })?;
                     let new_target_id = get_next_or_prev_id_from_ordered_id_list(
                         &possible_target_ids,
                         *id,
@@ -27,18 +29,18 @@ impl CombatantAbilityNames {
                     )?;
                     Ok(AbilityTarget::Single(new_target_id))
                 }
-                TargetCategories::User => Ok(AbilityTarget::Single(*character_id)),
+                TargetCategories::User => Ok(AbilityTarget::Single(*ability_user_id)),
                 TargetCategories::Friendly => {
-                    let new_target_id = get_next_or_prev_id_from_ordered_id_list(
-                        &party.character_positions,
-                        *id,
-                        &direction,
-                    )?;
+                    let new_target_id =
+                        get_next_or_prev_id_from_ordered_id_list(&ally_ids, *id, &direction)?;
                     Ok(AbilityTarget::Single(new_target_id))
                 }
                 TargetCategories::Any => {
-                    let mut possible_target_ids = party.get_monster_ids()?;
-                    possible_target_ids.extend(party.character_positions.clone());
+                    let mut possible_target_ids = vec![];
+                    if let Some(opponent_ids) = opponent_ids_option {
+                        possible_target_ids.extend(opponent_ids);
+                    }
+                    possible_target_ids.extend(ally_ids.clone());
                     let new_target_id = get_next_or_prev_id_from_ordered_id_list(
                         &possible_target_ids,
                         *id,
@@ -49,7 +51,7 @@ impl CombatantAbilityNames {
             },
             AbilityTarget::Group(category) => match ability_attributes.valid_target_categories {
                 TargetCategories::Opponent => Ok(AbilityTarget::Group(FriendOrFoe::Hostile)),
-                TargetCategories::User => Ok(AbilityTarget::Single(*character_id)),
+                TargetCategories::User => Ok(AbilityTarget::Single(*ability_user_id)),
                 TargetCategories::Friendly => Ok(AbilityTarget::Group(FriendOrFoe::Friendly)),
                 TargetCategories::Any => match category {
                     FriendOrFoe::Friendly => Ok(AbilityTarget::Group(FriendOrFoe::Hostile)),

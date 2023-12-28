@@ -42,22 +42,53 @@ impl GameServer {
                 error_type: common::errors::AppErrorTypes::InvalidInput,
                 message: error_messages::NO_POSSIBLE_TARGETS_PROVIDED.to_string(),
             })?;
-        // check if targets are valid
-        let targets_are_valid = ability_name.targets_are_valid(
-            packet.character_id,
-            &targets,
-            &party.character_positions,
-            None,
-        );
 
-        if !targets_are_valid {
-            return Err(AppError {
-                error_type: common::errors::AppErrorTypes::InvalidInput,
-                message: error_messages::INVALID_TARGETS_SELECTED.to_string(),
-            });
-        }
+        // if in combat
+        if let Some(battle_id) = party.battle_id {
+            let battle = game.battles.get(&battle_id).ok_or_else(|| AppError {
+                error_type: common::errors::AppErrorTypes::ServerError,
+                message: error_messages::BATTLE_NOT_FOUND.to_string(),
+            })?;
+            // check if character is first in turn order
+            if !battle.combatant_is_first_in_turn_order(character_id) {
+                return Err(AppError {
+                    error_type: common::errors::AppErrorTypes::InvalidInput,
+                    message: error_messages::NOT_THIS_COMBATANTS_TURN.to_string(),
+                });
+            }
+            // check if ability is usable in combat
+            if ability_attributes.usability_context == AbilityUsableContext::OutOfCombat {
+                return Err(AppError {
+                    error_type: common::errors::AppErrorTypes::InvalidInput,
+                    message: error_messages::INVALID_ABILITY_CONTEXT.to_string(),
+                });
+            };
+            let (ally_ids, opponent_ids_option) =
+                battle.get_ally_ids_and_opponent_ids_option(character_id)?;
 
-        if party.battle_id.is_none() {
+            // check if targets are valid
+            let targets_are_valid = ability_name.targets_are_valid(
+                packet.character_id,
+                &targets,
+                &ally_ids,
+                opponent_ids_option,
+            );
+            if !targets_are_valid {
+                return Err(AppError {
+                    error_type: common::errors::AppErrorTypes::InvalidInput,
+                    message: error_messages::INVALID_TARGETS_SELECTED.to_string(),
+                });
+            }
+            // if ability ends turn
+            //   if next turn is a player, return targets and their changes, including the effect that
+            //   the ability user's turn has ended. client will prompt next player in turn order to
+            //   move.
+            //
+            //   if next turn is ai controlled, return client targets and changes, as well as targets
+            //   and changes for next ai ability used in turn order, repeating until a player is next.
+            //
+            //   client animates each ability targets/effects object, then prompts next player to move
+        } else {
             // check if ability can be used out of combat
             if ability_attributes.usability_context == AbilityUsableContext::InCombat {
                 return Err(AppError {
@@ -65,25 +96,25 @@ impl GameServer {
                     message: error_messages::INVALID_ABILITY_CONTEXT.to_string(),
                 });
             };
+            // check if targets are valid
+            let targets_are_valid = ability_name.targets_are_valid(
+                packet.character_id,
+                &targets,
+                &party.character_positions,
+                None,
+            );
+
+            if !targets_are_valid {
+                return Err(AppError {
+                    error_type: common::errors::AppErrorTypes::InvalidInput,
+                    message: error_messages::INVALID_TARGETS_SELECTED.to_string(),
+                });
+            }
 
             // return the targets and hp/mp/status effect changes.
             // client can construct animation of the effects
         }
 
-        //
-        // if in combat
-        // check if character is first in turn order
-        // check if ability is usable in combat
-        // check if targets are valid
-        // if ability ends turn
-        //   if next turn is a player, return targets and their changes, including the effect that
-        //   the ability user's turn has ended. client will prompt next player in turn order to
-        //   move.
-        //
-        //   if next turn is ai controlled, return client targets and changes, as well as targets
-        //   and changes for next ai ability used in turn order, repeating until a player is next.
-        //
-        //   client animates each ability targets/effects object, then prompts next player to move
         Ok(())
     }
 }

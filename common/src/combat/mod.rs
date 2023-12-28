@@ -17,17 +17,16 @@ pub struct Battle {
     pub id: u32,
     pub group_a: BattleGroup,
     pub group_b: BattleGroup,
-    pub combatant_turn_trackers: Option<Vec<CombatantTurnTracker>>,
+    pub combatant_turn_trackers: Vec<CombatantTurnTracker>,
 }
 
 impl Battle {
     pub fn combatant_is_first_in_turn_order(&self, entity_id: u32) -> bool {
-        match &self.combatant_turn_trackers {
-            Some(trackers) => match trackers.get(0) {
-                Some(combat_turn_tracker) => combat_turn_tracker.entity_id == entity_id,
-                None => false,
-            },
-            None => false,
+        let first_turn_tracker_option = self.combatant_turn_trackers.first();
+        if let Some(first_turn_tracker) = first_turn_tracker_option {
+            return first_turn_tracker.entity_id == entity_id;
+        } else {
+            return false;
         }
     }
 
@@ -77,15 +76,14 @@ impl RoguelikeRacerGame {
         group_a: BattleGroup,
         group_b: BattleGroup,
     ) -> Result<(), AppError> {
+        let turn_trackers = self.get_battle_turn_order(&group_a, &group_b)?;
         let mut battle = Battle {
             id: self.id_generator.get_next_entity_id(),
             group_a,
             group_b,
-            combatant_turn_trackers: None,
+            combatant_turn_trackers: turn_trackers,
         };
 
-        let turn_trackers = self.get_combat_turn_order(&battle)?;
-        battle.combatant_turn_trackers = Some(turn_trackers);
         self.battles.insert(battle.id, battle);
 
         Ok(())

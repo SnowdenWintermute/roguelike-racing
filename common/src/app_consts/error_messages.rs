@@ -46,3 +46,6 @@ pub const MISSING_BATTLE_REFERENCE: &str = "Missing a battle reference";
 pub const BATTLE_NOT_FOUND: &str = "No battle was found by the provided ID";
 pub const COMBATANT_BATTLE_MISMATCH: &str =
     "A combatant attempted to take action in a battle that they are not a part of";
+pub const TURN_TRACKERS_EMPTY: &str = "The battle has no turn trackers in the turn order list";
+pub const NOT_THIS_COMBATANTS_TURN: &str =
+    "A combatant tried to use an ability when it was not their turn";

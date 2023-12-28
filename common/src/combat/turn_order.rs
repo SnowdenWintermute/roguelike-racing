@@ -1,4 +1,4 @@
-use super::Battle;
+use super::{Battle, BattleGroup};
 use crate::{
     combatants::{CombatAttributes, CombatantProperties},
     errors::AppError,
@@ -29,28 +29,28 @@ pub fn get_turn_tracker_from_combatant(
 }
 
 impl RoguelikeRacerGame {
-    pub fn get_combat_turn_order(
-        &mut self,
-        battle: &Battle,
+    pub fn get_battle_turn_order(
+        &self,
+        group_a: &BattleGroup,
+        group_b: &BattleGroup,
     ) -> Result<Vec<CombatantTurnTracker>, AppError> {
         let mut combatant_turn_trackers = vec![];
 
-        let party_a = get_party(self, battle.group_a.party_id)?;
-        for entity_id in &battle.group_a.combatant_ids {
+        let party_a = get_party(self, group_a.party_id)?;
+        for entity_id in &group_a.combatant_ids {
             let (_, combatant_properties) = party_a.get_combatant_by_id(*entity_id)?;
             let turn_tracker = get_turn_tracker_from_combatant(&combatant_properties, *entity_id);
             combatant_turn_trackers.push(turn_tracker);
         }
 
-        let party_b = get_party(self, battle.group_b.party_id)?;
-        for entity_id in &battle.group_b.combatant_ids {
+        let party_b = get_party(self, group_b.party_id)?;
+        for entity_id in &group_b.combatant_ids {
             let (_, combatant_properties) = party_b.get_combatant_by_id(*entity_id)?;
             let turn_tracker = get_turn_tracker_from_combatant(&combatant_properties, *entity_id);
             combatant_turn_trackers.push(turn_tracker);
         }
 
         combatant_turn_trackers.sort_by(|a, b| b.movement.partial_cmp(&a.movement).unwrap());
-        println!("trackers: {:#?}", combatant_turn_trackers);
 
         Ok(combatant_turn_trackers)
 

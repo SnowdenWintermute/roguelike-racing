@@ -20,13 +20,14 @@ impl GameServer {
             current_game_name,
             username,
             player_character_ids_option,
-        } = get_mut_game_data_from_actor_id(self, actor_id);
+        } = get_mut_game_data_from_actor_id(self, actor_id)?;
         let party = get_mut_party(game, party_id)?;
         let character =
-            party.get_mut_character_if_owned(player_character_ids_option, packet.character_id)?;
+            party.get_mut_character_if_owned(player_character_ids_option, character_id)?;
         let ability_name = character
             .combatant_properties
             .selected_ability_name
+            .as_ref()
             .ok_or_else(|| AppError {
                 error_type: common::errors::AppErrorTypes::InvalidInput,
                 message: error_messages::NO_ABILITY_SELECTED.to_string(),
@@ -38,6 +39,7 @@ impl GameServer {
         let targets = character
             .combatant_properties
             .ability_targets
+            .as_ref()
             .ok_or_else(|| AppError {
                 error_type: common::errors::AppErrorTypes::InvalidInput,
                 message: error_messages::NO_POSSIBLE_TARGETS_PROVIDED.to_string(),
@@ -68,17 +70,23 @@ impl GameServer {
 
             // check if targets are valid
             let targets_are_valid = ability_name.targets_are_valid(
-                packet.character_id,
+                character_id,
                 &targets,
                 &ally_ids,
-                opponent_ids_option,
+                &opponent_ids_option,
             );
+
             if !targets_are_valid {
                 return Err(AppError {
                     error_type: common::errors::AppErrorTypes::InvalidInput,
                     message: error_messages::INVALID_TARGETS_SELECTED.to_string(),
                 });
             }
+
+            // process client ability and add it to the packet of ability execution results
+            let action_result =
+                game.process_ability(character_id, &ability_name, &targets, Some(&battle.clone()));
+
             // if ability ends turn
             //   if next turn is a player, return targets and their changes, including the effect that
             //   the ability user's turn has ended. client will prompt next player in turn order to
@@ -98,10 +106,10 @@ impl GameServer {
             };
             // check if targets are valid
             let targets_are_valid = ability_name.targets_are_valid(
-                packet.character_id,
+                character_id,
                 &targets,
                 &party.character_positions,
-                None,
+                &None,
             );
 
             if !targets_are_valid {

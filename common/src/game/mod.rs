@@ -2,7 +2,7 @@ use self::getters::get_mut_party;
 use self::getters::get_mut_player;
 use crate::adventuring_party::AdventuringParty;
 use crate::character::Character;
-use crate::combat::Battle;
+use crate::combat::battle::Battle;
 use crate::errors::AppError;
 use crate::game::id_generator::IdGenerator;
 use crate::items::Item;

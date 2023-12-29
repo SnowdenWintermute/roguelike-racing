@@ -105,7 +105,7 @@ pub fn get_mut_game_data_from_actor_id<'a>(
     game_server: &'a mut GameServer,
     actor_id: u32,
 ) -> Result<ActorIdAssociatedGameData, AppError> {
-    let connected_user = get_user(&self.sessions, actor_id)?;
+    let connected_user = get_user(&game_server.sessions, actor_id)?;
     let username = connected_user.username.clone();
     let current_game_name = connected_user
         .current_game_name
@@ -114,7 +114,7 @@ pub fn get_mut_game_data_from_actor_id<'a>(
             error_type: common::errors::AppErrorTypes::ServerError,
             message: error_messages::MISSING_GAME_REFERENCE.to_string(),
         })?;
-    let game = get_mut_game(&mut self.games, &current_game_name)?;
+    let game = get_mut_game(&mut game_server.games, &current_game_name)?;
     let player = get_mut_player(game, &username)?;
     let player_character_ids_option = player.character_ids.clone();
     let party_id = player.party_id.ok_or_else(|| AppError {

@@ -1,4 +1,4 @@
-use super::{Battle, BattleGroup};
+use super::BattleGroup;
 use crate::{
     combatants::{CombatAttributes, CombatantProperties},
     errors::AppError,

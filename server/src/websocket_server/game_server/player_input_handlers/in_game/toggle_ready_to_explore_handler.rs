@@ -1,17 +1,16 @@
-use std::collections::HashSet;
-
 use crate::websocket_server::game_server::{
     getters::{get_mut_game, get_mut_user},
     GameServer,
 };
 use common::{
     app_consts::error_messages,
-    combat::{BattleGroup, BattleGroupTypes},
+    combat::battle::{BattleGroup, BattleGroupTypes},
     dungeon_rooms::{DungeonRoom, DungeonRoomTypes},
     errors::AppError,
     game::getters::{get_mut_party, get_mut_player},
     packets::server_to_client::GameServerUpdatePackets,
 };
+use std::collections::HashSet;
 
 impl GameServer {
     pub fn toggle_ready_to_explore_handler(&mut self, actor_id: u32) -> Result<(), AppError> {

@@ -289,7 +289,7 @@ impl CombatantProperties {
     }
 
     pub fn get_mut_ability_if_owned<'a>(
-        &self,
+        &'a mut self,
         ability_name: &CombatantAbilityNames,
     ) -> Result<&'a mut CombatantAbility, AppError> {
         self.abilities
@@ -301,7 +301,7 @@ impl CombatantProperties {
     }
 
     pub fn get_ability_if_owned<'a>(
-        &self,
+        &'a self,
         ability_name: &CombatantAbilityNames,
     ) -> Result<&'a CombatantAbility, AppError> {
         self.abilities.get(ability_name).ok_or_else(|| AppError {

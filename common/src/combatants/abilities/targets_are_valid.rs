@@ -8,8 +8,8 @@ impl CombatantAbilityNames {
         &self,
         ability_user_id: u32,
         targets: &AbilityTarget,
-        ally_ids: Vec<u32>,
-        opponent_ids_option: Option<Vec<u32>>,
+        ally_ids: &Vec<u32>,
+        opponent_ids_option: &Option<Vec<u32>>,
     ) -> bool {
         let ability_attributes = self.get_attributes();
         match targets {

@@ -25,6 +25,12 @@ pub enum UpOrDown {
     Down,
 }
 
+#[derive(PartialEq)]
+pub enum GainedOrLost {
+    Gained,
+    Lost,
+}
+
 #[derive(PartialEq, Eq, Clone, Hash)]
 pub enum NextOrPrevious {
     Next,

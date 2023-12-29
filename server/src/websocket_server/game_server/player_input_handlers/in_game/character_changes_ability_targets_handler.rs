@@ -43,7 +43,11 @@ impl GameServer {
 
         let party = get_mut_party(game, party_id)?;
         let (_, combatant) = party.get_mut_combatant_by_id(character_id)?;
-        let ability = combatant.get_ability_if_owned(combatant.selected_ability_name)?;
+        let selected_ability_name = combatant.selected_ability_name.ok_or_else(|| AppError {
+            error_type: AppErrorTypes::Generic,
+            message: error_messages::NO_ABILITY_SELECTED.to_string(),
+        })?;
+        let ability = combatant.get_ability_if_owned(&selected_ability_name)?;
         let ability_name = ability.ability_name.clone();
 
         let battle_id_option = party.battle_id;
@@ -61,8 +65,8 @@ impl GameServer {
         let new_targets = if ability.ability_name.targets_are_valid(
             character_id,
             &new_targets,
-            ally_ids,
-            opponent_ids_option,
+            &ally_ids,
+            &opponent_ids_option,
         ) {
             new_targets
         } else {
@@ -79,9 +83,23 @@ impl GameServer {
         let character =
             party.get_character_if_owned(player_character_ids_option.clone(), character_id)?;
 
+        let (ally_ids, opponent_ids_option) = if let Some(battle_id) = party.battle_id {
+            let battle = game.battles.get(&battle_id).ok_or_else(|| AppError {
+                error_type: AppErrorTypes::Generic,
+                message: error_messages::BATTLE_NOT_FOUND.to_string(),
+            })?;
+            battle.get_ally_ids_and_opponent_ids_option(character_id)?
+        } else {
+            (party.character_positions, None)
+        };
+
         let target_preferences = &character.combatant_properties.ability_target_preferences;
-        let new_target_preferences =
-            target_preferences.get_updated_preferences(&ability_name, &new_targets, party);
+        let new_target_preferences = target_preferences.get_updated_preferences(
+            &ability_name,
+            &new_targets,
+            ally_ids,
+            opponent_ids_option,
+        );
         let character =
             party.get_mut_character_if_owned(player_character_ids_option, character_id)?;
 

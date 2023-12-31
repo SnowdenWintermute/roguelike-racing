@@ -27,19 +27,19 @@ impl GameServer {
         let ability_name = character
             .combatant_properties
             .selected_ability_name
-            .as_ref()
+            .clone()
             .ok_or_else(|| AppError {
                 error_type: common::errors::AppErrorTypes::InvalidInput,
                 message: error_messages::NO_ABILITY_SELECTED.to_string(),
             })?;
         let ability_attributes = ability_name.get_attributes();
-        let selected_ability = character
+        let _ = character
             .combatant_properties
             .get_ability_if_owned(&ability_name)?;
         let targets = character
             .combatant_properties
             .ability_targets
-            .as_ref()
+            .clone()
             .ok_or_else(|| AppError {
                 error_type: common::errors::AppErrorTypes::InvalidInput,
                 message: error_messages::NO_POSSIBLE_TARGETS_PROVIDED.to_string(),

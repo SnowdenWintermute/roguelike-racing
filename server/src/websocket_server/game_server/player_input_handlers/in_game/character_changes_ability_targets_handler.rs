@@ -1,7 +1,7 @@
 use crate::websocket_server::game_server::{
     getters::{
-        get_mut_game, get_mut_party_game_name_and_character_ids_from_actor_id, get_mut_user,
-        get_user, ActorIdAssociatedPartyData,
+        get_mut_game, get_mut_party_game_name_and_character_ids_from_actor_id, get_user,
+        ActorIdAssociatedPartyData,
     },
     GameServer,
 };
@@ -28,29 +28,32 @@ impl GameServer {
         let current_game_name =
             connected_user
                 .current_game_name
-                .as_ref()
+                .clone()
                 .ok_or_else(|| AppError {
                     error_type: common::errors::AppErrorTypes::ServerError,
                     message: error_messages::MISSING_GAME_REFERENCE.to_string(),
                 })?;
         let game = get_mut_game(&mut self.games, &current_game_name)?;
         let player = get_mut_player(game, &username)?;
-        let player_character_ids_option = player.character_ids.clone();
         let party_id = player.party_id.ok_or_else(|| AppError {
             error_type: common::errors::AppErrorTypes::ServerError,
             message: error_messages::MISSING_PARTY_REFERENCE.to_string(),
         })?;
 
         let party = get_mut_party(game, party_id)?;
+        let battle_id_option = party.battle_id.clone();
+        let character_positions = party.character_positions.clone();
         let (_, combatant) = party.get_mut_combatant_by_id(character_id)?;
-        let selected_ability_name = combatant.selected_ability_name.ok_or_else(|| AppError {
-            error_type: AppErrorTypes::Generic,
-            message: error_messages::NO_ABILITY_SELECTED.to_string(),
-        })?;
-        let ability = combatant.get_ability_if_owned(&selected_ability_name)?;
+        let ability_name = combatant
+            .selected_ability_name
+            .clone()
+            .ok_or_else(|| AppError {
+                error_type: AppErrorTypes::Generic,
+                message: error_messages::NO_ABILITY_SELECTED.to_string(),
+            })?;
+        let ability = combatant.get_ability_if_owned(&ability_name)?;
         let ability_name = ability.ability_name.clone();
 
-        let battle_id_option = party.battle_id;
         let (ally_ids, opponent_ids_option) = if let Some(battle_id) = battle_id_option {
             let battle = game.battles.get(&battle_id).ok_or_else(|| AppError {
                 error_type: AppErrorTypes::Generic,
@@ -59,10 +62,10 @@ impl GameServer {
 
             battle.get_ally_ids_and_opponent_ids_option(character_id)?
         } else {
-            (party.character_positions, None)
+            (character_positions.clone(), None)
         };
 
-        let new_targets = if ability.ability_name.targets_are_valid(
+        let new_targets = if ability_name.targets_are_valid(
             character_id,
             &new_targets,
             &ally_ids,
@@ -70,9 +73,7 @@ impl GameServer {
         ) {
             new_targets
         } else {
-            ability
-                .ability_name
-                .get_default_targets(character_id, ally_ids, opponent_ids_option)?
+            ability_name.get_default_targets(character_id, &ally_ids, &opponent_ids_option)?
         };
 
         let ActorIdAssociatedPartyData {
@@ -82,16 +83,6 @@ impl GameServer {
         } = get_mut_party_game_name_and_character_ids_from_actor_id(self, actor_id)?;
         let character =
             party.get_character_if_owned(player_character_ids_option.clone(), character_id)?;
-
-        let (ally_ids, opponent_ids_option) = if let Some(battle_id) = party.battle_id {
-            let battle = game.battles.get(&battle_id).ok_or_else(|| AppError {
-                error_type: AppErrorTypes::Generic,
-                message: error_messages::BATTLE_NOT_FOUND.to_string(),
-            })?;
-            battle.get_ally_ids_and_opponent_ids_option(character_id)?
-        } else {
-            (party.character_positions, None)
-        };
 
         let target_preferences = &character.combatant_properties.ability_target_preferences;
         let new_target_preferences = target_preferences.get_updated_preferences(

@@ -45,10 +45,23 @@ impl GameServer {
             character.combatant_properties.ability_targets = None;
             None
         } else {
-            let character = party
-                .get_character_if_owned(player_character_ids_option.clone(), packet.character_id)?;
-
             let battle_id_option = party.battle_id;
+            let character_positions = party.character_positions.clone();
+            let character = party.get_mut_character_if_owned(
+                player_character_ids_option.clone(),
+                packet.character_id,
+            )?;
+            let target_preferences = character
+                .combatant_properties
+                .ability_target_preferences
+                .clone();
+
+            let ability_name = packet.ability_name_option.clone().expect("is_none checked");
+            // don't allow selection of unowned ability
+            let _ = character
+                .combatant_properties
+                .get_mut_ability_if_owned(&ability_name)?;
+
             let (ally_ids, opponent_ids_option) = if let Some(battle_id) = battle_id_option {
                 let battle = game.battles.get(&battle_id).ok_or_else(|| AppError {
                     error_type: AppErrorTypes::Generic,
@@ -57,20 +70,19 @@ impl GameServer {
 
                 battle.get_ally_ids_and_opponent_ids_option(packet.character_id)?
             } else {
-                (party.character_positions, None)
+                (character_positions, None)
             };
+            let party = get_mut_party(game, party_id)?;
+            let character = party.get_mut_character_if_owned(
+                player_character_ids_option.clone(),
+                packet.character_id,
+            )?;
 
-            let ability_name = packet.ability_name_option.clone().expect("is_none checked");
-            // don't allow selection of unowned ability
-            let ability = character
-                .combatant_properties
-                .get_mut_ability_if_owned(&ability_name)?;
-            let target_preferences = &character.combatant_properties.ability_target_preferences;
             let new_targets = ability_name.targets_by_saved_preference_or_default(
                 character.entity_properties.id,
                 &target_preferences,
-                ally_ids,
-                opponent_ids_option,
+                ally_ids.clone(),
+                opponent_ids_option.clone(),
             )?;
             let new_target_preferences = target_preferences.get_updated_preferences(
                 &ability_name,
@@ -78,6 +90,7 @@ impl GameServer {
                 ally_ids,
                 opponent_ids_option,
             );
+            let party = get_mut_party(game, party_id)?;
             let character = party
                 .get_mut_character_if_owned(player_character_ids_option, packet.character_id)?;
             character.combatant_properties.selected_ability_name = Some(ability_name);

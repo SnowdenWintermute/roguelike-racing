@@ -43,7 +43,7 @@ impl GameServer {
         let party = get_mut_party(game, party_id)?;
         let battle_id_option = party.battle_id.clone();
         let character_positions = party.character_positions.clone();
-        let (_, combatant) = party.get_mut_combatant_by_id(character_id)?;
+        let (_, combatant) = party.get_mut_combatant_by_id(&character_id)?;
         let ability_name = combatant
             .selected_ability_name
             .clone()

@@ -1,4 +1,4 @@
-use crate::combatants::CombatAttributes;
+use crate::combatants::combat_attributes::CombatAttributes;
 use core::hash::Hash;
 use std::collections::HashMap;
 use strum::IntoEnumIterator;

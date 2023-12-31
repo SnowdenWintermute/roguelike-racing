@@ -1,31 +1,25 @@
 pub mod abilities;
+pub mod combat_attributes;
+mod get_base_ability_damage_bonus;
+mod get_equipped_weapon_properties;
+mod get_total_attributes;
+mod get_weapon_damage_and_hit_chance;
 mod set_new_ability_target_preferences;
+use self::abilities::get_combatant_ability_attributes::TargetingScheme;
 use self::abilities::AbilityTarget;
 use self::abilities::CombatantAbility;
 use self::abilities::CombatantAbilityNames;
 use self::abilities::FriendOrFoe;
-use self::abilities::get_combatant_ability_attributes::TargetingScheme;
-use crate::app_consts::AGI_TO_SPEED_RATIO;
-use crate::app_consts::DEX_TO_ACCURACY_RATIO;
-use crate::app_consts::OFF_HAND_ACCURACY_MODIFIER;
-use crate::app_consts::OFF_HAND_DAMAGE_MODIFIER;
+use self::combat_attributes::CombatAttributes;
 use crate::app_consts::error_messages;
 use crate::errors::AppError;
-use crate::items::equipment::trait_effects::get_weapon_percent_damage_increase_trait_damage_modifier::get_weapon_percent_damage_increase_trait_damage_modifier;
-use crate::items::equipment::weapon_properties::WeaponProperties;
 use crate::items::equipment::EquipmentSlots;
-use crate::items::equipment::EquipmentTraits;
-use crate::items::equipment::EquipmentTypes;
 use crate::items::Item;
-use crate::items::ItemProperties;
-use crate::primatives::Range;
 use crate::status_effects::StatusEffects;
 use core::fmt;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
-use strum::IntoEnumIterator;
-use strum_macros::EnumIter;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub enum CombatantClass {
@@ -42,60 +36,6 @@ impl fmt::Display for CombatantClass {
             CombatantClass::Mage => write!(f, "Mage"),
             CombatantClass::Rogue => write!(f, "Rogue"),
             CombatantClass::None => write!(f, "None"),
-        }
-    }
-}
-
-#[derive(
-    Debug, EnumIter, Clone, Copy, Hash, Eq, PartialEq, Serialize, Deserialize, PartialOrd, Ord,
-)]
-pub enum CombatAttributes {
-    Damage,           // flat bonus to physical damage
-    ArmorPenetration, // negates armor class
-    ArmorClass,       // compared with final damage of physical attack, reduces damage on a curve
-    Accuracy,         // chance to hit with physical attacks and abilities
-    Evasion,          // dodge an attack
-    Focus,            // magical accuracy
-    Obscurity,        // chance to fully resist a magical ability
-    Speed,            // determines turn order
-    Hp,               // if reduced to 0 or below, combatant is "dead"
-    Mp,               // a resource for ability use
-    Dexterity,        // ranged damage, accuracy with physical attacks, physical crit chance, armor
-    // penetration for ranged piercing weapons
-    Intelligence, // mp, magic ability damage, obscurity, focus
-    Strength,     // damage with melee attacks, melee crit multiplier, melee armor penetration for
-    // piercing and slashing weapons
-    Vitality,   // hp and %damage reduction after AC damage reduction
-    Resilience, // %magic damage reduction, healing received, magical crit damage reduction
-    Agility,    // movement speed, evasion, physical crit damage reduction
-}
-
-pub const CORE_ATTRIBUTES: [CombatAttributes; 4] = [
-    CombatAttributes::Dexterity,
-    CombatAttributes::Intelligence,
-    CombatAttributes::Strength,
-    CombatAttributes::Vitality,
-];
-
-impl fmt::Display for CombatAttributes {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            CombatAttributes::Damage => write!(f, "Damage"),
-            CombatAttributes::ArmorClass => write!(f, "Armor Class"),
-            CombatAttributes::Dexterity => write!(f, "Dexterity"),
-            CombatAttributes::Strength => write!(f, "Strength"),
-            CombatAttributes::Intelligence => write!(f, "Intelligence"),
-            CombatAttributes::Vitality => write!(f, "Vitality"),
-            CombatAttributes::Resilience => write!(f, "Resilience"),
-            CombatAttributes::Agility => write!(f, "Agility"),
-            CombatAttributes::Accuracy => write!(f, "Accuracy"),
-            CombatAttributes::Focus => write!(f, "Focus"),
-            CombatAttributes::Evasion => write!(f, "Evasion"),
-            CombatAttributes::Obscurity => write!(f, "Obscurity"),
-            CombatAttributes::Speed => write!(f, "Speed"),
-            CombatAttributes::Hp => write!(f, "HP"),
-            CombatAttributes::Mp => write!(f, "MP"),
-            CombatAttributes::ArmorPenetration => write!(f, "Armor Pen."),
         }
     }
 }
@@ -157,119 +97,6 @@ impl CombatantProperties {
         }
     }
 
-    pub fn get_total_attributes(&self) -> HashMap<CombatAttributes, u16> {
-        let mut total_attributes = HashMap::new();
-        for attribute in CombatAttributes::iter() {
-            total_attributes.insert(attribute, 0);
-        }
-
-        add_attributes_to_accumulator(&self.inherent_attributes, &mut total_attributes);
-
-        for (_slot, item) in &self.equipment {
-            match &item.item_properties {
-                crate::items::ItemProperties::Consumable(_) => (),
-                crate::items::ItemProperties::Equipment(equipment) => {
-                    add_attributes_to_accumulator(&equipment.attributes, &mut total_attributes);
-                    let base_ac = equipment.get_base_armor_class();
-                    total_attributes
-                        .entry(CombatAttributes::ArmorClass)
-                        .and_modify(|value| *value += base_ac as u16)
-                        .or_insert(base_ac as u16);
-                }
-            }
-        }
-        // after adding up attributes, determine if any equipped item still doesn't meet attribute
-        // requirements, if so, remove it's attributes from the total
-        for (_slot, item) in &self.equipment {
-            let equipped_item_is_usable =
-                item.requirements_satisfied_by_attributes(&total_attributes);
-            if !equipped_item_is_usable {
-                match &item.item_properties {
-                    crate::items::ItemProperties::Consumable(_) => (),
-                    crate::items::ItemProperties::Equipment(equipment) => {
-                        remove_attributes_from_accumulator(
-                            &equipment.attributes,
-                            &mut total_attributes,
-                        );
-                        let base_ac = equipment.get_base_armor_class();
-                        total_attributes
-                            .entry(CombatAttributes::ArmorClass)
-                            .and_modify(|value| *value -= base_ac as u16);
-                    }
-                }
-            }
-        }
-
-        // derive accuracy from +acc, inherant, and all Dex
-        let total_dex_option = total_attributes.get(&CombatAttributes::Dexterity);
-        let total_acc = total_attributes
-            .get(&CombatAttributes::Accuracy)
-            .unwrap_or_else(|| &0);
-        if let Some(dex) = total_dex_option {
-            let accuracy_from_dex = DEX_TO_ACCURACY_RATIO * dex;
-            total_attributes.insert(CombatAttributes::Accuracy, total_acc + accuracy_from_dex);
-        }
-
-        // derrive speed from agility and +speed
-        let total_agility_option = total_attributes.get(&CombatAttributes::Agility);
-        let total_speed = total_attributes
-            .get(&CombatAttributes::Speed)
-            .unwrap_or_else(|| &0);
-        if let Some(agility) = total_agility_option {
-            let speed_from_agility = AGI_TO_SPEED_RATIO * agility;
-            total_attributes.insert(CombatAttributes::Speed, total_speed + speed_from_agility);
-        }
-
-        total_attributes
-    }
-
-    pub fn get_equipped_weapon_properties(
-        &self,
-        slot: &EquipmentSlots,
-    ) -> Option<(&WeaponProperties, &Option<Vec<EquipmentTraits>>)> {
-        match self.equipment.get(slot) {
-            Some(item) => match &item.item_properties {
-                ItemProperties::Consumable(_) => None,
-                ItemProperties::Equipment(properties) => match &properties.equipment_type {
-                    EquipmentTypes::OneHandedMeleeWeapon(_, weapon_properties)
-                    | EquipmentTypes::TwoHandedMeleeWeapon(_, weapon_properties)
-                    | EquipmentTypes::TwoHandedRangedWeapon(_, weapon_properties) => {
-                        Some((&weapon_properties, &properties.traits))
-                    }
-                    _ => None,
-                },
-            },
-            None => None,
-        }
-    }
-
-    pub fn get_weapon_damage_and_hit_chance(
-        weapon_properties: &WeaponProperties,
-        traits: &Option<Vec<EquipmentTraits>>,
-        combatant_base_damage: u16,
-        accuracy: u16,
-        is_off_hand: bool,
-    ) -> (Range<u16>, u16) {
-        let percent_damage_increase_from_trait =
-            get_weapon_percent_damage_increase_trait_damage_modifier(traits);
-        let mut modified_min = weapon_properties.damage.min as f32 + combatant_base_damage as f32;
-        let mut modified_max = weapon_properties.damage.max as f32 + combatant_base_damage as f32;
-        modified_min *= percent_damage_increase_from_trait;
-        modified_max *= percent_damage_increase_from_trait;
-        let mut modified_acc = accuracy as f32;
-
-        if is_off_hand {
-            modified_min *= OFF_HAND_DAMAGE_MODIFIER;
-            modified_max *= OFF_HAND_DAMAGE_MODIFIER;
-            modified_acc *= OFF_HAND_ACCURACY_MODIFIER;
-        }
-
-        (
-            Range::new(modified_min as u16, modified_max as u16),
-            modified_acc as u16,
-        )
-    }
-
     pub fn can_use_item(&self, item: &Item) -> bool {
         let total_character_attributes = self.get_total_attributes();
         item.requirements_satisfied_by_attributes(&total_character_attributes)
@@ -308,27 +135,5 @@ impl CombatantProperties {
             error_type: crate::errors::AppErrorTypes::InvalidInput,
             message: error_messages::ABILITY_NOT_OWNED.to_string(),
         })
-    }
-}
-
-pub fn add_attributes_to_accumulator(
-    attr: &HashMap<CombatAttributes, u16>,
-    acc: &mut HashMap<CombatAttributes, u16>,
-) {
-    for (attribute, number) in attr {
-        if let Some(value) = acc.get_mut(attribute) {
-            *value += number
-        }
-    }
-}
-
-pub fn remove_attributes_from_accumulator(
-    attr: &HashMap<CombatAttributes, u16>,
-    acc: &mut HashMap<CombatAttributes, u16>,
-) {
-    for (attribute, number) in attr {
-        if let Some(value) = acc.get_mut(attribute) {
-            *value -= number
-        }
     }
 }

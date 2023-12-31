@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 use crate::combatants::abilities::CombatantAbility;
 use crate::combatants::abilities::CombatantAbilityNames;
-use crate::combatants::CombatAttributes;
+use crate::combatants::combat_attributes::CombatAttributes;
 use crate::combatants::CombatantClass;
 use crate::combatants::CombatantProperties;
 use crate::game::id_generator::IdGenerator;

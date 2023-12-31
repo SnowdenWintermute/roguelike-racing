@@ -176,7 +176,7 @@ impl AdventuringParty {
 
     pub fn get_combatant_by_id(
         &self,
-        id: u32,
+        id: &u32,
     ) -> Result<(&EntityProperties, &CombatantProperties), AppError> {
         let mut to_return = Err(AppError {
             error_type: AppErrorTypes::ServerError,
@@ -198,7 +198,7 @@ impl AdventuringParty {
 
     pub fn get_mut_combatant_by_id(
         &mut self,
-        id: u32,
+        id: &u32,
     ) -> Result<(&mut EntityProperties, &mut CombatantProperties), AppError> {
         let mut to_return = Err(AppError {
             error_type: AppErrorTypes::ServerError,

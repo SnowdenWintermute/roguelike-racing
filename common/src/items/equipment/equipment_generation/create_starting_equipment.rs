@@ -1,5 +1,5 @@
+use crate::combatants::combat_attributes::CombatAttributes;
 use crate::{
-    combatants::CombatAttributes,
     game::id_generator::IdGenerator,
     items::{
         equipment::{

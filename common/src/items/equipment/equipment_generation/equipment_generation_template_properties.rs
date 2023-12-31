@@ -1,4 +1,4 @@
-use crate::combatants::CombatAttributes;
+use crate::combatants::combat_attributes::CombatAttributes;
 use crate::items::equipment::affixes::PrefixTypes;
 use crate::items::equipment::affixes::SuffixTypes;
 use crate::items::equipment::EquipmentTraits;

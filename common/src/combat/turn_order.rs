@@ -1,6 +1,6 @@
 use super::BattleGroup;
 use crate::{
-    combatants::{CombatAttributes, CombatantProperties},
+    combatants::{combat_attributes::CombatAttributes, CombatantProperties},
     errors::AppError,
     game::{getters::get_party, RoguelikeRacerGame},
 };
@@ -38,14 +38,14 @@ impl RoguelikeRacerGame {
 
         let party_a = get_party(self, group_a.party_id)?;
         for entity_id in &group_a.combatant_ids {
-            let (_, combatant_properties) = party_a.get_combatant_by_id(*entity_id)?;
+            let (_, combatant_properties) = party_a.get_combatant_by_id(entity_id)?;
             let turn_tracker = get_turn_tracker_from_combatant(&combatant_properties, *entity_id);
             combatant_turn_trackers.push(turn_tracker);
         }
 
         let party_b = get_party(self, group_b.party_id)?;
         for entity_id in &group_b.combatant_ids {
-            let (_, combatant_properties) = party_b.get_combatant_by_id(*entity_id)?;
+            let (_, combatant_properties) = party_b.get_combatant_by_id(entity_id)?;
             let turn_tracker = get_turn_tracker_from_combatant(&combatant_properties, *entity_id);
             combatant_turn_trackers.push(turn_tracker);
         }

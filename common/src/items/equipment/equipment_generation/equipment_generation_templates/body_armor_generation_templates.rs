@@ -1,6 +1,6 @@
 use super::generate_templates::generate_templates;
 use super::ArmorGenerationTemplate;
-use crate::combatants::CombatAttributes;
+use crate::combatants::combat_attributes::CombatAttributes;
 use crate::items::equipment::armor_properties::ArmorCategories;
 use crate::items::equipment::body_armors::BodyArmors;
 use crate::items::items_by_level::items_by_level;

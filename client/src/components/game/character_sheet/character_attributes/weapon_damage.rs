@@ -9,10 +9,13 @@ pub fn weapon_damage(
     combatant_properties: &CombatantProperties,
     total_attributes: &HashMap<CombatAttributes, u16>,
 ) -> Html {
+    // @TODO - fix this to match with attack ability handler numbers
+    //
     let mh_weapon_option =
         combatant_properties.get_equipped_weapon_properties(&EquipmentSlots::MainHand);
     let oh_weapon_option =
         combatant_properties.get_equipped_weapon_properties(&EquipmentSlots::OffHand);
+
     let base_damage = match total_attributes.get(&CombatAttributes::Damage) {
         Some(value) => *value,
         None => 0,

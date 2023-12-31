@@ -22,7 +22,7 @@ use self::shields::Shields;
 use self::two_handed_melee_weapons::TwoHandedMeleeWeapons;
 use self::two_handed_ranged_weapons::TwoHandedRangedWeapons;
 use self::weapon_properties::WeaponProperties;
-use crate::combatants::CombatAttributes;
+use crate::combatants::combat_attributes::CombatAttributes;
 use crate::primatives::MaxAndCurrent;
 use core::fmt;
 use serde::Deserialize;

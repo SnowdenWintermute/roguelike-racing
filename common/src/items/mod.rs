@@ -7,13 +7,13 @@ use self::equipment::equipment_generation::name_equipment::name_equipment;
 use self::equipment::equipment_generation::EquipmentPropertiesAndRequirements;
 use self::equipment::EquipmentProperties;
 use crate::app_consts::error_messages;
+use crate::combatants::combat_attributes::CombatAttributes;
 use crate::errors::AppError;
 use crate::game::id_generator::IdGenerator;
 use crate::primatives::EntityProperties;
 use serde::Deserialize;
 use serde::Serialize;
 mod generate_consumable_properties;
-use crate::combatants::CombatAttributes;
 use std::collections::HashMap;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]

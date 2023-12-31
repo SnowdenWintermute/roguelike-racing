@@ -2,7 +2,7 @@ use super::Character;
 use crate::{
     combatants::{
         abilities::{CombatantAbility, CombatantAbilityNames},
-        CombatAttributes,
+        combat_attributes::CombatAttributes,
     },
     game::RoguelikeRacerGame,
     items::{

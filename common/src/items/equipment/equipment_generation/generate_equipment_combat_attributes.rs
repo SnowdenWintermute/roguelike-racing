@@ -1,5 +1,5 @@
-use crate::combatants::CombatAttributes;
-use crate::combatants::CORE_ATTRIBUTES;
+use crate::combatants::combat_attributes::CombatAttributes;
+use crate::combatants::combat_attributes::CORE_ATTRIBUTES;
 use crate::items::equipment::affixes::Affix;
 use crate::items::equipment::affixes::PrefixTypes;
 use crate::items::equipment::affixes::SuffixTypes;

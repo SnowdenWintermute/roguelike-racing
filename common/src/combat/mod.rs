@@ -26,6 +26,9 @@ pub struct CombatActionResult {
     // used to display floating text and reduce/add to the value
     hp_changes_by_entity_id: HashMap<u32, i16>,
     mp_changes_by_entity_id: HashMap<u32, i16>,
+    misses_by_entity_id: HashMap<u32, i16>,
+    resists_by_entity_id: HashMap<u32, i16>,
+    is_crit: bool,
     // used to display floating +- effect icons and add/remove the effects to entities
     status_effect_changes_by_entity_id: HashMap<u32, Vec<(StatusEffects, GainedOrLost)>>,
 }

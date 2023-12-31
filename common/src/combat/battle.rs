@@ -129,9 +129,55 @@ impl RoguelikeRacerGame {
     pub fn get_combatant_by_id(
         &mut self,
         battle: &Battle,
-        combatant_id: u32,
-    ) -> Result<CombatantProperties, AppError> {
-        todo!()
+        combatant_id: &u32,
+    ) -> Result<(&EntityProperties, &CombatantProperties), AppError> {
+        let party_id = if battle.group_a.combatant_ids.contains(&combatant_id) {
+            battle.group_a.party_id
+        } else if battle.group_b.combatant_ids.contains(&combatant_id) {
+            battle.group_b.party_id
+        } else {
+            return Err(AppError {
+                error_type: AppErrorTypes::Generic,
+                message: error_messages::COMBATANT_NOT_FOUND.to_string(),
+            });
+        };
+
+        let party = self
+            .adventuring_parties
+            .get(&party_id)
+            .ok_or_else(|| AppError {
+                error_type: AppErrorTypes::Generic,
+                message: error_messages::PARTY_NOT_FOUND.to_string(),
+            })?;
+
+        party.get_combatant_by_id(combatant_id)
+    }
+
+    pub fn get_mut_combatant_by_id(
+        &mut self,
+        battle: &Battle,
+        combatant_id: &u32,
+    ) -> Result<(&mut EntityProperties, &mut CombatantProperties), AppError> {
+        let party_id = if battle.group_a.combatant_ids.contains(&combatant_id) {
+            battle.group_a.party_id
+        } else if battle.group_b.combatant_ids.contains(&combatant_id) {
+            battle.group_b.party_id
+        } else {
+            return Err(AppError {
+                error_type: AppErrorTypes::Generic,
+                message: error_messages::COMBATANT_NOT_FOUND.to_string(),
+            });
+        };
+
+        let party = self
+            .adventuring_parties
+            .get_mut(&party_id)
+            .ok_or_else(|| AppError {
+                error_type: AppErrorTypes::Generic,
+                message: error_messages::PARTY_NOT_FOUND.to_string(),
+            })?;
+
+        party.get_mut_combatant_by_id(combatant_id)
     }
 
     pub fn get_mut_combatant_in_battle_group_by_id(
@@ -141,7 +187,7 @@ impl RoguelikeRacerGame {
     ) -> Result<(&mut EntityProperties, &mut CombatantProperties), AppError> {
         let party_option = self.adventuring_parties.get_mut(&battle_group.party_id);
         if let Some(party) = party_option {
-            party.get_mut_combatant_by_id(id)
+            party.get_mut_combatant_by_id(&id)
         } else {
             return Err(AppError {
                 error_type: AppErrorTypes::ServerError,

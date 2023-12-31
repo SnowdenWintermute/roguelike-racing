@@ -1,6 +1,6 @@
 use super::equipment_generation_template_properties::EquipmentGenerationTemplateAffixModifiers;
 use super::equipment_generation_template_properties::EquipmentGenerationTemplateProperties;
-use crate::combatants::CombatAttributes;
+use crate::combatants::combat_attributes::CombatAttributes;
 use crate::items::equipment::armor_properties::ArmorCategories;
 use crate::items::equipment::shield_properties::ShieldSizes;
 use crate::items::equipment::weapon_properties::DamageClassifications;

@@ -1,6 +1,6 @@
 use super::generate_templates::generate_templates;
 use super::WeaponGenerationTemplate;
-use crate::combatants::CombatAttributes;
+use crate::combatants::combat_attributes::CombatAttributes;
 use crate::items::equipment::one_handed_melee_weapons::OneHandedMeleeWeapons;
 use crate::items::equipment::weapon_properties::DamageClassifications;
 use crate::items::equipment::weapon_properties::DamageTypes;

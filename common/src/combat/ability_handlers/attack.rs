@@ -1,11 +1,18 @@
 use crate::{
-    app_consts::error_messages,
+    app_consts::{error_messages, TWO_HANDED_WEAPON_BASE_BONUS_DAMAGE_MODIFIER},
     combat::{battle::Battle, CombatActionResult},
-    combatants::abilities::{AbilityTarget, CombatantAbilityNames},
+    combatants::{
+        abilities::{AbilityTarget, CombatantAbilityNames},
+        combat_attributes::CombatAttributes,
+        get_base_ability_damage_bonus::DamageSource,
+        CombatantProperties,
+    },
     errors::AppError,
     game::RoguelikeRacerGame,
-    items::equipment::EquipmentSlots,
+    items::equipment::{EquipmentSlots, EquipmentTypes},
 };
+use rand::Rng;
+use std::cmp;
 
 impl RoguelikeRacerGame {
     pub fn attack_handler(
@@ -38,15 +45,69 @@ impl RoguelikeRacerGame {
         let (_, user_combatant_properties) =
             self.get_mut_combatant_by_id(&battle, &ability_user_id)?;
         let user_total_attributes = user_combatant_properties.get_total_attributes();
+        let target_total_attributes = target_combatant_properties.get_total_attributes();
 
         let mh_weapon_option =
-            user_combatant_properties.get_equipped_weapon_properties(&EquipmentSlots::MainHand);
+            user_combatant_properties.get_equipped_item(&EquipmentSlots::MainHand);
         let oh_weapon_option =
-            user_combatant_properties.get_equipped_weapon_properties(&EquipmentSlots::OffHand);
+            user_combatant_properties.get_equipped_item(&EquipmentSlots::OffHand);
 
-        // WIELDING 2H WEAPON
-        if let Some((mh_weapon_properties, _)) = mh_weapon_option {
-            // match mh_weapon_properties.eq
+        if let Some(mh_weapon_properties) = mh_weapon_option {
+            let (base_bonus_damage, weapon_properties) = match mh_weapon_properties.equipment_type {
+                EquipmentTypes::OneHandedMeleeWeapon(_, properties) => (
+                    CombatantProperties::get_base_ability_damage_bonus(
+                        &user_total_attributes,
+                        DamageSource::Melee,
+                    ),
+                    properties,
+                ),
+                EquipmentTypes::TwoHandedMeleeWeapon(_, properties) => (
+                    CombatantProperties::get_base_ability_damage_bonus(
+                        &user_total_attributes,
+                        DamageSource::Melee,
+                    ) * TWO_HANDED_WEAPON_BASE_BONUS_DAMAGE_MODIFIER,
+                    properties,
+                ),
+                EquipmentTypes::TwoHandedRangedWeapon(_, properties) => (
+                    CombatantProperties::get_base_ability_damage_bonus(
+                        &user_total_attributes,
+                        DamageSource::Ranged,
+                    ) * TWO_HANDED_WEAPON_BASE_BONUS_DAMAGE_MODIFIER,
+                    properties,
+                ),
+                _ => {
+                    return Err(AppError {
+                        error_type: crate::errors::AppErrorTypes::Generic,
+                        message: error_messages::INVALID_EQUIPMENT_EQUIPPEND.to_string(),
+                    })
+                }
+            };
+
+            // determine hit or miss
+            let accuracy = user_total_attributes
+                .get(&CombatAttributes::Accuracy)
+                .unwrap_or_else(|| &0);
+            let target_evasion = target_total_attributes
+                .get(&CombatAttributes::Evasion)
+                .unwrap_or_else(|| &0);
+            let acc_eva_compared = *accuracy as i16 - *target_evasion as i16;
+            let chance_to_hit = if acc_eva_compared < 5 {
+                5
+            } else {
+                cmp::min(95, acc_eva_compared)
+            };
+
+            let mut rng = rand::thread_rng();
+            let evaded = rng.gen_range(1..=100) > chance_to_hit;
+
+            let (weapon_damage_before_defensive_mods, hit_chance_before_defensive_mods) =
+                CombatantProperties::get_weapon_damage_and_hit_chance(
+                    &weapon_properties,
+                    &mh_weapon_properties.traits,
+                    base_bonus_damage,
+                    *accuracy,
+                    false,
+                );
         };
         // WIELDING 1h MainHand
         // WIELDING 1h OffHand

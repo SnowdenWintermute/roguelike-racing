@@ -1,7 +1,9 @@
 use super::CombatAttributes;
 use super::CombatantProperties;
+use crate::app_consts::AGI_TO_EVASION_RATIO;
 use crate::app_consts::AGI_TO_SPEED_RATIO;
 use crate::app_consts::DEX_TO_ACCURACY_RATIO;
+use crate::app_consts::INT_TO_FOCUS_RATIO;
 use std::collections::HashMap;
 use strum::IntoEnumIterator;
 
@@ -59,7 +61,27 @@ impl CombatantProperties {
             total_attributes.insert(CombatAttributes::Accuracy, total_acc + accuracy_from_dex);
         }
 
-        // derrive speed from agility and +speed
+        // derive focus from +focus, inherant, and all Int
+        let total_int_option = total_attributes.get(&CombatAttributes::Intelligence);
+        let total_focus = total_attributes
+            .get(&CombatAttributes::Focus)
+            .unwrap_or_else(|| &0);
+        if let Some(int) = total_int_option {
+            let focus_from_int = INT_TO_FOCUS_RATIO * int;
+            total_attributes.insert(CombatAttributes::Focus, total_focus + focus_from_int);
+        }
+
+        // derive evasion from +evasion, inherant, and all Agility
+        let total_agi_option = total_attributes.get(&CombatAttributes::Agility);
+        let total_evasion = total_attributes
+            .get(&CombatAttributes::Evasion)
+            .unwrap_or_else(|| &0);
+        if let Some(agi) = total_agi_option {
+            let evasion_from_agi = AGI_TO_EVASION_RATIO * agi;
+            total_attributes.insert(CombatAttributes::Evasion, total_evasion + evasion_from_agi);
+        }
+
+        // derive speed from agility and +speed
         let total_agility_option = total_attributes.get(&CombatAttributes::Agility);
         let total_speed = total_attributes
             .get(&CombatAttributes::Speed)

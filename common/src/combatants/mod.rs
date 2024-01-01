@@ -1,6 +1,7 @@
 pub mod abilities;
 pub mod combat_attributes;
-mod get_base_ability_damage_bonus;
+pub mod get_base_ability_damage_bonus;
+mod get_equipped_item;
 mod get_equipped_weapon_properties;
 mod get_total_attributes;
 mod get_weapon_damage_and_hit_chance;

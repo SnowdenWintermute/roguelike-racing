@@ -5,6 +5,7 @@ mod get_equipped_item;
 mod get_equipped_weapon_properties;
 mod get_total_attributes;
 mod get_weapon_damage_and_hit_chance;
+pub mod get_weapon_properties_traits_and_base_bonus_damage;
 mod set_new_ability_target_preferences;
 use self::abilities::get_combatant_ability_attributes::TargetingScheme;
 use self::abilities::AbilityTarget;

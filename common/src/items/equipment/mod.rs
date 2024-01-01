@@ -11,6 +11,7 @@ pub mod shields;
 pub mod trait_effects;
 pub mod two_handed_melee_weapons;
 pub mod two_handed_ranged_weapons;
+pub mod unarmed;
 pub mod weapon_properties;
 use self::affixes::Affix;
 use self::armor_properties::ArmorProperties;

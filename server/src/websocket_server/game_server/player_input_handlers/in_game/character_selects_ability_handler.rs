@@ -72,6 +72,7 @@ impl GameServer {
             } else {
                 (character_positions, None)
             };
+
             let party = get_mut_party(game, party_id)?;
             let character = party.get_mut_character_if_owned(
                 player_character_ids_option.clone(),

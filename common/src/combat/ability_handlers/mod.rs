@@ -1,9 +1,10 @@
-use super::{battle::Battle, CombatActionResult};
-use crate::{
-    combatants::abilities::{AbilityTarget, CombatantAbilityNames},
-    errors::AppError,
-    game::RoguelikeRacerGame,
-};
+use super::battle::Battle;
+use super::CombatActionResult;
+use crate::combatants::abilities::AbilityTarget;
+use crate::combatants::abilities::CombatantAbilityNames;
+use crate::errors::AppError;
+use crate::game::RoguelikeRacerGame;
+mod ability_resolution_calculators;
 pub mod attack;
 
 impl RoguelikeRacerGame {
@@ -13,10 +14,10 @@ impl RoguelikeRacerGame {
         ability_name: &CombatantAbilityNames,
         ability_target: &AbilityTarget,
         battle_option: Option<&Battle>,
-    ) -> Result<CombatActionResult, AppError> {
+    ) -> Result<Vec<CombatActionResult>, AppError> {
         match ability_name {
             CombatantAbilityNames::Attack => {
-                self.attack_handler(ability_user_id, ability_name, ability_target, battle_option)
+                self.attack_handler(ability_user_id, ability_target, battle_option)
             }
             CombatantAbilityNames::ArmorBreak => todo!(),
             CombatantAbilityNames::HeatLance => todo!(),

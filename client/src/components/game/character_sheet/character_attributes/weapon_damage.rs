@@ -1,9 +1,9 @@
-use common::{
-    combatants::{CombatAttributes, CombatantProperties},
-    items::equipment::EquipmentSlots,
-};
+use common::combatants::CombatAttributes;
+use common::combatants::CombatantProperties;
+use common::items::equipment::EquipmentSlots;
 use std::collections::HashMap;
-use yew::{html, Html};
+use yew::html;
+use yew::Html;
 
 pub fn weapon_damage(
     combatant_properties: &CombatantProperties,

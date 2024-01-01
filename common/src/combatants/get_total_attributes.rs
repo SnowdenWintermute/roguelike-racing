@@ -22,6 +22,7 @@ impl CombatantProperties {
                 crate::items::ItemProperties::Equipment(equipment) => {
                     add_attributes_to_accumulator(&equipment.attributes, &mut total_attributes);
                     let base_ac = equipment.get_base_armor_class();
+                    // @TODO - add the %armor class trait to item generation and calculate it here
                     total_attributes
                         .entry(CombatAttributes::ArmorClass)
                         .and_modify(|value| *value += base_ac as u16)

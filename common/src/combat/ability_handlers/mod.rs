@@ -8,7 +8,7 @@ mod ability_resolution_calculators;
 pub mod attack;
 
 impl RoguelikeRacerGame {
-    pub fn process_ability(
+    pub fn get_ability_results(
         &mut self,
         ability_user_id: u32,
         ability_name: &CombatantAbilityNames,

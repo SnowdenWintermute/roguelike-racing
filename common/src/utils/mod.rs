@@ -33,3 +33,13 @@ pub fn calculate_number_of_pages(page_size: usize, num_items: usize) -> usize {
         full_pages
     }
 }
+
+pub fn add_i16_to_u16_and_clamp_to_max(u16: u16, i16: i16, max: u16) -> u16 {
+    let value = u16 as i16 + i16;
+    let value = if value < 0 { 0 } else { value as u16 };
+    if value > max {
+        max
+    } else {
+        value
+    }
+}

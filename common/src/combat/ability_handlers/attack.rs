@@ -32,9 +32,10 @@ impl RoguelikeRacerGame {
         };
 
         let (_, target_combatant_properties) =
-            self.get_combatant_by_id(&battle, target_entity_id)?;
+            self.get_combatant_in_battle_by_id(&battle, target_entity_id)?;
         let target_combatant_properties = target_combatant_properties.clone();
-        let (_, user_combatant_properties) = self.get_combatant_by_id(&battle, &ability_user_id)?;
+        let (_, user_combatant_properties) =
+            self.get_combatant_in_battle_by_id(&battle, &ability_user_id)?;
         let user_total_attributes = user_combatant_properties.get_total_attributes();
         let target_total_attributes = target_combatant_properties.get_total_attributes();
 

@@ -62,6 +62,7 @@ pub fn calculate_weapon_swing_result(
         let rolled_damage = rng.gen_range(damage_range.min..=damage_range.max);
 
         // @TODO get crit chance and compare to target's crit avoidance stats
+        // @TODO calculate blunt/piercing/slashing vs different armor types
 
         // compare rolled damage to defensive stats
         let final_damage = physical_damage_after_defense(

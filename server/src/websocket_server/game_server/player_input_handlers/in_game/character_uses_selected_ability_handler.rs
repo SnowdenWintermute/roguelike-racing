@@ -1,12 +1,13 @@
-use crate::websocket_server::game_server::{
-    getters::{get_mut_game_data_from_actor_id, get_user, ActorIdAssociatedGameData},
-    GameServer,
-};
-use common::{
-    app_consts::error_messages,
-    combatants::abilities::get_combatant_ability_attributes::AbilityUsableContext,
-    errors::AppError, game::getters::get_mut_party,
-};
+use crate::websocket_server::game_server::getters::get_mut_game_data_from_actor_id;
+use crate::websocket_server::game_server::getters::get_user;
+use crate::websocket_server::game_server::getters::ActorIdAssociatedGameData;
+use crate::websocket_server::game_server::GameServer;
+use common::app_consts::error_messages;
+use common::combatants::abilities::get_combatant_ability_attributes::AbilityUsableContext;
+use common::errors::AppError;
+use common::game::getters::get_mut_party;
+
+use super::apply_action_results::apply_action_results;
 
 impl GameServer {
     pub fn character_uses_selected_ability_handler(
@@ -84,8 +85,15 @@ impl GameServer {
             }
 
             // process client ability and add it to the packet of ability execution results
-            let action_result =
-                game.process_ability(character_id, &ability_name, &targets, Some(&battle.clone()));
+            let mut action_results = game.get_ability_results(
+                character_id,
+                &ability_name,
+                &targets,
+                Some(&battle.clone()),
+            )?;
+
+            // apply changes from action results
+            apply_action_results(game, &mut action_results);
 
             // if ability ends turn
             //   if next turn is a player, return targets and their changes, including the effect that

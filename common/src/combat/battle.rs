@@ -1,10 +1,14 @@
+use std::io::Write;
+
 use super::turn_order::CombatantTurnTracker;
 use crate::app_consts::error_messages;
 use crate::combatants::CombatantProperties;
-use crate::errors::{AppError, AppErrorTypes};
+use crate::errors::AppError;
+use crate::errors::AppErrorTypes;
 use crate::game::RoguelikeRacerGame;
 use crate::primatives::EntityProperties;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde::Serialize;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct Battle {
@@ -126,7 +130,7 @@ impl BattleGroup {
 }
 
 impl RoguelikeRacerGame {
-    pub fn get_combatant_by_id(
+    pub fn get_combatant_in_battle_by_id(
         &mut self,
         battle: &Battle,
         combatant_id: &u32,
@@ -153,7 +157,7 @@ impl RoguelikeRacerGame {
         party.get_combatant_by_id(combatant_id)
     }
 
-    pub fn get_mut_combatant_by_id(
+    pub fn get_mut_combatant_in_battle_by_id(
         &mut self,
         battle: &Battle,
         combatant_id: &u32,

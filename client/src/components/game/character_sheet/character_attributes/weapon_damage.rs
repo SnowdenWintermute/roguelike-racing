@@ -1,4 +1,4 @@
-use common::combatants::CombatAttributes;
+use common::combatants::combat_attributes::CombatAttributes;
 use common::combatants::CombatantProperties;
 use common::items::equipment::EquipmentSlots;
 use std::collections::HashMap;

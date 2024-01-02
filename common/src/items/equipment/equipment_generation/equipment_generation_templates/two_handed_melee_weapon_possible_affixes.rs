@@ -15,6 +15,7 @@ fn tier_if_prefix_allowed(prefix_type: &PrefixTypes) -> Option<u8> {
         PrefixTypes::Evasion => None,
         PrefixTypes::Obscurity => None,
         PrefixTypes::ArmorPenetration => Some(5),
+        PrefixTypes::Agility => Some(5),
     }
 }
 fn tier_if_suffix_allowed(suffix_type: &SuffixTypes) -> Option<u8> {

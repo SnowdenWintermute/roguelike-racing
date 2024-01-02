@@ -74,5 +74,13 @@ pub fn get_prefix_name(prefix_type: &PrefixTypes, tier: &u8) -> &'static str {
             5 => "Penetrating",
             _ => "hacked",
         },
+        PrefixTypes::Agility => match tier {
+            1 => "Maneuverable",
+            2 => "Lightweight",
+            3 => "Ultralight",
+            4 => "Featherlight",
+            5 => "Weightless",
+            _ => "hacked",
+        },
     }
 }

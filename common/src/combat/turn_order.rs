@@ -1,10 +1,12 @@
 use super::BattleGroup;
-use crate::{
-    combatants::{combat_attributes::CombatAttributes, CombatantProperties},
-    errors::AppError,
-    game::{getters::get_party, RoguelikeRacerGame},
-};
-use serde::{Deserialize, Serialize};
+use crate::app_consts::error_messages;
+use crate::combatants::combat_attributes::CombatAttributes;
+use crate::combatants::CombatantProperties;
+use crate::errors::AppError;
+use crate::game::getters::get_party;
+use crate::game::RoguelikeRacerGame;
+use serde::Deserialize;
+use serde::Serialize;
 
 #[derive(PartialEq, Eq, Serialize, Deserialize, Clone, Debug)]
 pub struct CombatantTurnTracker {
@@ -53,11 +55,19 @@ impl RoguelikeRacerGame {
         combatant_turn_trackers.sort_by(|a, b| b.movement.partial_cmp(&a.movement).unwrap());
 
         Ok(combatant_turn_trackers)
+    }
 
+    pub fn end_active_combatant_turn(&mut self, battle_id: u32) -> Result<(), AppError> {
+        let battle = self.battles.get_mut(&battle_id).ok_or_else(|| AppError {
+            error_type: crate::errors::AppErrorTypes::Generic,
+            message: error_messages::BATTLE_NOT_FOUND.to_string(),
+        })?;
         // when a combatant takes their turn, subtract the average speed of the group representing the time it
         // takes to do an action from their movement
         // sort combatants by movement again and repeat until the first combatant in line has less
         // movement than a turn requires TURN_TIME
         // refill every combatant's movement by their speed (their movement might be negative)
+
+        Ok(())
     }
 }

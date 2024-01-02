@@ -29,6 +29,7 @@ pub enum PrefixTypes {
     Evasion,
     Obscurity,
     ArmorPenetration,
+    Agility,
 }
 
 impl fmt::Display for PrefixTypes {
@@ -43,6 +44,7 @@ impl fmt::Display for PrefixTypes {
             PrefixTypes::Evasion => write!(f, "Evasion"),
             PrefixTypes::Obscurity => write!(f, "Obscurity"),
             PrefixTypes::ArmorPenetration => write!(f, "Armor Pen."),
+            PrefixTypes::Agility => write!(f, "Agility"),
         }
     }
 }

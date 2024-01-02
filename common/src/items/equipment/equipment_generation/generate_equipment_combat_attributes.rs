@@ -84,6 +84,13 @@ pub fn generate_equipment_combat_attributes(
                             tier * 2.0,
                         ));
                     }
+                    PrefixTypes::Agility => {
+                        attribute_templates.push(AttributeValueCreationTemplate::new(
+                            CombatAttributes::Agility,
+                            tier,
+                            tier * 2.0,
+                        ));
+                    }
                 }
             }
             Affix::Suffix(suffix_type, tier) => {

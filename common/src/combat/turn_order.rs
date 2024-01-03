@@ -1,5 +1,6 @@
 use super::BattleGroup;
 use crate::app_consts::error_messages;
+use crate::app_consts::TURN_TIME;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::combatants::CombatantProperties;
 use crate::errors::AppError;
@@ -62,11 +63,45 @@ impl RoguelikeRacerGame {
             error_type: crate::errors::AppErrorTypes::Generic,
             message: error_messages::BATTLE_NOT_FOUND.to_string(),
         })?;
-        // when a combatant takes their turn, subtract the average speed of the group representing the time it
-        // takes to do an action from their movement
-        // sort combatants by movement again and repeat until the first combatant in line has less
-        // movement than a turn requires TURN_TIME
-        // refill every combatant's movement by their speed (their movement might be negative)
+        let mut turn_trackers = battle.combatant_turn_trackers.clone();
+        let active_combatant_turn_tracker = turn_trackers.first_mut().ok_or_else(|| AppError {
+            error_type: crate::errors::AppErrorTypes::Generic,
+            message: error_messages::TURN_TRACKERS_EMPTY.to_string(),
+        })?;
+
+        active_combatant_turn_tracker.movement -= TURN_TIME;
+        turn_trackers.sort_by(|a, b| b.movement.partial_cmp(&a.movement).unwrap());
+
+        let mut active_combatant_turn_tracker =
+            turn_trackers.first_mut().ok_or_else(|| AppError {
+                error_type: crate::errors::AppErrorTypes::Generic,
+                message: error_messages::TURN_TRACKERS_EMPTY.to_string(),
+            })?;
+
+        while active_combatant_turn_tracker.movement < TURN_TIME {
+            // tick the time and refill all movement
+            for tracker in &mut turn_trackers {
+                let (_, combatant_properties) = self.get_combatant_by_id(&tracker.entity_id)?;
+                let entity_speed = *combatant_properties
+                    .get_total_attributes()
+                    .get(&CombatAttributes::Speed)
+                    .unwrap_or_else(|| &0) as i16;
+                tracker.movement += entity_speed;
+            }
+
+            turn_trackers.sort_by(|a, b| b.movement.partial_cmp(&a.movement).unwrap());
+            active_combatant_turn_tracker = turn_trackers.first_mut().ok_or_else(|| AppError {
+                error_type: crate::errors::AppErrorTypes::Generic,
+                message: error_messages::TURN_TRACKERS_EMPTY.to_string(),
+            })?;
+        }
+
+        let battle = self.battles.get_mut(&battle_id).ok_or_else(|| AppError {
+            error_type: crate::errors::AppErrorTypes::Generic,
+            message: error_messages::BATTLE_NOT_FOUND.to_string(),
+        })?;
+
+        battle.combatant_turn_trackers = turn_trackers;
 
         Ok(())
     }

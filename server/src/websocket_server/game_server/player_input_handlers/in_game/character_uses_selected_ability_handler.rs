@@ -96,17 +96,20 @@ impl GameServer {
             apply_action_results(game, &mut action_results)?;
 
             if ability_attributes.requires_combat_turn {
-                // battle.combatant_turn_trackers
+                // battle.combatant_turn_trackers.sow
+                game.end_active_combatant_turn(battle_id)?;
+                //   sort the turn trackers (cilent will do the same)
 
-                //   sort the turn trackers
                 //   if next turn is a player, return targets and their changes. client will use the
-                //   action results to animate, apply changes and sort the turn orders  then prompt
-                //   next player in turn order to move.
+                //   action results to animate and apply changes
+                //
+
                 //
                 //   if next turn is ai controlled, return client targets and changes, as well as targets
                 //   and changes for next ai ability used in turn order, repeating until a player is next.
                 //
                 //   client animates each ability targets/effects object, then prompts next player to move
+                //   emit a packet that says to end the active player's turn
             }
         } else {
             // check if ability can be used out of combat

@@ -3,6 +3,7 @@ use self::outfit_new_warrior::outfit_new_warrior;
 use crate::combatants::abilities::CombatantAbility;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::CombatantClass;
+use crate::combatants::CombatantControlledBy;
 use crate::combatants::CombatantProperties;
 use crate::game::RoguelikeRacerGame;
 use crate::primatives::EntityProperties;
@@ -32,12 +33,16 @@ impl Character {
         name_of_controlling_user: String,
     ) -> Character {
         let mut character = Character {
-            name_of_controlling_user,
+            name_of_controlling_user: name_of_controlling_user.clone(),
             entity_properties: EntityProperties {
                 id: game.id_generator.get_next_entity_id(),
                 name: name.to_owned(),
             },
-            combatant_properties: CombatantProperties::new(&combatant_class, HashMap::new()),
+            combatant_properties: CombatantProperties::new(
+                &combatant_class,
+                HashMap::new(),
+                CombatantControlledBy::Player(name_of_controlling_user),
+            ),
             inventory: CharacterInventory::new(),
             unspent_ability_points: 1,
             actions_taken: 0,

@@ -1,13 +1,13 @@
+use super::apply_action_results::apply_action_results;
 use crate::websocket_server::game_server::getters::get_mut_game_data_from_actor_id;
-use crate::websocket_server::game_server::getters::get_user;
 use crate::websocket_server::game_server::getters::ActorIdAssociatedGameData;
 use crate::websocket_server::game_server::GameServer;
 use common::app_consts::error_messages;
+use common::combat::CombatTurnResult;
 use common::combatants::abilities::get_combatant_ability_attributes::AbilityUsableContext;
+use common::combatants::CombatantControlledBy;
 use common::errors::AppError;
 use common::game::getters::get_mut_party;
-
-use super::apply_action_results::apply_action_results;
 
 impl GameServer {
     pub fn character_uses_selected_ability_handler(
@@ -84,7 +84,6 @@ impl GameServer {
                 });
             }
 
-            // process client ability and add it to the packet of ability execution results
             let mut action_results = game.get_ability_results(
                 character_id,
                 &ability_name,
@@ -92,24 +91,52 @@ impl GameServer {
                 Some(&battle.clone()),
             )?;
 
-            // apply changes from action results
             apply_action_results(game, &mut action_results)?;
 
             if ability_attributes.requires_combat_turn {
-                // battle.combatant_turn_trackers.sow
+                let mut turns: Vec<CombatTurnResult> = vec![];
+                let player_turn = CombatTurnResult {
+                    combatant_id: character_id,
+                    action_results,
+                };
+                turns.push(player_turn);
+
                 game.end_active_combatant_turn(battle_id)?;
-                //   sort the turn trackers (cilent will do the same)
 
-                //   if next turn is a player, return targets and their changes. client will use the
+                //   if next turn is a player, return turn with action results. client will use the
                 //   action results to animate and apply changes
-                //
+                let battle = game.battles.get(&battle_id).ok_or_else(|| AppError {
+                    error_type: common::errors::AppErrorTypes::ServerError,
+                    message: error_messages::BATTLE_NOT_FOUND.to_string(),
+                })?;
 
-                //
-                //   if next turn is ai controlled, return client targets and changes, as well as targets
-                //   and changes for next ai ability used in turn order, repeating until a player is next.
-                //
-                //   client animates each ability targets/effects object, then prompts next player to move
-                //   emit a packet that says to end the active player's turn
+                let active_combatant_tracker =
+                    battle
+                        .combatant_turn_trackers
+                        .first()
+                        .ok_or_else(|| AppError {
+                            error_type: common::errors::AppErrorTypes::Generic,
+                            message: error_messages::TURN_TRACKERS_EMPTY.to_string(),
+                        })?;
+                let (_, active_combatant_properties) =
+                    game.get_combatant_by_id(&active_combatant_tracker.entity_id)?;
+                let mut active_combatant_is_ai_controlled =
+                    active_combatant_properties.controlled_by == CombatantControlledBy::AI;
+                while active_combatant_is_ai_controlled {
+                    // calculate AI turns, process them and add them to the turn results
+                    // get active combatant
+                    let (entity_properties, combatant_properties) =
+                        game.get_combatant_by_id(&active_combatant_tracker.entity_id)?;
+                    // select an CombatantAbilityNames and AbilityTarget
+                    // get result of ability and add to list of results for this turn
+                    // process result
+                    // if ability required turn
+                    // add all the results to a turn and push to list of
+                    // turns
+                    // end the active_combatant's turn and check if new active combatant
+                    // is a player or AI
+                    //
+                }
             }
         } else {
             // check if ability can be used out of combat

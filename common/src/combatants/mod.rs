@@ -64,6 +64,12 @@ impl Default for AbilityTargetPreferences {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum CombatantControlledBy {
+    AI,
+    Player(String),
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct CombatantProperties {
     pub combatant_class: CombatantClass,
     pub inherent_attributes: HashMap<CombatAttributes, u16>,
@@ -77,12 +83,14 @@ pub struct CombatantProperties {
     pub selected_ability_name: Option<CombatantAbilityNames>,
     pub ability_targets: Option<AbilityTarget>,
     pub ability_target_preferences: AbilityTargetPreferences,
+    pub controlled_by: CombatantControlledBy,
 }
 
 impl CombatantProperties {
     pub fn new(
         combatant_class: &CombatantClass,
         abilities: HashMap<CombatantAbilityNames, CombatantAbility>,
+        controlled_by: CombatantControlledBy,
     ) -> CombatantProperties {
         CombatantProperties {
             combatant_class: combatant_class.clone(),
@@ -96,6 +104,7 @@ impl CombatantProperties {
             selected_ability_name: None,
             ability_targets: None,
             ability_target_preferences: AbilityTargetPreferences::default(),
+            controlled_by,
         }
     }
 

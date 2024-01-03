@@ -3,6 +3,7 @@ use crate::combatants::abilities::CombatantAbility;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::combatants::CombatantClass;
+use crate::combatants::CombatantControlledBy;
 use crate::combatants::CombatantProperties;
 use crate::game::id_generator::IdGenerator;
 use crate::primatives::EntityProperties;
@@ -40,7 +41,11 @@ impl Monster {
                 id: id_generator.get_next_entity_id(),
                 name: "some monster name".to_string(),
             },
-            combatant_properties: CombatantProperties::new(&CombatantClass::None, HashMap::new()),
+            combatant_properties: CombatantProperties::new(
+                &CombatantClass::None,
+                HashMap::new(),
+                CombatantControlledBy::AI,
+            ),
         };
 
         let inherent_attributes = &mut monster.combatant_properties.inherent_attributes;

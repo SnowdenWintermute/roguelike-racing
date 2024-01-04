@@ -1,6 +1,7 @@
 use super::client_to_server::ChangeTargetsPacket;
 use super::client_to_server::UnequipSlotRequest;
 use crate::character::Character;
+use crate::combat::CombatTurnResult;
 use crate::combatants::abilities::AbilityTarget;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::CombatantClass;
@@ -43,6 +44,7 @@ pub enum GameServerUpdatePackets {
     DungeonRoomUpdate(DungeonRoom),
     CharacterSelectedAbility(CharacterSelectedAbilityPacket),
     CharacterChangedTargets(ChangeTargetsPacket),
+    CombatTurnResults(CombatTurnResultsPacket),
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Default)]
@@ -146,4 +148,9 @@ pub struct CharacterSelectedAbilityPacket {
     pub character_id: u32,
     pub ability_name_option: Option<CombatantAbilityNames>,
     pub targets_option: Option<AbilityTarget>,
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+pub struct CombatTurnResultsPacket {
+    pub turn_results: Vec<CombatTurnResult>,
 }

@@ -55,6 +55,26 @@ impl Battle {
         Ok((ally_ids, opponent_ids_option))
     }
 
+    pub fn get_ally_and_enemy_battle_groups(
+        &self,
+        combatant_id: &u32,
+    ) -> Result<(BattleGroup, BattleGroup), AppError> {
+        for id in &self.group_a.combatant_ids {
+            if id == combatant_id {
+                return Ok((self.group_a.clone(), self.group_b.clone()));
+            }
+        }
+        for id in &self.group_b.combatant_ids {
+            if id == combatant_id {
+                return Ok((self.group_b.clone(), self.group_a.clone()));
+            }
+        }
+        return Err(AppError {
+            error_type: AppErrorTypes::Generic,
+            message: error_messages::COMBATANT_BATTLE_MISMATCH.to_string(),
+        });
+    }
+
     pub fn is_id_of_existing_opponent(&self, combatant_id: u32, target_id: u32) -> bool {
         let mut to_return = false;
         if let Ok((ally_ids, opponent_ids_option)) =

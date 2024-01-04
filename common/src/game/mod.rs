@@ -65,6 +65,10 @@ impl RoguelikeRacerGame {
         game
     }
 
+    pub fn get_party_channel_name(&self, party_id: u32) -> String {
+        format!("{}-party-{}", self.name, party_id)
+    }
+
     pub fn get_number_of_players(&self) -> u8 {
         let number_of_players = self.players.len();
         number_of_players as u8

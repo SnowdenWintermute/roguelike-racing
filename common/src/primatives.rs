@@ -25,7 +25,7 @@ pub enum UpOrDown {
     Down,
 }
 
-#[derive(PartialEq, Debug, Serialize, Deserialize)]
+#[derive(PartialEq, Debug, Serialize, Deserialize, Clone)]
 pub enum GainedOrLost {
     Gained,
     Lost,

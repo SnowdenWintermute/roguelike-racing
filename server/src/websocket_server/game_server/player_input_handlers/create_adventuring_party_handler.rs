@@ -1,9 +1,11 @@
-use crate::websocket_server::game_server::getters::{get_mut_game, get_mut_user};
+use crate::websocket_server::game_server::getters::get_mut_game;
+use crate::websocket_server::game_server::getters::get_mut_user;
 use crate::websocket_server::game_server::GameServer;
 use common::app_consts::error_messages;
 use common::errors::AppError;
 use common::game::getters::get_mut_player;
-use common::packets::server_to_client::{AdventuringPartyCreation, GameServerUpdatePackets};
+use common::packets::server_to_client::AdventuringPartyCreation;
+use common::packets::server_to_client::GameServerUpdatePackets;
 
 impl GameServer {
     pub fn create_adventuring_party_handler(

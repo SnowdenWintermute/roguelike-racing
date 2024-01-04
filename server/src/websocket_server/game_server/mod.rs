@@ -1,9 +1,11 @@
 use actix::prelude::*;
+use common::app_consts::MAIN_CHAT_ROOM;
 use common::game::RoguelikeRacerGame;
+use common::packets::client_to_server::PlayerInputs;
 use common::packets::server_to_client::GameServerUpdatePackets;
 use common::utils::generate_random_username;
-use common::{app_consts::MAIN_CHAT_ROOM, packets::client_to_server::PlayerInputs};
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
+use std::collections::HashSet;
 pub mod connection_handler;
 pub mod disconnection_handler;
 pub mod getters;
@@ -11,14 +13,16 @@ pub mod list_rooms_handler;
 pub mod player_input_handlers;
 pub mod send_messages;
 pub mod update_packet_creators;
-use super::{AppMessage, ClientBinaryMessage, ClientMessage};
+use super::AppMessage;
+use super::ClientBinaryMessage;
+use super::ClientMessage;
 
 #[derive(Debug)]
 pub struct ConnectedUser {
     pub id: u32,
     pub websocket_actor: Recipient<AppMessage>,
     pub username: String,
-    pub current_room_name: String,
+    pub connected_rooms: Vec<String>,
     pub current_game_name: Option<String>,
 }
 
@@ -28,7 +32,7 @@ impl ConnectedUser {
             id,
             websocket_actor,
             username: generate_random_username(),
-            current_room_name: MAIN_CHAT_ROOM.to_string(),
+            connected_rooms: vec![MAIN_CHAT_ROOM.to_string()],
             current_game_name: None,
         }
     }
@@ -140,10 +144,12 @@ impl Handler<ClientMessage> for GameServer {
             .sessions
             .get(&message.actor_id)
             .expect("if we got a message from this id, the user should exist in our list")
-            .current_room_name;
-        let result = self.send_string_message(&room, message.content.as_str());
-        if result.is_err() {
-            eprintln!("{:#?}", result);
+            .lobby_room;
+        if let Some(lobby_room) = room {
+            let result = self.send_string_message(&lobby_room, message.content.as_str());
+            if result.is_err() {
+                eprintln!("{:#?}", result);
+            }
         }
     }
 }

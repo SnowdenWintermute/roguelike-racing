@@ -1,4 +1,5 @@
 pub mod ability_handlers;
+pub mod ai_behavior;
 pub mod battle;
 mod get_combatant_by_id;
 mod turn_order;
@@ -13,22 +14,22 @@ use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub enum CombatAction {
     AbilityUsed(CombatantAbilityNames),
     ItemUsed(Item),
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub struct IdAndValue(pub u32, pub i16);
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct CombatTurnResult {
     pub combatant_id: u32,
     pub action_results: Vec<CombatActionResult>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub struct CombatActionResult {
     pub user_id: u32,
     // Used to select the animation played and to remove consumed items from inventory if

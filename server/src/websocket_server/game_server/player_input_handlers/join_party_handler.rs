@@ -1,14 +1,12 @@
-use common::{
-    app_consts::error_messages,
-    errors::AppError,
-    game::getters::get_mut_player,
-    packets::server_to_client::{GameServerUpdatePackets, PlayerAdventuringPartyChange},
-};
+use common::app_consts::error_messages;
+use common::errors::AppError;
+use common::game::getters::get_mut_player;
+use common::packets::server_to_client::GameServerUpdatePackets;
+use common::packets::server_to_client::PlayerAdventuringPartyChange;
 
-use crate::websocket_server::game_server::{
-    getters::{get_mut_game, get_mut_user},
-    GameServer,
-};
+use crate::websocket_server::game_server::getters::get_mut_game;
+use crate::websocket_server::game_server::getters::get_mut_user;
+use crate::websocket_server::game_server::GameServer;
 
 impl GameServer {
     pub fn join_party_handler(&mut self, actor_id: u32, party_id: u32) -> Result<(), AppError> {
@@ -33,6 +31,7 @@ impl GameServer {
         }
 
         game.put_player_in_adventuring_party(party_id, username.clone())?;
+        self.join_room_handler(game.get_party_channel_name(&party_id).as_str(), actor_id)?;
 
         self.send_packet(
             &GameServerUpdatePackets::ClientAdventuringPartyId(Some(party_id)),

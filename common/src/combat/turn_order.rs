@@ -58,7 +58,10 @@ impl RoguelikeRacerGame {
         Ok(combatant_turn_trackers)
     }
 
-    pub fn end_active_combatant_turn(&mut self, battle_id: u32) -> Result<(), AppError> {
+    pub fn end_active_combatant_turn(
+        &mut self,
+        battle_id: u32,
+    ) -> Result<&CombatantTurnTracker, AppError> {
         let battle = self.battles.get_mut(&battle_id).ok_or_else(|| AppError {
             error_type: crate::errors::AppErrorTypes::Generic,
             message: error_messages::BATTLE_NOT_FOUND.to_string(),
@@ -102,7 +105,15 @@ impl RoguelikeRacerGame {
         })?;
 
         battle.combatant_turn_trackers = turn_trackers;
+        let new_active_combatant_turn_tracker =
+            battle
+                .combatant_turn_trackers
+                .first()
+                .ok_or_else(|| AppError {
+                    error_type: crate::errors::AppErrorTypes::Generic,
+                    message: error_messages::TURN_TRACKERS_EMPTY.to_string(),
+                })?;
 
-        Ok(())
+        Ok(new_active_combatant_turn_tracker)
     }
 }

@@ -5,3 +5,4 @@ mod character_uses_selected_ability_handler;
 mod equip_item_handler;
 mod toggle_ready_to_explore_handler;
 mod unequip_slot_handler;
+mod validate_character_ability_use;

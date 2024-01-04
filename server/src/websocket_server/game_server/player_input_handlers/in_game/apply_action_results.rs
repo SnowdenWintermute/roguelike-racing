@@ -7,11 +7,10 @@ use common::utils::add_i16_to_u16_and_clamp_to_max;
 
 pub fn apply_action_results(
     game: &mut RoguelikeRacerGame,
-    action_results: &mut Vec<CombatActionResult>,
+    action_results: &Vec<CombatActionResult>,
 ) -> Result<(), AppError> {
-    while action_results.len() > 0 {
-        let curr_action = action_results.remove(0);
-        apply_action_result(game, &curr_action)?;
+    for action_result in action_results {
+        apply_action_result(game, &action_result)?;
     }
 
     Ok(())

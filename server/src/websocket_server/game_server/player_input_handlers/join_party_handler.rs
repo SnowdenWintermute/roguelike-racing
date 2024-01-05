@@ -21,6 +21,7 @@ impl GameServer {
                     message: error_messages::MISSING_GAME_REFERENCE.to_string(),
                 })?;
         let game = get_mut_game(&mut self.games, &current_game_name)?;
+        let party_websocket_channel_name = game.get_party_channel_name(party_id);
         let player = get_mut_player(game, &username)?;
 
         if player.party_id.is_some() {
@@ -32,7 +33,7 @@ impl GameServer {
 
         game.put_player_in_adventuring_party(party_id, username.clone())?;
         self.join_user_to_websocket_channel(
-            game.get_party_channel_name(party_id).as_str(),
+            &party_websocket_channel_name,
             WebsocketChannelNamespace::Party,
             actor_id,
         )?;

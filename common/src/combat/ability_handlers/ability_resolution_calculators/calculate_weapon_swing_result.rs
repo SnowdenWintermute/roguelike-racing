@@ -1,7 +1,7 @@
 use super::physical_attack_evaded::physical_attack_evaded;
 use super::physical_damage_after_defense::physical_damage_after_defense;
+use crate::combat::ActionResult;
 use crate::combat::CombatAction;
-use crate::combat::CombatActionResult;
 use crate::combat::IdAndValue;
 use crate::combatants::abilities::AbilityTarget;
 use crate::combatants::abilities::CombatantAbilityNames;
@@ -21,7 +21,7 @@ pub fn calculate_weapon_swing_result(
     target_total_attributes: &HashMap<CombatAttributes, u16>,
     equipment_properties: &EquipmentProperties,
     is_off_hand: bool,
-) -> Result<CombatActionResult, AppError> {
+) -> Result<ActionResult, AppError> {
     let (weapon_properties, weapon_traits, base_bonus_damage) =
         get_weapon_properties_traits_and_base_bonus_damage(
             &user_total_attributes,
@@ -46,7 +46,7 @@ pub fn calculate_weapon_swing_result(
     );
 
     if evaded {
-        Ok(CombatActionResult {
+        Ok(ActionResult {
             user_id: ability_user_id,
             action: CombatAction::AbilityUsed(CombatantAbilityNames::Attack),
             targets: ability_target.clone(),
@@ -71,7 +71,7 @@ pub fn calculate_weapon_swing_result(
             rolled_damage as u32,
         );
         // add the result
-        Ok(CombatActionResult {
+        Ok(ActionResult {
             user_id: ability_user_id,
             action: CombatAction::AbilityUsed(CombatantAbilityNames::Attack),
             targets: ability_target.clone(),

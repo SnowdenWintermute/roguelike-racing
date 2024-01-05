@@ -1,19 +1,15 @@
-use crate::{
-    components::{
-        common_components::atoms::targeting_indicator::TargetingIndicator,
-        game::dungeon_room::focus_character_button::FocusCharacterButton,
-    },
-    store::game_store::{
-        self, get_active_character, get_current_party_option, DetailableEntities, GameStore,
-    },
-};
-use common::{
-    combatants::{
-        abilities::{AbilityTarget, FriendOrFoe},
-        CombatantProperties,
-    },
-    primatives::EntityProperties,
-};
+use crate::components::common_components::atoms::targeting_indicator::TargetingIndicator;
+use crate::components::game::dungeon_room::focus_character_button::FocusCharacterButton;
+use crate::store::game_store::get_active_character;
+use crate::store::game_store::get_current_party_option;
+use crate::store::game_store::DetailableEntities;
+use crate::store::game_store::GameStore;
+use crate::store::game_store::{self};
+use common::combatants::abilities::AbilityTarget;
+use common::combatants::abilities::FriendOrFoe;
+use common::combatants::combat_attributes::CombatAttributes;
+use common::combatants::CombatantProperties;
+use common::primatives::EntityProperties;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
@@ -136,8 +132,8 @@ pub fn combatant(props: &Props) -> Html {
     };
 
     let total_attributes = combatant_properties.get_total_attributes();
-    let max_hp_option = total_attributes.get(&common::combatants::CombatAttributes::Hp);
-    let max_mp_option = total_attributes.get(&common::combatants::CombatAttributes::Mp);
+    let max_hp_option = total_attributes.get(&CombatAttributes::Hp);
+    let max_mp_option = total_attributes.get(&CombatAttributes::Mp);
 
     html!(
         <div class={styles}>

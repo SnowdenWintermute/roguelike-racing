@@ -1,8 +1,9 @@
-use common::{
-    combatants::{CombatAttributes, CORE_ATTRIBUTES},
-    items::equipment::{affixes::Affix, EquipmentProperties},
-};
-use yew::{html, virtual_dom::VNode};
+use common::combatants::combat_attributes::CombatAttributes;
+use common::combatants::combat_attributes::CORE_ATTRIBUTES;
+use common::items::equipment::affixes::Affix;
+use common::items::equipment::EquipmentProperties;
+use yew::html;
+use yew::virtual_dom::VNode;
 
 fn attribute_bonus_text(name: &str, value: u16) -> String {
     format!("+{value} {name}")

@@ -21,6 +21,7 @@ impl GameServer {
             player_character_ids_option,
             ..
         } = get_mut_party_game_name_and_character_ids_from_actor_id(self, actor_id)?;
+        let party_websocket_channel_name = party.websocket_channel_name.clone();
 
         let player_character_ids = player_character_ids_option.ok_or_else(|| AppError {
             error_type: common::errors::AppErrorTypes::ServerError,
@@ -44,7 +45,7 @@ impl GameServer {
         character.unequip_slots(&vec![slot.clone()], false);
 
         self.emit_packet(
-            &party.websocket_channel_name,
+            &party_websocket_channel_name,
             &WebsocketChannelNamespace::Party,
             &GameServerUpdatePackets::CharacterUnequippedSlot(UnequipSlotRequest {
                 character_id,

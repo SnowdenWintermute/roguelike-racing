@@ -1,9 +1,9 @@
 use crate::store::game_store::GameStore;
-use common::{combatants::CombatAttributes, game::getters::get_character};
-use std::{
-    collections::{HashMap, HashSet},
-    ops::Deref,
-};
+use common::combatants::combat_attributes::CombatAttributes;
+use common::game::getters::get_character;
+use std::collections::HashMap;
+use std::collections::HashSet;
+use std::ops::Deref;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 

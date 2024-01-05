@@ -26,11 +26,11 @@ pub struct IdAndValue(pub u32, pub i16);
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct CombatTurnResult {
     pub combatant_id: u32,
-    pub action_results: Vec<CombatActionResult>,
+    pub action_results: Vec<ActionResult>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
-pub struct CombatActionResult {
+pub struct ActionResult {
     pub user_id: u32,
     // Used to select the animation played and to remove consumed items from inventory if
     // appropriate

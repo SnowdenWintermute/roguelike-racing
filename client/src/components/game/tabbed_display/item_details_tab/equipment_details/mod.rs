@@ -6,7 +6,8 @@ use crate::{
     components::game::tabbed_display::item_details_tab::equipment_details::equipment_durability::EquipmentDurability,
     store::game_store::GameStore,
 };
-use common::{combatants::CombatAttributes, items::equipment::EquipmentProperties};
+use common::combatants::combat_attributes::CombatAttributes;
+use common::items::equipment::EquipmentProperties;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 mod armor;

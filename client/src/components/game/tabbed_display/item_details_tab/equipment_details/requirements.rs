@@ -1,9 +1,10 @@
-use crate::{
-    components::client_consts::UNMET_REQUIREMENT_TEXT_COLOR, store::game_store::GameStore,
-};
-use common::combatants::CombatAttributes;
-use std::{collections::HashMap, rc::Rc};
-use yew::{html, virtual_dom::VNode};
+use crate::components::client_consts::UNMET_REQUIREMENT_TEXT_COLOR;
+use crate::store::game_store::GameStore;
+use common::combatants::combat_attributes::CombatAttributes;
+use std::collections::HashMap;
+use std::rc::Rc;
+use yew::html;
+use yew::virtual_dom::VNode;
 
 pub fn requirements(
     requirements_option: &Option<HashMap<CombatAttributes, u8>>,

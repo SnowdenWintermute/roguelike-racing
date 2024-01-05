@@ -36,6 +36,7 @@ impl GameServer {
         })?;
 
         let party = get_mut_party(game, party_id)?;
+        let party_websocket_channel_name = party.websocket_channel_name.clone();
 
         let new_targets_option = if packet.ability_name_option.is_none() {
             let character = party
@@ -99,7 +100,7 @@ impl GameServer {
         };
 
         self.emit_packet(
-            &party.websocket_channel_name,
+            &party_websocket_channel_name,
             &WebsocketChannelNamespace::Party,
             &GameServerUpdatePackets::CharacterSelectedAbility(CharacterSelectedAbilityPacket {
                 character_id: packet.character_id,

@@ -1,16 +1,16 @@
-use common::{
-    adventuring_party::AdventuringParty,
-    app_consts::error_messages::{self},
-    character::Character,
-    combatants::{CombatAttributes, CombatantProperties},
-    errors::AppError,
-    game::{getters::get_character, RoguelikeRacerGame},
-    items::{
-        equipment::{EquipableSlots, EquipmentSlots},
-        Item,
-    },
-    primatives::EntityProperties,
-};
+use common::adventuring_party::AdventuringParty;
+use common::app_consts::error_messages::{self};
+use common::character::Character;
+use common::combat::battle::Battle;
+use common::combatants::combat_attributes::CombatAttributes;
+use common::combatants::CombatantProperties;
+use common::errors::AppError;
+use common::game::getters::get_character;
+use common::game::RoguelikeRacerGame;
+use common::items::equipment::EquipableSlots;
+use common::items::equipment::EquipmentSlots;
+use common::items::Item;
+use common::primatives::EntityProperties;
 use std::collections::HashSet;
 use yewdux::prelude::*;
 
@@ -39,6 +39,7 @@ impl DetailableEntities {
 pub struct GameStore {
     pub game: Option<RoguelikeRacerGame>,
     pub current_party_id: Option<u32>,
+    pub current_battle_id: Option<u32>,
     pub detailed_entity: Option<DetailableEntities>,
     pub hovered_entity: Option<DetailableEntities>,
     pub selected_item: Option<Item>,
@@ -82,6 +83,26 @@ pub fn get_current_party_option<'a>(game_state: &'a GameStore) -> Option<&'a Adv
     }
 }
 
+pub fn get_current_battle_option<'a>(game_state: &'a GameStore) -> Option<&'a Battle> {
+    let game_option = &game_state.game;
+    match game_option {
+        Some(game) => match game_state.current_party_id {
+            Some(party_id) => match game.adventuring_parties.get(&party_id) {
+                Some(party) => match party.battle_id {
+                    Some(battle_id) => match game.battles.get(&battle_id) {
+                        Some(battle) => Some(battle),
+                        None => None,
+                    },
+                    None => None,
+                },
+                None => None,
+            },
+            None => None,
+        },
+        None => None,
+    }
+}
+
 pub fn get_focused_character<'a>(game_state: &'a GameStore) -> Result<&'a Character, AppError> {
     let game = game_state.game.as_ref().ok_or_else(|| AppError {
         error_type: common::errors::AppErrorTypes::ClientError,
@@ -95,19 +116,39 @@ pub fn get_focused_character<'a>(game_state: &'a GameStore) -> Result<&'a Charac
     focused_character
 }
 
-pub fn get_active_character<'a>(
+pub fn get_active_combatant<'a>(
     game_state: &'a GameStore,
-) -> Result<Option<&'a Character>, AppError> {
-    let party = get_current_party_option(game_state).ok_or_else(|| AppError {
-        error_type: common::errors::AppErrorTypes::ClientError,
-        message: error_messages::MISSING_PARTY_REFERENCE.to_string(),
-    })?;
-    for (id, character) in &party.characters {
-        if party.combatant_is_first_in_turn_order(*id) {
-            return Ok(Some(character));
-        }
+) -> Result<Option<(&'a EntityProperties, &'a CombatantProperties)>, AppError> {
+    if let Some(cloned_battle) = get_current_battle_option(game_state).clone() {
+        let active_combatant_turn_tracker = cloned_battle
+            .combatant_turn_trackers
+            .first()
+            .ok_or_else(|| AppError {
+                error_type: common::errors::AppErrorTypes::Generic,
+                message: error_messages::TURN_TRACKERS_EMPTY.to_string(),
+            })?;
+        let (ally_battle_group, _) = cloned_battle
+            .get_ally_and_enemy_battle_groups(&active_combatant_turn_tracker.entity_id)?;
+        let game = game_state.game.ok_or_else(|| AppError {
+            error_type: common::errors::AppErrorTypes::ClientError,
+            message: error_messages::GAME_NOT_FOUND.to_string(),
+        })?;
+
+        let combatant_party = game
+            .adventuring_parties
+            .get(&ally_battle_group.party_id)
+            .ok_or_else(|| AppError {
+                error_type: common::errors::AppErrorTypes::ClientError,
+                message: error_messages::PARTY_NOT_FOUND.to_string(),
+            })?;
+
+        let (entity_properties, combatant_properties) =
+            combatant_party.get_combatant_by_id(&active_combatant_turn_tracker.entity_id)?;
+
+        Ok(Some((entity_properties, combatant_properties)))
+    } else {
+        Ok(None)
     }
-    Ok(None)
 }
 
 pub fn set_item_hovered(game_dispatch: Dispatch<GameStore>, item_option: Option<Item>) {

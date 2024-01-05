@@ -1,9 +1,11 @@
-use crate::store::game_store::{select_item, set_item_hovered, GameStore};
-use common::{
-    combatants::CombatAttributes,
-    items::{equipment::EquipmentSlots, Item},
-};
-use std::{collections::HashMap, ops::Deref};
+use crate::store::game_store::select_item;
+use crate::store::game_store::set_item_hovered;
+use crate::store::game_store::GameStore;
+use common::combatants::combat_attributes::CombatAttributes;
+use common::items::equipment::EquipmentSlots;
+use common::items::Item;
+use std::collections::HashMap;
+use std::ops::Deref;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 

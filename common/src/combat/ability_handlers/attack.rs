@@ -1,7 +1,7 @@
 use crate::combat::ability_handlers::ability_resolution_calculators::calculate_weapon_swing_result::calculate_weapon_swing_result;
 use crate::combat::battle::Battle;
 use crate::app_consts::error_messages;
-use crate::combat::CombatActionResult;
+use crate::combat::ActionResult;
 use crate::combatants::abilities::AbilityTarget;
 use crate::errors::AppError;
 use crate::game::RoguelikeRacerGame;
@@ -14,7 +14,7 @@ impl RoguelikeRacerGame {
         ability_user_id: u32,
         ability_target: &AbilityTarget,
         battle_option: Option<&Battle>,
-    ) -> Result<Vec<CombatActionResult>, AppError> {
+    ) -> Result<Vec<ActionResult>, AppError> {
         let mut action_results = vec![];
         let battle = battle_option.ok_or_else(|| AppError {
             error_type: crate::errors::AppErrorTypes::Generic,

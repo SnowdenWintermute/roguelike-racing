@@ -5,18 +5,21 @@ mod lobby_update_handlers;
 pub mod send_client_input;
 use self::lobby_update_handlers::handle_user_left_game;
 use crate::components::alerts::set_alert;
+use crate::components::websocket_manager::adventuring_party_update_handlers::*;
 use crate::components::websocket_manager::in_game_party_update_handlers::*;
 use crate::components::websocket_manager::inventory_management_update_handlers::*;
-use crate::components::websocket_manager::{
-    adventuring_party_update_handlers::*, lobby_update_handlers::*,
-};
+use crate::components::websocket_manager::lobby_update_handlers::*;
+use crate::store::alert_store::AlertStore;
+use crate::store::game_store::GameStore;
+use crate::store::lobby_store::LobbyStore;
 use crate::store::websocket_store::WebsocketStore;
-use crate::store::{alert_store::AlertStore, game_store::GameStore, lobby_store::LobbyStore};
-use common::{errors::AppError, packets::server_to_client::GameServerUpdatePackets};
+use common::errors::AppError;
+use common::packets::server_to_client::GameServerUpdatePackets;
 use gloo::console::log;
 use wasm_bindgen::prelude::Closure;
 use wasm_bindgen::JsCast;
-use web_sys::{MessageEvent, WebSocket};
+use web_sys::MessageEvent;
+use web_sys::WebSocket;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 

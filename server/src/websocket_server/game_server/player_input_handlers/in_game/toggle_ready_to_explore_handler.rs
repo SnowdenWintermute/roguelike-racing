@@ -28,6 +28,7 @@ impl GameServer {
             message: error_messages::MISSING_PARTY_REFERENCE.to_string(),
         })?;
         let party = get_mut_party(game, party_id)?;
+        let party_websocket_channel_name = party.websocket_channel_name.clone();
 
         if party.current_room.monsters.is_some() {
             return Err(AppError {
@@ -105,7 +106,7 @@ impl GameServer {
         }
 
         self.emit_packet(
-            &party.websocket_channel_name,
+            &party_websocket_channel_name,
             &WebsocketChannelNamespace::Party,
             &GameServerUpdatePackets::PlayerToggledReadyToExplore(username),
             None,

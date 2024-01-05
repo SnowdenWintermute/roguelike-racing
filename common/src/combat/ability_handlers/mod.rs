@@ -1,5 +1,5 @@
 use super::battle::Battle;
-use super::CombatActionResult;
+use super::ActionResult;
 use crate::combatants::abilities::AbilityTarget;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::errors::AppError;
@@ -15,7 +15,7 @@ impl RoguelikeRacerGame {
         ability_name: &CombatantAbilityNames,
         ability_target: &AbilityTarget,
         battle_option: Option<&Battle>,
-    ) -> Result<Vec<CombatActionResult>, AppError> {
+    ) -> Result<Vec<ActionResult>, AppError> {
         match ability_name {
             CombatantAbilityNames::Attack => {
                 self.attack_handler(ability_user_id, ability_target, battle_option)

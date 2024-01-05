@@ -13,6 +13,8 @@ impl GameServer {
     pub fn join_game_handler(&mut self, actor_id: u32, game_name: String) -> Result<(), AppError> {
         let game = get_mut_game(&mut self.games, &game_name)?;
         let connected_user = get_mut_user(&mut self.sessions, actor_id)?;
+        let (current_main_channel_namespace, current_main_channel_name) =
+            connected_user.websocket_channels.main.clone();
         if connected_user.current_game_name.is_some() {
             return Err(AppError {
                 error_type: common::errors::AppErrorTypes::InvalidInput,
@@ -34,8 +36,6 @@ impl GameServer {
             .insert(connected_user.username.to_string(), new_player);
         connected_user.current_game_name = Some(game_name.to_string());
 
-        let (current_main_channel_namespace, current_main_channel_name) =
-            connected_user.websocket_channels.main;
         self.remove_user_from_websocket_channel(
             &current_main_channel_name,
             &current_main_channel_namespace,

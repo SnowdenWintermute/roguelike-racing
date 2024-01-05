@@ -89,14 +89,21 @@ impl GameServer {
                 let mut ai_controlled_turn_results = take_ai_controlled_turns(game, battle_id)?;
                 turns.append(&mut ai_controlled_turn_results);
                 // Send turn result packets
-                self.emit_packet(
+                return self.emit_packet(
                     &party_websocket_channel_name,
                     &WebsocketChannelNamespace::Party,
                     &GameServerUpdatePackets::CombatTurnResults(CombatTurnResultsPacket {
                         turn_results: turns,
                     }),
                     None,
-                )?
+                );
+            } else {
+                return self.emit_packet(
+                    &party_websocket_channel_name,
+                    &WebsocketChannelNamespace::Party,
+                    &GameServerUpdatePackets::ActionResults(action_results),
+                    None,
+                );
             }
         } else {
             // check if ability can be used out of combat
@@ -116,8 +123,12 @@ impl GameServer {
 
             // return the targets and hp/mp/status effect changes.
             // client can construct animation of the effects
+            return self.emit_packet(
+                &party_websocket_channel_name,
+                &WebsocketChannelNamespace::Party,
+                &GameServerUpdatePackets::ActionResults(action_results),
+                None,
+            );
         }
-
-        Ok(())
     }
 }

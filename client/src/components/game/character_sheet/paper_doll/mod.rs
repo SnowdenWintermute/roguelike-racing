@@ -1,8 +1,7 @@
 mod paper_doll_slot;
-use common::{
-    combatants::CombatAttributes,
-    items::{equipment::EquipmentSlots, Item},
-};
+use common::combatants::combat_attributes::CombatAttributes;
+use common::items::equipment::EquipmentSlots;
+use common::items::Item;
 use std::collections::HashMap;
 use yew::prelude::*;
 

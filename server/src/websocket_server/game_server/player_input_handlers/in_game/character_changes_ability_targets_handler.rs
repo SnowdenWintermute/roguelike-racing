@@ -41,6 +41,7 @@ impl GameServer {
         })?;
 
         let party = get_mut_party(game, party_id)?;
+        let party_websocket_channel_name = party.websocket_channel_name.clone();
         let battle_id_option = party.battle_id.clone();
         let character_positions = party.character_positions.clone();
         let (_, combatant) = party.get_mut_combatant_by_id(&character_id)?;
@@ -98,7 +99,7 @@ impl GameServer {
         character.combatant_properties.ability_targets = Some(new_targets.clone());
 
         self.emit_packet(
-            &party.websocket_channel_name,
+            &party_websocket_channel_name,
             &WebsocketChannelNamespace::Party,
             &GameServerUpdatePackets::CharacterChangedTargets(ChangeTargetsPacket {
                 character_id,

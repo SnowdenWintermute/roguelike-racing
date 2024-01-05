@@ -5,6 +5,7 @@ use super::client_to_server::UnequipSlotRequest;
 use super::WebsocketChannelNamespace;
 use crate::app_consts::LOBBY_CHANNEL;
 use crate::character::Character;
+use crate::combat::ActionResult;
 use crate::combat::CombatTurnResult;
 use crate::combatants::abilities::AbilityTarget;
 use crate::combatants::abilities::CombatantAbilityNames;
@@ -48,6 +49,7 @@ pub enum GameServerUpdatePackets {
     DungeonRoomUpdate(DungeonRoom),
     CharacterSelectedAbility(CharacterSelectedAbilityPacket),
     CharacterChangedTargets(ChangeTargetsPacket),
+    ActionResults(Vec<ActionResult>),
     CombatTurnResults(CombatTurnResultsPacket),
 }
 

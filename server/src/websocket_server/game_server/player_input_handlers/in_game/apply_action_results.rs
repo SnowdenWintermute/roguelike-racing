@@ -1,4 +1,4 @@
-use common::combat::CombatActionResult;
+use common::combat::ActionResult;
 use common::combat::IdAndValue;
 use common::combatants::combat_attributes::CombatAttributes;
 use common::errors::AppError;
@@ -7,7 +7,7 @@ use common::utils::add_i16_to_u16_and_clamp_to_max;
 
 pub fn apply_action_results(
     game: &mut RoguelikeRacerGame,
-    action_results: &Vec<CombatActionResult>,
+    action_results: &Vec<ActionResult>,
 ) -> Result<(), AppError> {
     for action_result in action_results {
         apply_action_result(game, &action_result)?;
@@ -18,7 +18,7 @@ pub fn apply_action_results(
 
 pub fn apply_action_result(
     game: &mut RoguelikeRacerGame,
-    action_result: &CombatActionResult,
+    action_result: &ActionResult,
 ) -> Result<(), AppError> {
     if let Some(hp_changes) = &action_result.hp_changes_by_entity_id {
         for id_and_hp_change in hp_changes {

@@ -1,15 +1,16 @@
-use crate::websocket_server::game_server::{
-    getters::{get_mut_game, get_mut_user},
-    GameServer,
-};
-use common::{
-    app_consts::error_messages,
-    combat::battle::{BattleGroup, BattleGroupTypes},
-    dungeon_rooms::{DungeonRoom, DungeonRoomTypes},
-    errors::AppError,
-    game::getters::{get_mut_party, get_mut_player},
-    packets::server_to_client::GameServerUpdatePackets,
-};
+use crate::websocket_server::game_server::getters::get_mut_game;
+use crate::websocket_server::game_server::getters::get_mut_user;
+use crate::websocket_server::game_server::GameServer;
+use common::app_consts::error_messages;
+use common::combat::battle::BattleGroup;
+use common::combat::battle::BattleGroupTypes;
+use common::dungeon_rooms::DungeonRoom;
+use common::dungeon_rooms::DungeonRoomTypes;
+use common::errors::AppError;
+use common::game::getters::get_mut_party;
+use common::game::getters::get_mut_player;
+use common::packets::server_to_client::GameServerUpdatePackets;
+use common::packets::WebsocketChannelNamespace;
 use std::collections::HashSet;
 
 impl GameServer {
@@ -97,13 +98,15 @@ impl GameServer {
 
             self.emit_packet(
                 &game_name,
+                &WebsocketChannelNamespace::Party,
                 &GameServerUpdatePackets::DungeonRoomUpdate(room),
                 None,
             )?;
         }
 
         self.emit_packet(
-            &game_name,
+            &party.websocket_channel_name,
+            &WebsocketChannelNamespace::Party,
             &GameServerUpdatePackets::PlayerToggledReadyToExplore(username),
             None,
         )?;

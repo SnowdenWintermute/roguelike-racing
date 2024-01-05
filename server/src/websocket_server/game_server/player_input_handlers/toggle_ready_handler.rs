@@ -1,13 +1,13 @@
-use common::{
-    app_consts::error_messages, errors::AppError, game::getters::get_mut_player,
-    packets::server_to_client::GameServerUpdatePackets,
-};
-use std::time::{SystemTime, UNIX_EPOCH};
-
-use crate::websocket_server::game_server::{
-    getters::{get_mut_game, get_mut_user},
-    GameServer,
-};
+use crate::websocket_server::game_server::getters::get_mut_game;
+use crate::websocket_server::game_server::getters::get_mut_user;
+use crate::websocket_server::game_server::GameServer;
+use common::app_consts::error_messages;
+use common::errors::AppError;
+use common::game::getters::get_mut_player;
+use common::packets::server_to_client::GameServerUpdatePackets;
+use common::packets::WebsocketChannelNamespace;
+use std::time::SystemTime;
+use std::time::UNIX_EPOCH;
 
 impl GameServer {
     pub fn toggle_ready_handler(&mut self, actor_id: u32) -> Result<(), AppError> {
@@ -63,6 +63,7 @@ impl GameServer {
             let time_started = game.time_started.expect("was just set");
             self.emit_packet(
                 &game_name,
+                &WebsocketChannelNamespace::Game,
                 &GameServerUpdatePackets::GameStarted(time_started),
                 None,
             )?;
@@ -70,6 +71,7 @@ impl GameServer {
 
         self.emit_packet(
             &game_name,
+            &WebsocketChannelNamespace::Game,
             &GameServerUpdatePackets::PlayerToggledReady(username),
             None,
         )?;

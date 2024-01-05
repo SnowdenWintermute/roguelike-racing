@@ -1,12 +1,12 @@
+use crate::websocket_server::game_server::getters::get_mut_game;
+use crate::websocket_server::game_server::getters::get_mut_user;
+use crate::websocket_server::game_server::GameServer;
 use common::app_consts::error_messages;
 use common::errors::AppError;
 use common::game::getters::get_mut_player;
 use common::packets::server_to_client::GameServerUpdatePackets;
 use common::packets::server_to_client::PlayerAdventuringPartyChange;
-
-use crate::websocket_server::game_server::getters::get_mut_game;
-use crate::websocket_server::game_server::getters::get_mut_user;
-use crate::websocket_server::game_server::GameServer;
+use common::packets::WebsocketChannelNamespace;
 
 impl GameServer {
     pub fn join_party_handler(&mut self, actor_id: u32, party_id: u32) -> Result<(), AppError> {
@@ -31,7 +31,11 @@ impl GameServer {
         }
 
         game.put_player_in_adventuring_party(party_id, username.clone())?;
-        self.join_room_handler(game.get_party_channel_name(&party_id).as_str(), actor_id)?;
+        self.join_user_to_websocket_channel(
+            game.get_party_channel_name(party_id).as_str(),
+            WebsocketChannelNamespace::Party,
+            actor_id,
+        )?;
 
         self.send_packet(
             &GameServerUpdatePackets::ClientAdventuringPartyId(Some(party_id)),
@@ -40,6 +44,7 @@ impl GameServer {
 
         self.emit_packet(
             &current_game_name,
+            &WebsocketChannelNamespace::Game,
             &GameServerUpdatePackets::PlayerChangedAdventuringParty(PlayerAdventuringPartyChange {
                 username,
                 party_id: Some(party_id),

@@ -23,6 +23,7 @@ pub struct RoomsExplored {
 pub struct AdventuringParty {
     pub id: u32,
     pub name: String,
+    pub websocket_channel_name: String,
     pub player_usernames: HashSet<String>,
     pub players_ready_to_explore: HashSet<String>,
     pub characters: HashMap<u32, Character>,
@@ -36,10 +37,11 @@ pub struct AdventuringParty {
 }
 
 impl AdventuringParty {
-    pub fn new(id: u32, name: String) -> AdventuringParty {
+    pub fn new(id: u32, name: String, websocket_channel_name: String) -> AdventuringParty {
         AdventuringParty {
             id,
             name,
+            websocket_channel_name,
             player_usernames: HashSet::new(),
             players_ready_to_explore: HashSet::new(),
             characters: HashMap::new(),

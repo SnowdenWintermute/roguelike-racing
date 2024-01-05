@@ -1,12 +1,11 @@
-use crate::websocket_server::game_server::{
-    getters::{get_mut_party_game_name_and_character_ids_from_actor_id, ActorIdAssociatedPartyData},
-    GameServer,
-};
-use common::{
-    app_consts::error_messages,
-    errors::AppError,
-    packets::server_to_client::{CharacterEquippedItemPacket, GameServerUpdatePackets},
-};
+use crate::websocket_server::game_server::getters::get_mut_party_game_name_and_character_ids_from_actor_id;
+use crate::websocket_server::game_server::getters::ActorIdAssociatedPartyData;
+use crate::websocket_server::game_server::GameServer;
+use common::app_consts::error_messages;
+use common::errors::AppError;
+use common::packets::server_to_client::CharacterEquippedItemPacket;
+use common::packets::server_to_client::GameServerUpdatePackets;
+use common::packets::WebsocketChannelNamespace;
 
 impl GameServer {
     pub fn equip_item_handler(
@@ -44,7 +43,8 @@ impl GameServer {
         character.equip_item(item_id, alt_slot)?;
 
         self.emit_packet(
-            &current_game_name,
+            &party.websocket_channel_name,
+            &WebsocketChannelNamespace::Party,
             &GameServerUpdatePackets::CharacterEquippedItem(CharacterEquippedItemPacket {
                 character_id,
                 item_id,

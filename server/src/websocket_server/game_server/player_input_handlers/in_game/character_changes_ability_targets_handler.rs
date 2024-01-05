@@ -1,16 +1,16 @@
-use crate::websocket_server::game_server::{
-    getters::{
-        get_mut_game, get_mut_party_game_name_and_character_ids_from_actor_id, get_user,
-        ActorIdAssociatedPartyData,
-    },
-    GameServer,
-};
-use common::{
-    app_consts::error_messages::{self},
-    errors::{AppError, AppErrorTypes},
-    game::getters::{get_mut_party, get_mut_player},
-    packets::{client_to_server::ChangeTargetsPacket, server_to_client::GameServerUpdatePackets},
-};
+use crate::websocket_server::game_server::getters::get_mut_game;
+use crate::websocket_server::game_server::getters::get_mut_party_game_name_and_character_ids_from_actor_id;
+use crate::websocket_server::game_server::getters::get_user;
+use crate::websocket_server::game_server::getters::ActorIdAssociatedPartyData;
+use crate::websocket_server::game_server::GameServer;
+use common::app_consts::error_messages::{self};
+use common::errors::AppError;
+use common::errors::AppErrorTypes;
+use common::game::getters::get_mut_party;
+use common::game::getters::get_mut_player;
+use common::packets::client_to_server::ChangeTargetsPacket;
+use common::packets::server_to_client::GameServerUpdatePackets;
+use common::packets::WebsocketChannelNamespace;
 
 impl GameServer {
     pub fn character_changes_ability_targets_handler(
@@ -98,7 +98,8 @@ impl GameServer {
         character.combatant_properties.ability_targets = Some(new_targets.clone());
 
         self.emit_packet(
-            &current_game_name,
+            &party.websocket_channel_name,
+            &WebsocketChannelNamespace::Party,
             &GameServerUpdatePackets::CharacterChangedTargets(ChangeTargetsPacket {
                 character_id,
                 new_targets,

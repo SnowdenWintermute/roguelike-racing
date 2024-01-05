@@ -1,7 +1,12 @@
 use super::GameServer;
-use crate::websocket_server::{game_server::ConnectedUser, Connect};
-use actix::{Context, Handler};
-use common::{app_consts::MAIN_CHAT_ROOM, packets::server_to_client::GameServerUpdatePackets};
+use crate::websocket_server::game_server::ConnectedUser;
+use crate::websocket_server::Connect;
+use actix::Context;
+use actix::Handler;
+use common::app_consts::LOBBY_CHANNEL;
+use common::app_consts::MAIN_CHAT_CHANNEL;
+use common::packets::server_to_client::GameServerUpdatePackets;
+use common::packets::WebsocketChannelNamespace;
 
 impl Handler<Connect> for GameServer {
     type Result = u32;
@@ -16,7 +21,11 @@ impl Handler<Connect> for GameServer {
         self.sessions.insert(actor_id, new_user_connection);
         println!("actor id {} connected", actor_id);
 
-        let result = self.join_room_handler(MAIN_CHAT_ROOM, actor_id);
+        let result = self.join_user_to_websocket_channel(
+            LOBBY_CHANNEL,
+            WebsocketChannelNamespace::Lobby,
+            actor_id,
+        );
         if result.is_err() {
             eprintln!("{:#?}", result)
         }

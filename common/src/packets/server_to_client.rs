@@ -1,5 +1,9 @@
+use std::collections::HashSet;
+
 use super::client_to_server::ChangeTargetsPacket;
 use super::client_to_server::UnequipSlotRequest;
+use super::WebsocketChannelNamespace;
+use crate::app_consts::LOBBY_CHANNEL;
 use crate::character::Character;
 use crate::combat::CombatTurnResult;
 use crate::combatants::abilities::AbilityTarget;
@@ -20,10 +24,10 @@ pub enum GameServerUpdatePackets {
     FullUpdate(RoguelikeRacerAppState),
     GameList(ClientGameListState),
     GameFullUpdate(Option<RoguelikeRacerGame>),
-    RoomFullUpdate(RoomState),
-    // ROOMS
-    UserJoinedRoom(String),
-    UserLeftRoom(String),
+    // CHANNELS
+    WebsocketChannelFullUpdate(WebsocketChannelFullState),
+    UserJoinedWebsocketChannel(WebsocketChannelAndUserPacket),
+    UserLeftWebsocketChannel(WebsocketChannelAndUserPacket),
     // GAME IN LOBBY
     UserJoinedGame(String),
     UserLeftGame(String),
@@ -48,9 +52,10 @@ pub enum GameServerUpdatePackets {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Default)]
-pub struct RoomState {
-    pub room_name: String,
-    pub users: Vec<String>,
+pub struct WebsocketChannelFullState {
+    pub name: String,
+    pub namespace: WebsocketChannelNamespace,
+    pub usernames_in_channel: HashSet<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -72,8 +77,15 @@ impl ClientGameListState {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+pub struct WebsocketChannelsState {
+    pub main: WebsocketChannelFullState,
+    pub party: Option<WebsocketChannelFullState>,
+    pub chat: Option<WebsocketChannelFullState>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct RoguelikeRacerAppState {
-    pub room: RoomState,
+    pub websocket_channels: WebsocketChannelsState,
     pub game_list: ClientGameListState,
     pub current_game: Option<RoguelikeRacerGame>,
 }
@@ -81,9 +93,14 @@ pub struct RoguelikeRacerAppState {
 impl RoguelikeRacerAppState {
     pub fn new() -> Self {
         RoguelikeRacerAppState {
-            room: RoomState {
-                room_name: "".to_string(),
-                users: Vec::new(),
+            websocket_channels: WebsocketChannelsState {
+                main: WebsocketChannelFullState {
+                    name: LOBBY_CHANNEL.to_string(),
+                    namespace: WebsocketChannelNamespace::Lobby,
+                    usernames_in_channel: HashSet::new(),
+                },
+                party: None,
+                chat: None,
             },
             game_list: ClientGameListState { games: Vec::new() },
             current_game: None,
@@ -133,7 +150,6 @@ pub struct PlayerCharacterDeletion {
 pub struct AdventuringPartyCreation {
     pub party_id: u32,
     pub party_name: String,
-    pub username_created_by: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
@@ -153,4 +169,11 @@ pub struct CharacterSelectedAbilityPacket {
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct CombatTurnResultsPacket {
     pub turn_results: Vec<CombatTurnResult>,
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+pub struct WebsocketChannelAndUserPacket {
+    pub username: String,
+    pub channel_name: String,
+    pub channel_namespace: WebsocketChannelNamespace,
 }

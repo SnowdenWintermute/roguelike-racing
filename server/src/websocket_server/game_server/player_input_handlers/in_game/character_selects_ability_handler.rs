@@ -1,16 +1,15 @@
-use crate::websocket_server::game_server::{
-    getters::{get_mut_game, get_user},
-    GameServer,
-};
-use common::{
-    app_consts::error_messages,
-    errors::{AppError, AppErrorTypes},
-    game::getters::{get_mut_party, get_mut_player},
-    packets::{
-        client_to_server::ClientSelectAbilityPacket,
-        server_to_client::{CharacterSelectedAbilityPacket, GameServerUpdatePackets},
-    },
-};
+use crate::websocket_server::game_server::getters::get_mut_game;
+use crate::websocket_server::game_server::getters::get_user;
+use crate::websocket_server::game_server::GameServer;
+use common::app_consts::error_messages;
+use common::errors::AppError;
+use common::errors::AppErrorTypes;
+use common::game::getters::get_mut_party;
+use common::game::getters::get_mut_player;
+use common::packets::client_to_server::ClientSelectAbilityPacket;
+use common::packets::server_to_client::CharacterSelectedAbilityPacket;
+use common::packets::server_to_client::GameServerUpdatePackets;
+use common::packets::WebsocketChannelNamespace;
 
 impl GameServer {
     pub fn character_selects_ability_handler(
@@ -100,7 +99,8 @@ impl GameServer {
         };
 
         self.emit_packet(
-            &current_game_name,
+            &party.websocket_channel_name,
+            &WebsocketChannelNamespace::Party,
             &GameServerUpdatePackets::CharacterSelectedAbility(CharacterSelectedAbilityPacket {
                 character_id: packet.character_id,
                 ability_name_option: packet.ability_name_option,

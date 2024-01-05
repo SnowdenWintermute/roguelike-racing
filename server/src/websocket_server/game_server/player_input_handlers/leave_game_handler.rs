@@ -1,31 +1,39 @@
-use crate::websocket_server::game_server::{
-    getters::{get_game, get_mut_game, get_mut_user},
-    GameServer,
-};
-use common::{
-    app_consts::{error_messages, MAIN_CHAT_ROOM},
-    errors::AppError,
-    packets::server_to_client::{GameServerUpdatePackets, PlayerRemovedFromGame},
-};
+use crate::websocket_server::game_server::getters::get_game;
+use crate::websocket_server::game_server::getters::get_mut_game;
+use crate::websocket_server::game_server::getters::get_mut_user;
+use crate::websocket_server::game_server::GameServer;
+use common::app_consts::error_messages;
+use common::app_consts::LOBBY_CHANNEL;
+use common::errors::AppError;
+use common::packets::server_to_client::GameServerUpdatePackets;
+use common::packets::server_to_client::PlayerRemovedFromGame;
+use common::packets::WebsocketChannelNamespace;
 
 impl GameServer {
     pub fn leave_game_handler(&mut self, actor_id: u32) -> Result<(), AppError> {
-        self.join_room_handler(MAIN_CHAT_ROOM, actor_id)?;
         let player_and_game = self.remove_player_from_game(actor_id)?;
+        self.leave_party_handler(actor_id)?;
+        self.remove_user_from_websocket_channel(
+            player_and_game.game_name.as_str(),
+            &WebsocketChannelNamespace::Game,
+            actor_id,
+        )?;
+        self.join_user_to_websocket_channel(
+            LOBBY_CHANNEL,
+            WebsocketChannelNamespace::Lobby,
+            actor_id,
+        )?;
         println!("leaving game {:#?}", player_and_game);
         let game = get_game(&self.games, player_and_game.game_name.clone());
         if let Ok(_game_in_existance) = game {
             self.emit_packet(
                 player_and_game.game_name.as_str(),
+                &WebsocketChannelNamespace::Game,
                 &GameServerUpdatePackets::UserLeftGame(player_and_game.username.clone()),
                 Some(actor_id),
             )?;
         }
-        self.send_packet(&GameServerUpdatePackets::GameFullUpdate(None), actor_id)?;
-        self.send_packet(
-            &GameServerUpdatePackets::ClientAdventuringPartyId(None),
-            actor_id,
-        )
+        self.send_packet(&GameServerUpdatePackets::GameFullUpdate(None), actor_id)
     }
 
     pub fn remove_player_from_game(

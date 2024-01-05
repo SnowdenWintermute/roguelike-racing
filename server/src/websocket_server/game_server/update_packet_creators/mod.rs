@@ -1,13 +1,15 @@
+mod get_users_in_websocket_channel;
 use super::getters::get_game;
 use super::getters::get_user;
 use super::GameServer;
-use common::app_consts::error_messages;
 use common::errors::AppError;
 use common::game::RoguelikeRacerGame;
 use common::packets::server_to_client::ClientGameListState;
 use common::packets::server_to_client::GameListEntry;
 use common::packets::server_to_client::RoguelikeRacerAppState;
-use common::packets::server_to_client::RoomState;
+use common::packets::server_to_client::WebsocketChannelFullState;
+use common::packets::server_to_client::WebsocketChannelsState;
+use common::packets::WebsocketChannelNamespace;
 
 impl GameServer {
     pub fn create_game_list_update(&self) -> ClientGameListState {
@@ -60,35 +62,46 @@ impl GameServer {
     ) -> Result<RoguelikeRacerAppState, AppError> {
         let connected_user = get_user(&self.sessions, actor_id)?;
         let current_game = self.create_game_full_update(actor_id)?;
-        if let Some(lobby_room) = connected_user.lobby_room {
-            let room = self.rooms.get(&lobby_room).ok_or_else(|| AppError {
-                error_type: common::errors::AppErrorTypes::ServerError,
-                message: error_messages::ROOM_NOT_FOUND.to_string(),
-            })?;
-            let mut room_update = RoomState {
-                room_name: lobby_room.clone(),
-                users: Vec::new(),
-            };
 
-            for actor_id in room.iter() {
-                let user = get_user(&mut self.sessions, *actor_id)?;
-                room_update.users.push(user.username.clone());
+        // get all connected channels and update
+        let main_channel_update = {
+            let (namespace, name) = &connected_user.websocket_channels.main;
+            let usernames_in_channel = self.get_users_in_websocket_channel(namespace, &name)?;
+            WebsocketChannelFullState {
+                name: name.clone(),
+                namespace: namespace.clone(),
+                usernames_in_channel,
             }
+        };
 
-            let game_list = self.create_game_list_update();
+        let party_channel_update = {
+            if let Some(party_channel_name) = &connected_user.websocket_channels.party {
+                let usernames_in_channel = self.get_users_in_websocket_channel(
+                    &WebsocketChannelNamespace::Party,
+                    &party_channel_name,
+                )?;
+                Some(WebsocketChannelFullState {
+                    name: party_channel_name.to_string(),
+                    namespace: WebsocketChannelNamespace::Party,
+                    usernames_in_channel,
+                })
+            } else {
+                None
+            }
+        };
 
-            let full_update = RoguelikeRacerAppState {
-                room: room_update,
-                game_list,
-                current_game,
-            };
+        let game_list = self.create_game_list_update();
 
-            Ok(full_update)
-        } else {
-            Err(AppError {
-                error_type: common::errors::AppErrorTypes::ServerError,
-                message: error_messages::ROOM_NOT_FOUND.to_string(),
-            })
-        }
+        let full_update = RoguelikeRacerAppState {
+            websocket_channels: WebsocketChannelsState {
+                main: main_channel_update,
+                party: party_channel_update,
+                chat: None,
+            },
+            game_list,
+            current_game,
+        };
+
+        Ok(full_update)
     }
 }

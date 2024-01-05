@@ -2,7 +2,8 @@ use crate::websocket_server;
 use actix::prelude::*;
 // use actix_web::web::Buf;
 use actix_web_actors::ws;
-use std::time::{Duration, Instant};
+use std::time::Duration;
+use std::time::Instant;
 
 const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(5);
 const CLIENT_TIMEOUT: Duration = Duration::from_secs(10);
@@ -113,21 +114,21 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WebsocketActor {
                             // Send ListRooms message to chat server and wait for
                             // response
                             println!("List rooms");
-                            self.game_server_actor_address
-                                .send(websocket_server::ListRooms)
-                                .into_actor(self)
-                                .then(|response, _, context| {
-                                    match response {
-                                        Ok(rooms) => {
-                                            for room in rooms {
-                                                context.text(room);
-                                            }
-                                        }
-                                        _ => println!("Something is wrong"),
-                                    }
-                                    fut::ready(())
-                                })
-                                .wait(context)
+                            // self.game_server_actor_address
+                            //     .send(websocket_server::ListRooms)
+                            //     .into_actor(self)
+                            //     .then(|response, _, context| {
+                            //         match response {
+                            //             Ok(rooms) => {
+                            //                 for room in rooms {
+                            //                     context.text(room);
+                            //                 }
+                            //             }
+                            //             _ => println!("Something is wrong"),
+                            //         }
+                            //         fut::ready(())
+                            //     })
+                            //     .wait(context)
                             // .wait(ctx) pauses all events in context,
                             // so actor wont receive any new messages until it get list
                             // of rooms back

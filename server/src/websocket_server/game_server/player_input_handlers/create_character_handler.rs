@@ -1,12 +1,12 @@
-use crate::websocket_server::game_server::{
-    getters::{get_mut_game, get_user},
-    GameServer,
-};
-use common::{
-    errors::AppError,
-    game::getters::{get_mut_character, get_mut_player},
-    packets::{client_to_server::CharacterCreation, server_to_client::GameServerUpdatePackets},
-};
+use crate::websocket_server::game_server::getters::get_mut_game;
+use crate::websocket_server::game_server::getters::get_user;
+use crate::websocket_server::game_server::GameServer;
+use common::errors::AppError;
+use common::game::getters::get_mut_character;
+use common::game::getters::get_mut_player;
+use common::packets::client_to_server::CharacterCreation;
+use common::packets::server_to_client::GameServerUpdatePackets;
+use common::packets::WebsocketChannelNamespace;
 use std::collections::HashSet;
 
 impl GameServer {
@@ -55,6 +55,7 @@ impl GameServer {
 
         self.emit_packet(
             &game_name,
+            &WebsocketChannelNamespace::Game,
             &GameServerUpdatePackets::CharacterCreation(
                 common::packets::server_to_client::NewCharacterInParty {
                     party_id,

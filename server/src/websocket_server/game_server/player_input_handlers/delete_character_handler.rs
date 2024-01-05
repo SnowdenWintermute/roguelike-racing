@@ -1,14 +1,13 @@
-use common::{
-    app_consts::error_messages,
-    errors::AppError,
-    game::getters::{get_mut_party, get_mut_player},
-    packets::server_to_client::{GameServerUpdatePackets, PlayerCharacterDeletion},
-};
-
-use crate::websocket_server::game_server::{
-    getters::{get_mut_game, get_mut_user},
-    GameServer,
-};
+use crate::websocket_server::game_server::getters::get_mut_game;
+use crate::websocket_server::game_server::getters::get_mut_user;
+use crate::websocket_server::game_server::GameServer;
+use common::app_consts::error_messages;
+use common::errors::AppError;
+use common::game::getters::get_mut_party;
+use common::game::getters::get_mut_player;
+use common::packets::server_to_client::GameServerUpdatePackets;
+use common::packets::server_to_client::PlayerCharacterDeletion;
+use common::packets::WebsocketChannelNamespace;
 
 impl GameServer {
     pub fn delete_character_handler(
@@ -65,6 +64,7 @@ impl GameServer {
             if was_ready {
                 self.emit_packet(
                     &game_name,
+                    &WebsocketChannelNamespace::Game,
                     &GameServerUpdatePackets::PlayerToggledReady(username.clone()),
                     None,
                 )?;
@@ -73,6 +73,7 @@ impl GameServer {
 
         self.emit_packet(
             &game_name,
+            &WebsocketChannelNamespace::Game,
             &GameServerUpdatePackets::CharacterDeletion(PlayerCharacterDeletion {
                 party_id,
                 character_id,

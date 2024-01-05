@@ -1,9 +1,11 @@
-use super::{getters::get_user, GameServer};
-use crate::websocket_server::{AppMessage, MessageContent};
-use common::{
-    app_consts::error_messages, errors::AppError,
-    packets::server_to_client::GameServerUpdatePackets,
-};
+use super::getters::get_user;
+use super::GameServer;
+use crate::websocket_server::AppMessage;
+use crate::websocket_server::MessageContent;
+use common::app_consts::error_messages;
+use common::errors::AppError;
+use common::packets::server_to_client::GameServerUpdatePackets;
+use common::packets::WebsocketChannelNamespace;
 
 impl GameServer {
     pub fn send_packet(
@@ -22,14 +24,25 @@ impl GameServer {
 
     pub fn emit_packet(
         &self,
-        room: &str,
+        websocket_channel: &str,
+        channel_namespace: &WebsocketChannelNamespace,
         packet: &GameServerUpdatePackets,
         skip_id: Option<u32>,
     ) -> Result<(), AppError> {
-        let sessions = self.rooms.get(room).ok_or_else(||AppError {
-            error_type: common::errors::AppErrorTypes::ServerError,
-            message: error_messages::ROOM_NOT_FOUND.to_string(),
-        })?;
+        let channels_in_namespace =
+            self.websocket_channels
+                .get(channel_namespace)
+                .ok_or_else(|| AppError {
+                    error_type: common::errors::AppErrorTypes::ServerError,
+                    message: error_messages::WEBSOCKET_NAMESPACE_NOT_FOUND.to_string(),
+                })?;
+        let sessions = channels_in_namespace
+            .get(websocket_channel)
+            .ok_or_else(|| AppError {
+                error_type: common::errors::AppErrorTypes::ServerError,
+                message: error_messages::WEBSOCKET_CHANNEL_NOT_FOUND.to_string(),
+            })?;
+
         for actor_id in sessions {
             if let Some(id_to_skip) = skip_id {
                 if &id_to_skip == actor_id {
@@ -42,16 +55,16 @@ impl GameServer {
     }
 
     pub fn send_string_message(&self, room: &str, message: &str) -> Result<(), AppError> {
-        let sessions = self.rooms.get(room).ok_or_else(||AppError {
-            error_type: common::errors::AppErrorTypes::ServerError,
-            message: error_messages::ROOM_NOT_FOUND.to_string(),
-        })?;
-        for actor_id in sessions {
-            let connected_user = get_user(&self.sessions, *actor_id)?;
-            connected_user
-                .websocket_actor
-                .do_send(AppMessage(MessageContent::Str(message.to_owned())));
-        }
+        // let sessions = self.rooms.get(room).ok_or_else(|| AppError {
+        //     error_type: common::errors::AppErrorTypes::ServerError,
+        //     message: error_messages::ROOM_NOT_FOUND.to_string(),
+        // })?;
+        // for actor_id in sessions {
+        //     let connected_user = get_user(&self.sessions, *actor_id)?;
+        //     connected_user
+        //         .websocket_actor
+        //         .do_send(AppMessage(MessageContent::Str(message.to_owned())));
+        // }
         Ok(())
     }
 

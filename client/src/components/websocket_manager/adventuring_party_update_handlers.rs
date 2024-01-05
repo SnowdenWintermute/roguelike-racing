@@ -1,13 +1,12 @@
 use crate::store::game_store::GameStore;
-use common::{
-    app_consts::error_messages,
-    errors::AppError,
-    game::getters::{get_mut_party, get_mut_player},
-    packets::server_to_client::{
-        AdventuringPartyCreation, NewCharacterInParty, PlayerAdventuringPartyChange,
-        PlayerCharacterDeletion,
-    },
-};
+use common::app_consts::error_messages;
+use common::errors::AppError;
+use common::game::getters::get_mut_party;
+use common::game::getters::get_mut_player;
+use common::packets::server_to_client::AdventuringPartyCreation;
+use common::packets::server_to_client::NewCharacterInParty;
+use common::packets::server_to_client::PlayerAdventuringPartyChange;
+use common::packets::server_to_client::PlayerCharacterDeletion;
 use std::collections::HashSet;
 
 pub fn handle_adventuring_party_created(
@@ -20,10 +19,6 @@ pub fn handle_adventuring_party_created(
     })?;
 
     game.add_adventuring_party(party_creation.party_name, party_creation.party_id);
-    game.put_player_in_adventuring_party(
-        party_creation.party_id,
-        party_creation.username_created_by.clone(),
-    )?;
     Ok(())
 }
 

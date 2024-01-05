@@ -1,13 +1,12 @@
-use crate::websocket_server::game_server::{
-    getters::{get_mut_party_game_name_and_character_ids_from_actor_id, ActorIdAssociatedPartyData},
-    GameServer,
-};
-use common::{
-    app_consts::error_messages,
-    errors::AppError,
-    items::equipment::EquipmentSlots,
-    packets::{client_to_server::UnequipSlotRequest, server_to_client::GameServerUpdatePackets},
-};
+use crate::websocket_server::game_server::getters::get_mut_party_game_name_and_character_ids_from_actor_id;
+use crate::websocket_server::game_server::getters::ActorIdAssociatedPartyData;
+use crate::websocket_server::game_server::GameServer;
+use common::app_consts::error_messages;
+use common::errors::AppError;
+use common::items::equipment::EquipmentSlots;
+use common::packets::client_to_server::UnequipSlotRequest;
+use common::packets::server_to_client::GameServerUpdatePackets;
+use common::packets::WebsocketChannelNamespace;
 
 impl GameServer {
     pub fn unequip_slot_handler(
@@ -45,7 +44,8 @@ impl GameServer {
         character.unequip_slots(&vec![slot.clone()], false);
 
         self.emit_packet(
-            &current_game_name,
+            &party.websocket_channel_name,
+            &WebsocketChannelNamespace::Party,
             &GameServerUpdatePackets::CharacterUnequippedSlot(UnequipSlotRequest {
                 character_id,
                 slot,

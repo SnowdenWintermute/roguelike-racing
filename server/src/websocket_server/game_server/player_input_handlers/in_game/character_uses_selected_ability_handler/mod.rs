@@ -11,6 +11,7 @@ use common::errors::AppError;
 use common::game::getters::get_mut_party;
 use common::packets::server_to_client::CombatTurnResultsPacket;
 use common::packets::server_to_client::GameServerUpdatePackets;
+use common::packets::WebsocketChannelNamespace;
 
 impl GameServer {
     pub fn character_uses_selected_ability_handler(
@@ -26,6 +27,7 @@ impl GameServer {
             player_character_ids_option,
         } = get_mut_game_data_from_actor_id(self, actor_id)?;
         let party = get_mut_party(game, party_id)?;
+        let party_websocket_channel_name = party.websocket_channel_name.clone();
         let character =
             party.get_mut_character_if_owned(player_character_ids_option, character_id)?;
         let ability_name = character
@@ -88,9 +90,10 @@ impl GameServer {
                 turns.append(&mut ai_controlled_turn_results);
                 // Send turn result packets
                 self.emit_packet(
-                    &current_game_name,
+                    &party_websocket_channel_name,
+                    &WebsocketChannelNamespace::Party,
                     &GameServerUpdatePackets::CombatTurnResults(CombatTurnResultsPacket {
-                        turn_results,
+                        turn_results: turns,
                     }),
                     None,
                 )?

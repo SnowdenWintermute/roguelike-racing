@@ -75,7 +75,7 @@ impl RoguelikeRacerGame {
     }
 
     pub fn add_adventuring_party(&mut self, name: String, id: u32) {
-        let new_party = AdventuringParty::new(id, name);
+        let new_party = AdventuringParty::new(id, name, self.get_party_channel_name(id));
         self.adventuring_parties.insert(id, new_party);
     }
 
@@ -96,17 +96,17 @@ impl RoguelikeRacerGame {
     pub fn remove_player_from_adventuring_party(
         &mut self,
         username: String,
-    ) -> Result<(), AppError> {
+    ) -> Result<Option<u32>, AppError> {
         let player = get_mut_player(self, &username)?;
         if player.party_id.is_none() {
-            return Ok(());
+            return Ok(None);
         }
-        let party_id_leaving = player.party_id;
+        let party_id_leaving = player.party_id.expect("is_none checked");
         let character_ids = player.character_ids.clone();
         player.character_ids = None;
         player.party_id = None;
 
-        let party = get_mut_party(self, party_id_leaving.expect("none check just above here"))?;
+        let party = get_mut_party(self, party_id_leaving)?;
 
         match &character_ids {
             Some(character_ids) => {
@@ -130,7 +130,8 @@ impl RoguelikeRacerGame {
         for id in party_ids_to_remove {
             self.adventuring_parties.remove(&id);
         }
-        Ok(())
+
+        Ok(Some(party_id_leaving))
     }
 
     pub fn get_player_characters(

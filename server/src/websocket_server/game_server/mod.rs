@@ -1,16 +1,20 @@
 use actix::prelude::*;
-use common::app_consts::MAIN_CHAT_ROOM;
+use common::app_consts::LOBBY_CHANNEL;
+use common::app_consts::MAIN_CHAT_CHANNEL;
 use common::game::RoguelikeRacerGame;
 use common::packets::client_to_server::PlayerInputs;
 use common::packets::server_to_client::GameServerUpdatePackets;
+use common::packets::WebsocketChannelNamespace;
 use common::utils::generate_random_username;
 use std::collections::HashMap;
 use std::collections::HashSet;
 pub mod connection_handler;
 pub mod disconnection_handler;
 pub mod getters;
+mod join_user_to_websocket_channel;
 pub mod list_rooms_handler;
 pub mod player_input_handlers;
+mod remove_user_from_websocket_channel;
 pub mod send_messages;
 pub mod update_packet_creators;
 use super::AppMessage;
@@ -18,11 +22,18 @@ use super::ClientBinaryMessage;
 use super::ClientMessage;
 
 #[derive(Debug)]
+pub struct UserWebsocketChannels {
+    pub main: (WebsocketChannelNamespace, String),
+    pub party: Option<String>,
+    pub chat: Option<String>,
+}
+
+#[derive(Debug)]
 pub struct ConnectedUser {
     pub id: u32,
     pub websocket_actor: Recipient<AppMessage>,
     pub username: String,
-    pub connected_rooms: Vec<String>,
+    pub websocket_channels: UserWebsocketChannels,
     pub current_game_name: Option<String>,
 }
 
@@ -32,7 +43,11 @@ impl ConnectedUser {
             id,
             websocket_actor,
             username: generate_random_username(),
-            connected_rooms: vec![MAIN_CHAT_ROOM.to_string()],
+            websocket_channels: UserWebsocketChannels {
+                main: (WebsocketChannelNamespace::Lobby, LOBBY_CHANNEL.to_string()),
+                party: None,
+                chat: None,
+            },
             current_game_name: None,
         }
     }
@@ -41,17 +56,28 @@ impl ConnectedUser {
 #[derive(Debug)]
 pub struct GameServer {
     sessions: HashMap<u32, ConnectedUser>,
-    rooms: HashMap<String, HashSet<u32>>,
+    websocket_channels: HashMap<WebsocketChannelNamespace, HashMap<String, HashSet<u32>>>,
     games: HashMap<String, RoguelikeRacerGame>,
 }
 
 impl GameServer {
     pub fn new() -> GameServer {
-        let mut rooms = HashMap::new();
-        rooms.insert(MAIN_CHAT_ROOM.to_owned(), HashSet::new());
+        let mut websocket_channels: HashMap<
+            WebsocketChannelNamespace,
+            HashMap<String, HashSet<u32>>,
+        > = HashMap::new();
+        websocket_channels
+            .entry(WebsocketChannelNamespace::Lobby)
+            .or_default()
+            .insert(LOBBY_CHANNEL.to_string(), HashSet::new());
+        websocket_channels
+            .entry(WebsocketChannelNamespace::Lobby)
+            .or_default()
+            .insert(MAIN_CHAT_CHANNEL.to_string(), HashSet::new());
+
         GameServer {
             sessions: HashMap::new(),
-            rooms,
+            websocket_channels,
             games: HashMap::new(),
         }
     }
@@ -81,9 +107,7 @@ impl Handler<ClientBinaryMessage> for GameServer {
             Ok(PlayerInputs::CreateAdventuringParty(party_name)) => {
                 self.create_adventuring_party_handler(message.actor_id, party_name)
             }
-            Ok(PlayerInputs::LeaveAdventuringParty) => {
-                self.leave_adventuring_party_handler(message.actor_id)
-            }
+            Ok(PlayerInputs::LeaveAdventuringParty) => self.leave_party_handler(message.actor_id),
             Ok(PlayerInputs::JoinAdventuringParty(party_id)) => {
                 self.join_party_handler(message.actor_id, party_id)
             }
@@ -140,13 +164,15 @@ impl Handler<ClientMessage> for GameServer {
     type Result = ();
     fn handle(&mut self, message: ClientMessage, _: &mut Context<Self>) {
         println!("message received: {}", message.content);
-        let room = &self
+        let channel_option = &self
             .sessions
             .get(&message.actor_id)
             .expect("if we got a message from this id, the user should exist in our list")
-            .lobby_room;
-        if let Some(lobby_room) = room {
-            let result = self.send_string_message(&lobby_room, message.content.as_str());
+            .websocket_channels
+            .chat;
+
+        if let Some(channel) = channel_option {
+            let result = self.send_string_message(&channel, message.content.as_str());
             if result.is_err() {
                 eprintln!("{:#?}", result);
             }

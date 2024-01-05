@@ -6,6 +6,7 @@ use common::errors::AppError;
 use common::game::getters::get_mut_player;
 use common::packets::server_to_client::AdventuringPartyCreation;
 use common::packets::server_to_client::GameServerUpdatePackets;
+use common::packets::WebsocketChannelNamespace;
 
 impl GameServer {
     pub fn create_adventuring_party_handler(
@@ -37,20 +38,17 @@ impl GameServer {
 
         let party_id = game.id_generator.get_next_entity_id();
         game.add_adventuring_party(party_name.clone(), party_id);
-        game.put_player_in_adventuring_party(party_id, connected_user.username.clone())?;
 
-        self.send_packet(
-            &GameServerUpdatePackets::ClientAdventuringPartyId(Some(party_id)),
-            actor_id,
-        )?;
         self.emit_packet(
             &current_game_name,
+            &WebsocketChannelNamespace::Game,
             &GameServerUpdatePackets::AdventuringPartyCreated(AdventuringPartyCreation {
                 party_id,
                 party_name,
-                username_created_by: username,
             }),
             None,
-        )
+        );
+
+        self.join_party_handler(actor_id, party_id)
     }
 }

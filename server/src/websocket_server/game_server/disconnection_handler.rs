@@ -1,7 +1,9 @@
 use super::GameServer;
 use crate::websocket_server::Disconnect;
-use actix::{Context, Handler};
+use actix::Context;
+use actix::Handler;
 use common::packets::server_to_client::GameServerUpdatePackets;
+use common::packets::WebsocketChannelNamespace;
 
 impl Handler<Disconnect> for GameServer {
     type Result = ();
@@ -14,13 +16,39 @@ impl Handler<Disconnect> for GameServer {
             println!("a user disconnected but they weren't in the server's list of users");
             return;
         }
+        let connected_user = connected_user.expect("is_none checked");
+        let main_websocket_channel = connected_user.websocket_channels.main.clone();
+        let party_websocket_channel = connected_user.websocket_channels.party.clone();
+        let chat_websocket_channel = connected_user.websocket_channels.chat.clone();
 
-        let room_name_leaving = connected_user.unwrap().current_room_name.clone();
-        let username = connected_user.unwrap().username.clone();
+        // remove them from all websocket channels
+        let (main_channel_namespace, main_channel_name) = &main_websocket_channel;
+        self.remove_user_from_websocket_channel(
+            main_channel_name.as_str(),
+            &main_channel_namespace,
+            actor_id,
+        );
+        if let Some(party_channel_name) = &party_websocket_channel {
+            self.remove_user_from_websocket_channel(
+                party_channel_name.as_str(),
+                &WebsocketChannelNamespace::Party,
+                actor_id,
+            );
+        }
+        if let Some(chat_channel_name) = &chat_websocket_channel {
+            self.remove_user_from_websocket_channel(
+                chat_channel_name.as_str(),
+                &WebsocketChannelNamespace::Chat,
+                actor_id,
+            );
+        }
+
+        // remove them from their game if any
 
         if let Ok(player_and_game) = self.remove_player_from_game(actor_id) {
             let result = self.emit_packet(
                 player_and_game.game_name.as_str(),
+                &main_channel_namespace,
                 &GameServerUpdatePackets::UserLeftGame(player_and_game.username.clone()),
                 Some(actor_id),
             );
@@ -29,23 +57,7 @@ impl Handler<Disconnect> for GameServer {
             }
         };
 
-        let room_leaving = self.rooms.get_mut(&room_name_leaving);
-        match room_leaving {
-            Some(room) => {
-                room.remove(&actor_id);
-                // UPDATE THEIR PREVIOUS ROOM MEMBERS
-                let result = self.emit_packet(
-                    &room_name_leaving,
-                    &GameServerUpdatePackets::UserLeftRoom(username),
-                    None,
-                );
-                if result.is_err() {
-                    eprintln!("{:#?}", result)
-                }
-            }
-            None => println!("tried to remove a user from a room but no room was found"),
-        }
-
+        // remove them from list of connected users
         self.sessions.remove(&actor_id);
     }
 }

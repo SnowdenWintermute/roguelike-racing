@@ -78,7 +78,7 @@ impl ClientGameListState {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Default)]
 pub struct WebsocketChannelsState {
     pub main: WebsocketChannelFullState,
     pub party: Option<WebsocketChannelFullState>,

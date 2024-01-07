@@ -1,14 +1,11 @@
 mod adventuring_party_update_handlers;
+mod handle_packet;
 mod in_game_party_update_handlers;
 mod inventory_management_update_handlers;
 mod lobby_update_handlers;
 pub mod send_client_input;
-use self::lobby_update_handlers::handle_user_left_game;
+mod websocket_channel_packet_handlers;
 use crate::components::alerts::set_alert;
-use crate::components::websocket_manager::adventuring_party_update_handlers::*;
-use crate::components::websocket_manager::in_game_party_update_handlers::*;
-use crate::components::websocket_manager::inventory_management_update_handlers::*;
-use crate::components::websocket_manager::lobby_update_handlers::*;
 use crate::store::alert_store::AlertStore;
 use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
@@ -54,134 +51,20 @@ pub fn websocket_manager(props: &Props) -> Html {
                             let deserialized: Result<GameServerUpdatePackets, _> =
                                 serde_cbor::from_slice(byte_slice);
                             if let Ok(data) = deserialized {
-                                // log!(format!("{:#?}", data));
-                                match data {
-                                    GameServerUpdatePackets::Error(message) => {
-                                        let dispatch = alert_dispatch.clone();
-                                        set_alert(dispatch, message);
-                                    }
-                                    GameServerUpdatePackets::ClientUserName(username) => {
-                                        lobby_dispatch.clone().reduce_mut(|store| {
-                                            store.username = username;
-                                        });
-                                    }
-                                    GameServerUpdatePackets::FullUpdate(update) => {
-                                        lobby_dispatch.clone().reduce_mut(|store| {
-                                            store.game_list = update.game_list.games;
-                                            store.room = update.room;
-                                        });
-                                    }
-                                    GameServerUpdatePackets::RoomFullUpdate(update) => {
-                                        lobby_dispatch.clone().reduce_mut(|store| {
-                                            store.room = update;
-                                        });
-                                    }
-                                    GameServerUpdatePackets::UserLeftRoom(username_leaving) => {
-                                        lobby_dispatch.clone().reduce_mut(|store| {
-                                            handle_user_left_room(store, &username_leaving)
-                                        })
-                                    }
-                                    GameServerUpdatePackets::UserJoinedRoom(update) => {
-                                        lobby_dispatch.clone().reduce_mut(|store| {
-                                            store.room.users.push(update);
-                                        })
-                                    }
-                                    GameServerUpdatePackets::GameList(update) => {
-                                        let dispatch = lobby_dispatch.clone();
-                                        dispatch.reduce_mut(|store| store.game_list = update.games);
-                                    }
-                                    GameServerUpdatePackets::GameFullUpdate(update) => {
-                                        game_dispatch.clone().reduce_mut(|store| {
-                                            store.game = update;
-                                        });
-                                    }
-                                    GameServerUpdatePackets::UserJoinedGame(username) => {
-                                        game_dispatch.clone().reduce_mut(|store| {
-                                            handle_user_joined_game(store, username)
-                                        })
-                                    }
-                                    GameServerUpdatePackets::UserLeftGame(username) => {
-                                        game_dispatch.clone().reduce_mut(|store| {
-                                            handle_user_left_game(store, username)
-                                        })
-                                    }
-                                    GameServerUpdatePackets::AdventuringPartyCreated(
-                                        party_creation,
-                                    ) => game_dispatch.clone().reduce_mut(|store| {
-                                        handle_adventuring_party_created(store, party_creation)
-                                    }),
-                                    GameServerUpdatePackets::ClientAdventuringPartyId(update) => {
-                                        game_dispatch.clone().reduce_mut(|store| {
-                                            store.current_party_id = update;
-                                        })
-                                    }
-                                    GameServerUpdatePackets::PlayerChangedAdventuringParty(
-                                        update,
-                                    ) => game_dispatch.clone().reduce_mut(|store| {
-                                        handle_player_changed_adventuring_party(store, update)
-                                    }),
-                                    GameServerUpdatePackets::CharacterCreation(
-                                        character_in_party,
-                                    ) => game_dispatch.clone().reduce_mut(|store| {
-                                        let _ =
-                                            handle_character_creation(store, character_in_party);
-                                    }),
-                                    GameServerUpdatePackets::CharacterDeletion(
-                                        character_deletion,
-                                    ) => game_dispatch.clone().reduce_mut(|store| {
-                                        let _ =
-                                            handle_character_deletion(store, character_deletion);
-                                    }),
-                                    GameServerUpdatePackets::PlayerToggledReady(username) => {
-                                        game_dispatch.clone().reduce_mut(|store| {
-                                            let _ = handle_player_toggled_ready(store, username);
-                                        })
-                                    }
-                                    GameServerUpdatePackets::GameStarted(timestamp) => {
-                                        game_dispatch.clone().reduce_mut(move |store| {
-                                            handle_game_started(store, timestamp)
-                                        })
-                                    }
-                                    GameServerUpdatePackets::CharacterEquippedItem(packet) => {
-                                        game_dispatch.clone().reduce_mut(|store| {
-                                            let _ = handle_character_equipped_item(
-                                                store,
-                                                packet,
-                                                &lobby_state.username,
-                                            );
-                                        })
-                                    }
-                                    GameServerUpdatePackets::CharacterUnequippedSlot(packet) => {
-                                        game_dispatch.clone().reduce_mut(|store| {
-                                            let _ = handle_character_unequipped_slot(store, packet);
-                                        })
-                                    }
-                                    GameServerUpdatePackets::PlayerToggledReadyToExplore(
-                                        username,
-                                    ) => game_dispatch.clone().reduce_mut(|store| {
-                                        let _ =
-                                            handle_player_toggled_ready_to_explore(store, username);
-                                    }),
-                                    GameServerUpdatePackets::DungeonRoomUpdate(new_room) => {
-                                        game_dispatch.clone().reduce_mut(|store| {
-                                            let _ = handle_new_dungeon_room(store, new_room);
-                                        })
-                                    }
-                                    GameServerUpdatePackets::CharacterSelectedAbility(packet) => {
-                                        game_dispatch.clone().reduce_mut(|store| {
-                                            let _ =
-                                                handle_character_ability_selection(store, packet);
-                                        })
-                                    }
-                                    GameServerUpdatePackets::CharacterChangedTargets(packet) => {
-                                        game_dispatch.clone().reduce_mut(|store| {
-                                            let _ = handle_character_changed_targets(store, packet);
-                                        })
-                                    }
-                                    _ => {
-                                        log!(format!("unhandled packet: {:#?}", data))
-                                    }
-                                }
+                                let cloned_alert_dispatch = alert_dispatch.clone();
+                                let cloned_lobby_dispatch = lobby_dispatch.clone();
+                                let cloned_lobby_state = lobby_state.clone();
+                                let cloned_game_dispatch = game_dispatch.clone();
+                                let cloned_websocket_dispatch = websocket_dispatch.clone();
+
+                                handle_packet::handle_packet(
+                                    data,
+                                    cloned_alert_dispatch,
+                                    cloned_lobby_dispatch,
+                                    cloned_lobby_state,
+                                    cloned_game_dispatch,
+                                    cloned_websocket_dispatch,
+                                )?
                             }
                         } else if let Ok(txt) = e.data().dyn_into::<js_sys::JsString>() {
                             log!("message event, received Text: {:?}", txt);
@@ -192,7 +75,7 @@ pub fn websocket_manager(props: &Props) -> Html {
                     })();
                     match result {
                         Err(app_error) => {
-                            log!("unhandled error");
+                            log!(format!("app error: {}", app_error.message));
                             let dispatch = alert_dispatch.clone();
                             set_alert(dispatch, app_error.message);
                         }

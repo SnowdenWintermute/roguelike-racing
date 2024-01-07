@@ -11,7 +11,8 @@ gloo = "0.10.0"
 wasm-bindgen = "0.2.88"
 web-sys = {version = "0.3.64", features = ["HtmlInputElement"]}
 yew-router = "0.18.0"
-yewdux = "0.9.4"
+# yewdux = "0.9.4"
+yewdux = "0.10.0"
 common = { path = "../common"}
 serde = { version = "1.0", features = ["derive"] }
 serde_cbor = "0.10"

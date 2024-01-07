@@ -7,7 +7,7 @@ pub mod server_to_client;
 pub enum WebsocketChannelNamespace {
     #[default]
     Lobby,
-    Party,
     Game,
+    Party,
     Chat,
 }

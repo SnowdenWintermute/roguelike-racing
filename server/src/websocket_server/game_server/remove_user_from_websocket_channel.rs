@@ -34,7 +34,7 @@ impl GameServer {
                 channel_namespace: namespace.clone(),
             }),
             Some(actor_id),
-        );
+        )?;
 
         self.websocket_channels
             .entry(namespace.clone())

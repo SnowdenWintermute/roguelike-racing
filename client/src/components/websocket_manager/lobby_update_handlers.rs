@@ -1,13 +1,7 @@
-use crate::store::{game_store::GameStore, lobby_store::LobbyStore};
-use common::{errors::AppError, game::RoguelikeRacerPlayer};
-
-pub fn handle_user_left_room(lobby_state: &mut LobbyStore, username_leaving: &str) {
-    for (index, username) in lobby_state.room.users.clone().iter().enumerate() {
-        if username_leaving == username {
-            lobby_state.room.users.remove(index);
-        }
-    }
-}
+use crate::store::game_store::GameStore;
+use crate::store::lobby_store::LobbyStore;
+use common::errors::AppError;
+use common::game::RoguelikeRacerPlayer;
 
 pub fn handle_user_joined_game(
     game_state: &mut GameStore,

@@ -88,12 +88,13 @@ impl Battle {
     }
 }
 
+/// creates a new battle and returns the battle_id
 impl RoguelikeRacerGame {
     pub fn initiate_battle(
         &mut self,
         group_a: BattleGroup,
         group_b: BattleGroup,
-    ) -> Result<(), AppError> {
+    ) -> Result<u32, AppError> {
         let turn_trackers = self.get_battle_turn_order(&group_a, &group_b)?;
         let battle = Battle {
             id: self.id_generator.get_next_entity_id(),
@@ -101,10 +102,10 @@ impl RoguelikeRacerGame {
             group_b,
             combatant_turn_trackers: turn_trackers,
         };
+        let battle_id = battle.id;
 
-        self.battles.insert(battle.id, battle);
-
-        Ok(())
+        self.battles.insert(battle_id, battle);
+        Ok(battle_id)
     }
 }
 

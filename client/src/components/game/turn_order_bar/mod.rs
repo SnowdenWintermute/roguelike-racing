@@ -1,21 +1,18 @@
 mod turn_order_tracker_card;
-use crate::{
-    components::game::turn_order_bar::turn_order_tracker_card::TurnOrderTrackerCard,
-    store::game_store::GameStore,
-};
+use crate::components::game::turn_order_bar::turn_order_tracker_card::TurnOrderTrackerCard;
+use crate::store::game_store::get_current_battle_option;
+use crate::store::game_store::GameStore;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
 #[function_component(TurnOrderBar)]
 pub fn turn_order_bar() -> Html {
     let (game_state, _) = use_store::<GameStore>();
-    let party_result = game_state.get_current_party();
-    let turn_trackers_option = {
-        if let Ok(party) = party_result {
-            &party.combatant_turn_trackers
-        } else {
-            &None
-        }
+    let battle_option = get_current_battle_option(&game_state);
+    let turn_trackers_option = if let Some(battle) = battle_option {
+        Some(battle.combatant_turn_trackers)
+    } else {
+        None
     };
 
     let bar_content = match turn_trackers_option {
@@ -25,7 +22,7 @@ pub fn turn_order_bar() -> Html {
                     .iter()
                     .map(|tracker| {
                         html!(
-                            <TurnOrderTrackerCard id={tracker.entity_id} />
+                            <TurnOrderTrackerCard entity_id={tracker.entity_id} />
                         )
                     })
                     .collect::<Html>()

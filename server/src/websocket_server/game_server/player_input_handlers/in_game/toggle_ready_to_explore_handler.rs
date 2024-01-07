@@ -94,11 +94,22 @@ impl GameServer {
                     combatant_ids: monster_ids,
                     group_type: BattleGroupTypes::ComputerControlled,
                 };
-                game.initiate_battle(group_a, group_b)?;
+                let battle_id = game.initiate_battle(group_a, group_b)?;
+                let cloned_battle = game
+                    .battles
+                    .get(&battle_id)
+                    .expect("just inserted it")
+                    .clone();
+                self.emit_packet(
+                    &party_websocket_channel_name,
+                    &WebsocketChannelNamespace::Party,
+                    &GameServerUpdatePackets::BattleFullUpdate(Some(cloned_battle)),
+                    None,
+                )?;
             }
 
             self.emit_packet(
-                &game_name,
+                &party_websocket_channel_name,
                 &WebsocketChannelNamespace::Party,
                 &GameServerUpdatePackets::DungeonRoomUpdate(room),
                 None,

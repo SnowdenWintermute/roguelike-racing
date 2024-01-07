@@ -14,10 +14,10 @@ mod set_up_actions;
 use crate::components::game::action_menu::action_menu_button::ActionMenuButton;
 use crate::components::game::action_menu::action_page_buttons::ActionPageButtons;
 use crate::components::game::action_menu::set_up_actions::ActionMenuButtonProperties;
+use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
 use crate::store::ui_store::UIStore;
-use crate::store::{game_store::GameStore, websocket_store::WebsocketStore};
-use common::adventuring_party::AdventuringParty;
+use crate::store::websocket_store::WebsocketStore;
 use common::utils::calculate_number_of_pages;
 use gloo::events::EventListener;
 use std::ops::Deref;
@@ -25,9 +25,7 @@ use yew::prelude::*;
 use yewdux::prelude::use_store;
 
 #[derive(Properties, Eq, PartialEq)]
-pub struct Props {
-    pub adventuring_party: AdventuringParty,
-}
+pub struct Props {}
 
 const PAGE_SIZE: u8 = 6;
 #[function_component(ActionMenu)]
@@ -36,7 +34,7 @@ pub fn action_menu(props: &Props) -> Html {
     let (ui_state, _) = use_store::<UIStore>();
     let (lobby_state, _) = use_store::<LobbyStore>();
     let (websocket_state, _) = use_store::<WebsocketStore>();
-    let party = props.adventuring_party.clone();
+    let party = game_state.get_current_party().expect("to be in a party");
     let action_button_properties = use_state(|| Vec::<ActionMenuButtonProperties>::new());
     let button_props_on_current_page = use_state(|| Vec::<ActionMenuButtonProperties>::new());
 

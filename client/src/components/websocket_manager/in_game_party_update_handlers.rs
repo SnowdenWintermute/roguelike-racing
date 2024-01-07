@@ -1,12 +1,12 @@
 use crate::store::game_store::GameStore;
-use common::{
-    dungeon_rooms::DungeonRoom,
-    errors::AppError,
-    packets::{
-        client_to_server::ChangeTargetsPacket, server_to_client::CharacterSelectedAbilityPacket,
-    },
-};
+use common::app_consts::error_messages;
+use common::combat::battle::Battle;
+use common::dungeon_rooms::DungeonRoom;
+use common::errors::AppError;
+use common::packets::client_to_server::ChangeTargetsPacket;
+use common::packets::server_to_client::CharacterSelectedAbilityPacket;
 use gloo::console::log;
+use std::collections::HashMap;
 use std::collections::HashSet;
 
 pub fn handle_player_toggled_ready_to_explore(
@@ -34,11 +34,25 @@ pub fn handle_new_dungeon_room(
     party.current_room = packet;
     party.rooms_explored.on_current_floor += 1;
     party.rooms_explored.total += 1;
-    if party.current_room.monsters.is_some() {
-        let turn_trackers = party.get_combat_turn_order();
-        party.combatant_turn_trackers = Some(turn_trackers);
-    }
 
+    Ok(())
+}
+
+pub fn handle_battle_full_update(
+    game_store: &mut GameStore,
+    battle_option: Option<Battle>,
+) -> Result<(), AppError> {
+    let game = &mut game_store.game.ok_or_else(|| AppError {
+        error_type: common::errors::AppErrorTypes::ClientError,
+        message: error_messages::GAME_NOT_FOUND.to_string(),
+    })?;
+    if let Some(battle) = battle_option {
+        game_store.current_battle_id = Some(battle.id);
+        game.battles.insert(battle.id, battle);
+    } else {
+        game_store.current_battle_id = None;
+        game.battles = HashMap::new();
+    }
     Ok(())
 }
 

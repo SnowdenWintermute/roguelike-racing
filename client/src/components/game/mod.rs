@@ -6,16 +6,17 @@ mod dungeon_room;
 mod tabbed_display;
 mod top_info_bar;
 pub mod turn_order_bar;
-use crate::{
-    components::game::{
-        action_menu::ActionMenu, character_sheet::CharacterSheet, dungeon_room::DungeonRoom,
-        tabbed_display::TabbedDisplay, top_info_bar::TopInfoBar,
-    },
-    store::{game_store::GameStore, lobby_store::LobbyStore},
-};
+use crate::components::game::action_menu::ActionMenu;
+use crate::components::game::character_sheet::CharacterSheet;
+use crate::components::game::dungeon_room::DungeonRoom;
+use crate::components::game::tabbed_display::TabbedDisplay;
+use crate::components::game::top_info_bar::TopInfoBar;
+use crate::store::game_store::GameStore;
+use crate::store::lobby_store::LobbyStore;
 use gloo::events::EventListener;
 use gloo_utils::window;
-use wasm_bindgen::{JsCast, UnwrapThrowExt};
+use wasm_bindgen::JsCast;
+use wasm_bindgen::UnwrapThrowExt;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
@@ -68,20 +69,19 @@ pub fn game() -> Html {
 
     html!(
         <main class="h-screen w-screen p-4 bg-gray-600 text-zinc-300 flex flex-col relative">
-
             <div class="absolute top-0 left-1/2 -translate-x-1/2 z-40 bg-slate-700" >
             if !game_state.viewing_inventory {
                 <TopInfoBar />
             }
             </div>
             <div class="h-1/2 flex mb-4" >
-                <DungeonRoom game={game} party_id={party_id} />
+                <DungeonRoom party_id={party_id} />
                 if game_state.viewing_inventory && focused_character.is_some(){
                     <CharacterSheet character={focused_character.as_deref().expect("is_some checked").clone()} />
                 }
             </div>
             <div class="flex h-1/2 max-h-[453px]" >
-                <ActionMenu adventuring_party={party.clone()} />
+                <ActionMenu />
                 <TabbedDisplay />
             </div>
         </main>

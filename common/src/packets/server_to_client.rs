@@ -5,6 +5,7 @@ use super::client_to_server::UnequipSlotRequest;
 use super::WebsocketChannelNamespace;
 use crate::app_consts::LOBBY_CHANNEL;
 use crate::character::Character;
+use crate::combat::battle::Battle;
 use crate::combat::ActionResult;
 use crate::combat::CombatTurnResult;
 use crate::combatants::abilities::AbilityTarget;
@@ -51,6 +52,7 @@ pub enum GameServerUpdatePackets {
     CharacterChangedTargets(ChangeTargetsPacket),
     ActionResults(Vec<ActionResult>),
     CombatTurnResults(CombatTurnResultsPacket),
+    BattleFullUpdate(Option<Battle>),
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Default)]

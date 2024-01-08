@@ -1,13 +1,12 @@
-use crate::{
-    components::websocket_manager::send_client_input::send_client_input,
-    store::game_store::GameStore,
-};
-use common::{
-    app_consts::error_messages,
-    errors::AppError,
-    game::getters::get_mut_party,
-    packets::client_to_server::{ChangeTargetsPacket, PlayerInputs},
-};
+use crate::components::websocket_manager::send_client_input::send_client_input;
+use crate::store::game_store::get_current_battle_option;
+use crate::store::game_store::GameStore;
+use common::app_consts::error_messages;
+use common::errors::AppError;
+use common::game::getters::get_ally_ids_and_opponent_ids_option;
+use common::game::getters::get_mut_party;
+use common::packets::client_to_server::ChangeTargetsPacket;
+use common::packets::client_to_server::PlayerInputs;
 use gloo::console::log;
 use web_sys::WebSocket;
 
@@ -109,18 +108,27 @@ pub fn handle_cycle_targeting_schemes(
                 error_type: common::errors::AppErrorTypes::ClientError,
                 message: error_messages::MISSING_ABILITY_REFERENCE.to_string(),
             })?;
+
+        let battle_option = get_current_battle_option(&game_store);
+        let (ally_ids, opponent_ids_option) = get_ally_ids_and_opponent_ids_option(
+            party.character_positions,
+            battle_option,
+            focused_character.entity_properties.id,
+        )?;
+
         let new_targets = ability_name.targets_by_saved_preference_or_default(
             focused_character.entity_properties.id,
             &focused_character
                 .combatant_properties
                 .ability_target_preferences,
-            party,
+            ally_ids,
+            opponent_ids_option,
         )?;
 
         let new_preferences = focused_character
             .combatant_properties
             .ability_target_preferences
-            .get_updated_preferences(ability_name, &new_targets, party);
+            .get_updated_preferences(ability_name, &new_targets, ally_ids, opponent_ids_option);
         let focused_character = party
             .characters
             .get_mut(&game_store.focused_character_id)

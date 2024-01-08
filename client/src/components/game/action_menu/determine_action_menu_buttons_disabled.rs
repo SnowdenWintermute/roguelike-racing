@@ -1,7 +1,10 @@
 use super::available_actions::GameActions;
-use crate::store::{game_store::GameStore, lobby_store::LobbyStore};
+use crate::store::game_store::get_current_battle_option;
+use crate::store::game_store::GameStore;
+use crate::store::lobby_store::LobbyStore;
 use common::game::getters::get_character;
-use std::{ops::Deref, rc::Rc};
+use std::ops::Deref;
+use std::rc::Rc;
 
 pub fn determine_action_menu_buttons_disabled(
     action: &GameActions,
@@ -13,6 +16,7 @@ pub fn determine_action_menu_buttons_disabled(
         return true;
     }
     let game = game_option.expect("none checked");
+    let battle_option = get_current_battle_option(&game_state);
     let current_party_id = game_state.clone().current_party_id.expect("party to exist");
     let party = game
         .adventuring_parties
@@ -51,8 +55,10 @@ pub fn determine_action_menu_buttons_disabled(
             if !player_owns_character {
                 return true;
             }
-            if !party.combatant_is_first_in_turn_order(focused_character_id) {
-                return true;
+            if let Some(battle) = battle_option {
+                if !battle.combatant_is_first_in_turn_order(focused_character_id) {
+                    return true;
+                }
             }
             false
         }

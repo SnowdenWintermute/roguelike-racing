@@ -10,7 +10,7 @@ pub fn turn_order_bar() -> Html {
     let (game_state, _) = use_store::<GameStore>();
     let battle_option = get_current_battle_option(&game_state);
     let turn_trackers_option = if let Some(battle) = battle_option {
-        Some(battle.combatant_turn_trackers)
+        Some(&battle.combatant_turn_trackers)
     } else {
         None
     };

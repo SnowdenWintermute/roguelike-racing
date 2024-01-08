@@ -1,7 +1,7 @@
 use crate::components::common_components::atoms::targeting_indicator::TargetingIndicator;
 use crate::components::game::dungeon_room::focus_character_button::FocusCharacterButton;
-use crate::store::game_store::get_active_character;
-use crate::store::game_store::get_current_party_option;
+use crate::store::game_store::get_active_combatant;
+use crate::store::game_store::get_current_battle_option;
 use crate::store::game_store::DetailableEntities;
 use crate::store::game_store::GameStore;
 use crate::store::game_store::{self};
@@ -82,10 +82,10 @@ pub fn combatant(props: &Props) -> Html {
     };
 
     let is_targeted = {
-        let active_character_result = get_active_character(&game_state);
+        let active_character_result = get_active_combatant(&game_state);
         if let Ok(active_character_option) = active_character_result {
             if let Some(active_character) = active_character_option {
-                let targets_option = &active_character.combatant_properties.ability_targets;
+                let targets_option = &active_character.1.ability_targets;
                 if let Some(targets) = targets_option {
                     match targets {
                         AbilityTarget::Single(targeted_id) => &id == targeted_id,
@@ -112,9 +112,9 @@ pub fn combatant(props: &Props) -> Html {
         }
     };
 
-    let party_option = get_current_party_option(&game_state);
-    let is_active_combatant = match party_option {
-        Some(party) => party.combatant_is_first_in_turn_order(id),
+    let battle_option = get_current_battle_option(&game_state);
+    let is_active_combatant = match battle_option {
+        Some(battle) => battle.combatant_is_first_in_turn_order(id),
         None => false,
     };
 

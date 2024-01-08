@@ -1,17 +1,14 @@
 mod hp_and_mp;
 mod weapon_damage;
+use crate::components::client_consts::UNMET_REQUIREMENT_TEXT_COLOR;
+use crate::store::game_store::GameStore;
+use common::combatants::combat_attributes::CombatAttributes;
+use common::combatants::CombatantProperties;
+use common::primatives::EntityProperties;
 use std::rc::Rc;
-
-use common::{
-    combatants::{CombatAttributes, CombatantProperties},
-    primatives::EntityProperties,
-};
-use yew::{prelude::*, virtual_dom::VNode};
+use yew::prelude::*;
+use yew::virtual_dom::VNode;
 use yewdux::prelude::use_store;
-
-use crate::{
-    components::client_consts::UNMET_REQUIREMENT_TEXT_COLOR, store::game_store::GameStore,
-};
 
 #[derive(Properties, Eq, PartialEq)]
 pub struct Props {

@@ -43,6 +43,7 @@ pub fn websocket_manager(props: &Props) -> Html {
                 // For small binary messages, like CBOR, Arraybuffer is more efficient than Blob handling
                 websocket_success.set_binary_type(web_sys::BinaryType::Arraybuffer);
                 let cloned_ws = websocket_success.clone();
+                let cloned_websocket_dispatch = websocket_dispatch.clone();
                 let onmessage_callback = Closure::<dyn FnMut(_)>::new(move |e: MessageEvent| {
                     let result = (|| -> Result<(), AppError> {
                         if let Ok(abuf) = e.data().dyn_into::<js_sys::ArrayBuffer>() {
@@ -55,7 +56,7 @@ pub fn websocket_manager(props: &Props) -> Html {
                                 let cloned_lobby_dispatch = lobby_dispatch.clone();
                                 let cloned_lobby_state = lobby_state.clone();
                                 let cloned_game_dispatch = game_dispatch.clone();
-                                let cloned_websocket_dispatch = websocket_dispatch.clone();
+                                let cloned_websocket_dispatch = cloned_websocket_dispatch.clone();
 
                                 handle_packet::handle_packet(
                                     data,

@@ -1,8 +1,6 @@
-use crate::components::alerts::set_alert;
 use crate::store::alert_store::AlertStore;
 use crate::store::game_store::get_current_battle_option;
 use crate::store::game_store::GameStore;
-use common::app_consts::error_messages;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 

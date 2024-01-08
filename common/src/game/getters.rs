@@ -3,6 +3,7 @@ use super::RoguelikeRacerPlayer;
 use crate::adventuring_party::AdventuringParty;
 use crate::app_consts::error_messages;
 use crate::character::Character;
+use crate::combat::battle::Battle;
 use crate::errors::AppError;
 use crate::errors::AppErrorTypes;
 
@@ -86,4 +87,16 @@ pub fn get_character<'a>(
             message: error_messages::CHARACTER_NOT_FOUND.to_string(),
         })?;
     Ok(character)
+}
+
+pub fn get_ally_ids_and_opponent_ids_option(
+    ally_ids: Vec<u32>,
+    battle_option: Option<&Battle>,
+    combatant_id: u32,
+) -> Result<(Vec<u32>, Option<Vec<u32>>), AppError> {
+    if let Some(battle) = battle_option {
+        battle.get_ally_ids_and_opponent_ids_option(combatant_id)
+    } else {
+        Ok((ally_ids, None))
+    }
 }

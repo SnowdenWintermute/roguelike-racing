@@ -129,7 +129,7 @@ pub fn get_active_combatant<'a>(
             })?;
         let (ally_battle_group, _) = cloned_battle
             .get_ally_and_enemy_battle_groups(&active_combatant_turn_tracker.entity_id)?;
-        let game = game_state.game.ok_or_else(|| AppError {
+        let game = game_state.game.as_ref().ok_or_else(|| AppError {
             error_type: common::errors::AppErrorTypes::ClientError,
             message: error_messages::GAME_NOT_FOUND.to_string(),
         })?;

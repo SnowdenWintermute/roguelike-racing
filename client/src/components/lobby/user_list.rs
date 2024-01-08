@@ -5,7 +5,7 @@ use yewdux::prelude::use_store;
 #[function_component(UserList)]
 pub fn user_list() -> Html {
     let (websocket_state, _) = use_store::<WebsocketStore>();
-    let lobby_channel = websocket_state.websocket_channels.main;
+    let lobby_channel = &websocket_state.websocket_channels.main;
 
     html!(
         <section class="w-[16rem] bg-slate-700 border border-slate-400 p-4">

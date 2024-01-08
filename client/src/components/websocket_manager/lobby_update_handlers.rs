@@ -1,5 +1,4 @@
 use crate::store::game_store::GameStore;
-use crate::store::lobby_store::LobbyStore;
 use common::errors::AppError;
 use common::game::RoguelikeRacerPlayer;
 

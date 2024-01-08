@@ -42,7 +42,7 @@ pub fn handle_battle_full_update(
     game_store: &mut GameStore,
     battle_option: Option<Battle>,
 ) -> Result<(), AppError> {
-    let game = &mut game_store.game.ok_or_else(|| AppError {
+    let game = game_store.game.as_mut().ok_or_else(|| AppError {
         error_type: common::errors::AppErrorTypes::ClientError,
         message: error_messages::GAME_NOT_FOUND.to_string(),
     })?;

@@ -1,11 +1,10 @@
 #![allow(dead_code, unused)]
-
-use common::{
-    combatants::{abilities::CombatantAbilityNames, CombatAttributes},
-    items::Item,
-    primatives::NextOrPrevious,
-};
+use common::combatants::abilities::CombatantAbilityNames;
+use common::combatants::combat_attributes::CombatAttributes;
+use common::items::Item;
+use common::primatives::NextOrPrevious;
 use gloo::console::log;
+
 pub enum MenuTypes {
     InCombat,
     AbilitySelected,

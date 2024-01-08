@@ -1,6 +1,8 @@
-use common::combatants::{CombatAttributes, CombatantProperties};
+use common::combatants::combat_attributes::CombatAttributes;
+use common::combatants::CombatantProperties;
 use std::collections::HashMap;
-use yew::{html, Html};
+use yew::html;
+use yew::Html;
 
 pub fn hp_and_mp(
     combatant_properties: &CombatantProperties,

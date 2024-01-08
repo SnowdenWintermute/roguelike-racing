@@ -103,6 +103,26 @@ pub fn get_current_battle_option<'a>(game_state: &'a GameStore) -> Option<&'a Ba
     }
 }
 
+pub fn get_cloned_current_battle_option(game_state: &GameStore) -> Option<Battle> {
+    let game_option = &game_state.game;
+    match game_option {
+        Some(game) => match game_state.current_party_id {
+            Some(party_id) => match game.adventuring_parties.get(&party_id) {
+                Some(party) => match party.battle_id {
+                    Some(battle_id) => match game.battles.get(&battle_id) {
+                        Some(battle) => Some(battle.clone()),
+                        None => None,
+                    },
+                    None => None,
+                },
+                None => None,
+            },
+            None => None,
+        },
+        None => None,
+    }
+}
+
 pub fn get_focused_character<'a>(game_state: &'a GameStore) -> Result<&'a Character, AppError> {
     let game = game_state.game.as_ref().ok_or_else(|| AppError {
         error_type: common::errors::AppErrorTypes::ClientError,

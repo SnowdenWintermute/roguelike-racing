@@ -13,7 +13,7 @@ pub fn game() -> Html {
 
     html!(
     <div class="border-b border-r border-l border-slate-400 bg-slate-700 w-full text-center" >
-        if let Some(battle) = battle_option {
+        if battle_option.is_some() {
                 <TurnOrderBar />
             } else if let Some(party) =party_option{
                 <div class="m-2">

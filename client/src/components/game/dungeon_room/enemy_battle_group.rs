@@ -15,7 +15,7 @@ pub struct Props {
 #[function_component(EnemyBattleGroup)]
 pub fn enemy_battle_group(props: &Props) -> Html {
     let (game_state, _) = use_store::<GameStore>();
-    let game = game_state.game.expect("to be in game");
+    let game = game_state.game.as_ref().expect("to be in game");
 
     let battle_option = get_current_battle_option(&game_state);
     let enemy_combatants_option = if let Some(battle) = battle_option {

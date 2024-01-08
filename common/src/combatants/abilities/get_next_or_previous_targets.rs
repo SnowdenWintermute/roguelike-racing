@@ -1,8 +1,10 @@
-use super::{
-    get_combatant_ability_attributes::TargetCategories, AbilityTarget, CombatantAbilityNames,
-    FriendOrFoe,
-};
-use crate::{app_consts::error_messages, errors::AppError, primatives::NextOrPrevious};
+use super::get_combatant_ability_attributes::TargetCategories;
+use super::AbilityTarget;
+use super::CombatantAbilityNames;
+use super::FriendOrFoe;
+use crate::app_consts::error_messages;
+use crate::errors::AppError;
+use crate::primatives::NextOrPrevious;
 
 impl CombatantAbilityNames {
     pub fn get_next_or_previous_targets(
@@ -10,18 +12,19 @@ impl CombatantAbilityNames {
         current_targets: &AbilityTarget,
         direction: &NextOrPrevious,
         ability_user_id: &u32,
-        ally_ids: Vec<u32>,
-        opponent_ids_option: Option<Vec<u32>>,
+        ally_ids: &Vec<u32>,
+        opponent_ids_option: &Option<Vec<u32>>,
     ) -> Result<AbilityTarget, AppError> {
         let ability_attributes = self.get_attributes();
 
         match current_targets {
             AbilityTarget::Single(id) => match ability_attributes.valid_target_categories {
                 TargetCategories::Opponent => {
-                    let possible_target_ids = opponent_ids_option.ok_or_else(|| AppError {
-                        error_type: crate::errors::AppErrorTypes::Generic,
-                        message: error_messages::ENEMY_COMBATANTS_NOT_FOUND.to_string(),
-                    })?;
+                    let possible_target_ids =
+                        opponent_ids_option.clone().ok_or_else(|| AppError {
+                            error_type: crate::errors::AppErrorTypes::Generic,
+                            message: error_messages::ENEMY_COMBATANTS_NOT_FOUND.to_string(),
+                        })?;
                     let new_target_id = get_next_or_prev_id_from_ordered_id_list(
                         &possible_target_ids,
                         *id,

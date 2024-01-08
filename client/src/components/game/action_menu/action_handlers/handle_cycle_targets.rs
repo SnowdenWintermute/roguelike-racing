@@ -1,5 +1,5 @@
 use crate::components::websocket_manager::send_client_input::send_client_input;
-use crate::store::game_store::get_current_battle_option;
+use crate::store::game_store::get_cloned_current_battle_option;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::errors::AppError;
@@ -19,6 +19,7 @@ pub fn handle_cycle_targets(
 ) {
     game_dispatch.reduce_mut(|game_store| {
         let mut closure = move || -> Result<(), AppError> {
+            let battle_option = get_cloned_current_battle_option(&game_store);
             let game = game_store.game.as_mut().ok_or_else(|| AppError {
                 error_type: common::errors::AppErrorTypes::ClientError,
                 message: error_messages::MISSING_GAME_REFERENCE.to_string(),
@@ -28,6 +29,7 @@ pub fn handle_cycle_targets(
                 message: error_messages::MISSING_PARTY_REFERENCE.to_string(),
             })?;
             let party = get_mut_party(game, party_id)?;
+            let cloned_character_positions = party.character_positions.clone();
             let focused_character = party
                 .characters
                 .get(&game_store.focused_character_id)
@@ -54,10 +56,9 @@ pub fn handle_cycle_targets(
                     message: error_messages::TRIED_TO_CYCLE_TARGETS_WHEN_NO_TARGETS.to_string(),
                 })?;
 
-            let battle_option = get_current_battle_option(&game_store);
             let (ally_ids, opponent_ids_option) = get_ally_ids_and_opponent_ids_option(
-                party.character_positions,
-                battle_option,
+                &cloned_character_positions,
+                battle_option.as_ref(),
                 focused_character.entity_properties.id,
             )?;
 
@@ -65,8 +66,8 @@ pub fn handle_cycle_targets(
                 current_targets,
                 direction,
                 &focused_character_id,
-                ally_ids,
-                opponent_ids_option,
+                &ally_ids,
+                &opponent_ids_option,
             )?;
 
             let new_preferences = focused_character

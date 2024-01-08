@@ -29,12 +29,13 @@ pub struct Props {}
 
 const PAGE_SIZE: u8 = 6;
 #[function_component(ActionMenu)]
-pub fn action_menu(props: &Props) -> Html {
+pub fn action_menu(_: &Props) -> Html {
     let (game_state, game_dispatch) = use_store::<GameStore>();
     let (ui_state, _) = use_store::<UIStore>();
     let (lobby_state, _) = use_store::<LobbyStore>();
     let (websocket_state, _) = use_store::<WebsocketStore>();
     let party = game_state.get_current_party().expect("to be in a party");
+    let current_battle_id = game_state.current_battle_id;
     let action_button_properties = use_state(|| Vec::<ActionMenuButtonProperties>::new());
     let button_props_on_current_page = use_state(|| Vec::<ActionMenuButtonProperties>::new());
 
@@ -90,17 +91,18 @@ pub fn action_menu(props: &Props) -> Html {
     };
 
     let cloned_ui_state = ui_state.clone();
+    // let cloned_game_state = game_state.clone();
     use_effect_with(
         (
-            game_state.focused_character_id,
-            game_state.viewing_inventory,
-            game_state.viewing_equipped_items,
+            cloned_game_state.focused_character_id,
+            cloned_game_state.viewing_inventory,
+            cloned_game_state.viewing_equipped_items,
             ability_targets,
             selected_item_id,
-            game_state.viewing_items_on_ground,
-            game_state.viewing_skill_level_up_menu,
-            game_state.viewing_attribute_point_assignment_menu,
-            party.current_room.monsters.is_some(),
+            cloned_game_state.viewing_items_on_ground,
+            cloned_game_state.viewing_skill_level_up_menu,
+            cloned_game_state.viewing_attribute_point_assignment_menu,
+            current_battle_id,
             cloned_ui_state.mod_key_held,
             focused_character_equipment_ids,
         ),

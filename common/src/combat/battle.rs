@@ -1,5 +1,3 @@
-use std::io::Write;
-
 use super::turn_order::CombatantTurnTracker;
 use crate::app_consts::error_messages;
 use crate::combatants::CombatantProperties;
@@ -152,7 +150,7 @@ impl BattleGroup {
 
 impl RoguelikeRacerGame {
     pub fn get_combatant_in_battle_by_id(
-        &mut self,
+        &self,
         battle: &Battle,
         combatant_id: &u32,
     ) -> Result<(&EntityProperties, &CombatantProperties), AppError> {

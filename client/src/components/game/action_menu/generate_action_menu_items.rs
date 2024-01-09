@@ -67,7 +67,7 @@ pub fn generate_action_menu_items(
         ability_names.sort_by(|a, b| a.partial_cmp(&b).unwrap());
         new_actions = MenuTypes::get_menu(&menu_types, None, Some(ability_names));
         //
-    } else if party.current_room.monsters.is_none() {
+    } else if party.battle_id.is_none() {
         menu_types.push(MenuTypes::OutOfCombat);
         let mut ability_names = get_ability_menu_names(
             &party,

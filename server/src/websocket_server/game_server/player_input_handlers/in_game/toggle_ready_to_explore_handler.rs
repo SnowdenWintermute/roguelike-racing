@@ -95,12 +95,11 @@ impl GameServer {
                     group_type: BattleGroupTypes::ComputerControlled,
                 };
                 let battle_id = game.initiate_battle(group_a, group_b)?;
-                let cloned_battle = game
-                    .battles
-                    .get(&battle_id)
-                    .expect("just inserted it")
-                    .clone();
-                println!("sending battle {:#?}", cloned_battle);
+                let party = get_mut_party(game, party_id)?;
+                party.battle_id = Some(battle_id);
+                let battle = game.battles.get(&battle_id).clone().expect("just inserted");
+
+                let cloned_battle = battle.clone();
                 self.emit_packet(
                     &party_websocket_channel_name,
                     &WebsocketChannelNamespace::Party,

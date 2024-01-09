@@ -46,6 +46,10 @@ impl GameServer {
             None
         } else {
             let battle_id_option = party.battle_id;
+            println!(
+                "battle_id option at character_selects_ability_handler: {:?}",
+                battle_id_option
+            );
             let character_positions = party.character_positions.clone();
             let character = party.get_mut_character_if_owned(
                 player_character_ids_option.clone(),
@@ -85,6 +89,7 @@ impl GameServer {
                 ally_ids.clone(),
                 opponent_ids_option.clone(),
             )?;
+
             let new_target_preferences = target_preferences.get_updated_preferences(
                 &ability_name,
                 &new_targets,

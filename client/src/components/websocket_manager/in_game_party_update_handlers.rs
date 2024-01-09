@@ -48,7 +48,6 @@ pub fn handle_battle_full_update(
         message: error_messages::GAME_NOT_FOUND.to_string(),
     })?;
     if let Some(battle) = battle_option {
-        log!(format!("handler: battle option: {:#?}", battle));
         game_store.current_battle_id = Some(battle.id);
         if let Some(party_id) = game_store.current_party_id {
             let party = get_mut_party(game, party_id)?;
@@ -57,7 +56,6 @@ pub fn handle_battle_full_update(
 
         game.battles.insert(battle.id, battle);
     } else {
-        log!("battle set to none");
         game_store.current_battle_id = None;
         game.battles = HashMap::new();
     }

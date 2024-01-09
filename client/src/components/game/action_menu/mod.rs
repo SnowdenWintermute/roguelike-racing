@@ -34,7 +34,6 @@ pub fn action_menu(_: &Props) -> Html {
     let (ui_state, _) = use_store::<UIStore>();
     let (lobby_state, _) = use_store::<LobbyStore>();
     let (websocket_state, _) = use_store::<WebsocketStore>();
-    let current_battle_id = game_state.current_battle_id;
     let action_button_properties = use_state(|| Vec::<ActionMenuButtonProperties>::new());
     let button_props_on_current_page = use_state(|| Vec::<ActionMenuButtonProperties>::new());
 
@@ -68,6 +67,7 @@ pub fn action_menu(_: &Props) -> Html {
     };
 
     let party = game_state.get_current_party().expect("to be in a party");
+    let battle_id = party.battle_id;
     let focused_character_option = party.characters.get(&game_state.focused_character_id);
     let focused_character_equipment_ids = match focused_character_option {
         Some(focused_character) => Some(
@@ -102,7 +102,7 @@ pub fn action_menu(_: &Props) -> Html {
             cloned_game_state.viewing_items_on_ground,
             cloned_game_state.viewing_skill_level_up_menu,
             cloned_game_state.viewing_attribute_point_assignment_menu,
-            current_battle_id,
+            battle_id,
             cloned_ui_state.mod_key_held,
             focused_character_equipment_ids,
         ),

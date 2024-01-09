@@ -20,7 +20,6 @@ pub fn enemy_battle_group(props: &Props) -> Html {
     let game = game_state.game.as_ref().expect("to be in game");
 
     let battle_option = get_current_battle_option(&game_state);
-    log!(format!("battle option: {:#?}", battle_option));
     let enemy_combatants_option = if let Some(battle) = battle_option {
         let battle_groups_result =
             battle.get_ally_and_enemy_battle_groups(&props.ally_combatant_id);
@@ -40,23 +39,21 @@ pub fn enemy_battle_group(props: &Props) -> Html {
 
     if let Some(enemy_combatants) = enemy_combatants_option {
         html!(
-                    <div class="flex flex-col items-end whitespace-nowrap" >
-                        {enemy_combatants.iter().map(|combatant_result| {
-
-        if let Ok(combatant) = combatant_result {
-
-                            html!(
-                                <Combatant
-                                    entity_properties={combatant.0.clone()}
-                                    combatant_properties={combatant.1.clone()}
-                                />
-                                )
-        } else {
-            html!({"no combatant found with the provided id"})
-        }
-                           }).collect::<Html>()}
-                    </div>
-                )
+            <div class="flex flex-col items-end whitespace-nowrap" >
+                {enemy_combatants.iter().map(|combatant_result| {
+                    if let Ok(combatant) = combatant_result {
+                        html!(
+                            <Combatant
+                                entity_properties={combatant.0.clone()}
+                                combatant_properties={combatant.1.clone()}
+                            />
+                            )
+                    } else {
+                        html!({"no combatant found with the provided id"})
+                    }
+                   }).collect::<Html>()}
+            </div>
+        )
     } else {
         html!(<div>{ "error - no enemy combatant battle group" }</div>)
     }

@@ -1,4 +1,5 @@
-use super::available_actions::{GameActions, MenuTypes};
+use super::available_actions::GameActions;
+use super::available_actions::MenuTypes;
 use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
 use common::adventuring_party::AdventuringParty;

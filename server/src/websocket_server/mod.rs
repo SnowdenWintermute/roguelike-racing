@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use actix::prelude::*;
 pub mod game_server;
 pub mod websocket_actor;

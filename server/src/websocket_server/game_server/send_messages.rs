@@ -1,3 +1,4 @@
+#![allow(unused)]
 use super::getters::get_user;
 use super::GameServer;
 use crate::websocket_server::AppMessage;

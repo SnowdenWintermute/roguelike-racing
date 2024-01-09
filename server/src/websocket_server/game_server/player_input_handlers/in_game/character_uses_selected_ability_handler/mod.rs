@@ -22,9 +22,8 @@ impl GameServer {
         let ActorIdAssociatedGameData {
             game,
             party_id,
-            current_game_name,
-            username,
             player_character_ids_option,
+            ..
         } = get_mut_game_data_from_actor_id(self, actor_id)?;
         let party = get_mut_party(game, party_id)?;
         let party_websocket_channel_name = party.websocket_channel_name.clone();
@@ -58,6 +57,7 @@ impl GameServer {
                 error_type: common::errors::AppErrorTypes::ServerError,
                 message: error_messages::BATTLE_NOT_FOUND.to_string(),
             })?;
+
             let (ally_ids, _) = battle.get_ally_ids_and_opponent_ids_option(character_id)?;
 
             validate_character_ability_use(

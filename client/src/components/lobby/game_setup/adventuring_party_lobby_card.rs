@@ -1,18 +1,14 @@
-use crate::{
-    components::{
-        common_components::atoms::button_basic::ButtonBasic,
-        lobby::game_setup::{
-            character_creation_menu::CharacterCreationMenu,
-            character_lobby_card::CharacterLobbyCard,
-        },
-        websocket_manager::send_client_input::send_client_input,
-    },
-    store::{game_store::GameStore, lobby_store::LobbyStore, websocket_store::WebsocketStore},
-};
-use common::{
-    adventuring_party::AdventuringParty, character::Character, errors::AppError,
-    packets::client_to_server::PlayerInputs,
-};
+use crate::components::common_components::atoms::button_basic::ButtonBasic;
+use crate::components::lobby::game_setup::character_creation_menu::CharacterCreationMenu;
+use crate::components::lobby::game_setup::character_lobby_card::CharacterLobbyCard;
+use crate::components::websocket_manager::send_client_input::send_client_input;
+use crate::store::game_store::GameStore;
+use crate::store::lobby_store::LobbyStore;
+use crate::store::websocket_store::WebsocketStore;
+use common::adventuring_party::AdventuringParty;
+use common::character::Character;
+use common::errors::AppError;
+use common::packets::client_to_server::PlayerInputs;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 

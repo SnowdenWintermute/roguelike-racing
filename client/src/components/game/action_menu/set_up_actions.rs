@@ -1,17 +1,17 @@
-use super::{
-    create_action_handler::create_action_handler,
-    create_action_mouse_enter_handler::create_action_mouse_enter_handler,
-    create_action_mouse_leave_handler::create_action_mouse_leave_handler,
-    determine_action_menu_buttons_disabled::determine_action_menu_buttons_disabled,
-    generate_action_menu_items, generate_button_text::generate_button_text,
-};
-use crate::store::{
-    game_store::GameStore, lobby_store::LobbyStore, ui_store::UIStore,
-    websocket_store::WebsocketStore,
-};
+use super::create_action_handler::create_action_handler;
+use super::create_action_mouse_enter_handler::create_action_mouse_enter_handler;
+use super::create_action_mouse_leave_handler::create_action_mouse_leave_handler;
+use super::determine_action_menu_buttons_disabled::determine_action_menu_buttons_disabled;
+use super::generate_action_menu_items;
+use super::generate_button_text::generate_button_text;
+use crate::store::game_store::GameStore;
+use crate::store::lobby_store::LobbyStore;
+use crate::store::ui_store::UIStore;
+use crate::store::websocket_store::WebsocketStore;
 use common::adventuring_party::AdventuringParty;
 use std::rc::Rc;
-use web_sys::{FocusEvent, MouseEvent};
+use web_sys::FocusEvent;
+use web_sys::MouseEvent;
 use yew::Callback;
 use yewdux::prelude::Dispatch;
 
@@ -26,10 +26,10 @@ pub struct ActionMenuButtonProperties {
     pub should_be_disabled: bool,
 }
 
-pub fn set_up_actions<'a>(
+pub fn set_up_actions(
     websocket_state: Rc<WebsocketStore>,
     game_state: Rc<GameStore>,
-    game_dispatch: &'a Dispatch<GameStore>,
+    game_dispatch: Dispatch<GameStore>,
     ui_state: Rc<UIStore>,
     lobby_state: Rc<LobbyStore>,
     party: &AdventuringParty,

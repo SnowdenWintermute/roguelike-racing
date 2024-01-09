@@ -11,8 +11,8 @@ use common::packets::WebsocketChannelNamespace;
 
 impl GameServer {
     pub fn leave_game_handler(&mut self, actor_id: u32) -> Result<(), AppError> {
-        let player_and_game = self.remove_player_from_game(actor_id)?;
         self.leave_party_handler(actor_id)?;
+        let player_and_game = self.remove_player_from_game(actor_id)?;
         self.remove_user_from_websocket_channel(
             player_and_game.game_name.as_str(),
             &WebsocketChannelNamespace::Game,
@@ -41,6 +41,7 @@ impl GameServer {
         actor_id: u32,
     ) -> Result<PlayerRemovedFromGame, AppError> {
         let connected_user = get_mut_user(&mut self.sessions, actor_id)?;
+        println!("user leaving game: {:#?}", connected_user);
         let game_name_leaving =
             connected_user
                 .current_game_name

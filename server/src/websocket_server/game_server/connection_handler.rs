@@ -4,7 +4,6 @@ use crate::websocket_server::Connect;
 use actix::Context;
 use actix::Handler;
 use common::app_consts::LOBBY_CHANNEL;
-use common::app_consts::MAIN_CHAT_CHANNEL;
 use common::packets::server_to_client::GameServerUpdatePackets;
 use common::packets::WebsocketChannelNamespace;
 

@@ -17,7 +17,6 @@ impl GameServer {
     ) -> Result<(), AppError> {
         let ActorIdAssociatedPartyData {
             party,
-            current_game_name,
             player_character_ids_option,
             ..
         } = get_mut_party_game_name_and_character_ids_from_actor_id(self, actor_id)?;

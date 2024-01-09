@@ -34,7 +34,6 @@ pub fn action_menu(_: &Props) -> Html {
     let (ui_state, _) = use_store::<UIStore>();
     let (lobby_state, _) = use_store::<LobbyStore>();
     let (websocket_state, _) = use_store::<WebsocketStore>();
-    let party = game_state.get_current_party().expect("to be in a party");
     let current_battle_id = game_state.current_battle_id;
     let action_button_properties = use_state(|| Vec::<ActionMenuButtonProperties>::new());
     let button_props_on_current_page = use_state(|| Vec::<ActionMenuButtonProperties>::new());
@@ -68,6 +67,7 @@ pub fn action_menu(_: &Props) -> Html {
         None => None,
     };
 
+    let party = game_state.get_current_party().expect("to be in a party");
     let focused_character_option = party.characters.get(&game_state.focused_character_id);
     let focused_character_equipment_ids = match focused_character_option {
         Some(focused_character) => Some(
@@ -91,7 +91,7 @@ pub fn action_menu(_: &Props) -> Html {
     };
 
     let cloned_ui_state = ui_state.clone();
-    // let cloned_game_state = game_state.clone();
+    let cloned_game_dispatch = game_dispatch.clone();
     use_effect_with(
         (
             cloned_game_state.focused_character_id,
@@ -107,13 +107,17 @@ pub fn action_menu(_: &Props) -> Html {
             focused_character_equipment_ids,
         ),
         move |_| {
+            let re_cloned_game_state = cloned_game_state.clone();
+            let party = re_cloned_game_state
+                .get_current_party()
+                .expect("to be in a party");
             let actions = set_up_actions::set_up_actions(
                 websocket_state.clone(),
                 cloned_game_state,
-                &game_dispatch,
+                cloned_game_dispatch,
                 cloned_ui_state,
                 lobby_state,
-                &party,
+                party,
             );
             cloned_action_button_properties.set(actions);
         },

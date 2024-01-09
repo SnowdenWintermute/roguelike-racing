@@ -75,7 +75,7 @@ impl Battle {
 
     pub fn is_id_of_existing_opponent(&self, combatant_id: u32, target_id: u32) -> bool {
         let mut to_return = false;
-        if let Ok((ally_ids, opponent_ids_option)) =
+        if let Ok((_, opponent_ids_option)) =
             self.get_ally_ids_and_opponent_ids_option(combatant_id)
         {
             if let Some(opponent_ids) = opponent_ids_option {

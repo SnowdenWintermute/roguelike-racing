@@ -34,6 +34,7 @@ impl GameServer {
             RoguelikeRacerPlayer::new(Some(actor_id), connected_user.username.to_string());
         game.players
             .insert(connected_user.username.to_string(), new_player);
+        println!("setting user game name to {}", game_name);
         connected_user.current_game_name = Some(game_name.to_string());
 
         self.remove_user_from_websocket_channel(

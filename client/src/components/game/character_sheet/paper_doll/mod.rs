@@ -1,11 +1,10 @@
 mod paper_doll_slot;
+use crate::components::game::character_sheet::paper_doll::paper_doll_slot::PaperDollSlot;
 use common::combatants::combat_attributes::CombatAttributes;
 use common::items::equipment::EquipmentSlots;
 use common::items::Item;
 use std::collections::HashMap;
 use yew::prelude::*;
-
-use crate::components::game::character_sheet::paper_doll::paper_doll_slot::PaperDollSlot;
 
 #[derive(Properties, Eq, PartialEq)]
 pub struct Props {

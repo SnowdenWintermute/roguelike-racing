@@ -21,26 +21,31 @@ impl Handler<Disconnect> for GameServer {
         let party_websocket_channel = connected_user.websocket_channels.party.clone();
         let chat_websocket_channel = connected_user.websocket_channels.chat.clone();
 
+        let mut result;
         // remove them from all websocket channels
         let (main_channel_namespace, main_channel_name) = &main_websocket_channel;
-        self.remove_user_from_websocket_channel(
+        result = self.remove_user_from_websocket_channel(
             main_channel_name.as_str(),
             &main_channel_namespace,
             actor_id,
         );
         if let Some(party_channel_name) = &party_websocket_channel {
-            self.remove_user_from_websocket_channel(
+            result = self.remove_user_from_websocket_channel(
                 party_channel_name.as_str(),
                 &WebsocketChannelNamespace::Party,
                 actor_id,
             );
         }
         if let Some(chat_channel_name) = &chat_websocket_channel {
-            self.remove_user_from_websocket_channel(
+            result = self.remove_user_from_websocket_channel(
                 chat_channel_name.as_str(),
                 &WebsocketChannelNamespace::Chat,
                 actor_id,
             );
+        }
+        let err = result.err();
+        if let Some(error) = err {
+            println!("Server error: {}", error.message)
         }
 
         // remove them from their game if any

@@ -15,7 +15,6 @@ impl GameServer {
         party_name: String,
     ) -> Result<(), AppError> {
         let connected_user = get_mut_user(&mut self.sessions, actor_id)?;
-        let username = connected_user.username.clone();
 
         let current_game_name =
             connected_user
@@ -47,7 +46,7 @@ impl GameServer {
                 party_name,
             }),
             None,
-        );
+        )?;
 
         self.join_party_handler(actor_id, party_id)
     }

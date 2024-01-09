@@ -11,6 +11,7 @@ use common::items::equipment::EquipableSlots;
 use common::items::equipment::EquipmentSlots;
 use common::items::Item;
 use common::primatives::EntityProperties;
+use gloo::console::log;
 use std::collections::HashSet;
 use yewdux::prelude::*;
 
@@ -91,15 +92,29 @@ pub fn get_current_battle_option<'a>(game_state: &'a GameStore) -> Option<&'a Ba
                 Some(party) => match party.battle_id {
                     Some(battle_id) => match game.battles.get(&battle_id) {
                         Some(battle) => Some(battle),
-                        None => None,
+                        None => {
+                            log!("no battle");
+                            None
+                        },
                     },
-                    None => None,
+                    None => {
+                            log!("no battle_id");
+                        None },
                 },
-                None => None,
+                None => {
+
+                            log!("no party");
+                    None },
             },
-            None => None,
+            None => { 
+
+                            log!("no party_id");
+                None },
         },
-        None => None,
+        None => { 
+                            log!("no game");
+
+            None },
     }
 }
 

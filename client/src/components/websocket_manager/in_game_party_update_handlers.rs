@@ -3,6 +3,7 @@ use common::app_consts::error_messages;
 use common::combat::battle::Battle;
 use common::dungeon_rooms::DungeonRoom;
 use common::errors::AppError;
+use common::game::getters::get_mut_party;
 use common::packets::client_to_server::ChangeTargetsPacket;
 use common::packets::server_to_client::CharacterSelectedAbilityPacket;
 use gloo::console::log;
@@ -47,9 +48,16 @@ pub fn handle_battle_full_update(
         message: error_messages::GAME_NOT_FOUND.to_string(),
     })?;
     if let Some(battle) = battle_option {
+        log!(format!("handler: battle option: {:#?}", battle));
         game_store.current_battle_id = Some(battle.id);
+        if let Some(party_id) = game_store.current_party_id {
+            let party = get_mut_party(game, party_id)?;
+            party.battle_id = Some(battle.id);
+        }
+
         game.battles.insert(battle.id, battle);
     } else {
+        log!("battle set to none");
         game_store.current_battle_id = None;
         game.battles = HashMap::new();
     }

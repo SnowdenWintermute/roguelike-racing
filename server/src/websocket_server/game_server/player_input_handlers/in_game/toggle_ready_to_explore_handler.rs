@@ -100,6 +100,7 @@ impl GameServer {
                     .get(&battle_id)
                     .expect("just inserted it")
                     .clone();
+                println!("sending battle {:#?}", cloned_battle);
                 self.emit_packet(
                     &party_websocket_channel_name,
                     &WebsocketChannelNamespace::Party,

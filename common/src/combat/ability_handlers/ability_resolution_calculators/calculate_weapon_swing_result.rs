@@ -70,12 +70,18 @@ pub fn calculate_weapon_swing_result(
             target_total_attributes,
             rolled_damage as u32,
         );
+        let fd_i16 = final_damage as i16;
+        println!("final damage: {final_damage} as i16: {fd_i16}");
+
         // add the result
         Ok(ActionResult {
             user_id: ability_user_id,
             action: CombatAction::AbilityUsed(CombatantAbilityNames::Attack),
             targets: ability_target.clone(),
-            hp_changes_by_entity_id: Some(HashMap::from([(target_entity_id, final_damage as i16)])),
+            hp_changes_by_entity_id: Some(HashMap::from([(
+                target_entity_id,
+                final_damage as i16 * -1,
+            )])),
             mp_changes_by_entity_id: None,
             misses_by_entity_id: None,
             resists_by_entity_id: None,

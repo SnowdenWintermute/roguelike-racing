@@ -1,3 +1,4 @@
+use crate::components::mesh_manager::CombatantEventManager;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::errors::AppError;
@@ -54,6 +55,10 @@ pub fn handle_character_creation(
         character_creation.character,
     );
     party.character_positions.push(character_id);
+    game_state
+        .action_results_manager
+        .combantant_event_managers
+        .insert(character_id, CombatantEventManager::new(character_id));
 
     let player = get_mut_player(game, &character_creation.username)?;
     match &mut player.character_ids {
@@ -89,6 +94,11 @@ pub fn handle_character_deletion(
     })?;
 
     player_character_ids.remove(&character_deletion.character_id);
+
+    game_state
+        .action_results_manager
+        .combantant_event_managers
+        .remove(&character_deletion.character_id);
 
     let player = get_mut_player(game, &character_deletion.username)?;
     if player_character_ids.len() > 1 {

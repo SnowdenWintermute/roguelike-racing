@@ -101,6 +101,7 @@ impl GameServer {
                 .get_mut_character_if_owned(player_character_ids_option, packet.character_id)?;
             character.combatant_properties.selected_ability_name = Some(ability_name);
             character.combatant_properties.ability_target_preferences = new_target_preferences;
+            character.combatant_properties.ability_targets = Some(new_targets.clone());
             Some(new_targets)
         };
 

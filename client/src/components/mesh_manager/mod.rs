@@ -52,10 +52,17 @@ pub struct CombatantEventManager {
     pub associated_combatant_id: u32,
     pub event_queue: Vec<ClientCombatantEvent>,
     pub current_event_processing: Option<ClientCombatantEvent>,
-    pub mesh_manager: CombatantMeshManager,
 }
 
 impl CombatantEventManager {
+    pub fn new(associated_combatant_id: u32) -> Self {
+        CombatantEventManager {
+            associated_combatant_id,
+            event_queue: vec![],
+            current_event_processing: None,
+        }
+    }
+
     pub fn process_next_event(
         &mut self,
         game_dispatch: Dispatch<GameStore>,
@@ -88,17 +95,3 @@ pub struct ActionResultsManager {
     pub turn_results_queue: Vec<ActionResult>,
     pub combantant_event_managers: HashMap<u32, CombatantEventManager>,
 }
-
-#[derive(Default, PartialEq, Eq, Clone)]
-pub struct CombatantMeshManager {
-    pub combatant_entity_id: u32,
-    pub facing_towards: Option<u32>,
-    pub ability_animation: Option<CombatantAbilityNames>,
-    pub taking_damage_animation: bool,
-}
-
-//impl ClientMeshManager {
-//    pub fn play_next_turn_action_animation() {
-//        //
-//    }
-//}

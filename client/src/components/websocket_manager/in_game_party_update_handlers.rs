@@ -1,3 +1,4 @@
+use crate::components::mesh_manager::CombatantEventManager;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::combat::battle::Battle;
@@ -30,6 +31,14 @@ pub fn handle_new_dungeon_room(
     game_store: &mut GameStore,
     packet: DungeonRoom,
 ) -> Result<(), AppError> {
+    if let Some(monsters) = &packet.monsters {
+        for (monster_id, _) in monsters {
+            game_store
+                .action_results_manager
+                .combantant_event_managers
+                .insert(*monster_id, CombatantEventManager::new(*monster_id));
+        }
+    }
     let party = game_store.get_current_party_mut()?;
     party.players_ready_to_explore = HashSet::new();
     party.current_room = packet;

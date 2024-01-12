@@ -42,6 +42,7 @@ impl GameServer {
         let _ = character
             .combatant_properties
             .get_ability_if_owned(&ability_name)?;
+        println!("{:#?}", character.combatant_properties.ability_targets);
         let targets = character
             .combatant_properties
             .ability_targets

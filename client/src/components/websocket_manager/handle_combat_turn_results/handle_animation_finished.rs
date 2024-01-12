@@ -1,3 +1,4 @@
+use super::process_next_event_in_turn_result_queue;
 use crate::components::alerts::set_alert;
 use crate::components::mesh_manager::ClientCombatantEvent;
 use crate::store::alert_store::AlertStore;
@@ -5,9 +6,8 @@ use crate::store::game_store::get_current_battle_option;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::errors::AppError;
+use gloo::console::log;
 use yewdux::Dispatch;
-
-use super::process_next_event_in_turn_result_queue;
 
 pub fn handle_event_finished_animating(
     associated_combatant_id: u32,
@@ -40,16 +40,20 @@ pub fn handle_event_finished_animating(
                     &action_result.targets,
                     ability_user_id,
                 )?;
+                log!(format!("target ids: {:#?}", target_ids));
 
                 for entity_id in target_ids {
                     let cloned_game_dispatch = game_dispatch.clone();
                     let cloned_alert_dispatch = alert_dispatch.clone();
                     if let Some(hp_changes_by_id) = &action_result.hp_changes_by_entity_id {
+                        log!(format!("hp changes by id: {:#?}", hp_changes_by_id));
                         if let Some(hp_change) = hp_changes_by_id.get(&entity_id) {
                             let game = store.get_current_game_mut()?;
                             let (_, combatant_properties) =
                                 game.get_mut_combatant_by_id(&entity_id)?;
                             let new_hp = combatant_properties.change_hp(*hp_change);
+
+                            log!(format!("new hp for entity id {entity_id}: {:#?}", new_hp));
                             // put the damage taken animation in this entity's event queue
                             let this_entity_event_manager = store
                                 .action_results_manager

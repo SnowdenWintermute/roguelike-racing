@@ -18,6 +18,7 @@ use crate::errors::AppError;
 use crate::items::equipment::EquipmentSlots;
 use crate::items::Item;
 use crate::status_effects::StatusEffects;
+use crate::utils::add_i16_to_u16_and_clamp_to_max;
 use core::fmt;
 use serde::Deserialize;
 use serde::Serialize;
@@ -146,5 +147,25 @@ impl CombatantProperties {
             error_type: crate::errors::AppErrorTypes::InvalidInput,
             message: error_messages::ABILITY_NOT_OWNED.to_string(),
         })
+    }
+
+    pub fn change_hp(&mut self, hp_change: i16) -> u16 {
+        let combatant_total_attributes = self.get_total_attributes();
+        let max_hp = combatant_total_attributes
+            .get(&CombatAttributes::Hp)
+            .unwrap_or_else(|| &0);
+        let new_hp = add_i16_to_u16_and_clamp_to_max(self.hit_points, hp_change, *max_hp);
+        self.hit_points = new_hp;
+        new_hp
+    }
+
+    pub fn change_mp(&mut self, mp_change: i16) -> u16 {
+        let combatant_total_attributes = self.get_total_attributes();
+        let max_mp = combatant_total_attributes
+            .get(&CombatAttributes::Hp)
+            .unwrap_or_else(|| &0);
+        let new_mp = add_i16_to_u16_and_clamp_to_max(self.mana, mp_change, *max_mp);
+        self.mana = new_mp;
+        new_mp
     }
 }

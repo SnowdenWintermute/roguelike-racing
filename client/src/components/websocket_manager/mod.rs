@@ -1,5 +1,5 @@
 mod adventuring_party_update_handlers;
-mod handle_combat_turn_results;
+pub mod handle_combat_turn_results;
 mod handle_packet;
 mod in_game_party_update_handlers;
 mod inventory_management_update_handlers;

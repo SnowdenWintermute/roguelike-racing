@@ -122,6 +122,42 @@ pub fn get_current_battle_option<'a>(game_state: &'a GameStore) -> Option<&'a Ba
     }
 }
 
+pub fn get_current_battle_option_mut<'a>(game_state: &'a mut GameStore) -> Option<&'a mut Battle> {
+    let game_option = &mut game_state.game;
+    match game_option {
+        Some(game) => match game_state.current_party_id {
+            Some(party_id) => match game.adventuring_parties.get_mut(&party_id) {
+                Some(party) => match party.battle_id {
+                    Some(battle_id) => match game.battles.get_mut(&battle_id) {
+                        Some(battle) => Some(battle),
+                        None => {
+                            log!("no battle");
+                            None
+                        }
+                    },
+                    None => {
+                        log!("no battle_id");
+                        None
+                    }
+                },
+                None => {
+                    log!("no party");
+                    None
+                }
+            },
+            None => {
+                log!("no party_id");
+                None
+            }
+        },
+        None => {
+            log!("no game");
+
+            None
+        }
+    }
+}
+
 pub fn get_cloned_current_battle_option(game_state: &GameStore) -> Option<Battle> {
     let game_option = &game_state.game;
     match game_option {

@@ -2,6 +2,7 @@ use super::adventuring_party_update_handlers::handle_adventuring_party_created;
 use super::adventuring_party_update_handlers::handle_character_creation;
 use super::adventuring_party_update_handlers::handle_character_deletion;
 use super::adventuring_party_update_handlers::handle_player_changed_adventuring_party;
+use super::handle_combat_turn_results::handle_combat_turn_results;
 use super::in_game_party_update_handlers::handle_battle_full_update;
 use super::in_game_party_update_handlers::handle_character_ability_selection;
 use super::in_game_party_update_handlers::handle_character_changed_targets;
@@ -118,7 +119,9 @@ pub fn handle_packet(
             game_dispatch.reduce_mut(|store| handle_character_changed_targets(store, packet))
         }
         GameServerUpdatePackets::ActionResults(packet) => todo!(),
-        GameServerUpdatePackets::CombatTurnResults(packet) => todo!(),
+        GameServerUpdatePackets::CombatTurnResults(packet) => {
+            handle_combat_turn_results(game_dispatch, alert_dispatch, packet.turn_results)
+        }
         GameServerUpdatePackets::BattleFullUpdate(packet) => {
             game_dispatch.reduce_mut(|store| handle_battle_full_update(store, packet))
         }

@@ -2,7 +2,6 @@ use super::physical_attack_evaded::physical_attack_evaded;
 use super::physical_damage_after_defense::physical_damage_after_defense;
 use crate::combat::ActionResult;
 use crate::combat::CombatAction;
-use crate::combat::IdAndValue;
 use crate::combatants::abilities::AbilityTarget;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::combat_attributes::CombatAttributes;
@@ -12,6 +11,7 @@ use crate::errors::AppError;
 use crate::items::equipment::EquipmentProperties;
 use rand::Rng;
 use std::collections::HashMap;
+use std::collections::HashSet;
 
 pub fn calculate_weapon_swing_result(
     ability_user_id: u32,
@@ -52,7 +52,7 @@ pub fn calculate_weapon_swing_result(
             targets: ability_target.clone(),
             hp_changes_by_entity_id: None,
             mp_changes_by_entity_id: None,
-            misses_by_entity_id: Some(vec![(target_entity_id)]),
+            misses_by_entity_id: Some(HashSet::from([(target_entity_id)])),
             resists_by_entity_id: None,
             is_crit: false,
             status_effect_changes_by_entity_id: None,
@@ -75,7 +75,7 @@ pub fn calculate_weapon_swing_result(
             user_id: ability_user_id,
             action: CombatAction::AbilityUsed(CombatantAbilityNames::Attack),
             targets: ability_target.clone(),
-            hp_changes_by_entity_id: Some(vec![IdAndValue(target_entity_id, final_damage as i16)]),
+            hp_changes_by_entity_id: Some(HashMap::from([(target_entity_id, final_damage as i16)])),
             mp_changes_by_entity_id: None,
             misses_by_entity_id: None,
             resists_by_entity_id: None,

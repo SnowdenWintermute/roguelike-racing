@@ -1,6 +1,11 @@
+use super::websocket_manager::handle_combat_turn_results::handle_animation_finished::handle_event_finished_animating;
+use crate::store::alert_store::AlertStore;
+use crate::store::game_store::GameStore;
 use common::combat::ActionResult;
 use common::combatants::abilities::CombatantAbilityNames;
+use common::utils::vec_shift;
 use std::collections::HashMap;
+use yewdux::Dispatch;
 
 // IN BATTLE
 // queue action results to the ActionResultsManager turn_results_queue
@@ -37,17 +42,45 @@ use std::collections::HashMap;
 
 #[derive(PartialEq, Clone)]
 pub enum ClientCombatantEvent {
-    DamageTaken(u16),
-    DamageHealed(u16),
+    HpChange(i16),
     Died,
     TookAction(ActionResult),
 }
 
 #[derive(PartialEq, Clone)]
 pub struct CombatantEventManager {
+    pub associated_combatant_id: u32,
     pub event_queue: Vec<ClientCombatantEvent>,
     pub current_event_processing: Option<ClientCombatantEvent>,
     pub mesh_manager: CombatantMeshManager,
+}
+
+impl CombatantEventManager {
+    pub fn process_next_event(
+        &mut self,
+        game_dispatch: Dispatch<GameStore>,
+        alert_dispatch: Dispatch<AlertStore>,
+    ) {
+        if self.current_event_processing.is_none() {
+            // process the first event in their queue
+            // upon finishing, events will query the queue for the next event to process
+            if let Some(event) = vec_shift(&mut self.event_queue) {
+                // start animation
+                self.current_event_processing = Some(event.clone());
+                let cloned_event = event.clone();
+                let associated_combatant_id = self.associated_combatant_id;
+                gloo::timers::callback::Timeout::new(1500, move || {
+                    handle_event_finished_animating(
+                        associated_combatant_id,
+                        cloned_event,
+                        game_dispatch,
+                        alert_dispatch,
+                    )
+                })
+                .forget();
+            }
+        }
+    }
 }
 
 #[derive(Default, PartialEq, Clone)]

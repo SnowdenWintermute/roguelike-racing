@@ -13,15 +13,13 @@ use crate::status_effects::StatusEffects;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
+use std::collections::HashSet;
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub enum CombatAction {
     AbilityUsed(CombatantAbilityNames),
     ItemUsed(Item),
 }
-
-#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
-pub struct IdAndValue(pub u32, pub i16);
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct CombatTurnResult {
@@ -39,10 +37,10 @@ pub struct ActionResult {
     // using ability
     pub targets: AbilityTarget,
     // used to display floating text and reduce/add to the value
-    pub hp_changes_by_entity_id: Option<Vec<IdAndValue>>,
-    pub mp_changes_by_entity_id: Option<Vec<IdAndValue>>,
-    pub misses_by_entity_id: Option<Vec<u32>>,
-    pub resists_by_entity_id: Option<Vec<u32>>,
+    pub hp_changes_by_entity_id: Option<HashMap<u32, i16>>,
+    pub mp_changes_by_entity_id: Option<HashMap<u32, i16>>,
+    pub misses_by_entity_id: Option<HashSet<u32>>,
+    pub resists_by_entity_id: Option<HashSet<u32>>,
     pub is_crit: bool,
     // used to display floating +- effect icons and add/remove the effects to entities
     pub status_effect_changes_by_entity_id:

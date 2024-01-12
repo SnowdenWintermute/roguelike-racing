@@ -53,6 +53,17 @@ impl Battle {
         Ok((ally_ids, opponent_ids_option))
     }
 
+    pub fn get_all_combatant_ids(&self) -> Vec<u32> {
+        let mut to_return = vec![];
+        for id in &self.group_a.combatant_ids {
+            to_return.push(*id)
+        }
+        for id in &self.group_b.combatant_ids {
+            to_return.push(*id)
+        }
+        to_return
+    }
+
     pub fn get_ally_and_enemy_battle_groups(
         &self,
         combatant_id: &u32,

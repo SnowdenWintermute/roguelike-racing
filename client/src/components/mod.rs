@@ -4,5 +4,6 @@ pub mod common_components;
 pub mod game;
 pub mod global_keyboard_event_manager;
 pub mod lobby;
+pub mod mesh_manager;
 pub mod pages;
 pub mod websocket_manager;

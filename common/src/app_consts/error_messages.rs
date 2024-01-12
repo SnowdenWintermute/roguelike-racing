@@ -55,3 +55,6 @@ pub const COMBATANT_BATTLE_MISMATCH: &str =
 pub const TURN_TRACKERS_EMPTY: &str = "The battle has no turn trackers in the turn order list";
 pub const NOT_THIS_COMBATANTS_TURN: &str =
     "A combatant tried to use an ability when it was not their turn";
+// EVENT PROCESSING
+pub const COMBANTANT_MESH_MANAGER_NOT_FOUND: &str = "No mesh manager was found by that id";
+pub const COMBANTANT_EVENT_MANAGER_NOT_FOUND: &str = "No event manager was found by that id";

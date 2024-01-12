@@ -1,12 +1,10 @@
-use crate::{
-    components::{
-        common_components::molocules::text_submit::TextSubmit,
-        lobby::game_setup::adventuring_party_lobby_card::AdventuringPartyLobbyCard,
-        websocket_manager::send_client_input::send_client_input,
-    },
-    store::{game_store::GameStore, websocket_store::WebsocketStore},
-};
-use common::{errors::AppError, packets::client_to_server::PlayerInputs};
+use crate::components::common_components::molocules::text_submit::TextSubmit;
+use crate::components::lobby::game_setup::adventuring_party_lobby_card::AdventuringPartyLobbyCard;
+use crate::components::websocket_manager::send_client_input::send_client_input;
+use crate::store::game_store::GameStore;
+use crate::store::websocket_store::WebsocketStore;
+use common::errors::AppError;
+use common::packets::client_to_server::PlayerInputs;
 use std::ops::Deref;
 use yew::prelude::*;
 use yewdux::prelude::use_store;

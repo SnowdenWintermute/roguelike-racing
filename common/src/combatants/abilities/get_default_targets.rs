@@ -1,8 +1,10 @@
-use super::{
-    get_combatant_ability_attributes::{TargetCategories, TargetingScheme},
-    AbilityTarget, CombatantAbilityNames, FriendOrFoe,
-};
-use crate::{app_consts::error_messages, errors::AppError};
+use super::get_combatant_ability_attributes::TargetCategories;
+use super::get_combatant_ability_attributes::TargetingScheme;
+use super::AbilityTarget;
+use super::CombatantAbilityNames;
+use super::FriendOrFoe;
+use crate::app_consts::error_messages;
+use crate::errors::AppError;
 
 impl CombatantAbilityNames {
     pub fn get_default_targets(

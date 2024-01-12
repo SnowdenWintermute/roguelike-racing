@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 use super::client_to_server::ChangeTargetsPacket;
 use super::client_to_server::UnequipSlotRequest;
 use super::WebsocketChannelNamespace;
@@ -15,6 +13,7 @@ use crate::dungeon_rooms::DungeonRoom;
 use crate::game::RoguelikeRacerGame;
 use serde::Deserialize;
 use serde::Serialize;
+use std::collections::HashSet;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum GameServerUpdatePackets {

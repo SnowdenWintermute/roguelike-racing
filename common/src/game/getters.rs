@@ -4,6 +4,8 @@ use crate::adventuring_party::AdventuringParty;
 use crate::app_consts::error_messages;
 use crate::character::Character;
 use crate::combat::battle::Battle;
+use crate::combatants::abilities::AbilityTarget;
+use crate::combatants::abilities::FriendOrFoe;
 use crate::errors::AppError;
 use crate::errors::AppErrorTypes;
 
@@ -98,5 +100,53 @@ pub fn get_ally_ids_and_opponent_ids_option(
         battle.get_ally_ids_and_opponent_ids_option(combatant_id)
     } else {
         Ok((ally_ids.to_vec(), None))
+    }
+}
+
+impl RoguelikeRacerGame {
+    pub fn get_ids_from_ability_target(
+        &self,
+        party_id: u32,
+        battle_option: Option<&Battle>,
+        ability_target: &AbilityTarget,
+        ability_user_id: u32,
+    ) -> Result<Vec<u32>, AppError> {
+        let ids = match ability_target {
+            AbilityTarget::Single(id) => vec![*id],
+            AbilityTarget::Group(friend_or_foe) => match friend_or_foe {
+                FriendOrFoe::Friendly => {
+                    if let Some(battle) = battle_option {
+                        let (ally_battle_group, _) =
+                            battle.get_ally_and_enemy_battle_groups(&ability_user_id)?;
+                        ally_battle_group.combatant_ids
+                    } else {
+                        let party = get_party(self, party_id)?;
+                        party.character_positions.clone()
+                    }
+                }
+                FriendOrFoe::Hostile => {
+                    let battle = battle_option.ok_or_else(|| AppError {
+                        error_type: AppErrorTypes::ClientError,
+                        message: error_messages::BATTLE_NOT_FOUND.to_string(),
+                    })?;
+                    let (_, enemy_battle_group) =
+                        battle.get_ally_and_enemy_battle_groups(&ability_user_id)?;
+                    enemy_battle_group.combatant_ids
+                }
+            },
+            AbilityTarget::All => {
+                if let Some(battle) = battle_option {
+                    let (ally_battle_group, enemy_battle_group) =
+                        battle.get_ally_and_enemy_battle_groups(&ability_user_id)?;
+                    let mut ally_ids = ally_battle_group.combatant_ids.clone();
+                    ally_ids.append(&mut enemy_battle_group.combatant_ids.clone());
+                    ally_ids
+                } else {
+                    let party = get_party(self, party_id)?;
+                    party.character_positions.clone()
+                }
+            }
+        };
+        Ok(ids)
     }
 }

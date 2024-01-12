@@ -43,3 +43,11 @@ pub fn add_i16_to_u16_and_clamp_to_max(u16: u16, i16: i16, max: u16) -> u16 {
         value
     }
 }
+
+pub fn vec_shift<T>(vec: &mut Vec<T>) -> Option<T> {
+    if vec.first().is_some() {
+        Some(vec.remove(0))
+    } else {
+        None
+    }
+}

@@ -1,3 +1,4 @@
+use crate::components::mesh_manager::ActionResultsManager;
 use common::adventuring_party::AdventuringParty;
 use common::app_consts::error_messages::{self};
 use common::character::Character;
@@ -39,6 +40,7 @@ impl DetailableEntities {
 #[derive(Store, Default, PartialEq, Clone)]
 pub struct GameStore {
     pub game: Option<RoguelikeRacerGame>,
+    pub action_results_manager: ActionResultsManager,
     pub current_party_id: Option<u32>,
     pub current_battle_id: Option<u32>,
     pub detailed_entity: Option<DetailableEntities>,
@@ -95,26 +97,28 @@ pub fn get_current_battle_option<'a>(game_state: &'a GameStore) -> Option<&'a Ba
                         None => {
                             log!("no battle");
                             None
-                        },
+                        }
                     },
                     None => {
-                            log!("no battle_id");
-                        None },
+                        log!("no battle_id");
+                        None
+                    }
                 },
                 None => {
-
-                            log!("no party");
-                    None },
+                    log!("no party");
+                    None
+                }
             },
-            None => { 
-
-                            log!("no party_id");
-                None },
+            None => {
+                log!("no party_id");
+                None
+            }
         },
-        None => { 
-                            log!("no game");
+        None => {
+            log!("no game");
 
-            None },
+            None
+        }
     }
 }
 

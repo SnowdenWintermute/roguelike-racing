@@ -1,10 +1,8 @@
-use super::{
-    abilities::{
-        get_combatant_ability_attributes::TargetingScheme, AbilityTarget, CombatantAbilityNames,
-        FriendOrFoe,
-    },
-    AbilityTargetPreferences,
-};
+use super::abilities::get_combatant_ability_attributes::TargetingScheme;
+use super::abilities::AbilityTarget;
+use super::abilities::CombatantAbilityNames;
+use super::abilities::FriendOrFoe;
+use super::AbilityTargetPreferences;
 
 impl AbilityTargetPreferences {
     pub fn get_updated_preferences(

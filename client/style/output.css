@@ -546,6 +546,14 @@ video {
   position: relative;
 }
 
+.-left-2 {
+  left: -0.5rem;
+}
+
+.-right-2 {
+  right: -0.5rem;
+}
+
 .bottom-5 {
   bottom: 1.25rem;
 }
@@ -558,60 +566,24 @@ video {
   right: 0.75rem;
 }
 
-.top-\[-1\.5rem\] {
-  top: -1.5rem;
-}
-
 .top-0 {
   top: 0px;
-}
-
-.bottom-0 {
-  bottom: 0px;
-}
-
-.left-0 {
-  left: 0px;
-}
-
-.right-0 {
-  right: 0px;
 }
 
 .top-1\/2 {
   top: 50%;
 }
 
-.left-2 {
-  left: 0.5rem;
+.top-\[-1\.5rem\] {
+  top: -1.5rem;
 }
 
-.right-2 {
-  right: 0.5rem;
-}
-
-.-right-2 {
-  right: -0.5rem;
-}
-
-.-left-2 {
-  left: -0.5rem;
-}
-
-.z-\[1\] {
-  z-index: 1;
-}
-
-.z-10 {
-  z-index: 10;
+.left-0 {
+  left: 0px;
 }
 
 .z-20 {
   z-index: 20;
-}
-
-.z-30 {
-  z-index: 30;
 }
 
 .z-40 {
@@ -620,6 +592,10 @@ video {
 
 .z-50 {
   z-index: 50;
+}
+
+.z-10 {
+  z-index: 10;
 }
 
 .m-0 {
@@ -670,6 +646,10 @@ video {
   margin-top: 0.5rem;
 }
 
+.mr-0 {
+  margin-right: 0px;
+}
+
 .inline-block {
   display: inline-block;
 }
@@ -708,10 +688,6 @@ video {
 
 .h-screen {
   height: 100vh;
-}
-
-.h-5 {
-  height: 1.25rem;
 }
 
 .max-h-\[453px\] {
@@ -770,10 +746,6 @@ video {
   width: 100vw;
 }
 
-.w-5 {
-  width: 1.25rem;
-}
-
 .\!min-w-\[2\.5rem\] {
   min-width: 2.5rem !important;
 }
@@ -805,13 +777,13 @@ video {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
-.translate-x-full {
-  --tw-translate-x: 100%;
+.-translate-y-1\/2 {
+  --tw-translate-y: -50%;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
-.-translate-y-1\/2 {
-  --tw-translate-y: -50%;
+.translate-x-full {
+  --tw-translate-x: 100%;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
@@ -831,30 +803,12 @@ video {
   animation: slide-left-appear-keyframes .3s linear;
 }
 
-@keyframes up-and-down-keyframes {
-  0% {
-    transform: translate(-50%,-.35rem);
-  }
-
-  100% {
-    transform: translate(-50%, 0rem);
-  }
-}
-
-.animate-up-and-down {
-  animation: up-and-down-keyframes 1.5s ease-in-out infinite alternate-reverse;
+.cursor-help {
+  cursor: help;
 }
 
 .cursor-pointer {
   cursor: pointer;
-}
-
-.cursor-default {
-  cursor: default;
-}
-
-.cursor-help {
-  cursor: help;
 }
 
 .list-none {
@@ -915,10 +869,6 @@ video {
 
 .rounded-md {
   border-radius: 0.375rem;
-}
-
-.rounded-\[100\%\] {
-  border-radius: 100%;
 }
 
 .border {
@@ -1012,6 +962,11 @@ video {
   border-top-color: rgb(161 98 7 / var(--tw-border-opacity));
 }
 
+.bg-black {
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
+}
+
 .bg-darknessblack {
   --tw-bg-opacity: 1;
   background-color: rgb(46 37 20 / var(--tw-bg-opacity));
@@ -1030,6 +985,11 @@ video {
 .bg-gray-600 {
   --tw-bg-opacity: 1;
   background-color: rgb(75 85 99 / var(--tw-bg-opacity));
+}
+
+.bg-green-700 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(21 128 61 / var(--tw-bg-opacity));
 }
 
 .bg-green-800 {
@@ -1090,21 +1050,6 @@ video {
 .bg-zinc-300 {
   --tw-bg-opacity: 1;
   background-color: rgb(212 212 216 / var(--tw-bg-opacity));
-}
-
-.bg-green-200 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(187 247 208 / var(--tw-bg-opacity));
-}
-
-.bg-green-700 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(21 128 61 / var(--tw-bg-opacity));
-}
-
-.bg-red-700 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(185 28 28 / var(--tw-bg-opacity));
 }
 
 .fill-red-500 {
@@ -1208,6 +1153,11 @@ video {
   color: rgb(51 65 85 / var(--tw-text-opacity));
 }
 
+.text-windgreen {
+  --tw-text-opacity: 1;
+  color: rgb(47 170 54 / var(--tw-text-opacity));
+}
+
 .text-zinc-300 {
   --tw-text-opacity: 1;
   color: rgb(212 212 216 / var(--tw-text-opacity));
@@ -1223,6 +1173,10 @@ video {
 
 .last\:mb-0:last-child {
   margin-bottom: 0px;
+}
+
+.last\:mr-0:last-child {
+  margin-right: 0px;
 }
 
 .last\:border-r-0:last-child {

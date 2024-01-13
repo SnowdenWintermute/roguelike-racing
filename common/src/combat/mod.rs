@@ -45,6 +45,7 @@ pub struct ActionResult {
     // used to display floating +- effect icons and add/remove the effects to entities
     pub status_effect_changes_by_entity_id:
         Option<HashMap<u32, Vec<(StatusEffects, GainedOrLost)>>>,
+    pub ends_turn: bool,
 }
 
 #[derive(Debug)]

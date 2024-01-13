@@ -1,10 +1,7 @@
-use crate::{
-    components::{
-        common_components::atoms::button_basic::ButtonBasic,
-        game::character_sheet::character_attributes::CharacterAttributes,
-    },
-    store::game_store::{CombatantDetails, GameStore},
-};
+use crate::components::common_components::atoms::button_basic::ButtonBasic;
+use crate::components::game::character_sheet::character_attributes::CharacterAttributes;
+use crate::store::game_store::CombatantDetails;
+use crate::store::game_store::GameStore;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 

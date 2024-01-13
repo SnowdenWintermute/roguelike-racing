@@ -45,6 +45,7 @@ impl RoguelikeRacerGame {
             user_combatant_properties.get_equipped_item(&EquipmentSlots::OffHand);
 
         if mh_weapon_option.is_some() || oh_weapon_option.is_some() {
+            let mh_swing_ends_turn = oh_weapon_option.is_none();
             if let Some(mh_equipment_properties) = mh_weapon_option {
                 action_results.push(calculate_weapon_swing_result(
                     ability_user_id,
@@ -54,6 +55,7 @@ impl RoguelikeRacerGame {
                     &target_total_attributes,
                     mh_equipment_properties,
                     false,
+                    mh_swing_ends_turn,
                 )?);
             };
             if let Some(oh_equipment_properties) = oh_weapon_option {
@@ -64,6 +66,7 @@ impl RoguelikeRacerGame {
                     &user_total_attributes,
                     &target_total_attributes,
                     oh_equipment_properties,
+                    true,
                     true,
                 )?);
             };
@@ -77,6 +80,7 @@ impl RoguelikeRacerGame {
                 &target_total_attributes,
                 &FIST,
                 false,
+                false,
             )?);
             action_results.push(calculate_weapon_swing_result(
                 ability_user_id,
@@ -85,6 +89,7 @@ impl RoguelikeRacerGame {
                 &user_total_attributes,
                 &target_total_attributes,
                 &FIST,
+                true,
                 true,
             )?);
         }

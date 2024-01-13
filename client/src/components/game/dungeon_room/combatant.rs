@@ -1,10 +1,12 @@
 use crate::components::common_components::atoms::targeting_indicator::TargetingIndicator;
 use crate::components::game::dungeon_room::focus_character_button::FocusCharacterButton;
+use crate::components::mesh_manager::ClientCombatantEvent;
 use crate::store::game_store::get_active_combatant;
 use crate::store::game_store::get_current_battle_option;
 use crate::store::game_store::DetailableEntities;
 use crate::store::game_store::GameStore;
 use crate::store::game_store::{self};
+use common::combat::CombatAction;
 use common::combatants::abilities::AbilityTarget;
 use common::combatants::abilities::FriendOrFoe;
 use common::combatants::combat_attributes::CombatAttributes;
@@ -135,8 +137,35 @@ pub fn combatant(props: &Props) -> Html {
     let max_hp_option = total_attributes.get(&CombatAttributes::Hp);
     let max_mp_option = total_attributes.get(&CombatAttributes::Mp);
 
+    let event_manager_option = game_state
+        .action_results_manager
+        .combantant_event_managers
+        .get(&id);
+    let events_processing_display_content = match event_manager_option {
+        Some(event_manager) => {
+            let events_in_queue = &event_manager.event_queue;
+            let current_event_processing = match &event_manager.current_event_processing {
+                Some(event) => format!("{event}"),
+                None => "None".to_string(),
+            };
+            html!(
+            <div>
+                {format!("current event processing: {current_event_processing}")}
+                <div class="flex" >
+                    {"in queue: "}
+                    {events_in_queue.iter().map(|event| html!(<div class="mr-1 last:mr-0">{format!("{event}")}</div>)).collect::<Html>()}
+                </div>
+            </div>
+            )
+        }
+        None => html!(),
+    };
+
     html!(
         <div class={styles}>
+            <div class="absolute top-0 left-0 p-2 bg-black text-windgreen" >
+                {events_processing_display_content}
+            </div>
             if is_targeted{
                 <div class="absolute top-[-1.5rem] left-1/2 -translate-x-1/2 z-20
                     " >

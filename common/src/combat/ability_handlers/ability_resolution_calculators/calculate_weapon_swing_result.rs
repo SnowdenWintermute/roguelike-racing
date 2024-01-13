@@ -21,6 +21,7 @@ pub fn calculate_weapon_swing_result(
     target_total_attributes: &HashMap<CombatAttributes, u16>,
     equipment_properties: &EquipmentProperties,
     is_off_hand: bool,
+    should_end_turn: bool,
 ) -> Result<ActionResult, AppError> {
     let (weapon_properties, weapon_traits, base_bonus_damage) =
         get_weapon_properties_traits_and_base_bonus_damage(
@@ -56,6 +57,7 @@ pub fn calculate_weapon_swing_result(
             resists_by_entity_id: None,
             is_crit: false,
             status_effect_changes_by_entity_id: None,
+            ends_turn: should_end_turn,
         })
     } else {
         let mut rng = rand::thread_rng();
@@ -87,6 +89,7 @@ pub fn calculate_weapon_swing_result(
             resists_by_entity_id: None,
             is_crit: false,
             status_effect_changes_by_entity_id: None,
+            ends_turn: should_end_turn,
         })
     }
 }

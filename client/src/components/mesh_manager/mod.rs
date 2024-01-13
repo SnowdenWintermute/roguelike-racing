@@ -2,9 +2,11 @@ use super::websocket_manager::handle_combat_turn_results::handle_animation_finis
 use crate::store::alert_store::AlertStore;
 use crate::store::game_store::GameStore;
 use common::combat::ActionResult;
+use common::combat::CombatAction;
 use common::combatants::abilities::CombatantAbilityNames;
 use common::utils::vec_shift;
 use std::collections::HashMap;
+use std::fmt::Display;
 use yewdux::Dispatch;
 
 // IN BATTLE
@@ -45,6 +47,23 @@ pub enum ClientCombatantEvent {
     HpChange(i16),
     Died,
     TookAction(ActionResult),
+}
+
+impl Display for ClientCombatantEvent {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+        let to_write = match self {
+            ClientCombatantEvent::HpChange(hp_change) => format!("hp change: {hp_change}"),
+            ClientCombatantEvent::Died => "Death".to_owned(),
+            ClientCombatantEvent::TookAction(action_result) => format!(
+                "taking action: {}",
+                match &action_result.action {
+                    CombatAction::AbilityUsed(ability_name) => format!("{ability_name}"),
+                    CombatAction::ItemUsed(_) => "using consumable".to_string(),
+                }
+            ),
+        };
+        write!(f, "{to_write}")
+    }
 }
 
 #[derive(PartialEq, Clone)]

@@ -26,7 +26,7 @@ pub fn character_autofocus_manager() -> Html {
                         let party_result = game_state.get_current_party();
                         if let Ok(party) = party_result {
                             if party.character_positions.contains(&new_active_combatant_id) {
-                                if focused_character_id == prev_active_combatant_id {
+                                if focused_character_id == prev_active_combatant_id  && !game_state.viewing_inventory {
                                     store.focused_character_id = new_active_combatant_id
                                 }
                             }

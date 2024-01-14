@@ -72,6 +72,16 @@ pub struct CombatantEventManager {
     pub event_queue: Vec<ClientCombatantEvent>,
     pub current_event_processing: Option<ClientCombatantEvent>,
 }
+// attack animation signals hit
+// gets damaged
+// starts animating hit recovery
+// attack animation signals hit
+// gets damaged
+// starts animating hit recovery, replacing current animation
+// attack animation signals hit
+// gets damaged and is dead
+// no longer targetable for attacks
+// starts animating death, replacing current animation
 
 impl CombatantEventManager {
     pub fn new(associated_combatant_id: u32) -> Self {

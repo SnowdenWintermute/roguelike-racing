@@ -62,18 +62,6 @@ pub struct GameStore {
     pub combat_log: Vec<AttrValue>,
 }
 
-// pub fn get_focused_character_mut<'a>(game_state: &'a mut GameStore) -> Result<&'a mut Character, AppError> {
-//     let game = game_state.game.as_mut().ok_or_else(|| AppError {
-//         error_type: common::errors::AppErrorTypes::ClientError,
-//         message: error_messages::MISSING_GAME_REFERENCE.to_string(),
-//     })?;
-//     let party_id = game_state.current_party_id.ok_or_else(|| AppError {
-//         error_type: common::errors::AppErrorTypes::ClientError,
-//         message: error_messages::MISSING_PARTY_REFERENCE.to_string(),
-//     })?;
-//     let focused_character = get_character(&mut game, party_id, game_state.focused_character_id);
-//     focused_character
-// }
 pub fn get_current_party_option<'a>(game_state: &'a GameStore) -> Option<&'a AdventuringParty> {
     let game_option = &game_state.game;
     match game_option {
@@ -124,7 +112,7 @@ pub fn get_current_battle_option<'a>(game_state: &'a GameStore) -> Option<&'a Ba
     }
 }
 
-pub fn get_current_battle_option_mut<'a>(game_state: &'a mut GameStore) -> Option<&'a mut Battle> {
+pub fn _get_current_battle_option_mut<'a>(game_state: &'a mut GameStore) -> Option<&'a mut Battle> {
     let game_option = &mut game_state.game;
     match game_option {
         Some(game) => match game_state.current_party_id {

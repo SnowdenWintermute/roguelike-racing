@@ -14,6 +14,7 @@ mod set_up_actions;
 use crate::components::game::action_menu::action_menu_button::ActionMenuButton;
 use crate::components::game::action_menu::action_page_buttons::ActionPageButtons;
 use crate::components::game::action_menu::set_up_actions::ActionMenuButtonProperties;
+use crate::store::game_store::get_active_combatant;
 use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
 use crate::store::ui_store::UIStore;
@@ -80,6 +81,23 @@ pub fn action_menu(_: &Props) -> Html {
         ),
         None => None,
     };
+    let focused_character_selected_ability_option = match focused_character_option {
+        Some(focused_character) => focused_character
+            .combatant_properties
+            .selected_ability_name
+            .clone(),
+        None => None,
+    };
+    let focused_character_current_event_processing_option = match focused_character_option {
+        Some(focused_character) => game_state
+            .action_results_manager
+            .combantant_event_managers
+            .get(&focused_character.entity_properties.id)
+            .expect("to have an event queue for every combatant entity")
+            .current_event_processing
+            .clone(),
+        None => None,
+    };
 
     let ability_targets = match focused_character_option {
         Some(focused_character) => focused_character
@@ -90,15 +108,29 @@ pub fn action_menu(_: &Props) -> Html {
         None => None,
     };
 
+    let active_combatant_result = get_active_combatant(&game_state);
+    let active_combatant_id_option = match active_combatant_result {
+        Ok(combatant_option) => match combatant_option {
+            Some((entity_properties, _)) => Some(entity_properties.id),
+            None => None,
+        },
+        Err(_) => None,
+    };
+
     let cloned_ui_state = ui_state.clone();
     let cloned_game_dispatch = game_dispatch.clone();
     use_effect_with(
         (
+            active_combatant_id_option,
             cloned_game_state.focused_character_id,
             cloned_game_state.viewing_inventory,
             cloned_game_state.viewing_equipped_items,
             ability_targets,
-            selected_item_id,
+            (
+                selected_item_id,
+                focused_character_selected_ability_option,
+                focused_character_current_event_processing_option,
+            ),
             cloned_game_state.viewing_items_on_ground,
             cloned_game_state.viewing_skill_level_up_menu,
             cloned_game_state.viewing_attribute_point_assignment_menu,

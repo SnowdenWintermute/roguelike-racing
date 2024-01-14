@@ -1,7 +1,7 @@
 use std::fmt;
 use std::io::{self};
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum AppErrorTypes {
     InvalidInput,
     InsufficientResources,
@@ -25,7 +25,7 @@ impl fmt::Display for AppErrorTypes {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct AppError {
     pub error_type: AppErrorTypes,
     pub message: String,

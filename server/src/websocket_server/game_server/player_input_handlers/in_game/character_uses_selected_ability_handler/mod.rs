@@ -79,7 +79,18 @@ impl GameServer {
 
             apply_action_results(game, &action_results)?;
 
-            if ability_attributes.requires_combat_turn {
+            let turn_should_end = {
+                let mut should_end = false;
+                for action_result in &action_results {
+                    if action_result.ends_turn {
+                        should_end = true;
+                        break;
+                    }
+                }
+                should_end
+            };
+
+            if turn_should_end {
                 let mut turns: Vec<CombatTurnResult> = vec![];
                 let player_turn = CombatTurnResult {
                     combatant_id: character_id,
@@ -87,7 +98,11 @@ impl GameServer {
                 };
                 turns.push(player_turn);
 
-                let mut ai_controlled_turn_results = take_ai_controlled_turns(game, battle_id)?;
+                let active_combatant_turn_tracker = game.end_active_combatant_turn(battle_id)?;
+                let active_combatant_id = active_combatant_turn_tracker.entity_id;
+
+                let mut ai_controlled_turn_results =
+                    take_ai_controlled_turns(game, battle_id, active_combatant_id)?;
                 turns.append(&mut ai_controlled_turn_results);
                 // Send turn result packets
                 return self.emit_packet(

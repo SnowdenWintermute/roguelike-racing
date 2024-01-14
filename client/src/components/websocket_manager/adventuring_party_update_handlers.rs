@@ -1,5 +1,7 @@
+use crate::components::mesh_manager::ActionResultsManager;
 use crate::components::mesh_manager::CombatantEventManager;
 use crate::store::game_store::GameStore;
+use crate::store::websocket_store::WebsocketStore;
 use common::app_consts::error_messages;
 use common::errors::AppError;
 use common::game::getters::get_mut_party;
@@ -9,6 +11,35 @@ use common::packets::server_to_client::NewCharacterInParty;
 use common::packets::server_to_client::PlayerAdventuringPartyChange;
 use common::packets::server_to_client::PlayerCharacterDeletion;
 use std::collections::HashSet;
+use yewdux::Dispatch;
+
+pub fn client_party_id_change_handler(
+    game_dispatch: Dispatch<GameStore>,
+    websocket_dispatch: Dispatch<WebsocketStore>,
+    update: Option<u32>,
+) -> Result<(), AppError> {
+    if update.is_none() {
+        websocket_dispatch.reduce_mut(|store| store.websocket_channels.party = None)
+    }
+    Ok(game_dispatch.reduce_mut(|store| {
+        store.current_party_id = update;
+        store.action_results_manager = ActionResultsManager::new();
+        let mut combatants_to_add_event_managers_for = vec![];
+        if let Ok(party) = store.get_current_party() {
+            for (id, _) in party.characters.iter() {
+                combatants_to_add_event_managers_for.push(*id)
+            }
+        }
+        if combatants_to_add_event_managers_for.len() > 0 {
+            for id in combatants_to_add_event_managers_for {
+                store
+                    .action_results_manager
+                    .combantant_event_managers
+                    .insert(id, CombatantEventManager::new(id));
+            }
+        }
+    }))
+}
 
 pub fn handle_adventuring_party_created(
     game_state: &mut GameStore,

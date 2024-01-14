@@ -141,6 +141,7 @@ pub fn combatant(props: &Props) -> Html {
         .action_results_manager
         .combantant_event_managers
         .get(&id);
+
     let events_processing_display_content = match event_manager_option {
         Some(event_manager) => {
             let events_in_queue = &event_manager.event_queue;
@@ -153,7 +154,9 @@ pub fn combatant(props: &Props) -> Html {
                 {format!("current event processing: {current_event_processing}")}
                 <div class="flex" >
                     {"in queue: "}
-                    {events_in_queue.iter().map(|event| html!(<div class="mr-1 last:mr-0">{format!("{event}")}</div>)).collect::<Html>()}
+                    {events_in_queue.iter().map(|event| html!(
+                        <div class="mr-1 last:mr-0">{format!("{event}")}</div>))
+                        .collect::<Html>()}
                 </div>
             </div>
             )
@@ -163,9 +166,9 @@ pub fn combatant(props: &Props) -> Html {
 
     html!(
         <div class={styles}>
-            <div class="absolute top-0 left-0 p-2 bg-black text-windgreen" >
-                {events_processing_display_content}
-            </div>
+            // <div class="absolute top-0 left-0 p-2 bg-black text-windgreen" >
+            //     {events_processing_display_content}
+            // </div>
             if is_targeted{
                 <div class="absolute top-[-1.5rem] left-1/2 -translate-x-1/2 z-20
                     " >

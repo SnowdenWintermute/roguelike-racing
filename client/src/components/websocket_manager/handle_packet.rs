@@ -1,7 +1,9 @@
+use super::adventuring_party_update_handlers::client_party_id_change_handler;
 use super::adventuring_party_update_handlers::handle_adventuring_party_created;
 use super::adventuring_party_update_handlers::handle_character_creation;
 use super::adventuring_party_update_handlers::handle_character_deletion;
 use super::adventuring_party_update_handlers::handle_player_changed_adventuring_party;
+use super::game_full_update_handler::game_full_update_handler;
 use super::handle_combat_turn_results::handle_combat_turn_results;
 use super::in_game_party_update_handlers::handle_battle_full_update;
 use super::in_game_party_update_handlers::handle_character_ability_selection;
@@ -64,10 +66,9 @@ pub fn handle_packet(
         GameServerUpdatePackets::GameList(update) => {
             Ok(lobby_dispatch.reduce_mut(|store| store.game_list = update.games))
         }
-        GameServerUpdatePackets::GameFullUpdate(update) => game_dispatch.reduce_mut(|store| {
-            store.game = update;
-            Ok(())
-        }),
+        GameServerUpdatePackets::GameFullUpdate(update) => {
+            game_full_update_handler(game_dispatch, update)
+        }
         GameServerUpdatePackets::UserJoinedGame(username) => {
             game_dispatch.reduce_mut(|store| handle_user_joined_game(store, username))
         }
@@ -77,12 +78,7 @@ pub fn handle_packet(
         GameServerUpdatePackets::AdventuringPartyCreated(party_creation) => game_dispatch
             .reduce_mut(|store| handle_adventuring_party_created(store, party_creation)),
         GameServerUpdatePackets::ClientAdventuringPartyId(update) => {
-            if update.is_none() {
-                websocket_dispatch.reduce_mut(|store| store.websocket_channels.party = None)
-            }
-            Ok(game_dispatch.reduce_mut(|store| {
-                store.current_party_id = update;
-            }))
+            client_party_id_change_handler(game_dispatch, websocket_dispatch, update)
         }
         GameServerUpdatePackets::PlayerChangedAdventuringParty(update) => {
             game_dispatch.reduce_mut(|store| handle_player_changed_adventuring_party(store, update))

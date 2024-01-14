@@ -1,12 +1,12 @@
 use super::process_next_event_in_turn_result_queue;
 use crate::components::alerts::set_alert;
 use crate::components::mesh_manager::ClientCombatantEvent;
+use crate::components::websocket_manager::handle_combat_turn_results::add_event_to_combat_log::get_combat_log_entry;
 use crate::store::alert_store::AlertStore;
 use crate::store::game_store::get_current_battle_option;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::errors::AppError;
-use gloo::console::log;
 use yewdux::Dispatch;
 
 pub fn handle_event_finished_animating(
@@ -21,19 +21,28 @@ pub fn handle_event_finished_animating(
             // - subtract hp from affected entities
             // - if any affected entity is dead, queue death animation on that entity
             // - if action required turn, end active combatant turn for the current battle if any
+            let battle_option = get_current_battle_option(store);
+            let battle_id_option = if let Some(battle) = battle_option {
+                Some(battle.id)
+            } else {
+                None
+            };
+            let party_id = store.current_party_id.ok_or_else(|| AppError {
+                error_type: common::errors::AppErrorTypes::ClientError,
+                message: error_messages::MISSING_PARTY_REFERENCE.to_string(),
+            })?;
+            let game = store.get_current_game()?;
+            let combat_log_entry = get_combat_log_entry(
+                game,
+                associated_combatant_id,
+                &combatant_event,
+                party_id,
+                battle_option,
+            )?;
+
             match combatant_event {
                 ClientCombatantEvent::TookAction(action_result) => {
-                    let battle_option = get_current_battle_option(store);
-                    let battle_id_option = if let Some(battle) = battle_option {
-                        Some(battle.id)
-                    } else {
-                        None
-                    };
                     let ability_user_id = action_result.user_id;
-                    let party_id = store.current_party_id.ok_or_else(|| AppError {
-                        error_type: common::errors::AppErrorTypes::ClientError,
-                        message: error_messages::MISSING_PARTY_REFERENCE.to_string(),
-                    })?;
                     let game = store.get_current_game()?;
                     let target_ids = game.get_ids_from_ability_target(
                         party_id,
@@ -41,20 +50,17 @@ pub fn handle_event_finished_animating(
                         &action_result.targets,
                         ability_user_id,
                     )?;
-                    log!(format!("target ids: {:#?}", target_ids));
 
                     for entity_id in target_ids {
                         let cloned_game_dispatch = game_dispatch.clone();
                         let cloned_alert_dispatch = alert_dispatch.clone();
                         if let Some(hp_changes_by_id) = &action_result.hp_changes_by_entity_id {
-                            log!(format!("hp changes by id: {:#?}", hp_changes_by_id));
                             if let Some(hp_change) = hp_changes_by_id.get(&entity_id) {
                                 let game = store.get_current_game_mut()?;
                                 let (_, combatant_properties) =
                                     game.get_mut_combatant_by_id(&entity_id)?;
                                 let new_hp = combatant_properties.change_hp(*hp_change);
 
-                                log!(format!("new hp for entity id {entity_id}: {:#?}", new_hp));
                                 // put the damage taken animation in this entity's event queue
                                 let this_entity_event_manager = store
                                     .action_results_manager
@@ -91,6 +97,7 @@ pub fn handle_event_finished_animating(
                 }
                 _ => (),
             }
+            store.combat_log.push(combat_log_entry);
 
             // for any event animation finishing in the associated combatant's queue
             //  - set their current event processing to none

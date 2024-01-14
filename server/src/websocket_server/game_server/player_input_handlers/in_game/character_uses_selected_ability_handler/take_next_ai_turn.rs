@@ -8,13 +8,12 @@ use common::game::RoguelikeRacerGame;
 pub fn take_ai_controlled_turns(
     game: &mut RoguelikeRacerGame,
     battle_id: u32,
+    active_combatant_id: u32,
 ) -> Result<Vec<CombatTurnResult>, AppError> {
     let mut ai_turn_results = vec![];
-    let active_combatant_turn_tracker = game.end_active_combatant_turn(battle_id)?;
-    let active_combatant_turn_tracker = active_combatant_turn_tracker.clone();
 
     let (mut active_combatant_entity_properties, mut active_combatant_properties) =
-        game.get_combatant_by_id(&active_combatant_turn_tracker.entity_id)?;
+        game.get_combatant_by_id(&active_combatant_id)?;
     let mut active_combatant_entity_id = active_combatant_entity_properties.id;
     let mut active_combatant_is_ai_controlled =
         active_combatant_properties.controlled_by == CombatantControlledBy::AI;

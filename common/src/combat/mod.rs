@@ -14,11 +14,24 @@ use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
 use std::collections::HashSet;
+use std::fmt::Display;
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub enum CombatAction {
     AbilityUsed(CombatantAbilityNames),
     ItemUsed(Item),
+}
+
+impl Display for CombatAction {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+        let to_write = match self {
+            CombatAction::AbilityUsed(ability_name) => format!("ability {ability_name}"),
+            CombatAction::ItemUsed(consumable) => {
+                format!("item {}", consumable.entity_properties.name)
+            }
+        };
+        write!(f, "{to_write}")
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]

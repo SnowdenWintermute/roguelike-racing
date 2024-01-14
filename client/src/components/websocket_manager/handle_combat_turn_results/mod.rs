@@ -1,3 +1,4 @@
+mod add_event_to_combat_log;
 pub mod handle_animation_finished;
 use crate::components::alerts::set_alert;
 use crate::components::mesh_manager::ClientCombatantEvent;

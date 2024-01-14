@@ -14,6 +14,7 @@ use common::items::Item;
 use common::primatives::EntityProperties;
 use gloo::console::log;
 use std::collections::HashSet;
+use yew::AttrValue;
 use yewdux::prelude::*;
 
 #[derive(PartialEq, Clone, Debug)]
@@ -58,6 +59,7 @@ pub struct GameStore {
     pub viewing_items_on_ground: bool,
     pub parent_menu_pages: Vec<u8>,
     pub action_menu_current_page_number: u8,
+    pub combat_log: Vec<AttrValue>,
 }
 
 // pub fn get_focused_character_mut<'a>(game_state: &'a mut GameStore) -> Result<&'a mut Character, AppError> {

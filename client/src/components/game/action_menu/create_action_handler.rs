@@ -13,6 +13,7 @@ use common::packets::client_to_server::ClientSelectAbilityPacket;
 use common::packets::client_to_server::EquipItemRequest;
 use common::packets::client_to_server::PlayerInputs;
 use common::packets::client_to_server::UnequipSlotRequest;
+use common::packets::server_to_client::CharacterSelectedAbilityPacket;
 use std::rc::Rc;
 use yewdux::prelude::Dispatch;
 
@@ -132,10 +133,26 @@ pub fn create_action_handler<'a>(
             })
         }),
         GameActions::UseSelectedAbility => Box::new(move || {
-            send_client_input(
-                &websocket_state.websocket,
-                PlayerInputs::UseSelectedAbility(game_state.focused_character_id),
-            )
+            game_dispatch.reduce_mut(|store| {
+                let focused_character_id = store.focused_character_id;
+                let focused_character = store
+                    .get_mut_character(focused_character_id)
+                    .expect("to have a valid focused character");
+                focused_character.combatant_properties.selected_ability_name = None;
+                focused_character.combatant_properties.ability_targets = None;
+                send_client_input(
+                    &websocket_state.websocket,
+                    PlayerInputs::UseSelectedAbility(game_state.focused_character_id),
+                );
+
+                send_client_input(
+                    &websocket_state.websocket,
+                    PlayerInputs::SelectAbility(ClientSelectAbilityPacket {
+                        character_id: focused_character_id,
+                        ability_name_option: None,
+                    }),
+                )
+            });
         }),
         _ => Box::new(|| ()), // GameActions::OpenTreasureChest => || (),
                               // GameActions::TakeItem => || (),

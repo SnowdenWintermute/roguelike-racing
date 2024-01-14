@@ -1,4 +1,5 @@
 mod action_menu;
+mod character_autofocus_manager;
 mod character_sheet;
 mod combat_log;
 mod combatant_detail_tab;
@@ -8,8 +9,8 @@ mod tabbed_display;
 mod top_info_bar;
 pub mod turn_order_bar;
 use crate::components::game::action_menu::ActionMenu;
+use crate::components::game::character_autofocus_manager::CharacterAutofocusManager;
 use crate::components::game::character_sheet::CharacterSheet;
-use crate::components::game::debug::GameDebug;
 use crate::components::game::dungeon_room::DungeonRoom;
 use crate::components::game::tabbed_display::TabbedDisplay;
 use crate::components::game::top_info_bar::TopInfoBar;
@@ -71,7 +72,9 @@ pub fn game() -> Html {
 
     html!(
         <main class="h-screen w-screen p-4 bg-gray-600 text-zinc-300 flex flex-col relative">
-            <GameDebug />
+            // <GameDebug />
+            // <CharacterAutofocusManager />
+            <CharacterAutofocusManager />
             <div class="absolute top-0 left-1/2 -translate-x-1/2 z-40 bg-slate-700" >
             if !game_state.viewing_inventory {
                 <TopInfoBar />

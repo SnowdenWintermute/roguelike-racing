@@ -114,3 +114,12 @@ pub struct ActionResultsManager {
     pub turn_results_queue: Vec<ActionResult>,
     pub combantant_event_managers: HashMap<u32, CombatantEventManager>,
 }
+
+impl ActionResultsManager {
+    pub fn new() -> Self {
+        ActionResultsManager {
+            turn_results_queue: vec![],
+            combantant_event_managers: HashMap::new(),
+        }
+    }
+}

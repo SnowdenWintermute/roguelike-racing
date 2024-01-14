@@ -1,4 +1,5 @@
 use super::available_actions::GameActions;
+use crate::components::mesh_manager::ClientCombatantEvent;
 use crate::store::game_store::get_current_battle_option;
 use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
@@ -28,6 +29,11 @@ pub fn determine_action_menu_buttons_disabled(
         return true;
     }
     let focused_character = focused_character_result.expect("is_none checked");
+    let focused_character_event_queue = game_state
+        .action_results_manager
+        .combantant_event_managers
+        .get(&focused_character_id)
+        .expect("to have an event queue for every combatant entity");
 
     let player_owns_character =
         party.player_owns_character(&lobby_state.username, focused_character_id);
@@ -58,6 +64,13 @@ pub fn determine_action_menu_buttons_disabled(
             if let Some(battle) = battle_option {
                 if !battle.combatant_is_first_in_turn_order(focused_character_id) {
                     return true;
+                }
+            }
+            if let Some(combatant_event) = &focused_character_event_queue.current_event_processing {
+                match combatant_event {
+                    ClientCombatantEvent::HpChange(_) => (),
+                    ClientCombatantEvent::Died => return true,
+                    ClientCombatantEvent::TookAction(_) => return true,
                 }
             }
             false

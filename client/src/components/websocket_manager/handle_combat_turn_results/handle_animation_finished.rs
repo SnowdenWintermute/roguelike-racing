@@ -7,6 +7,8 @@ use crate::store::game_store::get_current_battle_option;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::errors::AppError;
+use common::utils::vec_shift;
+use gloo::console::log;
 use yewdux::Dispatch;
 
 pub fn handle_event_finished_animating(
@@ -15,150 +17,109 @@ pub fn handle_event_finished_animating(
     game_dispatch: Dispatch<GameStore>,
     alert_dispatch: Dispatch<AlertStore>,
 ) {
-    let should_process_next_turn_result_in_queue_result =
-        game_dispatch.reduce_mut(|store| -> Result<bool, AppError> {
-            // - queue and start damage taken animations on affected entities
-            // - subtract hp from affected entities
-            // - if any affected entity is dead, queue death animation on that entity
-            // - if action required turn, end active combatant turn for the current battle if any
-            let battle_option = get_current_battle_option(store);
-            let battle_id_option = if let Some(battle) = battle_option {
-                Some(battle.id)
-            } else {
-                None
-            };
-            let party_id = store.current_party_id.ok_or_else(|| AppError {
+    let result = game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
+        let combatant_event_manager = store
+            .action_results_manager
+            .combantant_event_managers
+            .get_mut(&associated_combatant_id)
+            .ok_or_else(|| AppError {
                 error_type: common::errors::AppErrorTypes::ClientError,
-                message: error_messages::MISSING_PARTY_REFERENCE.to_string(),
+                message: error_messages::COMBANTANT_EVENT_MANAGER_NOT_FOUND.to_string(),
             })?;
-            let game = store.get_current_game()?;
-            let combat_log_entry = get_combat_log_entry(
-                game,
-                associated_combatant_id,
-                &combatant_event,
-                party_id,
-                battle_option,
-            )?;
 
-            match combatant_event {
-                ClientCombatantEvent::TookAction(action_result) => {
-                    let ability_user_id = action_result.user_id;
-                    let game = store.get_current_game()?;
-                    let target_ids = game.get_ids_from_ability_target(
-                        party_id,
-                        battle_option,
-                        &action_result.targets,
-                        ability_user_id,
-                    )?;
+        combatant_event_manager.current_event_processing = None;
 
-                    for entity_id in target_ids {
-                        let cloned_game_dispatch = game_dispatch.clone();
-                        let cloned_alert_dispatch = alert_dispatch.clone();
-                        if let Some(hp_changes_by_id) = &action_result.hp_changes_by_entity_id {
-                            if let Some(hp_change) = hp_changes_by_id.get(&entity_id) {
-                                let game = store.get_current_game_mut()?;
-                                let (_, combatant_properties) =
-                                    game.get_mut_combatant_by_id(&entity_id)?;
-                                let new_hp = combatant_properties.change_hp(*hp_change);
+        let battle_option = get_current_battle_option(store);
+        let battle_id_option = if let Some(battle) = battle_option {
+            Some(battle.id)
+        } else {
+            None
+        };
+        let party_id = store.current_party_id.ok_or_else(|| AppError {
+            error_type: common::errors::AppErrorTypes::ClientError,
+            message: error_messages::MISSING_PARTY_REFERENCE.to_string(),
+        })?;
+        let game = store.get_current_game()?;
+        let combat_log_entry = get_combat_log_entry(
+            game,
+            associated_combatant_id,
+            &combatant_event,
+            party_id,
+            battle_option,
+        )?;
 
-                                // put the damage taken animation in this entity's event queue
-                                let this_entity_event_manager = store
-                                    .action_results_manager
-                                    .combantant_event_managers
-                                    .get_mut(&entity_id)
-                                    .ok_or_else(|| AppError {
-                                        error_type: common::errors::AppErrorTypes::ClientError,
-                                        message: error_messages::COMBANTANT_EVENT_MANAGER_NOT_FOUND
-                                            .to_string(),
-                                    })?;
-                                this_entity_event_manager
-                                    .event_queue
-                                    .push(ClientCombatantEvent::HpChange(*hp_change));
-                                if new_hp == 0 {
-                                    this_entity_event_manager
-                                        .event_queue
-                                        .push(ClientCombatantEvent::Died);
-                                }
-                                // start processing their event queue if not already doing so
-                                this_entity_event_manager.process_next_event(
-                                    cloned_game_dispatch,
-                                    cloned_alert_dispatch,
-                                );
+        match combatant_event {
+            ClientCombatantEvent::TookAction(action_result) => {
+                let ability_user_id = action_result.user_id;
+                let game = store.get_current_game()?;
+                let target_ids = game.get_ids_from_ability_target(
+                    party_id,
+                    battle_option,
+                    &action_result.targets,
+                    ability_user_id,
+                )?;
+
+                for entity_id in target_ids {
+                    let cloned_alert_dispatch = alert_dispatch.clone();
+                    let cloned_game_dispatch = game_dispatch.clone();
+                    if let Some(hp_changes_by_id) = &action_result.hp_changes_by_entity_id {
+                        if let Some(hp_change) = hp_changes_by_id.get(&entity_id) {
+                            let game = store.get_current_game_mut()?;
+                            let (_, combatant_properties) =
+                                game.get_mut_combatant_by_id(&entity_id)?;
+                            let new_hp = combatant_properties.change_hp(*hp_change);
+
+                            // put the damage taken animation in this entity's event queue
+                            let this_entity_event_manager = store
+                                .action_results_manager
+                                .combantant_event_managers
+                                .get_mut(&entity_id)
+                                .ok_or_else(|| AppError {
+                                    error_type: common::errors::AppErrorTypes::ClientError,
+                                    message: error_messages::COMBANTANT_EVENT_MANAGER_NOT_FOUND
+                                        .to_string(),
+                                })?;
+                            if new_hp == 0 {
+                                this_entity_event_manager.current_event_processing =
+                                    Some(ClientCombatantEvent::Died);
+                                    this_entity_event_manager.process_active_event(cloned_game_dispatch, cloned_alert_dispatch);
+                            } else {
+                                this_entity_event_manager.current_event_processing =
+                                    Some(ClientCombatantEvent::HpChange(*hp_change));
+                                    this_entity_event_manager.process_active_event(cloned_game_dispatch, cloned_alert_dispatch);
                             }
                         }
                     }
+                }
 
-                    if action_result.ends_turn {
-                        if let Some(battle_id) = battle_id_option {
-                            let game = store.get_current_game_mut()?;
-                            game.end_active_combatant_turn(battle_id)?;
-                        }
+                if action_result.ends_turn {
+                    if let Some(battle_id) = battle_id_option {
+                        let game = store.get_current_game_mut()?;
+                        game.end_active_combatant_turn(battle_id)?;
                     }
                 }
-                _ => (),
-            }
-            store.combat_log.push(combat_log_entry);
 
-            // for any event animation finishing in the associated combatant's queue
-            //  - set their current event processing to none
-            //  - process next event in that entity's queue
-            //  - if all entity event queues are empty and no animations are ongoing,
-            //    and in combat
-            //    query the ActionResultsManager turn_results_queue queue for the next action_result to process/animate
-            let event_manager_option = store
-                .action_results_manager
-                .combantant_event_managers
-                .get_mut(&associated_combatant_id);
-            let cloned_game_dispatch = game_dispatch.clone();
-            let cloned_alert_dispatch = alert_dispatch.clone();
-
-            if let Some(event_manager) = event_manager_option {
-                event_manager.current_event_processing = None;
-                event_manager.process_next_event(cloned_game_dispatch, cloned_alert_dispatch);
-            }
-
-            let should_process_next_turn_result_in_queue = if let Some(battle) =
-                get_current_battle_option(store)
-            {
-                let all_combatant_ids_in_battle = battle.get_all_combatant_ids();
-                let mut all_combatant_event_managers_done_processing = true;
-                for combatant_id in all_combatant_ids_in_battle {
-                    let this_entity_event_manager = store
-                        .action_results_manager
-                        .combantant_event_managers
-                        .get_mut(&combatant_id)
-                        .ok_or_else(|| AppError {
-                            error_type: common::errors::AppErrorTypes::ClientError,
-                            message: error_messages::COMBANTANT_EVENT_MANAGER_NOT_FOUND.to_string(),
-                        })?;
-                    if this_entity_event_manager.current_event_processing.is_some() {
-                        all_combatant_event_managers_done_processing = false;
-                        break;
-                    }
+                if store.action_results_manager.turn_results_queue.len() > 0 {
+                    log!(format!("calling process_next_event_in_turn_result_queue from handle_event_finished_animating, {:#?}",
+                    store.action_results_manager.turn_results_queue));
+                    let cloned_game_dispatch = game_dispatch.clone();
+                    let cloned_alert_dispatch = alert_dispatch.clone();
+                    let _ = vec_shift(&mut store.action_results_manager.turn_results_queue);
+                    process_next_event_in_turn_result_queue(
+                        cloned_game_dispatch,
+                        cloned_alert_dispatch,
+                    )?;
                 }
-                all_combatant_event_managers_done_processing
-            } else {
-                false
-            };
-
-            Ok(should_process_next_turn_result_in_queue)
-        });
-
-    if let Some(err) = should_process_next_turn_result_in_queue_result
-        .as_ref()
-        .err()
-    {
-        set_alert(alert_dispatch, err.message.clone())
-    } else if let Ok(should_process_next_turn_result_in_queue) =
-        should_process_next_turn_result_in_queue_result
-    {
-        if should_process_next_turn_result_in_queue {
-            let cloned_alert_dispatch = alert_dispatch.clone();
-            let result =
-                process_next_event_in_turn_result_queue(game_dispatch, cloned_alert_dispatch);
-            if let Some(err) = result.err() {
-                set_alert(alert_dispatch, err.message.clone())
             }
+            _ => (),
         }
+
+        store.combat_log.push(combat_log_entry);
+
+        Ok(())
+    });
+
+    if let Some(err) = result.err() {
+        set_alert(alert_dispatch, err.message.clone())
     }
 }

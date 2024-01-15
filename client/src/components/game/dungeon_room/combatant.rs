@@ -142,27 +142,27 @@ pub fn combatant(props: &Props) -> Html {
         .combantant_event_managers
         .get(&id);
 
-    let events_processing_display_content = match event_manager_option {
-        Some(event_manager) => {
-            let events_in_queue = &event_manager.event_queue;
-            let current_event_processing = match &event_manager.current_event_processing {
-                Some(event) => format!("{event}"),
-                None => "None".to_string(),
-            };
-            html!(
-            <div>
-                {format!("current event processing: {current_event_processing}")}
-                <div class="flex" >
-                    {"in queue: "}
-                    {events_in_queue.iter().map(|event| html!(
-                        <div class="mr-1 last:mr-0">{format!("{event}")}</div>))
-                        .collect::<Html>()}
-                </div>
-            </div>
-            )
-        }
-        None => html!(),
-    };
+    // let events_processing_display_content = match event_manager_option {
+    //     Some(event_manager) => {
+    //         let events_in_queue = &event_manager.event_queue;
+    //         let current_event_processing = match &event_manager.current_event_processing {
+    //             Some(event) => format!("{event}"),
+    //             None => "None".to_string(),
+    //         };
+    //         html!(
+    //         <div>
+    //             {format!("current event processing: {current_event_processing}")}
+    //             <div class="flex" >
+    //                 {"in queue: "}
+    //                 {events_in_queue.iter().map(|event| html!(
+    //                     <div class="mr-1 last:mr-0">{format!("{event}")}</div>))
+    //                     .collect::<Html>()}
+    //             </div>
+    //         </div>
+    //         )
+    //     }
+    //     None => html!(),
+    // };
 
     html!(
         <div class={styles}>

@@ -65,8 +65,7 @@ pub fn determine_action_menu_buttons_disabled(
                     return true;
                 }
             }
-            if let Some(action_result) = &focused_character_event_queue.action_result_queue.front()
-            {
+            if let Some(animation) = focused_character_event_queue.animation_queue.front() {
                 return true;
             }
             false

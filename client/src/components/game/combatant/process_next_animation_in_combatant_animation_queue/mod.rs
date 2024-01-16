@@ -1,7 +1,8 @@
+mod approach_combatant_animation_finished_handler;
+mod follow_through_swing_animation_finished_handler;
 mod handle_animation_finished;
-mod handle_follow_through_swing_animation_finished;
-mod handle_return_to_ready_position_animation_finished;
-mod handle_swing_to_hit_animation_finished;
+mod return_to_ready_position_animation_finished_handler;
+mod swing_to_hit_animation_finished_handler;
 use crate::components::mesh_manager::CombatantAnimation;
 use crate::store::game_store::GameStore;
 use gloo::timers::callback::Timeout;

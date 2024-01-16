@@ -8,7 +8,7 @@ use std::collections::VecDeque;
 use yew::AttrValue;
 use yewdux::Dispatch;
 
-pub fn handle_swing_to_hit_animation_finished(
+pub fn swing_to_hit_animation_finished_handler(
     game_dispatch: Dispatch<GameStore>,
     target_id: u32,
     hp_change_option: Option<i16>,

@@ -1,9 +1,7 @@
 use common::character::Character;
-pub mod combatant;
 mod enemy_battle_group;
-mod focus_character_button;
 mod players_ready_to_explore;
-use crate::components::game::dungeon_room::combatant::Combatant;
+use crate::components::game::combatant::Combatant;
 use crate::components::game::dungeon_room::enemy_battle_group::EnemyBattleGroup;
 use crate::components::game::dungeon_room::players_ready_to_explore::PlayersReadyToExplore;
 use crate::store::game_store::GameStore;

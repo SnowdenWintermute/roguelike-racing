@@ -2,6 +2,7 @@ mod action_menu;
 mod character_autofocus_manager;
 mod character_sheet;
 mod combat_log;
+pub mod combatant;
 mod combatant_detail_tab;
 pub mod debug;
 mod dungeon_room;

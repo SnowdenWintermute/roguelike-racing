@@ -58,3 +58,5 @@ pub const NOT_THIS_COMBATANTS_TURN: &str =
 // EVENT PROCESSING
 pub const COMBANTANT_MESH_MANAGER_NOT_FOUND: &str = "No mesh manager was found by that id";
 pub const COMBANTANT_EVENT_MANAGER_NOT_FOUND: &str = "No event manager was found by that id";
+pub const EVENT_MANAGER_MISSING_ACTION_RESULT: &str =
+    "No action result found on this entity's event manager";

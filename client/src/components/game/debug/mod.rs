@@ -10,16 +10,18 @@ pub fn game_debug() -> Html {
     let turn_results_queue = &game_state.action_results_manager.turn_results_queue;
     let turn_results_queue_display = turn_results_queue
         .iter()
-        .map(|item| html!(
-            <div class="mr-2 last:mr-0" >
-            {match &item.action {
-                    CombatAction::AbilityUsed(ability_name) => {
-                        html!({ format!("{} {}", item.user_id, ability_name) })
-                    }
-                    CombatAction::ItemUsed(consumable) => html!({ format!("{} item used", item.user_id) }),
-                }}
-            </div>
-        ))
+        .map(|item| {
+            html!(
+                <div class="mr-2 last:mr-0" >
+                // {match &item.action {
+                //         CombatAction::AbilityUsed(ability_name) => {
+                //             html!({ format!("{} {}", item.user_id, ability_name) })
+                //         }
+                //         CombatAction::ItemUsed(_) => html!({ format!("{} item used", item.user_id) }),
+                //     }}
+                </div>
+            )
+        })
         .collect::<Html>();
 
     html!(

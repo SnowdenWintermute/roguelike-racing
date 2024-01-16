@@ -1,5 +1,4 @@
 use super::available_actions::GameActions;
-use crate::components::mesh_manager::ClientCombatantEvent;
 use crate::store::game_store::get_current_battle_option;
 use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
@@ -66,12 +65,9 @@ pub fn determine_action_menu_buttons_disabled(
                     return true;
                 }
             }
-            if let Some(combatant_event) = &focused_character_event_queue.current_event_processing {
-                match combatant_event {
-                    ClientCombatantEvent::HpChange(_) => (),
-                    ClientCombatantEvent::Died => return true,
-                    ClientCombatantEvent::TookAction(_) => return true,
-                }
+            if let Some(action_result) = &focused_character_event_queue.action_result_queue.front()
+            {
+                return true;
             }
             false
         }

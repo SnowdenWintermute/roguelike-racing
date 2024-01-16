@@ -88,16 +88,23 @@ pub fn action_menu(_: &Props) -> Html {
             .clone(),
         None => None,
     };
-    let focused_character_current_event_processing_option = match focused_character_option {
+
+    let focused_character_current_action_processing_option = match focused_character_option {
         Some(focused_character) => game_state
             .action_results_manager
             .combantant_event_managers
             .get(&focused_character.entity_properties.id)
             .expect("to have an event queue for every combatant entity")
-            .current_event_processing
-            .clone(),
+            .action_result_queue
+            .front(),
         None => None,
     };
+
+    let cloned_focused_character_current_action_processing_option =
+        match focused_character_current_action_processing_option {
+            Some(action_result) => Some(action_result.clone()),
+            None => None,
+        };
 
     let ability_targets = match focused_character_option {
         Some(focused_character) => focused_character
@@ -129,7 +136,7 @@ pub fn action_menu(_: &Props) -> Html {
             (
                 selected_item_id,
                 focused_character_selected_ability_option,
-                focused_character_current_event_processing_option,
+                cloned_focused_character_current_action_processing_option,
             ),
             cloned_game_state.viewing_items_on_ground,
             cloned_game_state.viewing_skill_level_up_menu,

@@ -114,9 +114,9 @@ pub fn handle_packet(
         GameServerUpdatePackets::CharacterChangedTargets(packet) => {
             game_dispatch.reduce_mut(|store| handle_character_changed_targets(store, packet))
         }
-        GameServerUpdatePackets::ActionResults(packet) => todo!(),
+        GameServerUpdatePackets::ActionResults(_) => todo!(),
         GameServerUpdatePackets::CombatTurnResults(packet) => {
-            handle_combat_turn_results(game_dispatch, alert_dispatch, packet.turn_results)
+            handle_combat_turn_results(game_dispatch, packet.turn_results)
         }
         GameServerUpdatePackets::BattleFullUpdate(packet) => {
             game_dispatch.reduce_mut(|store| handle_battle_full_update(store, packet))

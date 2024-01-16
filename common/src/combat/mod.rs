@@ -34,7 +34,7 @@ impl Display for CombatAction {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
 pub struct CombatTurnResult {
     pub combatant_id: u32,
     pub action_results: Vec<ActionResult>,

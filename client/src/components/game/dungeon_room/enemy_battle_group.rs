@@ -1,10 +1,9 @@
-use crate::components::game::dungeon_room::combatant::Combatant;
+use crate::components::game::combatant::Combatant;
 use crate::store::game_store::get_current_battle_option;
 use crate::store::game_store::GameStore;
 use common::combatants::CombatantProperties;
 use common::errors::AppError;
 use common::primatives::EntityProperties;
-use gloo::console::log;
 use yew::prelude::*;
 use yewdux::use_store;
 

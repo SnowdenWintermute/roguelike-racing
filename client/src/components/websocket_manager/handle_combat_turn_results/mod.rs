@@ -1,12 +1,8 @@
 mod add_event_to_combat_log;
-pub mod handle_animation_finished;
-use crate::components::mesh_manager::ClientCombatantEvent;
-use crate::store::alert_store::AlertStore;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::combat::CombatTurnResult;
 use common::errors::AppError;
-use common::utils::vec_shift;
 use gloo::console::log;
 use yewdux::Dispatch;
 
@@ -26,63 +22,58 @@ use yewdux::Dispatch;
 //   -- follow through swing
 //   -- return to spot
 //   -- pass turn
+//
+//   Entities have:
+//   current action result processing (if any)
+//   when an action result is passed, start animating
+//    - push to a queue of animations (move, swing to hit [damage here], follow through, recover, return)
+//    - animations have an on_finish which can trigger animations on other entities, interrupting
+//    their current hit recovery animation if any (getting hit before hit recovery animation finishes). Trigger
+//    the on_finish for that animation (floating numbers, combat log entry)
+//    - if take damage while in an action animation, just reduce the hp and show the floating
+//    numbers
+//    - if die while in an action animation, show floating numbers and, play the death animation in place
+//    - entities can not select (or execute) a new action until their animaton queues are finished
+//
 
 pub fn handle_combat_turn_results(
     game_dispatch: Dispatch<GameStore>,
-    alert_dispatch: Dispatch<AlertStore>,
     turn_results: Vec<CombatTurnResult>,
 ) -> Result<(), AppError> {
     log!(format!("got combat turn results: {:#?}", turn_results));
-    for turn_result in turn_results {
-        let CombatTurnResult { action_results, .. } = turn_result;
-        for action_result in action_results.iter() {
-            let cloned_dispatch = game_dispatch.clone();
-            cloned_dispatch.reduce_mut(|store| {
-                store
-                    .action_results_manager
-                    .turn_results_queue
-                    .push(action_result.clone())
-            });
+    game_dispatch.reduce_mut(|store| {
+        for turn_result in turn_results {
+            store
+                .action_results_manager
+                .turn_results_queue
+                .push_back(turn_result)
         }
-    }
-    process_next_event_in_turn_result_queue(game_dispatch, alert_dispatch)?;
+        send_next_turn_result_to_combatant_event_manager(game_dispatch.clone())
+    });
+
     Ok(())
 }
 
-pub fn process_next_event_in_turn_result_queue(
+pub fn send_next_turn_result_to_combatant_event_manager(
     game_dispatch: Dispatch<GameStore>,
-    alert_dispatch: Dispatch<AlertStore>,
 ) -> Result<(), AppError> {
-    let next_turn_action_result_option = game_dispatch
-        .reduce_mut(|store| vec_shift(&mut store.action_results_manager.turn_results_queue));
-    log!(format!(
-        "starting processing of turn result: {:#?}",
-        next_turn_action_result_option
-    ));
-    if let Some(action_result) = next_turn_action_result_option {
-        game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
-            log!(format!(
-                "process_next_event_in_turn_result_queue called: {:#?}",
-                store.action_results_manager.turn_results_queue
-            ));
-            let cloned_dispatch = game_dispatch.clone();
-            let cloned_alert_dispatch = alert_dispatch.clone();
-            let action_user_event_manager = store
-                .action_results_manager
-                .combantant_event_managers
-                .get_mut(&action_result.user_id)
-                .ok_or_else(|| AppError {
-                    error_type: common::errors::AppErrorTypes::ClientError,
-                    message: error_messages::COMBANTANT_EVENT_MANAGER_NOT_FOUND.to_string(),
-                })?;
-
-            action_user_event_manager.current_event_processing =
-                Some(ClientCombatantEvent::TookAction(action_result));
-
-            action_user_event_manager.process_active_event(cloned_dispatch, cloned_alert_dispatch);
-
-            Ok(())
-        })?;
-    }
-    Ok(())
+    game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
+        let next_turn_to_process_option =
+            store.action_results_manager.turn_results_queue.pop_front();
+        if let Some(next_turn_to_process) = next_turn_to_process_option {
+            for action_result in next_turn_to_process.action_results {
+                store
+                    .action_results_manager
+                    .combantant_event_managers
+                    .get_mut(&next_turn_to_process.combatant_id)
+                    .ok_or_else(|| AppError {
+                        error_type: common::errors::AppErrorTypes::ClientError,
+                        message: error_messages::COMBANTANT_EVENT_MANAGER_NOT_FOUND.to_string(),
+                    })?
+                    .action_result_queue
+                    .push_back(action_result);
+            }
+        }
+        Ok(())
+    })
 }

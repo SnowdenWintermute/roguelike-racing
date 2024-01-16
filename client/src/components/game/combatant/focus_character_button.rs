@@ -1,4 +1,5 @@
-use crate::store::game_store::{get_focused_character, GameStore};
+use crate::store::game_store::get_focused_character;
+use crate::store::game_store::GameStore;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 

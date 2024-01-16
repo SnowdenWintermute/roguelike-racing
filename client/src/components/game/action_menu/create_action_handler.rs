@@ -13,7 +13,6 @@ use common::packets::client_to_server::ClientSelectAbilityPacket;
 use common::packets::client_to_server::EquipItemRequest;
 use common::packets::client_to_server::PlayerInputs;
 use common::packets::client_to_server::UnequipSlotRequest;
-use common::packets::server_to_client::CharacterSelectedAbilityPacket;
 use std::rc::Rc;
 use yewdux::prelude::Dispatch;
 

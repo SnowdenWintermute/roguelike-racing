@@ -48,19 +48,20 @@ pub fn handle_combat_turn_results(
                 .turn_results_queue
                 .push_back(turn_result)
         }
-        send_next_turn_result_to_combatant_event_manager(game_dispatch.clone())
-    });
 
-    Ok(())
+        send_next_turn_result_to_combatant_event_manager(game_dispatch.clone())
+    })
 }
 
 pub fn send_next_turn_result_to_combatant_event_manager(
     game_dispatch: Dispatch<GameStore>,
 ) -> Result<(), AppError> {
+    log!("attempting to send_next_turn_result_to_combatant_event_manager");
     game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
         let next_turn_to_process_option =
             store.action_results_manager.turn_results_queue.pop_front();
         if let Some(next_turn_to_process) = next_turn_to_process_option {
+            log!("next turn result found, sending to combatant...");
             for action_result in next_turn_to_process.action_results {
                 store
                     .action_results_manager

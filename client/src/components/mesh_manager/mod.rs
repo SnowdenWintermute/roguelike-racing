@@ -2,6 +2,7 @@ use common::combat::ActionResult;
 use common::combat::CombatTurnResult;
 use std::collections::HashMap;
 use std::collections::VecDeque;
+use std::fmt::Display;
 use yew::AttrValue;
 
 // IN BATTLE
@@ -50,6 +51,25 @@ pub enum CombatantAnimation {
     Death(Option<i16>),
 }
 
+impl Display for CombatantAnimation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
+        let to_write = match self {
+            CombatantAnimation::TurnToFaceCombatant(id) => format!("turned to face {}", id),
+            CombatantAnimation::ApproachCombatant(id) => format!("approached combatant {}", id),
+            CombatantAnimation::SwingMainHandToHit(id, hp_change) => {
+                format!("swung main hand to hit {:?} for {:?}", id, hp_change)
+            }
+            CombatantAnimation::SwingOffHandToHit => format!("swung offhand to hit"),
+            CombatantAnimation::MainHandFollowThroughSwing => format!("main hand follow through"),
+            CombatantAnimation::OffHandFollowThroughSwing => format!("off hand follow through"),
+            CombatantAnimation::ReturnToReadyPosition => format!("returned to ready position"),
+            CombatantAnimation::HitRecovery(hp_change) => format!("hit recovery {hp_change}"),
+            CombatantAnimation::Death(hp_change) => format!("died {:?}", hp_change),
+        };
+        write!(f, "{:?}", to_write)
+    }
+}
+
 #[derive(PartialEq, Clone)]
 pub struct FloatingNumber {
     pub value: i16,
@@ -62,17 +82,14 @@ pub struct CombatantEventManager {
     pub action_result_queue: VecDeque<ActionResult>,
     pub animation_queue: VecDeque<CombatantAnimation>,
     pub floating_numbers_queue: VecDeque<FloatingNumber>,
+    pub visual_location: CombatantVisualLocation,
 }
-// attack animation signals hit
-// gets damaged
-// starts animating hit recovery
-// attack animation signals hit
-// gets damaged
-// starts animating hit recovery, replacing current animation
-// attack animation signals hit
-// gets damaged and is dead
-// no longer targetable for attacks
-// starts animating death, replacing current animation
+
+#[derive(PartialEq, Clone)]
+pub enum CombatantVisualLocation {
+    HomePosition,
+    StandingInFrontOf(u32),
+}
 
 impl CombatantEventManager {
     pub fn new(associated_combatant_id: u32) -> Self {
@@ -81,6 +98,7 @@ impl CombatantEventManager {
             action_result_queue: vec![].into(),
             animation_queue: vec![].into(),
             floating_numbers_queue: vec![].into(),
+            visual_location: CombatantVisualLocation::HomePosition,
         }
     }
 }

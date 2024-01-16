@@ -2,6 +2,8 @@ use crate::components::game::combatant::process_next_action_result_in_combatant_
 use crate::components::game::combatant::process_next_animation_in_combatant_animation_queue::process_next_animation_in_combatant_animation_queue;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
+use gloo::console::log;
+use gloo::timers::callback::Timeout;
 use yew::prelude::*;
 use yewdux::use_store;
 
@@ -10,11 +12,10 @@ pub struct Props {
     pub combatant_id: u32,
 }
 
-#[function_component(Combatant)]
+#[function_component(CombatantAnimationManager)]
 pub fn combatant_animation_manager(props: &Props) -> Html {
     let (game_state, game_dispatch) = use_store::<GameStore>();
-    let timer_state = use_state(|| None);
-    timer_state.set(Some(gloo::timers::callback::Timeout::new(100, move || ())));
+    let timer_state: UseStateHandle<Option<Timeout>> = use_state(|| None);
     let Props { combatant_id } = props;
     let combatant_id = combatant_id.clone();
     let event_manager_option = game_state
@@ -31,6 +32,10 @@ pub fn combatant_animation_manager(props: &Props) -> Html {
         None => None,
     };
 
+    let first_render_completed = use_state(|| false);
+    let cloned_first_render_completed = first_render_completed.clone();
+    use_effect_with((), move |_| cloned_first_render_completed.set(true));
+
     // if current_action_processing changed and is Some
     //  -- queue the animations for that action
     // if current_action_processing changed and is None
@@ -38,9 +43,14 @@ pub fn combatant_animation_manager(props: &Props) -> Html {
     //  -- when return_to_home finishes, if in battle, query the turn_results_queue
     let cloned_game_dispatch = game_dispatch.clone();
     let combatant_id = combatant_id.clone();
+    let cloned_first_render_completed = first_render_completed.clone();
     use_effect_with(
         (current_action_processing, combatant_id),
         move |(current_action_processing, combatant_id)| {
+            if !*cloned_first_render_completed {
+                return ();
+            }
+            log!("detected change in current_action_processing");
             let result = process_next_action_result_in_combatant_event_queue(
                 cloned_game_dispatch,
                 current_action_processing,
@@ -57,7 +67,11 @@ pub fn combatant_animation_manager(props: &Props) -> Html {
     //    - pop the current_action_processing and get the next one
     let cloned_animation_queue = event_manager.animation_queue.clone();
     let cloned_game_dispatch = game_dispatch.clone();
+    let cloned_first_render_completed = first_render_completed.clone();
     use_effect_with(cloned_animation_queue, move |cloned_animation_queue| {
+        if !*cloned_first_render_completed {
+            return ();
+        }
         process_next_animation_in_combatant_animation_queue(
             cloned_game_dispatch,
             cloned_animation_queue,

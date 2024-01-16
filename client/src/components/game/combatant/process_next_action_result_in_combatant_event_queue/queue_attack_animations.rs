@@ -35,9 +35,14 @@ pub fn queue_attack_animations(
             } else {
                 None
             };
+        let evaded = if let Some(misses_by_entity_id) = &action_result.misses_by_entity_id {
+            misses_by_entity_id.contains(&target_id)
+        } else {
+            false
+        };
 
         event_manager.animation_queue.append(&mut VecDeque::from([
-            CombatantAnimation::SwingMainHandToHit(target_id, hp_change_option.copied()),
+            CombatantAnimation::SwingMainHandToHit(target_id, hp_change_option.copied(), evaded),
             CombatantAnimation::MainHandFollowThroughSwing,
         ]));
 

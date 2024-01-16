@@ -48,9 +48,8 @@ pub fn handle_combat_turn_results(
                 .turn_results_queue
                 .push_back(turn_result)
         }
-
-        send_next_turn_result_to_combatant_event_manager(game_dispatch.clone())
-    })
+    });
+    send_next_turn_result_to_combatant_event_manager(game_dispatch.clone())
 }
 
 pub fn send_next_turn_result_to_combatant_event_manager(

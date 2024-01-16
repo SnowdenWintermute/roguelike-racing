@@ -13,28 +13,30 @@ pub fn handle_animation_finished(
     animation: CombatantAnimation,
     combatant_id: u32,
 ) -> Result<(), AppError> {
-    log!(format!("{} finished", animation));
+    log!(format!("{combatant_id} finished animation: {} ", animation));
     match animation {
-        CombatantAnimation::SwingMainHandToHit(target_id, hp_change_option) => {
+        CombatantAnimation::SwingMainHandToHit(target_id, hp_change_option, evaded) => {
             handle_swing_to_hit_animation_finished(
                 game_dispatch.clone(),
                 target_id,
                 hp_change_option,
+                evaded,
                 combatant_id,
             )
         }
-        CombatantAnimation::SwingOffHandToHit => todo!(),
+        CombatantAnimation::SwingOffHandToHit => Ok(()),
         CombatantAnimation::MainHandFollowThroughSwing => {
-            handle_follow_through_swing_animation_finished(game_dispatch.clone())
+            handle_follow_through_swing_animation_finished(game_dispatch.clone(), combatant_id)
         }
         CombatantAnimation::OffHandFollowThroughSwing => todo!(),
         CombatantAnimation::ReturnToReadyPosition => {
             handle_return_to_ready_position_animation_finished(game_dispatch.clone())
         }
-        CombatantAnimation::HitRecovery(_) => todo!(),
-        CombatantAnimation::Death(_) => todo!(),
-        CombatantAnimation::TurnToFaceCombatant(_) => todo!(),
-        CombatantAnimation::ApproachCombatant(_) => todo!(),
+        CombatantAnimation::HitRecovery(_) => Ok(()),
+        CombatantAnimation::Death(_) => Ok(()),
+        CombatantAnimation::TurnToFaceCombatant(_) => Ok(()),
+        CombatantAnimation::ApproachCombatant(_) => Ok(()),
+        CombatantAnimation::Evasion => Ok(()),
     }?;
 
     game_dispatch.reduce_mut(|store| -> Result<(), AppError> {

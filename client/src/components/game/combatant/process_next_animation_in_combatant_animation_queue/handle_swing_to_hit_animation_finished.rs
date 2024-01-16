@@ -3,6 +3,7 @@ use crate::components::mesh_manager::FloatingNumber;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::errors::AppError;
+use gloo::console::log;
 use std::collections::VecDeque;
 use yew::AttrValue;
 use yewdux::Dispatch;
@@ -11,6 +12,7 @@ pub fn handle_swing_to_hit_animation_finished(
     game_dispatch: Dispatch<GameStore>,
     target_id: u32,
     hp_change_option: Option<i16>,
+    evaded: bool,
     combatant_id: u32,
 ) -> Result<(), AppError> {
     game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
@@ -25,6 +27,7 @@ pub fn handle_swing_to_hit_animation_finished(
         } else {
             combatant_properties.hit_points
         };
+
         let target_event_manager = store
             .action_results_manager
             .combantant_event_managers
@@ -33,6 +36,17 @@ pub fn handle_swing_to_hit_animation_finished(
                 error_type: common::errors::AppErrorTypes::ClientError,
                 message: error_messages::COMBANTANT_EVENT_MANAGER_NOT_FOUND.to_string(),
             })?;
+
+        if evaded {
+            log!("pushing evasion message to combat log");
+            store.combat_log.push(AttrValue::from(format!(
+                "{target_id} evaded an attack from {combatant_id}"
+            )));
+            if target_event_manager.action_result_queue.front().is_none() {
+                target_event_manager.animation_queue = VecDeque::from([CombatantAnimation::Evasion])
+            }
+        }
+
         if let Some(hp_change) = hp_change_option {
             target_event_manager
                 .floating_numbers_queue

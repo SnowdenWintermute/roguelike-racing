@@ -59,7 +59,10 @@ pub fn swing_to_hit_animation_finished_handler(
             if target_event_manager.action_result_queue.front().is_none() {
                 if new_hp == 0 {
                     target_event_manager.animation_queue =
-                        VecDeque::from([CombatantAnimation::Death(Some(hp_change))])
+                        VecDeque::from([CombatantAnimation::Death(Some(hp_change))]);
+                    store
+                        .combat_log
+                        .push(AttrValue::from(format!("{target_id} died")));
                 } else {
                     target_event_manager.animation_queue =
                         VecDeque::from([CombatantAnimation::HitRecovery(hp_change)])

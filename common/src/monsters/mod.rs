@@ -7,6 +7,7 @@ use crate::combatants::CombatantControlledBy;
 use crate::combatants::CombatantProperties;
 use crate::game::id_generator::IdGenerator;
 use crate::primatives::EntityProperties;
+use crate::utils::generate_random_monster_name;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
@@ -39,7 +40,7 @@ impl Monster {
         let mut monster = Monster {
             entity_properties: EntityProperties {
                 id: id_generator.get_next_entity_id(),
-                name: "some monster name".to_string(),
+                name: generate_random_monster_name().to_string(),
             },
             combatant_properties: CombatantProperties::new(
                 &CombatantClass::None,
@@ -49,7 +50,7 @@ impl Monster {
         };
 
         let inherent_attributes = &mut monster.combatant_properties.inherent_attributes;
-        inherent_attributes.insert(CombatAttributes::Hp, 10);
+        inherent_attributes.insert(CombatAttributes::Hp, 100);
         inherent_attributes.insert(CombatAttributes::Damage, 1);
         inherent_attributes.insert(CombatAttributes::Strength, 15);
         inherent_attributes.insert(CombatAttributes::Dexterity, 1);

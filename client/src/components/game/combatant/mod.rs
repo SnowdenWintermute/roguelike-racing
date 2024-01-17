@@ -6,9 +6,11 @@ pub mod create_animations_from_turn_result;
 mod focus_character_button;
 mod process_next_action_result_in_combatant_event_queue;
 mod process_next_animation_in_combatant_animation_queue;
+mod value_bar;
 use crate::components::common_components::atoms::targeting_indicator::TargetingIndicator;
 use crate::components::game::combatant::combatant_animation_manager::CombatantAnimationManager;
 use crate::components::game::combatant::focus_character_button::FocusCharacterButton;
+use crate::components::game::combatant::value_bar::ValueBar;
 use crate::store::game_store::get_current_battle_option;
 use crate::store::game_store::DetailableEntities;
 use crate::store::game_store::GameStore;
@@ -73,7 +75,6 @@ pub fn combatant(props: &Props) -> Html {
 
     html!(
         <div class={styles}>
-            <CombatantAnimationManager combatant_id={id} />
             if is_targeted{
                 <div class="absolute top-[-1.5rem] left-1/2 -translate-x-1/2 z-20
                     " >
@@ -86,28 +87,32 @@ pub fn combatant(props: &Props) -> Html {
                     {"active"}
                 </div>
             }
-            <button class={"text-left p-2 cursor-help w-full overflow-hidden"} onclick={handle_click} id={format!("combatant-{}", id)} >
-                <div class="pointer-events-none">
+            <button class={"flex flex-col
+                text-left p-2 cursor-help w-full overflow-hidden"} onclick={handle_click} id={format!("combatant-{}", id)} >
+                <div class="pointer-events-none" >
                     {name}
                 </div>
-                <div class="text-green-700 pointer-events-none" >
+                <div class="h-5 w-full pointer-events-none" >
                 {
                     if let Some(max_hp) = max_hp_option {
-                        {format!("hp: {} / {}", combatant_properties.hit_points, max_hp)}
+                        html!(<ValueBar max={max_hp} curr={combatant_properties.hit_points} color={"green-700"} />)
                     } else {
-                        {"Immortal Object".to_string()}
+                        html!({"Immortal Object"})
                     }
                 }
                 </div>
-                <div class="text-blue-700 pointer-events-none" >
+                <div class="h-5 w-full pointer-events-none" >
                 {
                     if let Some(max_mp) = max_mp_option {
-                        {format!("mp: {} / {}", combatant_properties.mana, max_mp)}
+                        html!(
+                            <ValueBar max={max_mp} curr={combatant_properties.mana} color={"blue-700"} />
+                            )
                     } else {
-                        {"Infinite Mana".to_string()}
+                        html!({"Infinite Mana"})
                     }
                 }
                 </div>
+                <CombatantAnimationManager combatant_id={id} />
             </button>
             if is_ally {
                 <FocusCharacterButton id={id} is_ally={is_ally} />

@@ -55,20 +55,20 @@ pub enum CombatantAnimation {
 impl Display for CombatantAnimation {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
         let to_write = match self {
-            CombatantAnimation::TurnToFaceCombatant(id) => format!("turned to face {}", id),
-            CombatantAnimation::ApproachCombatant(id) => format!("approached combatant {}", id),
+            CombatantAnimation::TurnToFaceCombatant(id) => format!("turing to face {}", id),
+            CombatantAnimation::ApproachCombatant(id) => format!("approaching combatant {}", id),
             CombatantAnimation::SwingMainHandToHit(id, hp_change, evaded) => {
                 format!(
-                    "swung main hand to hit {:?} for {:?} evaded: {evaded}",
+                    "swinging main hand to hit {:?} for {:?} evaded: {evaded}",
                     id, hp_change
                 )
             }
             CombatantAnimation::SwingOffHandToHit => format!("swung offhand to hit"),
             CombatantAnimation::MainHandFollowThroughSwing => format!("main hand follow through"),
             CombatantAnimation::OffHandFollowThroughSwing => format!("off hand follow through"),
-            CombatantAnimation::ReturnToReadyPosition => format!("returned to ready position"),
+            CombatantAnimation::ReturnToReadyPosition => format!("returing to ready position"),
             CombatantAnimation::HitRecovery(hp_change) => format!("hit recovery {hp_change}"),
-            CombatantAnimation::Death(hp_change) => format!("died {:?}", hp_change),
+            CombatantAnimation::Death(hp_change) => format!("death {:?}", hp_change),
             CombatantAnimation::Evasion => format!("evaded"),
         };
         write!(f, "{:?}", to_write)

@@ -15,7 +15,7 @@ describe("a test test", () => {
     cy.findByPlaceholderText("Character name...")
       .click()
       .clear()
-      .type("character 2", { delay: 0 });
+      .type("R. Chambers", { delay: 0 });
     cy.findByRole("button", { name: "Create Character" }).focus();
     cy.findByRole("button", { name: "Create Character" }).click();
 

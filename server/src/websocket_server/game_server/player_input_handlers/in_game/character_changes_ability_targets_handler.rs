@@ -71,10 +71,11 @@ impl GameServer {
             &new_targets,
             &ally_ids,
             &opponent_ids_option,
+            game,
         ) {
             new_targets
         } else {
-            ability_name.get_default_targets(character_id, &ally_ids, &opponent_ids_option)?
+            ability_name.get_default_targets(character_id, &ally_ids, &opponent_ids_option, game)?
         };
 
         let ActorIdAssociatedPartyData {

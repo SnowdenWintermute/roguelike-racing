@@ -5,6 +5,7 @@ use super::CombatantAbilityNames;
 use super::FriendOrFoe;
 use crate::app_consts::error_messages;
 use crate::errors::AppError;
+use crate::game::RoguelikeRacerGame;
 
 impl CombatantAbilityNames {
     pub fn get_default_targets(
@@ -12,6 +13,7 @@ impl CombatantAbilityNames {
         ability_user_id: u32,
         ally_ids: &Vec<u32>,
         opponent_ids_option: &Option<Vec<u32>>,
+        game: &RoguelikeRacerGame,
     ) -> Result<AbilityTarget, AppError> {
         let ability_attributes = self.get_attributes();
         let default_targeting_scheme =

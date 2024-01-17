@@ -23,9 +23,11 @@ impl GameServer {
             game,
             party_id,
             player_character_ids_option,
+            current_game_name,
             ..
         } = get_mut_game_data_from_actor_id(self, actor_id)?;
         let party = get_mut_party(game, party_id)?;
+        let character_positions = party.character_positions.clone();
         let party_websocket_channel_name = party.websocket_channel_name.clone();
         let character =
             party.get_mut_character_if_owned(player_character_ids_option, character_id)?;
@@ -68,6 +70,7 @@ impl GameServer {
                 &ally_ids,
                 &targets,
                 character_id,
+                game,
             )?;
 
             let action_results = game.get_ability_results(
@@ -122,16 +125,28 @@ impl GameServer {
                 );
             }
         } else {
+            let game = self.games.get(&current_game_name).ok_or_else(|| AppError {
+                error_type: common::errors::AppErrorTypes::ServerError,
+                message: error_messages::GAME_NOT_FOUND.to_string(),
+            })?;
             // check if ability can be used out of combat
             validate_character_ability_use(
                 &ability_name,
                 &ability_attributes,
                 None,
-                &party.character_positions,
+                &character_positions,
                 &targets,
                 character_id,
+                game,
             )?;
 
+            let game = self
+                .games
+                .get_mut(&current_game_name)
+                .ok_or_else(|| AppError {
+                    error_type: common::errors::AppErrorTypes::ServerError,
+                    message: error_messages::GAME_NOT_FOUND.to_string(),
+                })?;
             let action_results =
                 game.get_ability_results(character_id, &ability_name, &targets, None)?;
 

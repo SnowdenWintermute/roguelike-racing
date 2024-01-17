@@ -6,6 +6,7 @@ use crate::combatants::abilities::AbilityTarget;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::errors::AppError;
 use crate::errors::AppErrorTypes;
+use crate::game::RoguelikeRacerGame;
 
 pub fn validate_character_ability_use(
     ability_name: &CombatantAbilityNames,
@@ -14,6 +15,7 @@ pub fn validate_character_ability_use(
     ally_ids: &Vec<u32>,
     targets: &AbilityTarget,
     character_id: u32,
+    game: &RoguelikeRacerGame,
 ) -> Result<(), AppError> {
     let (ally_ids, opponent_ids_option) = if let Some(battle) = battle_option {
         // check if character is first in turn order
@@ -36,8 +38,13 @@ pub fn validate_character_ability_use(
     };
 
     // check if targets are valid
-    let targets_are_valid =
-        ability_name.targets_are_valid(character_id, &targets, &ally_ids, &opponent_ids_option);
+    let targets_are_valid = ability_name.targets_are_valid(
+        character_id,
+        &targets,
+        &ally_ids,
+        &opponent_ids_option,
+        game,
+    );
 
     if !targets_are_valid {
         return Err(AppError {

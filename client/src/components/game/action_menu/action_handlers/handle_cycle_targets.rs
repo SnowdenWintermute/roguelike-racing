@@ -46,6 +46,7 @@ pub fn handle_cycle_targets(
                     error_type: common::errors::AppErrorTypes::ClientError,
                     message: error_messages::MISSING_ABILITY_REFERENCE.to_string(),
                 })?;
+            let ability_name = ability_name.clone();
 
             let current_targets = focused_character
                 .combatant_properties
@@ -55,6 +56,7 @@ pub fn handle_cycle_targets(
                     error_type: common::errors::AppErrorTypes::ClientError,
                     message: error_messages::TRIED_TO_CYCLE_TARGETS_WHEN_NO_TARGETS.to_string(),
                 })?;
+            let current_targets = current_targets.clone();
 
             let (ally_ids, opponent_ids_option) = get_ally_ids_and_opponent_ids_option(
                 &cloned_character_positions,
@@ -62,18 +64,24 @@ pub fn handle_cycle_targets(
                 focused_character.entity_properties.id,
             )?;
 
-            let new_targets = ability_name.get_next_or_previous_targets(
-                current_targets,
+            let game = game_store.game.as_ref().ok_or_else(|| AppError {
+                error_type: common::errors::AppErrorTypes::ClientError,
+                message: error_messages::MISSING_GAME_REFERENCE.to_string(),
+            })?;
+            let new_targets = ability_name.clone().get_next_or_previous_targets(
+                &current_targets,
                 direction,
                 &focused_character_id,
                 &ally_ids,
                 &opponent_ids_option,
+                game,
             )?;
 
-            let new_preferences = focused_character
-                .combatant_properties
-                .ability_target_preferences
-                .get_updated_preferences(ability_name, &new_targets, ally_ids, opponent_ids_option);
+            let game = game_store.game.as_mut().ok_or_else(|| AppError {
+                error_type: common::errors::AppErrorTypes::ClientError,
+                message: error_messages::MISSING_GAME_REFERENCE.to_string(),
+            })?;
+            let party = get_mut_party(game, party_id)?;
             let focused_character = party
                 .characters
                 .get_mut(&game_store.focused_character_id)
@@ -81,6 +89,15 @@ pub fn handle_cycle_targets(
                     error_type: common::errors::AppErrorTypes::ClientError,
                     message: error_messages::CHARACTER_NOT_FOUND.to_string(),
                 })?;
+            let new_preferences = focused_character
+                .combatant_properties
+                .ability_target_preferences
+                .get_updated_preferences(
+                    &ability_name,
+                    &new_targets,
+                    ally_ids,
+                    opponent_ids_option,
+                );
             focused_character
                 .combatant_properties
                 .ability_target_preferences = new_preferences;

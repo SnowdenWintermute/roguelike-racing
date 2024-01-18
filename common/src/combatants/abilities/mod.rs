@@ -1,3 +1,4 @@
+pub mod filter_possible_target_ids_by_prohibited_combatant_states;
 pub mod get_combatant_ability_attributes;
 mod get_default_targets;
 mod get_next_or_previous_targets;

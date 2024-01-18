@@ -47,6 +47,7 @@ pub const TRIED_TO_CYCLE_TARGETS_WHEN_NO_TARGETS: &str =
 pub const NO_TARGETING_SCHEMES: &str = "The selected ability has no targeting schemes";
 pub const INVALID_TARGETING_SCHEME: &str = "An invalid targeting scheme was selected";
 pub const INVALID_TARGETS_SELECTED: &str = "Invalid ability targets provided";
+pub const NO_VALID_TARGETS_FOUND: &str = "No valid targets exist for that ability";
 // BATTLES
 pub const MISSING_BATTLE_REFERENCE: &str = "Missing a battle reference";
 pub const BATTLE_NOT_FOUND: &str = "No battle was found by the provided ID";

@@ -2,6 +2,7 @@ use crate::components::websocket_manager::send_client_input::send_client_input;
 use crate::store::game_store::get_cloned_current_battle_option;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
+use common::combatants::abilities::filter_possible_target_ids_by_prohibited_combatant_states::filter_possible_target_ids_by_prohibited_combatant_states;
 use common::errors::AppError;
 use common::game::getters::get_ally_ids_and_opponent_ids_option;
 use common::game::getters::get_mut_party;
@@ -47,6 +48,9 @@ pub fn handle_cycle_targets(
                     message: error_messages::MISSING_ABILITY_REFERENCE.to_string(),
                 })?;
             let ability_name = ability_name.clone();
+            let prohibited_target_combatant_states = ability_name
+                .get_attributes()
+                .prohibited_target_combatant_states;
 
             let current_targets = focused_character
                 .combatant_properties
@@ -64,23 +68,22 @@ pub fn handle_cycle_targets(
                 focused_character.entity_properties.id,
             )?;
 
-            let game = game_store.game.as_ref().ok_or_else(|| AppError {
-                error_type: common::errors::AppErrorTypes::ClientError,
-                message: error_messages::MISSING_GAME_REFERENCE.to_string(),
-            })?;
+            let (ally_ids, opponent_ids_option) =
+                filter_possible_target_ids_by_prohibited_combatant_states(
+                    game,
+                    prohibited_target_combatant_states,
+                    ally_ids,
+                    opponent_ids_option,
+                )?;
+
             let new_targets = ability_name.clone().get_next_or_previous_targets(
                 &current_targets,
                 direction,
                 &focused_character_id,
                 &ally_ids,
                 &opponent_ids_option,
-                game,
             )?;
 
-            let game = game_store.game.as_mut().ok_or_else(|| AppError {
-                error_type: common::errors::AppErrorTypes::ClientError,
-                message: error_messages::MISSING_GAME_REFERENCE.to_string(),
-            })?;
             let party = get_mut_party(game, party_id)?;
             let focused_character = party
                 .characters

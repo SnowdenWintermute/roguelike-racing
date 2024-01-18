@@ -15,6 +15,7 @@ pub fn generate_random_monster_name() -> String {
         "slime",
         "worm",
         "wurm",
+        "wolf",
         "drake",
         "dragon",
         "rock",

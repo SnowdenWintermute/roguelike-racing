@@ -2,6 +2,7 @@ use crate::websocket_server::game_server::getters::get_mut_game;
 use crate::websocket_server::game_server::getters::get_user;
 use crate::websocket_server::game_server::GameServer;
 use common::app_consts::error_messages;
+use common::combatants::abilities::filter_possible_target_ids_by_prohibited_combatant_states::filter_possible_target_ids_by_prohibited_combatant_states;
 use common::errors::AppError;
 use common::errors::AppErrorTypes;
 use common::game::getters::get_mut_party;
@@ -76,6 +77,18 @@ impl GameServer {
             } else {
                 (character_positions, None)
             };
+
+            let prohibited_target_combatant_states = ability_name
+                .get_attributes()
+                .prohibited_target_combatant_states;
+
+            let (ally_ids, opponent_ids_option) =
+                filter_possible_target_ids_by_prohibited_combatant_states(
+                    game,
+                    prohibited_target_combatant_states,
+                    ally_ids,
+                    opponent_ids_option,
+                )?;
 
             let party = get_mut_party(game, party_id)?;
             let character = party.get_mut_character_if_owned(

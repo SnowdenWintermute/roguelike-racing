@@ -14,6 +14,7 @@ mod set_up_actions;
 use crate::components::game::action_menu::action_menu_button::ActionMenuButton;
 use crate::components::game::action_menu::action_page_buttons::ActionPageButtons;
 use crate::components::game::action_menu::set_up_actions::ActionMenuButtonProperties;
+use crate::store::alert_store::AlertStore;
 use crate::store::game_store::get_active_combatant;
 use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
@@ -35,6 +36,7 @@ pub fn action_menu(_: &Props) -> Html {
     let (ui_state, _) = use_store::<UIStore>();
     let (lobby_state, _) = use_store::<LobbyStore>();
     let (websocket_state, _) = use_store::<WebsocketStore>();
+    let (_, alert_dspatch) = use_store::<AlertStore>();
     let action_button_properties = use_state(|| Vec::<ActionMenuButtonProperties>::new());
     let button_props_on_current_page = use_state(|| Vec::<ActionMenuButtonProperties>::new());
 
@@ -126,6 +128,7 @@ pub fn action_menu(_: &Props) -> Html {
 
     let cloned_ui_state = ui_state.clone();
     let cloned_game_dispatch = game_dispatch.clone();
+    let cloned_alert_dispatch = alert_dspatch.clone();
     use_effect_with(
         (
             active_combatant_id_option,
@@ -154,6 +157,7 @@ pub fn action_menu(_: &Props) -> Html {
                 websocket_state.clone(),
                 cloned_game_state,
                 cloned_game_dispatch,
+                cloned_alert_dispatch,
                 cloned_ui_state,
                 lobby_state,
                 party,

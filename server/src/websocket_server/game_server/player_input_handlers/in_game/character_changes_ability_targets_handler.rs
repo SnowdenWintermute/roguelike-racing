@@ -4,6 +4,7 @@ use crate::websocket_server::game_server::getters::get_user;
 use crate::websocket_server::game_server::getters::ActorIdAssociatedPartyData;
 use crate::websocket_server::game_server::GameServer;
 use common::app_consts::error_messages::{self};
+use common::combatants::abilities::filter_possible_target_ids_by_prohibited_combatant_states::filter_possible_target_ids_by_prohibited_combatant_states;
 use common::errors::AppError;
 use common::errors::AppErrorTypes;
 use common::game::getters::get_mut_party;
@@ -66,16 +67,26 @@ impl GameServer {
             (character_positions.clone(), None)
         };
 
+        let prohibited_target_combatant_states = ability_name
+            .get_attributes()
+            .prohibited_target_combatant_states;
+        let (ally_ids, opponent_ids_option) =
+            filter_possible_target_ids_by_prohibited_combatant_states(
+                game,
+                prohibited_target_combatant_states,
+                ally_ids,
+                opponent_ids_option,
+            )?;
+
         let new_targets = if ability_name.targets_are_valid(
             character_id,
             &new_targets,
             &ally_ids,
             &opponent_ids_option,
-            game,
         ) {
             new_targets
         } else {
-            ability_name.get_default_targets(character_id, &ally_ids, &opponent_ids_option, game)?
+            ability_name.get_default_targets(character_id, &ally_ids, &opponent_ids_option)?
         };
 
         let ActorIdAssociatedPartyData {

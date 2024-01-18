@@ -4,6 +4,7 @@ use super::create_action_mouse_leave_handler::create_action_mouse_leave_handler;
 use super::determine_action_menu_buttons_disabled::determine_action_menu_buttons_disabled;
 use super::generate_action_menu_items;
 use super::generate_button_text::generate_button_text;
+use crate::store::alert_store::AlertStore;
 use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
 use crate::store::ui_store::UIStore;
@@ -30,6 +31,7 @@ pub fn set_up_actions(
     websocket_state: Rc<WebsocketStore>,
     game_state: Rc<GameStore>,
     game_dispatch: Dispatch<GameStore>,
+    alert_dispatch: Dispatch<AlertStore>,
     ui_state: Rc<UIStore>,
     lobby_state: Rc<LobbyStore>,
     party: &AdventuringParty,
@@ -44,6 +46,7 @@ pub fn set_up_actions(
         let cloned_game_state = game_state.clone();
         let cloned_game_dispatch = game_dispatch.clone();
         let cloned_ui_state = ui_state.clone();
+        let cloned_alert_dispatch = alert_dispatch.clone();
         let click_handler = Callback::from(move |_| {
             create_action_handler(
                 cloned_action.clone(),
@@ -51,6 +54,7 @@ pub fn set_up_actions(
                 cloned_game_state.clone(),
                 cloned_ui_state.clone(),
                 cloned_websocket_state.clone(),
+                cloned_alert_dispatch.clone(),
             )()
         });
         let cloned_action = action.clone();

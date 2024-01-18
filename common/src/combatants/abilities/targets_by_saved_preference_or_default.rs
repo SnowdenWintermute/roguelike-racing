@@ -121,7 +121,7 @@ fn preferred_single_target_or_default(
         FriendOrFoe::Friendly => {
             let default_ally_id = ally_ids.first().ok_or_else(|| AppError {
                 error_type: crate::errors::AppErrorTypes::ClientError,
-                message: error_messages::ALLY_COMBATANTS_NOT_FOUND.to_string(),
+                message: error_messages::NO_VALID_TARGETS_FOUND.to_string(),
             })?;
             if let Some(previously_targeted_id) = target_preferences.friendly_single {
                 if ally_ids.contains(&previously_targeted_id) {
@@ -140,7 +140,7 @@ fn preferred_single_target_or_default(
             })?;
             let default_opponent_id = opponent_ids.first().ok_or_else(|| AppError {
                 error_type: crate::errors::AppErrorTypes::ClientError,
-                message: error_messages::ENEMY_COMBATANTS_NOT_FOUND.to_string(),
+                message: error_messages::NO_VALID_TARGETS_FOUND.to_string(),
             })?;
             if let Some(previously_targeted_id) = target_preferences.hostile_single {
                 if opponent_ids.contains(&previously_targeted_id) {

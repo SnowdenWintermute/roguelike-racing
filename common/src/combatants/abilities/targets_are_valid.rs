@@ -3,7 +3,6 @@ use super::get_combatant_ability_attributes::TargetingScheme;
 use super::AbilityTarget;
 use super::CombatantAbilityNames;
 use super::FriendOrFoe;
-use crate::game::RoguelikeRacerGame;
 
 impl CombatantAbilityNames {
     pub fn targets_are_valid(
@@ -12,7 +11,6 @@ impl CombatantAbilityNames {
         targets: &AbilityTarget,
         ally_ids: &Vec<u32>,
         opponent_ids_option: &Option<Vec<u32>>,
-        game: &RoguelikeRacerGame,
     ) -> bool {
         let ability_attributes = self.get_attributes();
         match targets {

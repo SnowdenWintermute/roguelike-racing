@@ -4,6 +4,7 @@ use super::available_actions::GameActions;
 use super::get_character_owned_item_by_id::get_character_owned_item_by_id;
 use crate::components::game::action_menu::action_handlers::handle_select_ability::handle_select_ability;
 use crate::components::websocket_manager::send_client_input::send_client_input;
+use crate::store::alert_store::AlertStore;
 use crate::store::game_store::get_focused_character;
 use crate::store::game_store::select_item;
 use crate::store::game_store::GameStore;
@@ -22,6 +23,7 @@ pub fn create_action_handler<'a>(
     game_state: Rc<GameStore>,
     ui_state: Rc<UIStore>,
     websocket_state: Rc<WebsocketStore>,
+    alert_dispatch: Dispatch<AlertStore>,
 ) -> Box<dyn Fn()> {
     match game_action {
         GameActions::ToggleReadyToExplore => Box::new(move || {
@@ -96,8 +98,10 @@ pub fn create_action_handler<'a>(
         }),
         GameActions::SelectAbility(ability_name) => Box::new(move || {
             let cloned_dispatch = game_dispatch.clone();
+            let cloned_alert_dispatch = alert_dispatch.clone();
             handle_select_ability(
                 cloned_dispatch,
+                cloned_alert_dispatch,
                 &websocket_state.websocket,
                 ability_name.clone(),
             );

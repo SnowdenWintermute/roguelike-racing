@@ -38,13 +38,8 @@ pub fn validate_character_ability_use(
     };
 
     // check if targets are valid
-    let targets_are_valid = ability_name.targets_are_valid(
-        character_id,
-        &targets,
-        &ally_ids,
-        &opponent_ids_option,
-        game,
-    );
+    let targets_are_valid =
+        ability_name.targets_are_valid(character_id, &targets, &ally_ids, &opponent_ids_option);
 
     if !targets_are_valid {
         return Err(AppError {

@@ -36,7 +36,7 @@ pub struct Monster {
 }
 
 impl Monster {
-    pub fn generate(id_generator: &mut IdGenerator, _level: u8) -> Monster {
+    pub fn generate(id_generator: &mut IdGenerator, _level: u8, hp: u16) -> Monster {
         let mut monster = Monster {
             entity_properties: EntityProperties {
                 id: id_generator.get_next_entity_id(),
@@ -50,7 +50,7 @@ impl Monster {
         };
 
         let inherent_attributes = &mut monster.combatant_properties.inherent_attributes;
-        inherent_attributes.insert(CombatAttributes::Hp, 100);
+        inherent_attributes.insert(CombatAttributes::Hp, hp);
         inherent_attributes.insert(CombatAttributes::Damage, 1);
         inherent_attributes.insert(CombatAttributes::Strength, 15);
         inherent_attributes.insert(CombatAttributes::Dexterity, 1);

@@ -61,6 +61,7 @@ pub fn send_next_turn_result_to_combatant_event_manager(
             store.action_results_manager.turn_results_queue.pop_front();
         if let Some(next_turn_to_process) = next_turn_to_process_option {
             log!("next turn result found, sending to combatant...");
+            log!(format!("turn result found: {:#?}", next_turn_to_process));
             for action_result in next_turn_to_process.action_results {
                 store
                     .action_results_manager

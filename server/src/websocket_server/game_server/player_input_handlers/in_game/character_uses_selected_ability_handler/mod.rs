@@ -106,6 +106,7 @@ impl GameServer {
 
                 let mut ai_controlled_turn_results =
                     take_ai_controlled_turns(game, battle_id, active_combatant_id)?;
+                // println!("AI turn results: {:#?}", ai_controlled_turn_results);
                 turns.append(&mut ai_controlled_turn_results);
                 // Send turn result packets
                 return self.emit_packet(

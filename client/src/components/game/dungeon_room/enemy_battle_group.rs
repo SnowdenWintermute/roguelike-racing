@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use crate::components::game::combatant::Combatant;
 use crate::store::game_store::get_current_battle_option;
 use crate::store::game_store::GameStore;
@@ -40,11 +42,13 @@ pub fn enemy_battle_group(props: &Props) -> Html {
         html!(
             <div class="flex flex-col items-end whitespace-nowrap" >
                 {enemy_combatants.iter().map(|combatant_result| {
-                    if let Ok(combatant) = combatant_result {
+                    if let Ok((entity_properties ,combatant_properties )) = *combatant_result {
+                        let entity_properties = entity_properties.clone();
+                        let combatant_properties = combatant_properties.clone();
                         html!(
                             <Combatant
-                                entity_properties={combatant.0.clone()}
-                                combatant_properties={combatant.1.clone()}
+                                entity_properties={entity_properties}
+                                combatant_properties={combatant_properties}
                             />
                             )
                     } else {

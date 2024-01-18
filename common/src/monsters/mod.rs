@@ -56,6 +56,7 @@ impl Monster {
         inherent_attributes.insert(CombatAttributes::Dexterity, 1);
         inherent_attributes.insert(CombatAttributes::Vitality, 2);
         inherent_attributes.insert(CombatAttributes::Resilience, 2);
+        inherent_attributes.insert(CombatAttributes::Agility, 1);
         inherent_attributes.insert(CombatAttributes::Accuracy, 75);
 
         let total_attributes = monster.combatant_properties.get_total_attributes();

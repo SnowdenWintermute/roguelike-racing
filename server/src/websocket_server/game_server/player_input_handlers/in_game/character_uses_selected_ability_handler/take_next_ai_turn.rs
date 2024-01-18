@@ -20,6 +20,7 @@ pub fn take_ai_controlled_turns(
     let mut active_combatant_turn_action_results = vec![];
 
     while active_combatant_is_ai_controlled {
+        println!("taking AI turn");
         let battle = game.battles.get(&battle_id).ok_or_else(|| AppError {
             error_type: common::errors::AppErrorTypes::ServerError,
             message: error_messages::BATTLE_NOT_FOUND.to_string(),
@@ -54,6 +55,8 @@ pub fn take_ai_controlled_turns(
                 combatant_id: active_combatant_entity_id,
                 action_results: active_combatant_turn_action_results.clone(),
             });
+            active_combatant_turn_action_results = vec![];
+
             // end the active_combatant's turn and check if new active combatant
             // is a player or AI
             let new_active_combatant_turn_tracker = game.end_active_combatant_turn(battle_id)?;
@@ -65,6 +68,10 @@ pub fn take_ai_controlled_turns(
             active_combatant_entity_id = active_combatant_entity_properties.id;
             active_combatant_is_ai_controlled =
                 active_combatant_properties.controlled_by == CombatantControlledBy::AI;
+            println!(
+                "active combatant is ai: {active_combatant_is_ai_controlled} id: {}",
+                active_combatant_entity_id
+            );
         } else {
             continue;
         }

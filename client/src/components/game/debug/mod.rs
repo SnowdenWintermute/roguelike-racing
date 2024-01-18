@@ -13,12 +13,7 @@ pub fn game_debug() -> Html {
         .map(|item| {
             html!(
                 <div class="mr-2 last:mr-0" >
-                // {match &item.action {
-                //         CombatAction::AbilityUsed(ability_name) => {
-                //             html!({ format!("{} {}", item.user_id, ability_name) })
-                //         }
-                //         CombatAction::ItemUsed(_) => html!({ format!("{} item used", item.user_id) }),
-                //     }}
+                {item.combatant_id}
                 </div>
             )
         })

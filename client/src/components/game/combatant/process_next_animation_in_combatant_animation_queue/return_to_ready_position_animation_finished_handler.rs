@@ -10,8 +10,7 @@ pub fn return_to_ready_position_animation_finished_handler(
     combatant_id: u32,
 ) -> Result<(), AppError> {
     // if in battle, call for next turn result to be passed to it's enitity
-    let cloned_game_dispatch = game_dispatch.clone();
-    game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
+    let battle_id_option = game_dispatch.reduce_mut(|store| -> Result<Option<u32>, AppError> {
         let event_manager = store
             .action_results_manager
             .combantant_event_managers
@@ -22,16 +21,20 @@ pub fn return_to_ready_position_animation_finished_handler(
             })?;
         event_manager.visual_location = CombatantVisualLocation::HomePosition;
 
-        let battle_id_option = store.current_battle_id;
-        if let Some(battle_id) = battle_id_option {
+        Ok(store.current_battle_id)
+    });
+
+    if let Ok(Some(battle_id)) = battle_id_option {
+        game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
             let game = store.game.as_mut().ok_or_else(|| AppError {
                 error_type: common::errors::AppErrorTypes::ClientError,
                 message: error_messages::GAME_NOT_FOUND.to_string(),
             })?;
             game.end_active_combatant_turn(battle_id)?;
-            send_next_turn_result_to_combatant_event_manager(cloned_game_dispatch)
-        } else {
             Ok(())
-        }
-    })
+        })?;
+        send_next_turn_result_to_combatant_event_manager(game_dispatch)
+    } else {
+        Ok(())
+    }
 }

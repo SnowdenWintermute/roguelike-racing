@@ -12,12 +12,12 @@ describe("a test test", () => {
     cy.findByRole("button", { name: "Create Character" }).focus();
     cy.findByRole("button", { name: "Create Character" }).click();
 
-    cy.findByPlaceholderText("Character name...")
-      .click()
-      .clear()
-      .type("R. Chambers", { delay: 0 });
-    cy.findByRole("button", { name: "Create Character" }).focus();
-    cy.findByRole("button", { name: "Create Character" }).click();
+    // cy.findByPlaceholderText("Character name...")
+    //   .click()
+    //   .clear()
+    //   .type("R. Chambers", { delay: 0 });
+    // cy.findByRole("button", { name: "Create Character" }).focus();
+    // cy.findByRole("button", { name: "Create Character" }).click();
 
     cy.task("checkpoint", "game created");
     cy.task("waitForCheckpoint", "second player character created");

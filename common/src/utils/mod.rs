@@ -3,9 +3,31 @@ use rand::Rng;
 pub fn generate_random_monster_name() -> String {
     let mut rng = rand::thread_rng();
     let random_name_words = vec![
-        "basilisk", "toad", "beetle", "demon", "skeleton", "diablo", "devil", "snake", "scavenger", "slime",
-        "worm", "wurm-wan", "drake", "dragon", "rock", "ghost", "spirit", "zombie", "spider", "elemental",
-        "fire", "water", "ice", "dark",
+        "basilisk",
+        "toad",
+        "beetle",
+        "demon",
+        "skeleton",
+        "diablo",
+        "devil",
+        "snake",
+        "scavenger",
+        "slime",
+        "worm",
+        "wurm",
+        "drake",
+        "dragon",
+        "rock",
+        "ghost",
+        "spirit",
+        "zombie",
+        "spider",
+        "elemental",
+        "fire",
+        "water",
+        "ice",
+        "dark",
+        "lightning",
     ];
 
     let mut random_name: Vec<&str> = Vec::new();

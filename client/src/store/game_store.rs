@@ -11,6 +11,7 @@ use common::game::RoguelikeRacerGame;
 use common::items::equipment::EquipableSlots;
 use common::items::equipment::EquipmentSlots;
 use common::items::Item;
+use common::packets::server_to_client::BattleEndReportPacket;
 use common::primatives::EntityProperties;
 use gloo::console::log;
 use std::collections::HashSet;
@@ -44,6 +45,7 @@ pub struct GameStore {
     pub action_results_manager: ActionResultsManager,
     pub current_party_id: Option<u32>,
     pub current_battle_id: Option<u32>,
+    pub current_battle_end_report: Option<BattleEndReportPacket>,
     pub detailed_entity: Option<DetailableEntities>,
     pub hovered_entity: Option<DetailableEntities>,
     pub selected_item: Option<Item>,

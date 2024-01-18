@@ -11,6 +11,8 @@ use common::dungeon_rooms::DungeonRoomTypes;
 use common::errors::AppError;
 use common::game::getters::get_mut_party;
 use common::items::Item;
+use common::packets::server_to_client::BattleConclusion;
+use common::packets::server_to_client::BattleEndReportPacket;
 use common::packets::server_to_client::CombatTurnResultsPacket;
 use common::packets::server_to_client::GameServerUpdatePackets;
 use common::packets::WebsocketChannelNamespace;
@@ -101,7 +103,7 @@ impl GameServer {
         apply_action_results(game, &action_results)?;
 
         // check if all enemies/allies are dead
-        let all_opponents_are_dead = if let Some(battle) = battle_option {
+        let all_opponents_are_dead = if let Some(battle) = &battle_option {
             let (_, opponent_ids_option) =
                 battle.get_ally_ids_and_opponent_ids_option(character_id)?;
             if let Some(opponent_ids) = opponent_ids_option {
@@ -139,6 +141,7 @@ impl GameServer {
         };
         let party = get_mut_party(game, party_id)?;
         if all_opponents_are_dead {
+            println!("all opponents defeated, concluding battle as victory");
             // delete the battle
             party.battle_id = None;
             if in_monster_lair {
@@ -170,7 +173,7 @@ impl GameServer {
             false
         };
 
-        if used_turn_ending_ability_in_battle && !all_opponents_are_dead {
+        if used_turn_ending_ability_in_battle {
             let mut turns: Vec<CombatTurnResult> = vec![];
             let player_turn = CombatTurnResult {
                 combatant_id: character_id,
@@ -178,16 +181,19 @@ impl GameServer {
             };
             turns.push(player_turn);
 
-            let active_combatant_turn_tracker =
-                game.end_active_combatant_turn(battle_id_option.expect("checked above"))?;
-            let active_combatant_id = active_combatant_turn_tracker.entity_id;
+            if !all_opponents_are_dead {
+                let active_combatant_turn_tracker =
+                    game.end_active_combatant_turn(battle_id_option.expect("checked above"))?;
+                let active_combatant_id = active_combatant_turn_tracker.entity_id;
 
-            let mut ai_controlled_turn_results = take_ai_controlled_turns(
-                game,
-                battle_id_option.expect("checked above"),
-                active_combatant_id,
-            )?;
-            turns.append(&mut ai_controlled_turn_results);
+                let mut ai_controlled_turn_results = take_ai_controlled_turns(
+                    game,
+                    battle_id_option.expect("checked above"),
+                    active_combatant_id,
+                )?;
+                turns.append(&mut ai_controlled_turn_results);
+            }
+
             // Send turn result packets
             self.emit_packet(
                 &party_websocket_channel_name,
@@ -210,7 +216,10 @@ impl GameServer {
             self.emit_packet(
                 &party_websocket_channel_name,
                 &WebsocketChannelNamespace::Party,
-                &GameServerUpdatePackets::BattleVictory(loot_option),
+                &GameServerUpdatePackets::BattleEndReport(BattleEndReportPacket {
+                    conclusion: BattleConclusion::Victory,
+                    loot: loot_option,
+                }),
                 None,
             )?;
         }

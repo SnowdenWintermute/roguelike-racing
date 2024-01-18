@@ -2,7 +2,10 @@ use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::combat::CombatTurnResult;
 use common::errors::AppError;
+use common::game::getters::get_mut_party;
+use common::packets::server_to_client::BattleConclusion;
 use gloo::console::log;
+use yew::AttrValue;
 use yewdux::Dispatch;
 
 // store the results in a queue
@@ -73,6 +76,28 @@ pub fn send_next_turn_result_to_combatant_event_manager(
                     .action_result_queue
                     .push_back(action_result);
             }
+        } else if let Some(battle_end_report) = store.current_battle_end_report.clone() {
+            match battle_end_report.conclusion {
+                BattleConclusion::Victory => {
+                    let party = store.get_current_party_mut()?;
+                    party.battle_id = None;
+                    println!("battle end report processing: {:#?}", battle_end_report);
+                    if let Some(items) = &mut party.current_room.items {
+                        if let Some(mut loot) = battle_end_report.loot {
+                            items.append(&mut loot)
+                        }
+                    } else {
+                        party.current_room.items = battle_end_report.loot
+                    }
+                    store
+                        .combat_log
+                        .push(AttrValue::from("battle ended in victory"))
+                }
+                BattleConclusion::Defeat => todo!(),
+            }
+
+            store.current_battle_end_report = None;
+            store.current_battle_id = None;
         }
         Ok(())
     })

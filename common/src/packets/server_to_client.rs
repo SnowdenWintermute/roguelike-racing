@@ -53,7 +53,7 @@ pub enum GameServerUpdatePackets {
     ActionResults(Vec<ActionResult>),
     CombatTurnResults(CombatTurnResultsPacket),
     BattleFullUpdate(Option<Battle>),
-    BattleVictory(Option<Vec<Item>>),
+    BattleEndReport(BattleEndReportPacket),
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Default)]
@@ -174,6 +174,18 @@ pub struct CharacterSelectedAbilityPacket {
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct CombatTurnResultsPacket {
     pub turn_results: Vec<CombatTurnResult>,
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
+pub enum BattleConclusion {
+    Victory,
+    Defeat,
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
+pub struct BattleEndReportPacket {
+    pub conclusion: BattleConclusion,
+    pub loot: Option<Vec<Item>>,
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]

@@ -1,5 +1,4 @@
 use crate::store::game_store::GameStore;
-use common::combat::CombatAction;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 

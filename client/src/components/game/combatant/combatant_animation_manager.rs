@@ -51,7 +51,7 @@ pub fn combatant_animation_manager(props: &Props) -> Html {
                 return ();
             }
             log!("detected change in current_action_processing");
-            let result = process_next_action_result_in_combatant_event_queue(
+            let _result = process_next_action_result_in_combatant_event_queue(
                 cloned_game_dispatch,
                 current_action_processing,
                 *combatant_id,

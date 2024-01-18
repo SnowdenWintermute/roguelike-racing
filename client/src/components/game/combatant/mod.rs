@@ -2,7 +2,6 @@ mod combatant_animation_manager;
 mod combatant_is_ally;
 mod combatant_is_selected;
 mod combatant_is_targeted;
-pub mod create_animations_from_turn_result;
 mod focus_character_button;
 mod process_next_action_result_in_combatant_event_queue;
 mod process_next_animation_in_combatant_animation_queue;

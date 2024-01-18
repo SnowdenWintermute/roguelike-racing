@@ -1,4 +1,3 @@
-mod add_event_to_combat_log;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::combat::CombatTurnResult;

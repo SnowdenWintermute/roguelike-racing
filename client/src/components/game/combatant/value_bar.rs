@@ -1,4 +1,3 @@
-use gloo::console::log;
 use yew::prelude::*;
 
 #[derive(Properties, PartialEq)]
@@ -13,13 +12,9 @@ pub fn value_bar(props: &Props) -> Html {
     let Props { curr, max, color } = props;
     let percent_of_max = if *max > 0 {
         let percise = *curr as f32 / *max as f32 * 100.00;
-        // log!(format!(
-        //     "percent of max: {percent_of_max} curr: {curr} max: {max} curr/max:{}",
-        //     curr / max
-        // ));
         percise.round() as u16
     } else {
-        100
+        0
     };
 
     let container_styles = format!("relative h-full w-full border border-{color}");

@@ -1,5 +1,3 @@
-use std::ops::Deref;
-
 use crate::components::game::combatant::Combatant;
 use crate::store::game_store::get_current_battle_option;
 use crate::store::game_store::GameStore;

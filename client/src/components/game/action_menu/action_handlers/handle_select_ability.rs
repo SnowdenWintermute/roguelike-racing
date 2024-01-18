@@ -11,7 +11,6 @@ use common::game::getters::get_ally_ids_and_opponent_ids_option;
 use common::game::getters::get_mut_party;
 use common::packets::client_to_server::ClientSelectAbilityPacket;
 use common::packets::client_to_server::PlayerInputs;
-use gloo::console::log;
 use web_sys::WebSocket;
 use yewdux::prelude::Dispatch;
 
@@ -51,9 +50,6 @@ pub fn handle_select_ability(
             battle_option.as_ref(),
             focused_character_id,
         )?;
-        if let Some(opponent_ids) = &opponent_ids_option {
-            log!(format!("unfiltered opponent_ids ids: {:#?}", opponent_ids))
-        }
 
         let prohibited_target_combatant_states = ability_name
             .get_attributes()
@@ -66,10 +62,6 @@ pub fn handle_select_ability(
                 ally_ids,
                 opponent_ids_option,
             )?;
-
-        if let Some(opponent_ids) = &opponent_ids_option {
-            log!(format!("filtered opponent_ids ids: {:#?}", opponent_ids))
-        }
 
         let targets = ability_name.targets_by_saved_preference_or_default(
             focused_character_id,

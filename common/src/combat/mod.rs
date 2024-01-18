@@ -1,5 +1,6 @@
 pub mod ability_handlers;
 pub mod ai_behavior;
+pub mod all_combatants_in_group_are_dead;
 pub mod battle;
 mod get_combatant_by_id;
 mod turn_order;

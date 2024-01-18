@@ -11,6 +11,7 @@ use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::CombatantClass;
 use crate::dungeon_rooms::DungeonRoom;
 use crate::game::RoguelikeRacerGame;
+use crate::items::Item;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashSet;
@@ -52,6 +53,7 @@ pub enum GameServerUpdatePackets {
     ActionResults(Vec<ActionResult>),
     CombatTurnResults(CombatTurnResultsPacket),
     BattleFullUpdate(Option<Battle>),
+    BattleVictory(Option<Vec<Item>>),
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Default)]

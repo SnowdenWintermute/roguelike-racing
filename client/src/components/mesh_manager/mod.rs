@@ -1,42 +1,10 @@
+#![allow(unused)]
 use common::combat::ActionResult;
 use common::combat::CombatTurnResult;
 use std::collections::HashMap;
 use std::collections::VecDeque;
 use std::fmt::Display;
 use yew::AttrValue;
-
-// IN BATTLE
-// queue action results to the ActionResultsManager turn_results_queue
-// take the first action result and pass it as a TookAction(ActionResult) ClientCombatantEvent to the user entity's
-// event queue
-// if not already processing an event, process the first ClientCombatantEvent in the entity's queue
-// - set the entity's current_event_animating to the ClientCombatantEvent
-// - when animation finishes:
-//   - if was TookAction
-//     - queue and start damage taken animations on affected entities
-//     - subtract hp from affected entities
-//     - if any affected entity is dead, queue death animation on that entity
-//     - if action required turn, end active combatant turn for the current battle if any
-//   - for any event animation finishing
-//     - if still alive, process next event in that entity's queue
-//     - if all entity event queues are empty and no animations are ongoing,
-//       query the ActionResultsManager turn_results_queue queue for the next action_result to process/animate
-
-// OUT OF COMBAT
-
-// queue action results directly on to the CombatantEventManagers
-// if not already processing an event, process the first ClientCombatantEvent in the entity's queue
-// - set the entity's current_event_animating to the ClientCombatantEvent
-// - when animation finishes:
-//   - if was TookAction
-//     - queue and start damage taken animations on affected entities
-//     - subtract hp from affected entities
-//     - if any affected entity is dead, queue death animation on that entity
-//     - if action required turn, no action is required since out of combat
-//   - for any event animation finishing
-//     - if still alive, process next event in that entity's queue
-//     - if all entity event queues are empty and no animations are ongoing,
-//       no action is required since out of combat
 
 #[derive(PartialEq, Clone, Debug)]
 pub enum CombatantAnimation {

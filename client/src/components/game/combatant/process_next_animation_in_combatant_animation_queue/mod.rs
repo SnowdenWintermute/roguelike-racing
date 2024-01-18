@@ -19,7 +19,7 @@ pub fn process_next_animation_in_combatant_animation_queue(
     if let Some(animation) = animation_queue.front() {
         let cloned_animation = animation.clone();
         timer_state.set(Some(gloo::timers::callback::Timeout::new(300, move || {
-            let result = handle_animation_finished::handle_animation_finished(
+            let _result = handle_animation_finished::handle_animation_finished(
                 game_dispatch,
                 cloned_animation,
                 combatant_id,

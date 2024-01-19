@@ -1,8 +1,10 @@
 use common::character::Character;
 mod enemy_battle_group;
+mod items_on_ground;
 mod players_ready_to_explore;
 use crate::components::game::combatant::Combatant;
 use crate::components::game::dungeon_room::enemy_battle_group::EnemyBattleGroup;
+use crate::components::game::dungeon_room::items_on_ground::ItemsOnGround;
 use crate::components::game::dungeon_room::players_ready_to_explore::PlayersReadyToExplore;
 use crate::store::game_store::GameStore;
 use yew::prelude::*;
@@ -65,6 +67,8 @@ pub fn dungeon_room(props: &Props) -> Html {
                 <div class="w-1/2 border-l border-slate-400 p-2" >
                     if let Some(battle_id) = game_state.current_battle_id {
                         <EnemyBattleGroup battle_id={battle_id} ally_combatant_id={ally_combatant_id} />
+                    } else {
+                        <ItemsOnGround />
                     }
                 </div>
                 }

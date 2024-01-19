@@ -39,9 +39,8 @@ pub enum PlayerInputs {
     PickTreasureChestLock,
     DisarmTrappedChest,
     OpenTreasureChest,
-    TakeItemOnGround,
-    EquipItemOnGround,
-    ShardItemOnGround,
+    TakeItemOnGround(u32),
+    EquipItemOnGround(u32),
 }
 
 #[derive(Debug, Serialize, Deserialize)]

@@ -139,6 +139,9 @@ impl Handler<ClientBinaryMessage> for GameServer {
             Ok(PlayerInputs::UseSelectedAbility(character_id)) => {
                 self.character_uses_selected_ability_handler(message.actor_id, character_id)
             }
+            Ok(PlayerInputs::TakeItemOnGround(item_id)) => {
+                Ok(println!("player takes item on ground {item_id}"))
+            }
             _ => {
                 println! {"unhandled binary message\n {:#?}:",deserialized};
                 Ok(())

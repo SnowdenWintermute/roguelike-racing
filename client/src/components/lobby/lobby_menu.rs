@@ -1,15 +1,13 @@
-use common::packets::client_to_server::{GameCreation, PlayerInputs};
+use crate::components::common_components::atoms::button_basic::ButtonBasic;
+use crate::components::common_components::atoms::text_input::TextInput;
+use crate::components::websocket_manager::send_client_input::send_client_input;
+use crate::store::lobby_store::LobbyStore;
+use crate::store::websocket_store::WebsocketStore;
+use common::packets::client_to_server::GameCreation;
+use common::packets::client_to_server::PlayerInputs;
 use std::ops::Deref;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
-
-use crate::{
-    components::{
-        common_components::atoms::{button_basic::ButtonBasic, text_input::TextInput},
-        websocket_manager::send_client_input::send_client_input,
-    },
-    store::{lobby_store::LobbyStore, websocket_store::WebsocketStore},
-};
 
 #[function_component(LobbyMenu)]
 pub fn lobby_menu() -> Html {

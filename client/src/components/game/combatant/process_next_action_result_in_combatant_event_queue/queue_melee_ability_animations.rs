@@ -5,7 +5,6 @@ use common::app_consts::error_messages;
 use common::combat::ActionResult;
 use common::combatants::abilities::AbilityTarget;
 use common::errors::AppError;
-use gloo::console::log;
 use std::collections::VecDeque;
 use yewdux::Dispatch;
 
@@ -31,17 +30,12 @@ pub fn queue_melee_ability_animations(
 
         match event_manager.visual_location {
             CombatantVisualLocation::HomePosition => {
-                log!(format!("current visual location: home position"));
                 event_manager.animation_queue.append(&mut VecDeque::from([
                     CombatantAnimation::TurnToFaceCombatant(target_id),
                     CombatantAnimation::ApproachCombatant(target_id),
                 ]))
             }
             CombatantVisualLocation::StandingInFrontOf(id) => {
-                log!(format!(
-                    "current visual location: standing in front of {}",
-                    id
-                ));
                 if target_id != id {
                     event_manager.animation_queue.append(&mut VecDeque::from([
                         CombatantAnimation::TurnToFaceCombatant(target_id),

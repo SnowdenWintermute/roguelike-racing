@@ -20,19 +20,21 @@ pub const CHARACTER_NOT_FOUND: &str = "No character found with the provided id";
 pub const PLAYER_HAS_NO_CHARACTERS: &str = "No characters are owned by that player";
 pub const CHARACTER_NOT_OWNED: &str =
     "A character with the provided id was not found in the player's list of owned characters";
-pub const INVALID_ITEM_ID: &str =
-    "No item with the provided id was found in the currently focused player's posession";
+pub const NO_CHARACTERS_IN_PARTY: &str = "There are no characters in the party";
+// ITEMS
+pub const INVALID_ITEM_ID: &str = "No valid item with the provided id was found";
 pub const ITEM_REQUIREMENTS_NOT_MET: &str =
     "You do not meet the requirements to equip or use that item";
 pub const CANT_EQUIP_NON_EQUIPMENT: &str = "Only equipment items may be equipped";
 pub const INVALID_EQUIPMENT_EQUIPPEND: &str =
     "An invalid item was found in a character's equippment sloty";
-pub const CANT_EXPLORE_WHEN_MONSTERS_ARE_PRESENT: &str =
-    "Defeat the monsters before exploring the next room";
+pub const ITEM_NOT_YET_AVAILABLE: &str = "That item's data is still being sent to other clients";
+pub const ITEM_ON_GROUND_ACKNOWLEDGEMENT_SENT_BEFORE_ITEM_EXISTED: &str =
+"A client sent acknowledgement of receipt of an item on the ground before a registry was created for that item";
+// COMBATANTS
 pub const ENEMY_COMBATANTS_NOT_FOUND: &str = "No enemy combatants found";
 pub const ALLY_COMBATANTS_NOT_FOUND: &str = "No allied combatants found";
 pub const COMBATANT_NOT_FOUND: &str = "No combatant was found by the provided ID";
-pub const NO_CHARACTERS_IN_PARTY: &str = "There are no characters in the party";
 // ABILITIES
 pub const ABILITY_NOT_OWNED: &str = "That character doesn't have that ability";
 pub const NO_ABILITY_SELECTED: &str = "No ability is selected";
@@ -61,3 +63,6 @@ pub const COMBANTANT_MESH_MANAGER_NOT_FOUND: &str = "No mesh manager was found b
 pub const COMBANTANT_EVENT_MANAGER_NOT_FOUND: &str = "No event manager was found by that id";
 pub const EVENT_MANAGER_MISSING_ACTION_RESULT: &str =
     "No action result found on this entity's event manager";
+// EXPLORATION
+pub const CANT_EXPLORE_WHEN_MONSTERS_ARE_PRESENT: &str =
+    "Defeat the monsters before exploring the next room";

@@ -1,7 +1,9 @@
 mod apply_action_results;
 mod character_changes_ability_targets_handler;
+mod character_picks_up_item_from_ground_handler;
 mod character_selects_ability_handler;
 mod character_uses_selected_ability_handler;
+mod client_acknowledges_receipt_of_item_on_ground_handler;
 mod equip_item_handler;
 mod toggle_ready_to_explore_handler;
 mod unequip_slot_handler;

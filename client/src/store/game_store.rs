@@ -13,7 +13,6 @@ use common::items::equipment::EquipmentSlots;
 use common::items::Item;
 use common::packets::server_to_client::BattleEndReportPacket;
 use common::primatives::EntityProperties;
-use gloo::console::log;
 use std::collections::HashSet;
 use yew::AttrValue;
 use yewdux::prelude::*;
@@ -86,31 +85,15 @@ pub fn get_current_battle_option<'a>(game_state: &'a GameStore) -> Option<&'a Ba
                 Some(party) => match party.battle_id {
                     Some(battle_id) => match game.battles.get(&battle_id) {
                         Some(battle) => Some(battle),
-                        None => {
-                            log!("no battle");
-                            None
-                        }
+                        None => None,
                     },
-                    None => {
-                        log!("no battle_id");
-                        None
-                    }
+                    None => None,
                 },
-                None => {
-                    log!("no party");
-                    None
-                }
+                None => None,
             },
-            None => {
-                log!("no party_id");
-                None
-            }
+            None => None,
         },
-        None => {
-            log!("no game");
-
-            None
-        }
+        None => None,
     }
 }
 
@@ -122,31 +105,15 @@ pub fn _get_current_battle_option_mut<'a>(game_state: &'a mut GameStore) -> Opti
                 Some(party) => match party.battle_id {
                     Some(battle_id) => match game.battles.get_mut(&battle_id) {
                         Some(battle) => Some(battle),
-                        None => {
-                            log!("no battle");
-                            None
-                        }
+                        None => None,
                     },
-                    None => {
-                        log!("no battle_id");
-                        None
-                    }
+                    None => None,
                 },
-                None => {
-                    log!("no party");
-                    None
-                }
+                None => None,
             },
-            None => {
-                log!("no party_id");
-                None
-            }
+            None => None,
         },
-        None => {
-            log!("no game");
-
-            None
-        }
+        None => None,
     }
 }
 

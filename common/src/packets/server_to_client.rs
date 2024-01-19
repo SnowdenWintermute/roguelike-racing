@@ -1,5 +1,6 @@
 use super::client_to_server::ChangeTargetsPacket;
 use super::client_to_server::UnequipSlotRequest;
+use super::CharacterPickedUpItemPacket;
 use super::WebsocketChannelNamespace;
 use crate::app_consts::LOBBY_CHANNEL;
 use crate::character::Character;
@@ -54,6 +55,7 @@ pub enum GameServerUpdatePackets {
     CombatTurnResults(CombatTurnResultsPacket),
     BattleFullUpdate(Option<Battle>),
     BattleEndReport(BattleEndReportPacket),
+    CharacterPickedUpItem(CharacterPickedUpItemPacket),
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Default)]

@@ -7,7 +7,6 @@ use common::errors::AppError;
 use common::game::getters::get_mut_party;
 use common::packets::client_to_server::ChangeTargetsPacket;
 use common::packets::server_to_client::CharacterSelectedAbilityPacket;
-use gloo::console::log;
 use std::collections::HashMap;
 use std::collections::HashSet;
 
@@ -22,7 +21,6 @@ pub fn handle_player_toggled_ready_to_explore(
     } else {
         party.players_ready_to_explore.insert(username.clone());
     };
-    log!(format!("player {} toggled ready to explore", username));
 
     Ok(())
 }

@@ -1,5 +1,6 @@
 mod generate_next_room;
 use crate::app_consts::error_messages;
+use crate::app_consts::error_messages::INVALID_ITEM_ID;
 use crate::character::Character;
 use crate::combatants::CombatantProperties;
 use crate::dungeon_rooms::DungeonRoom;
@@ -34,6 +35,7 @@ pub struct AdventuringParty {
     pub battle_id: Option<u32>,
     pub time_of_wipe: Option<u64>,
     pub time_of_escape: Option<u64>,
+    pub items_on_ground_not_yet_received_by_all_clients: HashMap<u32, Vec<u32>>,
 }
 
 impl AdventuringParty {
@@ -60,6 +62,7 @@ impl AdventuringParty {
             battle_id: None,
             time_of_wipe: None,
             time_of_escape: None,
+            items_on_ground_not_yet_received_by_all_clients: HashMap::new(),
         }
     }
 
@@ -220,5 +223,28 @@ impl AdventuringParty {
             }
         }
         to_return
+    }
+
+    pub fn remove_item_from_ground(&mut self, item_id: u32) -> Result<Item, AppError> {
+        let item_option = if let Some(items_on_ground) = &mut self.current_room.items {
+            let mut index_to_remove_option = None;
+            for (i, item) in items_on_ground.iter().enumerate() {
+                if item.entity_properties.id == item_id {
+                    index_to_remove_option = Some(i)
+                }
+            }
+            if let Some(index_to_remove) = index_to_remove_option {
+                let removed_item = items_on_ground.remove(index_to_remove);
+                Some(removed_item)
+            } else {
+                None
+            }
+        } else {
+            None
+        };
+        item_option.ok_or_else(|| AppError {
+            error_type: AppErrorTypes::InvalidInput,
+            message: INVALID_ITEM_ID.to_string(),
+        })
     }
 }

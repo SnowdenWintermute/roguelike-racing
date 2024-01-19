@@ -90,7 +90,7 @@ impl Actor for GameServer {
 impl Handler<ClientBinaryMessage> for GameServer {
     type Result = ();
     fn handle(&mut self, message: ClientBinaryMessage, _: &mut Context<Self>) {
-        println!("message received: {:?}", message.content);
+        // println!("message received: {:?}", message.content);
         let byte_slice = &message.content[..];
         let deserialized: Result<PlayerInputs, _> = serde_cbor::from_slice(byte_slice);
         let result = match deserialized {
@@ -139,9 +139,11 @@ impl Handler<ClientBinaryMessage> for GameServer {
             Ok(PlayerInputs::UseSelectedAbility(character_id)) => {
                 self.character_uses_selected_ability_handler(message.actor_id, character_id)
             }
-            Ok(PlayerInputs::TakeItemOnGround(item_id)) => {
-                Ok(println!("player takes item on ground {item_id}"))
+            Ok(PlayerInputs::TakeItemOnGround(packet)) => {
+                self.character_picks_up_item_from_ground_handler(message.actor_id, packet)
             }
+            Ok(PlayerInputs::AcknowledgeReceiptOfItemOnGroundUpdate(item_id)) => self
+                .client_acknowledges_receipt_of_item_on_ground_handler(message.actor_id, item_id),
             _ => {
                 println! {"unhandled binary message\n {:#?}:",deserialized};
                 Ok(())

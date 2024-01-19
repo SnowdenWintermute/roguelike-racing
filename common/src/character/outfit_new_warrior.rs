@@ -1,14 +1,9 @@
 use super::Character;
-use crate::{
-    combatants::{
-        abilities::{CombatantAbility, CombatantAbilityNames},
-        combat_attributes::CombatAttributes,
-    },
-    game::RoguelikeRacerGame,
-    items::{
-        equipment::equipment_generation::create_starting_equipment::create_starting_equipment, Item,
-    },
-};
+use crate::combatants::abilities::CombatantAbility;
+use crate::combatants::abilities::CombatantAbilityNames;
+use crate::combatants::combat_attributes::CombatAttributes;
+use crate::game::RoguelikeRacerGame;
+use crate::items::equipment::equipment_generation::create_starting_equipment::create_starting_equipment;
 
 pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Character) {
     let combatant_properties = &mut character.combatant_properties;
@@ -37,22 +32,22 @@ pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Charact
     );
 
     // TEST INVENTORY ITEMS
-    for _ in 0..8 {
-        let random_equipment = Item::generate(&mut game.id_generator, 5);
-        character.inventory.items.push(random_equipment);
-    }
-    for _ in 0..8 {
-        let random_equipment = Item::generate(&mut game.id_generator, 7);
-        character.inventory.items.push(random_equipment);
-    }
-    for _ in 0..8 {
-        let random_equipment = Item::generate(&mut game.id_generator, 8);
-        character.inventory.items.push(random_equipment);
-    }
-    for _ in 0..8 {
-        let random_equipment = Item::generate(&mut game.id_generator, 10);
-        character.inventory.items.push(random_equipment);
-    }
+    // for _ in 0..8 {
+    //     let random_equipment = Item::generate(&mut game.id_generator, 5);
+    //     character.inventory.items.push(random_equipment);
+    // }
+    // for _ in 0..8 {
+    //     let random_equipment = Item::generate(&mut game.id_generator, 7);
+    //     character.inventory.items.push(random_equipment);
+    // }
+    // for _ in 0..8 {
+    //     let random_equipment = Item::generate(&mut game.id_generator, 8);
+    //     character.inventory.items.push(random_equipment);
+    // }
+    // for _ in 0..8 {
+    //     let random_equipment = Item::generate(&mut game.id_generator, 10);
+    //     character.inventory.items.push(random_equipment);
+    // }
 
     // STARTING EQUIPMENT
     let starting_equipment = create_starting_equipment(&mut game.id_generator);

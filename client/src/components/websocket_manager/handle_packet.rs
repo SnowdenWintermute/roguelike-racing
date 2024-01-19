@@ -5,6 +5,7 @@ use super::adventuring_party_update_handlers::handle_character_deletion;
 use super::adventuring_party_update_handlers::handle_player_changed_adventuring_party;
 use super::game_full_update_handler::game_full_update_handler;
 use super::handle_battle_victory_report::handle_battle_end_report;
+use super::handle_character_picked_up_item::handle_character_picked_up_item;
 use super::handle_combat_turn_results::handle_combat_turn_results;
 use super::in_game_party_update_handlers::handle_battle_full_update;
 use super::in_game_party_update_handlers::handle_character_ability_selection;
@@ -41,7 +42,10 @@ pub fn handle_packet(
     websocket_dispatch: Dispatch<WebsocketStore>,
 ) -> Result<(), AppError> {
     match data {
-        GameServerUpdatePackets::Error(message) => Ok(set_alert(alert_dispatch, message)),
+        GameServerUpdatePackets::Error(message) => {
+            log!(format!("received error from server: {message}"));
+            Ok(set_alert(alert_dispatch, message))
+        }
         GameServerUpdatePackets::ClientUserName(username) => {
             Ok(lobby_dispatch.reduce_mut(|store| {
                 store.username = username;
@@ -124,6 +128,9 @@ pub fn handle_packet(
         }
         GameServerUpdatePackets::BattleEndReport(packet) => {
             handle_battle_end_report(game_dispatch, packet)
+        }
+        GameServerUpdatePackets::CharacterPickedUpItem(packet) => {
+            handle_character_picked_up_item(game_dispatch, packet)
         }
         _ => {
             log!(format!("unhandled packet: {:#?}", data));

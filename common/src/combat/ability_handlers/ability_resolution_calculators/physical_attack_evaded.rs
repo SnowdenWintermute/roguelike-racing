@@ -1,3 +1,4 @@
+#![allow(unused)]
 use crate::combatants::combat_attributes::CombatAttributes;
 use rand::Rng;
 use std::cmp;
@@ -18,6 +19,7 @@ pub fn physical_attack_evaded(
     };
 
     let mut rng = rand::thread_rng();
-    let evaded = rng.gen_range(1..=100) > chance_to_hit;
-    evaded
+    // let evaded = rng.gen_range(1..=100) > chance_to_hit;
+    // evaded
+    false
 }

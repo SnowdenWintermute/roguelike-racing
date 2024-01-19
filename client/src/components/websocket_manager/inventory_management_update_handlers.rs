@@ -1,17 +1,14 @@
-use crate::store::game_store::{DetailableEntities, GameStore};
-use common::{
-    adventuring_party::AdventuringParty,
-    app_consts::error_messages,
-    character::Character,
-    errors::AppError,
-    game::{
-        getters::{get_mut_party, get_party},
-        RoguelikeRacerGame,
-    },
-    packets::{
-        client_to_server::UnequipSlotRequest, server_to_client::CharacterEquippedItemPacket,
-    },
-};
+use crate::store::game_store::DetailableEntities;
+use crate::store::game_store::GameStore;
+use common::adventuring_party::AdventuringParty;
+use common::app_consts::error_messages;
+use common::character::Character;
+use common::errors::AppError;
+use common::game::getters::get_mut_party;
+use common::game::getters::get_party;
+use common::game::RoguelikeRacerGame;
+use common::packets::client_to_server::UnequipSlotRequest;
+use common::packets::server_to_client::CharacterEquippedItemPacket;
 
 pub fn handle_character_equipped_item(
     game_store: &mut GameStore,

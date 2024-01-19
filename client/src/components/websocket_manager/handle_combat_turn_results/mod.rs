@@ -2,47 +2,14 @@ use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::combat::CombatTurnResult;
 use common::errors::AppError;
-use common::game::getters::get_mut_party;
 use common::packets::server_to_client::BattleConclusion;
-use gloo::console::log;
 use yew::AttrValue;
 use yewdux::Dispatch;
-
-// store the results in a queue
-// pass the first result to the entity and have them animate
-//   -- approach
-//   -- swing to contact
-//   -- follow through swing
-//     -- reduce hp
-//     -- animate hit recovery
-//     -- floating numbers
-//   -- query queue for next result
-//   -- swing to contact
-//     -- reduce hp
-//     -- animate hit recovery
-//     -- floating numbers
-//   -- follow through swing
-//   -- return to spot
-//   -- pass turn
-//
-//   Entities have:
-//   current action result processing (if any)
-//   when an action result is passed, start animating
-//    - push to a queue of animations (move, swing to hit [damage here], follow through, recover, return)
-//    - animations have an on_finish which can trigger animations on other entities, interrupting
-//    their current hit recovery animation if any (getting hit before hit recovery animation finishes). Trigger
-//    the on_finish for that animation (floating numbers, combat log entry)
-//    - if take damage while in an action animation, just reduce the hp and show the floating
-//    numbers
-//    - if die while in an action animation, show floating numbers and, play the death animation in place
-//    - entities can not select (or execute) a new action until their animaton queues are finished
-//
 
 pub fn handle_combat_turn_results(
     game_dispatch: Dispatch<GameStore>,
     turn_results: Vec<CombatTurnResult>,
 ) -> Result<(), AppError> {
-    log!(format!("got combat turn results: {:#?}", turn_results));
     game_dispatch.reduce_mut(|store| {
         for turn_result in turn_results {
             store
@@ -57,13 +24,10 @@ pub fn handle_combat_turn_results(
 pub fn send_next_turn_result_to_combatant_event_manager(
     game_dispatch: Dispatch<GameStore>,
 ) -> Result<(), AppError> {
-    log!("attempting to send_next_turn_result_to_combatant_event_manager");
     game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
         let next_turn_to_process_option =
             store.action_results_manager.turn_results_queue.pop_front();
         if let Some(next_turn_to_process) = next_turn_to_process_option {
-            log!("next turn result found, sending to combatant...");
-            log!(format!("turn result found: {:#?}", next_turn_to_process));
             for action_result in next_turn_to_process.action_results {
                 store
                     .action_results_manager
@@ -81,7 +45,6 @@ pub fn send_next_turn_result_to_combatant_event_manager(
                 BattleConclusion::Victory => {
                     let party = store.get_current_party_mut()?;
                     party.battle_id = None;
-                    println!("battle end report processing: {:#?}", battle_end_report);
                     if let Some(items) = &mut party.current_room.items {
                         if let Some(mut loot) = battle_end_report.loot {
                             items.append(&mut loot)

@@ -2,7 +2,6 @@ use crate::components::game::combatant::process_next_action_result_in_combatant_
 use crate::components::game::combatant::process_next_animation_in_combatant_animation_queue::process_next_animation_in_combatant_animation_queue;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
-use gloo::console::log;
 use gloo::timers::callback::Timeout;
 use yew::prelude::*;
 use yewdux::use_store;
@@ -50,7 +49,6 @@ pub fn combatant_animation_manager(props: &Props) -> Html {
             if !*cloned_first_render_completed {
                 return ();
             }
-            log!("detected change in current_action_processing");
             let _result = process_next_action_result_in_combatant_event_queue(
                 cloned_game_dispatch,
                 current_action_processing,

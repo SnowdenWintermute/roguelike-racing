@@ -5,6 +5,8 @@ use crate::items::equipment::EquipmentSlots;
 use serde::Deserialize;
 use serde::Serialize;
 
+use super::CharacterPickedUpItemPacket;
+
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum PlayerInputs {
     // lobby
@@ -39,7 +41,8 @@ pub enum PlayerInputs {
     PickTreasureChestLock,
     DisarmTrappedChest,
     OpenTreasureChest,
-    TakeItemOnGround(u32),
+    TakeItemOnGround(CharacterPickedUpItemPacket),
+    AcknowledgeReceiptOfItemOnGroundUpdate(u32),
     EquipItemOnGround(u32),
 }
 

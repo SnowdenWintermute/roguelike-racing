@@ -1,6 +1,7 @@
 use crate::store::game_store::GameStore;
 use common::errors::AppError;
 use common::packets::server_to_client::BattleEndReportPacket;
+use gloo::console::log;
 use yewdux::Dispatch;
 
 pub fn handle_battle_end_report(

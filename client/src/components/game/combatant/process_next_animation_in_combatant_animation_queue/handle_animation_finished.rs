@@ -6,7 +6,6 @@ use crate::components::mesh_manager::CombatantAnimation;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::errors::AppError;
-use gloo::console::log;
 use yewdux::Dispatch;
 
 pub fn handle_animation_finished(
@@ -14,7 +13,6 @@ pub fn handle_animation_finished(
     animation: CombatantAnimation,
     combatant_id: u32,
 ) -> Result<(), AppError> {
-    log!(format!("{combatant_id} finished animation: {} ", animation));
     match animation {
         CombatantAnimation::SwingMainHandToHit(target_id, hp_change_option, evaded) => {
             swing_to_hit_animation_finished_handler(

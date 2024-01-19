@@ -1,11 +1,16 @@
 use crate::store::game_store::get_active_combatant;
 use crate::store::game_store::GameStore;
+use crate::store::lobby_store::LobbyStore;
+use common::app_consts::error_messages;
+use common::errors::AppError;
+use common::game::getters::get_player;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
 #[function_component(CharacterAutofocusManager)]
 pub fn character_autofocus_manager() -> Html {
     let (game_state, game_dispatch) = use_store::<GameStore>();
+    let (lobby_state, _) = use_store::<LobbyStore>();
     let prev_active_combatant_id_option = use_state(|| None);
     let focused_character_id = game_state.focused_character_id;
     let active_combatant_result = get_active_combatant(&game_state);
@@ -16,17 +21,26 @@ pub fn character_autofocus_manager() -> Html {
         },
         Err(_) => None,
     };
+    let current_battle_id = game_state.current_battle_id;
+    let prev_current_battle_id_state = use_state(|| None);
 
     use_effect_with(
-        (focused_character_id, active_combatant_id_option),
+        (
+            focused_character_id,
+            active_combatant_id_option,
+            current_battle_id,
+        ),
         move |_| {
             game_dispatch.reduce_mut(|store| match *prev_active_combatant_id_option {
+                // if focusing active character and their turn ends, focus next active character
                 Some(prev_active_combatant_id) => match active_combatant_id_option {
                     Some(new_active_combatant_id) => {
                         let party_result = game_state.get_current_party();
                         if let Ok(party) = party_result {
                             if party.character_positions.contains(&new_active_combatant_id) {
-                                if focused_character_id == prev_active_combatant_id  && !game_state.viewing_inventory {
+                                if focused_character_id == prev_active_combatant_id
+                                    && !game_state.viewing_inventory
+                                {
                                     store.focused_character_id = new_active_combatant_id
                                 }
                             }
@@ -36,7 +50,34 @@ pub fn character_autofocus_manager() -> Html {
                 },
                 None => (),
             });
-            prev_active_combatant_id_option.set(active_combatant_id_option)
+            // if battle ended, focus first owned character
+            let _ = (|| -> Result<(), AppError> {
+                if current_battle_id.is_none()
+                    && prev_current_battle_id_state.is_some()
+                    && !game_state.viewing_inventory
+                {
+                    let username = &lobby_state.username;
+                    let party = game_state.get_current_party()?;
+                    let character_positions = party.character_positions.clone();
+                    let game = game_state.get_current_game()?;
+                    let player = get_player(game, username.to_string())?;
+                    for character_id in character_positions {
+                        let player_owned_ids =
+                            player.character_ids.clone().ok_or_else(|| AppError {
+                                error_type: common::errors::AppErrorTypes::ClientError,
+                                message: error_messages::PLAYER_HAS_NO_CHARACTERS.to_string(),
+                            })?;
+                        if player_owned_ids.get(&character_id).is_some() {
+                            game_dispatch
+                                .reduce_mut(|store| store.focused_character_id = character_id);
+                            break;
+                        }
+                    }
+                }
+                Ok(())
+            })();
+            prev_active_combatant_id_option.set(active_combatant_id_option);
+            prev_current_battle_id_state.set(current_battle_id)
         },
     );
 

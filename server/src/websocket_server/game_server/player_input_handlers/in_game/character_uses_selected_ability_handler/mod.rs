@@ -213,6 +213,23 @@ impl GameServer {
         }
 
         if in_monster_lair && all_opponents_are_dead {
+            if let Some(loot) = loot_option.clone() {
+                // make sure all clients receive the item's existance or else one client can take
+                // the item before another client sees it leading to desync
+                let game = self
+                    .games
+                    .get_mut(&current_game_name)
+                    .ok_or_else(|| AppError {
+                        error_type: common::errors::AppErrorTypes::ServerError,
+                        message: error_messages::GAME_NOT_FOUND.to_string(),
+                    })?;
+                let party = get_mut_party(game, party_id)?;
+                for item in loot {
+                    party
+                        .items_on_ground_not_yet_received_by_all_clients
+                        .insert(item.entity_properties.id, vec![]);
+                }
+            };
             self.emit_packet(
                 &party_websocket_channel_name,
                 &WebsocketChannelNamespace::Party,

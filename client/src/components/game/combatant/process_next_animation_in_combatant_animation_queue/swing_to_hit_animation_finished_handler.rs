@@ -3,7 +3,6 @@ use crate::components::mesh_manager::FloatingNumber;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::errors::AppError;
-use gloo::console::log;
 use std::collections::VecDeque;
 use yew::AttrValue;
 use yewdux::Dispatch;
@@ -38,7 +37,6 @@ pub fn swing_to_hit_animation_finished_handler(
             })?;
 
         if evaded {
-            log!("pushing evasion message to combat log");
             store.combat_log.push(AttrValue::from(format!(
                 "{target_id} evaded an attack from {combatant_id}"
             )));

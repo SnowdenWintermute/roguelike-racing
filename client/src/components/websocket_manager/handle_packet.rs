@@ -5,6 +5,7 @@ use super::adventuring_party_update_handlers::handle_character_deletion;
 use super::adventuring_party_update_handlers::handle_player_changed_adventuring_party;
 use super::game_full_update_handler::game_full_update_handler;
 use super::handle_battle_victory_report::handle_battle_end_report;
+use super::handle_character_dropped_equipped_item::handle_character_dropped_equipped_item;
 use super::handle_character_dropped_item::handle_character_dropped_item;
 use super::handle_character_picked_up_item::handle_character_picked_up_item;
 use super::handle_combat_turn_results::handle_combat_turn_results;
@@ -135,6 +136,9 @@ pub fn handle_packet(
         }
         GameServerUpdatePackets::CharacterDroppedItem(packet) => {
             handle_character_dropped_item(game_dispatch, websocket_dispatch, packet)
+        }
+        GameServerUpdatePackets::CharacterDroppedEquippedItem(packet) => {
+            handle_character_dropped_equipped_item(game_dispatch, websocket_dispatch, packet)
         }
         _ => {
             log!(format!("unhandled packet: {:#?}", data));

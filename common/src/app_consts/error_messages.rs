@@ -31,6 +31,10 @@ pub const INVALID_EQUIPMENT_EQUIPPEND: &str =
 pub const ITEM_NOT_YET_AVAILABLE: &str = "That item's data is still being sent to other clients";
 pub const ITEM_ON_GROUND_ACKNOWLEDGEMENT_SENT_BEFORE_ITEM_EXISTED: &str =
 "A client sent acknowledgement of receipt of an item on the ground before a registry was created for that item";
+pub const TRIED_TO_DROP_ITEM_FROM_AN_EMPTY_SLOT: &str =
+    "A client attempted to drop an item from an empty equipment slot";
+pub const DROP_EQUIPPED_ITEM_SERVER_PACKET_MISMATCH: &str =
+    "Received a packet telling a character to drop an equipped item but the item wasn't found";
 // COMBATANTS
 pub const ENEMY_COMBATANTS_NOT_FOUND: &str = "No enemy combatants found";
 pub const ALLY_COMBATANTS_NOT_FOUND: &str = "No allied combatants found";

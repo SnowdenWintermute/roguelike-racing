@@ -1,6 +1,6 @@
 use super::client_to_server::ChangeTargetsPacket;
-use super::client_to_server::UnequipSlotRequest;
 use super::CharacterAndItem;
+use super::CharacterAndSlot;
 use super::WebsocketChannelNamespace;
 use crate::app_consts::LOBBY_CHANNEL;
 use crate::character::Character;
@@ -46,7 +46,7 @@ pub enum GameServerUpdatePackets {
     GameStarted(u128),
     // IN GAME
     CharacterEquippedItem(CharacterEquippedItemPacket),
-    CharacterUnequippedSlot(UnequipSlotRequest),
+    CharacterUnequippedSlot(CharacterAndSlot),
     PlayerToggledReadyToExplore(String),
     DungeonRoomUpdate(DungeonRoom),
     CharacterSelectedAbility(CharacterSelectedAbilityPacket),
@@ -57,6 +57,7 @@ pub enum GameServerUpdatePackets {
     BattleEndReport(BattleEndReportPacket),
     CharacterPickedUpItem(CharacterAndItem),
     CharacterDroppedItem(CharacterAndItem),
+    CharacterDroppedEquippedItem(CharacterAndSlot),
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Default)]

@@ -7,8 +7,8 @@ use common::errors::AppError;
 use common::game::getters::get_mut_party;
 use common::game::getters::get_party;
 use common::game::RoguelikeRacerGame;
-use common::packets::client_to_server::UnequipSlotRequest;
 use common::packets::server_to_client::CharacterEquippedItemPacket;
+use common::packets::CharacterAndSlot;
 
 pub fn handle_character_equipped_item(
     game_store: &mut GameStore,
@@ -55,9 +55,9 @@ pub fn handle_character_equipped_item(
 
 pub fn handle_character_unequipped_slot(
     game_store: &mut GameStore,
-    packet: UnequipSlotRequest,
+    packet: CharacterAndSlot,
 ) -> Result<(), AppError> {
-    let UnequipSlotRequest { character_id, slot } = packet;
+    let CharacterAndSlot { character_id, slot } = packet;
     let character = game_store.get_mut_character(character_id)?;
     character.unequip_slots(&vec![slot], false);
     Ok(())

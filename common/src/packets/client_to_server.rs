@@ -1,4 +1,5 @@
 use super::CharacterAndItem;
+use super::CharacterAndSlot;
 use crate::combatants::abilities::AbilityTarget;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::CombatantClass;
@@ -28,7 +29,7 @@ pub enum PlayerInputs {
     ChangeTargets(ChangeTargetsPacket),
     ClearConsumableAndAbilitySelections,
     // manage equipment and items
-    UnequipEquipmentSlot(UnequipSlotRequest),
+    UnequipEquipmentSlot(CharacterAndSlot),
     ShardInventorySlot(u8),
     EquipInventoryItem(EquipItemRequest),
     // manage abilities
@@ -44,6 +45,7 @@ pub enum PlayerInputs {
     AcknowledgeReceiptOfItemOnGroundUpdate(u32),
     DropItem(CharacterAndItem),
     EquipItemOnGround(u32),
+    DropEquippedItem(CharacterAndSlot),
 }
 
 #[derive(Debug, Serialize, Deserialize)]

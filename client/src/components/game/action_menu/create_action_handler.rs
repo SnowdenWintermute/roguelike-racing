@@ -13,8 +13,8 @@ use crate::store::websocket_store::WebsocketStore;
 use common::packets::client_to_server::ClientSelectAbilityPacket;
 use common::packets::client_to_server::EquipItemRequest;
 use common::packets::client_to_server::PlayerInputs;
-use common::packets::client_to_server::UnequipSlotRequest;
 use common::packets::CharacterAndItem;
+use common::packets::CharacterAndSlot;
 use std::rc::Rc;
 use yewdux::prelude::Dispatch;
 
@@ -79,7 +79,7 @@ pub fn create_action_handler<'a>(
                     if let Some(slot) = slot_item_is_equipped {
                         send_client_input(
                             &websocket_state.websocket,
-                            PlayerInputs::UnequipEquipmentSlot(UnequipSlotRequest {
+                            PlayerInputs::UnequipEquipmentSlot(CharacterAndSlot {
                                 character_id,
                                 slot,
                             }),
@@ -160,15 +160,29 @@ pub fn create_action_handler<'a>(
         }),
         GameActions::DropItem(item_id) => Box::new(move || {
             game_dispatch.reduce_mut(|store| {
-                send_client_input(
-                    &websocket_state.websocket,
-                    PlayerInputs::DropItem({
-                        CharacterAndItem {
-                            character_id: store.focused_character_id,
-                            item_id,
-                        }
-                    }),
-                );
+                let focused_character = get_focused_character(store).expect("to be in game");
+                let slot_item_is_equipped = focused_character.slot_item_is_equipped(&item_id);
+                if let Some(slot) = slot_item_is_equipped {
+                    send_client_input(
+                        &websocket_state.websocket,
+                        PlayerInputs::DropEquippedItem({
+                            CharacterAndSlot {
+                                character_id: store.focused_character_id,
+                                slot,
+                            }
+                        }),
+                    );
+                } else {
+                    send_client_input(
+                        &websocket_state.websocket,
+                        PlayerInputs::DropItem({
+                            CharacterAndItem {
+                                character_id: store.focused_character_id,
+                                item_id,
+                            }
+                        }),
+                    );
+                }
                 store.selected_item = None;
                 store.detailed_entity = None;
             });

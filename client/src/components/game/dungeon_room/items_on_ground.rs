@@ -2,6 +2,7 @@ use crate::components::common_components::atoms::button_basic::ButtonBasic;
 use crate::components::websocket_manager::send_client_input::send_client_input;
 use crate::store::game_store::get_current_party_option;
 use crate::store::game_store::GameStore;
+use crate::store::lobby_store::LobbyStore;
 use crate::store::websocket_store::WebsocketStore;
 use common::packets::client_to_server::PlayerInputs;
 use common::packets::CharacterAndItem;
@@ -13,12 +14,15 @@ use yewdux::use_store;
 #[function_component(ItemsOnGround)]
 pub fn items_on_ground() -> Html {
     let (game_state, _) = use_store::<GameStore>();
+    let (lobby_state, _) = use_store::<LobbyStore>();
     let party = get_current_party_option(&game_state);
     if !party.is_some() {
         return html!({ "no party found" });
     }
     let party = party.expect("none checked");
     let items_to_display = party.current_room.items.clone();
+    let player_owns_character =
+        party.player_owns_character(&lobby_state.username, game_state.focused_character_id);
 
     html!(
     <ul id="items on ground"
@@ -27,8 +31,9 @@ pub fn items_on_ground() -> Html {
         {items_to_display.iter().map(|item|
             html!(
                     <ItemOnGround
-                    id={item.entity_properties.id}
-                    name={item.entity_properties.name.clone()}
+                        id={item.entity_properties.id}
+                        name={item.entity_properties.name.clone()}
+                        disabled={!player_owns_character}
                     />
                 )
             ).collect::<Html>()}
@@ -40,6 +45,7 @@ pub fn items_on_ground() -> Html {
 pub struct ItemOnGroundProps {
     id: u32,
     name: String,
+    disabled: bool,
 }
 
 #[function_component(ItemOnGround)]
@@ -70,7 +76,11 @@ pub fn item_on_ground(props: &ItemOnGroundProps) -> Html {
 
     html!(
     <li class="h-10 w-full flex border border-slate-400 mb-2 last:mb-0" >
-        <ButtonBasic extra_styles="border-0 border-r hover:bg-slate-950 h-full" onclick={take_item}>
+        <ButtonBasic
+            extra_styles="border-0 border-r hover:bg-slate-950 h-full"
+            onclick={take_item}
+            disabled={props.disabled}
+        >
             {"Take"}
         </ButtonBasic>
         <div class="flex items-center h-full w-full ">

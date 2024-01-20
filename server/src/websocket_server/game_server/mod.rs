@@ -145,6 +145,9 @@ impl Handler<ClientBinaryMessage> for GameServer {
             Ok(PlayerInputs::DropItem(packet)) => {
                 self.character_drops_item(message.actor_id, packet)
             }
+            Ok(PlayerInputs::DropEquippedItem(packet)) => {
+                self.character_drops_equipped_item(message.actor_id, packet)
+            }
             Ok(PlayerInputs::AcknowledgeReceiptOfItemOnGroundUpdate(item_id)) => self
                 .client_acknowledges_receipt_of_item_on_ground_handler(message.actor_id, item_id),
             _ => {

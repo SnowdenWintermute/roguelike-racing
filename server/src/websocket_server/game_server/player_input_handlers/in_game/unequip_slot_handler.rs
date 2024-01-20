@@ -4,7 +4,7 @@ use crate::websocket_server::game_server::GameServer;
 use common::app_consts::error_messages;
 use common::errors::AppError;
 use common::items::equipment::EquipmentSlots;
-use common::packets::client_to_server::UnequipSlotRequest;
+use common::packets::CharacterAndSlot;
 use common::packets::server_to_client::GameServerUpdatePackets;
 use common::packets::WebsocketChannelNamespace;
 
@@ -46,7 +46,7 @@ impl GameServer {
         self.emit_packet(
             &party_websocket_channel_name,
             &WebsocketChannelNamespace::Party,
-            &GameServerUpdatePackets::CharacterUnequippedSlot(UnequipSlotRequest {
+            &GameServerUpdatePackets::CharacterUnequippedSlot(CharacterAndSlot {
                 character_id,
                 slot,
             }),

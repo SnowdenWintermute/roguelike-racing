@@ -1,3 +1,4 @@
+use crate::items::equipment::EquipmentSlots;
 use serde::Deserialize;
 use serde::Serialize;
 pub mod client_to_server;
@@ -16,4 +17,10 @@ pub enum WebsocketChannelNamespace {
 pub struct CharacterAndItem {
     pub character_id: u32,
     pub item_id: u32,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct CharacterAndSlot {
+    pub character_id: u32,
+    pub slot: EquipmentSlots,
 }

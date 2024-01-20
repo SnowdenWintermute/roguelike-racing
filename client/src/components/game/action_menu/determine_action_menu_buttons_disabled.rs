@@ -56,6 +56,12 @@ pub fn determine_action_menu_buttons_disabled(
             }
             false
         }
+        GameActions::TakeItem => {
+            if !player_owns_character {
+                return true;
+            }
+            false
+        }
         GameActions::SelectAbility(_) => {
             if !player_owns_character {
                 return true;

@@ -45,6 +45,15 @@ impl GameServer {
             party.players_ready_to_explore.insert(username.clone());
         };
 
+        self.emit_packet(
+            &party_websocket_channel_name,
+            &WebsocketChannelNamespace::Party,
+            &GameServerUpdatePackets::PlayerToggledReadyToExplore(username),
+            None,
+        )?;
+
+        let game = get_mut_game(&mut self.games, &game_name)?;
+        let party = get_mut_party(game, party_id)?;
         // if all players names are in the ready to explore list, generate the next room and remove
         // them all from the ready list
         let mut all_players_ready_to_explore = true;
@@ -73,6 +82,7 @@ impl GameServer {
             //
         }
 
+        // let game = get_mut_game(&mut self.games, &game_name)?;
         let party = get_mut_party(game, party_id)?;
         if let Some(room) = new_room {
             party.current_room = room.clone();
@@ -115,13 +125,6 @@ impl GameServer {
                 None,
             )?;
         }
-
-        self.emit_packet(
-            &party_websocket_channel_name,
-            &WebsocketChannelNamespace::Party,
-            &GameServerUpdatePackets::PlayerToggledReadyToExplore(username),
-            None,
-        )?;
         Ok(())
     }
 }

@@ -7,13 +7,14 @@ use common::errors::AppError;
 use common::game::getters::get_mut_party;
 use common::packets::client_to_server::ChangeTargetsPacket;
 use common::packets::server_to_client::CharacterSelectedAbilityPacket;
+use gloo::console::log;
 use std::collections::HashMap;
-use std::collections::HashSet;
 
 pub fn handle_player_toggled_ready_to_explore(
     game_store: &mut GameStore,
     username: String,
 ) -> Result<(), AppError> {
+    log!("player toggled ready to explore");
     let party = game_store.get_current_party_mut()?;
 
     if party.players_ready_to_explore.contains(&username) {
@@ -29,6 +30,7 @@ pub fn handle_new_dungeon_room(
     game_store: &mut GameStore,
     packet: DungeonRoom,
 ) -> Result<(), AppError> {
+    log!("new dungeon room");
     if let Some(monsters) = &packet.monsters {
         for (monster_id, _) in monsters {
             game_store
@@ -38,7 +40,7 @@ pub fn handle_new_dungeon_room(
         }
     }
     let party = game_store.get_current_party_mut()?;
-    party.players_ready_to_explore = HashSet::new();
+    party.players_ready_to_explore.clear();
     party.current_room = packet;
     party.rooms_explored.on_current_floor += 1;
     party.rooms_explored.total += 1;

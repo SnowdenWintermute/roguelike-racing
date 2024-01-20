@@ -46,13 +46,6 @@ pub fn send_next_turn_result_to_combatant_event_manager(
                     let party = store.get_current_party_mut()?;
                     party.battle_id = None;
                     party.current_room.monsters = None;
-                    if let Some(items) = &mut party.current_room.items {
-                        if let Some(mut loot) = battle_end_report.loot {
-                            items.append(&mut loot)
-                        }
-                    } else {
-                        party.current_room.items = battle_end_report.loot
-                    }
                     store
                         .combat_log
                         .push(AttrValue::from("battle ended in victory"))

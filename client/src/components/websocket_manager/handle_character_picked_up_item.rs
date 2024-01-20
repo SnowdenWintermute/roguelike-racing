@@ -1,11 +1,11 @@
 use crate::store::game_store::GameStore;
 use common::errors::AppError;
-use common::packets::CharacterPickedUpItemPacket;
+use common::packets::CharacterAndItem;
 use yewdux::Dispatch;
 
 pub fn handle_character_picked_up_item(
     game_dispatch: Dispatch<GameStore>,
-    packet: CharacterPickedUpItemPacket,
+    packet: CharacterAndItem,
 ) -> Result<(), AppError> {
     game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
         let party = store.get_current_party_mut()?;

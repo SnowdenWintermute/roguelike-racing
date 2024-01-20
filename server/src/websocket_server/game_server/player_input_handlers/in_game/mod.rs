@@ -1,5 +1,6 @@
 mod apply_action_results;
 mod character_changes_ability_targets_handler;
+mod character_drops_item;
 mod character_picks_up_item_from_ground_handler;
 mod character_selects_ability_handler;
 mod character_uses_selected_ability_handler;

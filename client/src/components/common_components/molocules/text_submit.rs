@@ -1,6 +1,5 @@
-use crate::components::common_components::atoms::{
-    button_basic::ButtonBasic, text_input::TextInput,
-};
+use crate::components::common_components::atoms::button_basic::ButtonBasic;
+use crate::components::common_components::atoms::text_input::TextInput;
 use std::ops::Deref;
 use yew::prelude::*;
 

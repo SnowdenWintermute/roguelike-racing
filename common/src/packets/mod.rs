@@ -13,7 +13,7 @@ pub enum WebsocketChannelNamespace {
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
-pub struct CharacterPickedUpItemPacket {
+pub struct CharacterAndItem {
     pub character_id: u32,
     pub item_id: u32,
 }

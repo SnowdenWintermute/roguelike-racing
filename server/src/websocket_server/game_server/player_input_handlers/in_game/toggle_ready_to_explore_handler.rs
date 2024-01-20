@@ -82,7 +82,6 @@ impl GameServer {
             //
         }
 
-        // let game = get_mut_game(&mut self.games, &game_name)?;
         let party = get_mut_party(game, party_id)?;
         if let Some(room) = new_room {
             party.current_room = room.clone();

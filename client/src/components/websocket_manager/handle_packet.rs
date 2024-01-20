@@ -127,7 +127,7 @@ pub fn handle_packet(
             game_dispatch.reduce_mut(|store| handle_battle_full_update(store, packet))
         }
         GameServerUpdatePackets::BattleEndReport(packet) => {
-            handle_battle_end_report(game_dispatch, packet)
+            handle_battle_end_report(game_dispatch, websocket_dispatch, packet)
         }
         GameServerUpdatePackets::CharacterPickedUpItem(packet) => {
             handle_character_picked_up_item(game_dispatch, packet)

@@ -1,9 +1,10 @@
+use crate::components::common_components::atoms::button_basic::ButtonBasic;
 use crate::components::websocket_manager::send_client_input::send_client_input;
 use crate::store::game_store::get_current_party_option;
 use crate::store::game_store::GameStore;
 use crate::store::websocket_store::WebsocketStore;
 use common::packets::client_to_server::PlayerInputs;
-use common::packets::CharacterPickedUpItemPacket;
+use common::packets::CharacterAndItem;
 use gloo::console::log;
 use yew::function_component;
 use yew::prelude::*;
@@ -53,29 +54,30 @@ pub fn item_on_ground(props: &ItemOnGroundProps) -> Html {
     let take_item = Callback::from(move |_| {
         send_client_input(
             &cloned_websocket_state.websocket,
-            PlayerInputs::TakeItemOnGround(CharacterPickedUpItemPacket {
+            PlayerInputs::TakeItemOnGround(CharacterAndItem {
                 character_id: focused_character_id,
                 item_id,
             }),
         )
     });
 
-    let cloned_websocket_state = websocket_state.clone();
-    use_effect_with((), move |_| {
-        log!("sending ack");
-        send_client_input(
-            &cloned_websocket_state.websocket,
-            PlayerInputs::AcknowledgeReceiptOfItemOnGroundUpdate(item_id),
-        )
-    });
+    // let cloned_websocket_state = websocket_state.clone();
+    // use_effect_with((), move |_| {
+    //     send_client_input(
+    //         &cloned_websocket_state.websocket,
+    //         PlayerInputs::AcknowledgeReceiptOfItemOnGroundUpdate(item_id),
+    //     )
+    // });
 
     html!(
-    <li>
-        <button onclick={take_item}>
+    <li class="h-10 w-full flex border border-slate-400 mb-2 last:mb-0" >
+        <ButtonBasic extra_styles="border-0 border-r hover:bg-slate-950 h-full" onclick={take_item}>
             {"Take"}
-        </button>
-        <div>
-            {&props.name}{" "}{&props.id}
+        </ButtonBasic>
+        <div class="flex items-center h-full w-full ">
+            <div class="pl-2 overflow-hidden whitespace-nowrap text-ellipsis ">
+                {&props.name}{" "}{&props.id}
+            </div>
         </div>
     </li>
     )

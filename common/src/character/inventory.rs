@@ -1,4 +1,5 @@
 use crate::app_consts::CHARACTER_INVENTORY_DEFAULT_CAPACITY;
+use crate::errors::AppError;
 use crate::items::Item;
 use serde::Deserialize;
 use serde::Serialize;
@@ -19,5 +20,9 @@ impl CharacterInventory {
             shards: 0,
             autoinjectors: 0,
         }
+    }
+
+    pub fn remove_item(&mut self, item_id: u32) -> Result<Item, AppError> {
+        Item::remove_item_from_vec(&mut self.items, item_id)
     }
 }

@@ -11,6 +11,7 @@ impl GameServer {
         actor_id: u32,
         item_id: u32,
     ) -> Result<(), AppError> {
+        println!("got receipt ack");
         let ActorIdAssociatedGameData { game, party_id, .. } =
             get_mut_game_data_from_actor_id(self, actor_id)?;
         let party = get_mut_party(game, party_id)?;

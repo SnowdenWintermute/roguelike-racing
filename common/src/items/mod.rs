@@ -83,4 +83,22 @@ impl Item {
         }
         true
     }
+
+    pub fn remove_item_from_vec(vec: &mut Vec<Item>, item_id: u32) -> Result<Item, AppError> {
+        let mut index_to_remove_option = None;
+        for (i, item) in vec.iter().enumerate() {
+            if item.entity_properties.id == item_id {
+                index_to_remove_option = Some(i)
+            }
+        }
+        if let Some(index_to_remove) = index_to_remove_option {
+            let removed_item = vec.remove(index_to_remove);
+            Ok(removed_item)
+        } else {
+            Err(AppError {
+                error_type: crate::errors::AppErrorTypes::Generic,
+                message: error_messages::INVALID_ITEM_ID.to_string(),
+            })
+        }
+    }
 }

@@ -227,18 +227,8 @@ impl AdventuringParty {
 
     pub fn remove_item_from_ground(&mut self, item_id: u32) -> Result<Item, AppError> {
         let item_option = if let Some(items_on_ground) = &mut self.current_room.items {
-            let mut index_to_remove_option = None;
-            for (i, item) in items_on_ground.iter().enumerate() {
-                if item.entity_properties.id == item_id {
-                    index_to_remove_option = Some(i)
-                }
-            }
-            if let Some(index_to_remove) = index_to_remove_option {
-                let removed_item = items_on_ground.remove(index_to_remove);
-                Some(removed_item)
-            } else {
-                None
-            }
+            let removed_item = Item::remove_item_from_vec(items_on_ground, item_id)?;
+            Some(removed_item)
         } else {
             None
         };

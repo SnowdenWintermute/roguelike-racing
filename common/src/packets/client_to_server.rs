@@ -1,11 +1,10 @@
+use super::CharacterAndItem;
 use crate::combatants::abilities::AbilityTarget;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::CombatantClass;
 use crate::items::equipment::EquipmentSlots;
 use serde::Deserialize;
 use serde::Serialize;
-
-use super::CharacterPickedUpItemPacket;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum PlayerInputs {
@@ -41,8 +40,9 @@ pub enum PlayerInputs {
     PickTreasureChestLock,
     DisarmTrappedChest,
     OpenTreasureChest,
-    TakeItemOnGround(CharacterPickedUpItemPacket),
+    TakeItemOnGround(CharacterAndItem),
     AcknowledgeReceiptOfItemOnGroundUpdate(u32),
+    DropItem(CharacterAndItem),
     EquipItemOnGround(u32),
 }
 

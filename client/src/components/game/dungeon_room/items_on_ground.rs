@@ -5,7 +5,6 @@ use crate::store::game_store::GameStore;
 use crate::store::websocket_store::WebsocketStore;
 use common::packets::client_to_server::PlayerInputs;
 use common::packets::CharacterAndItem;
-use gloo::console::log;
 use yew::function_component;
 use yew::prelude::*;
 use yew::Html;
@@ -19,7 +18,7 @@ pub fn items_on_ground() -> Html {
         return html!({ "no party found" });
     }
     let party = party.expect("none checked");
-    let items_to_display = party.current_room.items.clone().unwrap_or_default();
+    let items_to_display = party.current_room.items.clone();
 
     html!(
     <ul id="items on ground"

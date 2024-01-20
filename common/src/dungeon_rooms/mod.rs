@@ -34,7 +34,7 @@ impl fmt::Display for DungeonRoomTypes {
 pub struct DungeonRoom {
     pub room_type: DungeonRoomTypes,
     pub treasure_chest: Option<TreasureChest>,
-    pub items: Option<Vec<Item>>,
+    pub items: Vec<Item>,
     pub monsters: Option<HashMap<u32, Monster>>,
 }
 
@@ -76,7 +76,7 @@ impl DungeonRoom {
 
         DungeonRoom {
             room_type,
-            items: None,
+            items: vec![],
             monsters,
             treasure_chest,
         }

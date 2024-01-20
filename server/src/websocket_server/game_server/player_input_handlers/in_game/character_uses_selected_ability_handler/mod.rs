@@ -146,7 +146,7 @@ impl GameServer {
             party.battle_id = None;
             if in_monster_lair {
                 party.current_room.monsters = None;
-                party.current_room.items = loot_option.clone();
+                party.current_room.items = loot_option.clone().unwrap_or_default();
             }
             if let Some(battle_id) = battle_id_option {
                 game.battles.remove(&battle_id);

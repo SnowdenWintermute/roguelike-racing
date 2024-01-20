@@ -78,7 +78,7 @@ pub fn generate_action_menu_items(
         if party.current_room.treasure_chest.is_some() {
             menu_types.push(MenuTypes::UnopenedChest);
         }
-        if party.current_room.items.is_some() {
+        if party.current_room.items.len() > 0 {
             menu_types.push(MenuTypes::ItemsOnGround);
         }
         new_actions = MenuTypes::get_menu(&menu_types, None, Some(ability_names));

@@ -1,6 +1,7 @@
 mod adventuring_party_update_handlers;
 mod game_full_update_handler;
 mod handle_battle_victory_report;
+mod handle_character_dropped_item;
 mod handle_character_picked_up_item;
 pub mod handle_combat_turn_results;
 mod handle_packet;

@@ -56,7 +56,7 @@ impl AdventuringParty {
             current_room: DungeonRoom {
                 room_type: DungeonRoomTypes::Empty,
                 treasure_chest: None,
-                items: None,
+                items: Vec::new(),
                 monsters: None,
             },
             battle_id: None,
@@ -78,11 +78,9 @@ impl AdventuringParty {
                     return Some(item);
                 }
             }
-            if let Some(items) = &self.current_room.items {
-                for item in items {
-                    if item.entity_properties.id == id {
-                        return Some(item);
-                    }
+            for item in &self.current_room.items {
+                if item.entity_properties.id == id {
+                    return Some(item);
                 }
             }
             if let Some(monsters) = &self.current_room.monsters {
@@ -226,15 +224,6 @@ impl AdventuringParty {
     }
 
     pub fn remove_item_from_ground(&mut self, item_id: u32) -> Result<Item, AppError> {
-        let item_option = if let Some(items_on_ground) = &mut self.current_room.items {
-            let removed_item = Item::remove_item_from_vec(items_on_ground, item_id)?;
-            Some(removed_item)
-        } else {
-            None
-        };
-        item_option.ok_or_else(|| AppError {
-            error_type: AppErrorTypes::InvalidInput,
-            message: INVALID_ITEM_ID.to_string(),
-        })
+        Item::remove_item_from_vec(&mut self.current_room.items, item_id)
     }
 }

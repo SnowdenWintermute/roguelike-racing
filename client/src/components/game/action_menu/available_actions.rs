@@ -34,7 +34,6 @@ pub enum GameActions {
     ShardItem(u32),
     DeselectItem,
     // InCombat
-    Attack,
     SelectAbility(CombatantAbilityNames),
     DeselectAbility,
     CycleTargets(NextOrPrevious),

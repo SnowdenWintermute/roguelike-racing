@@ -56,6 +56,7 @@ pub enum GameServerUpdatePackets {
     BattleFullUpdate(Option<Battle>),
     BattleEndReport(BattleEndReportPacket),
     CharacterPickedUpItem(CharacterAndItem),
+    CharacterDroppedItem(CharacterAndItem),
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Default)]

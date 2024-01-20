@@ -70,6 +70,7 @@ pub fn action_menu(_: &Props) -> Html {
     };
 
     let party = game_state.get_current_party().expect("to be in a party");
+    let num_items_on_ground = party.current_room.items.len();
     let battle_id = party.battle_id;
     let focused_character_option = party.characters.get(&game_state.focused_character_id);
     let focused_character_equipment_ids = match focused_character_option {
@@ -81,6 +82,11 @@ pub fn action_menu(_: &Props) -> Html {
                 .map(|(_slot, item)| item.entity_properties.id)
                 .collect::<Vec<u32>>(),
         ),
+        None => None,
+    };
+
+    let num_items_in_focused_character_inventory = match focused_character_option {
+        Some(focused_character) => Some(focused_character.inventory.items.len()),
         None => None,
     };
     let focused_character_selected_ability_option = match focused_character_option {
@@ -137,6 +143,8 @@ pub fn action_menu(_: &Props) -> Html {
             cloned_game_state.viewing_equipped_items,
             ability_targets,
             (
+                num_items_in_focused_character_inventory,
+                num_items_on_ground,
                 selected_item_id,
                 focused_character_selected_ability_option,
                 cloned_focused_character_current_animation_processing_option,

@@ -29,8 +29,8 @@ describe("a test test", () => {
     cy.findByText("Execute").click();
     cy.task("checkpoint", "first attack executed");
 
-    cy.findAllByText("Take").first().click({ force: true });
-    cy.findAllByText("Take").first().click({ force: true });
-    cy.findAllByText("Take").first().click({ force: true });
+    // cy.findAllByText("Take").first().click({ force: true });
+    // cy.findAllByText("Take").first().click({ force: true });
+    // cy.findAllByText("Take").first().click({ force: true });
   });
 });

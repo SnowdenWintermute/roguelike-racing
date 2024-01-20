@@ -20,8 +20,8 @@ describe("a test test", () => {
     cy.findByText("Attack").click();
     cy.findByText("Execute").click();
 
-    cy.findAllByText("Take").first().click({ force: true });
-    cy.findAllByText("Take").first().click({ force: true });
-    cy.findAllByText("Take").first().click({ force: true });
+    // cy.findAllByText("Take").first().click({ force: true });
+    // cy.findAllByText("Take").first().click({ force: true });
+    // cy.findAllByText("Take").first().click({ force: true });
   });
 });

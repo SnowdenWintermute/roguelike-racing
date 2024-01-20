@@ -27,6 +27,7 @@ pub fn take_ai_controlled_turns(
         })?;
         let (ally_battle_group, enemy_battle_group) =
             battle.get_ally_and_enemy_battle_groups(&active_combatant_entity_id)?;
+        let enemy_ids = enemy_battle_group.combatant_ids.clone();
         let (ability_name, targets) = game.ai_select_ability_and_targets(
             active_combatant_entity_id,
             ally_battle_group,
@@ -45,8 +46,8 @@ pub fn take_ai_controlled_turns(
         )?;
         // process result
         apply_action_results(game, &action_results)?;
-        // @TODO - check if one of the battle_groups is completely defeated and end the
-        // battle if so
+        let party_defeated = game.all_combatants_in_group_are_dead(enemy_ids)?;
+        println!("party defeated by ai ability: {party_defeated}");
 
         active_combatant_turn_action_results.append(&mut action_results);
 
@@ -68,12 +69,9 @@ pub fn take_ai_controlled_turns(
             active_combatant_entity_id = active_combatant_entity_properties.id;
             active_combatant_is_ai_controlled =
                 active_combatant_properties.controlled_by == CombatantControlledBy::AI;
-            println!(
-                "active combatant is ai: {active_combatant_is_ai_controlled} id: {}",
-                active_combatant_entity_id
-            );
-        } else {
-            continue;
+        }
+        if party_defeated {
+            return Ok(ai_turn_results);
         }
     }
 

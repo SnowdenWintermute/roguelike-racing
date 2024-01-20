@@ -115,6 +115,8 @@ impl GameServer {
             false
         };
 
+        let all_allies_are_dead = game.all_combatants_in_group_are_dead(ally_ids.clone())?;
+
         let num_opponents = if let Some(battle) = &battle_option {
             let (_, opponent_ids_option) =
                 battle.get_ally_ids_and_opponent_ids_option(character_id)?;
@@ -153,12 +155,6 @@ impl GameServer {
             }
         }
 
-        // create loot/exp or "game over" and send packet to client
-        // emit the turn results
-        //   - client will process turn results and check each one it processes to end the
-        //   battle on the client side
-        //   - once client ends battle, it will display the xp and loot or "game over"
-
         // if in combat
         let used_turn_ending_ability_in_battle = if battle_id_option.is_some() {
             let mut should_end = false;
@@ -181,7 +177,7 @@ impl GameServer {
             };
             turns.push(player_turn);
 
-            if !all_opponents_are_dead {
+            if !all_opponents_are_dead && !all_allies_are_dead {
                 let active_combatant_turn_tracker =
                     game.end_active_combatant_turn(battle_id_option.expect("checked above"))?;
                 let active_combatant_id = active_combatant_turn_tracker.entity_id;
@@ -212,7 +208,31 @@ impl GameServer {
             )?;
         }
 
-        if in_monster_lair && all_opponents_are_dead {
+        let game = self
+            .games
+            .get_mut(&current_game_name)
+            .ok_or_else(|| AppError {
+                error_type: common::errors::AppErrorTypes::ServerError,
+                message: error_messages::GAME_NOT_FOUND.to_string(),
+            })?;
+        let all_allies_are_dead = game.all_combatants_in_group_are_dead(ally_ids)?;
+        let party = get_mut_party(game, party_id)?;
+        if all_allies_are_dead {
+            println!("all allies are dead, ending game");
+            party.battle_id = None;
+            if let Some(battle_id) = battle_id_option {
+                game.battles.remove(&battle_id);
+            }
+            self.emit_packet(
+                &party_websocket_channel_name,
+                &WebsocketChannelNamespace::Party,
+                &GameServerUpdatePackets::BattleEndReport(BattleEndReportPacket {
+                    conclusion: BattleConclusion::Defeat,
+                    loot: None,
+                }),
+                None,
+            )?;
+        } else if in_monster_lair && all_opponents_are_dead {
             if let Some(loot) = loot_option.clone() {
                 // make sure all clients receive the item's existance or else one client can take
                 // the item before another client sees it leading to desync

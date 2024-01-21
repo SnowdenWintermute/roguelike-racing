@@ -1,10 +1,6 @@
-use crate::{
-    components::{
-        common_components::atoms::button_basic::ButtonBasic,
-        websocket_manager::send_client_input::send_client_input,
-    },
-    store::websocket_store::WebsocketStore,
-};
+use crate::components::common_components::atoms::button_basic::ButtonBasic;
+use crate::components::websocket_manager::send_client_input::send_client_input;
+use crate::store::websocket_store::WebsocketStore;
 use common::packets::client_to_server::PlayerInputs;
 use yew::prelude::*;
 use yewdux::prelude::use_store;

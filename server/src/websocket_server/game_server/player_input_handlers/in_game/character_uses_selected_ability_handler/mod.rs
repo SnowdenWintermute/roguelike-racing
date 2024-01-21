@@ -223,6 +223,8 @@ impl GameServer {
             if let Some(battle_id) = battle_id_option {
                 game.battles.remove(&battle_id);
             }
+            game.adventuring_parties.remove(&party_id);
+
             self.emit_packet(
                 &party_websocket_channel_name,
                 &WebsocketChannelNamespace::Party,
@@ -259,6 +261,17 @@ impl GameServer {
                 }),
                 None,
             )?;
+        }
+
+        let game = self
+            .games
+            .get_mut(&current_game_name)
+            .ok_or_else(|| AppError {
+                error_type: common::errors::AppErrorTypes::ServerError,
+                message: error_messages::GAME_NOT_FOUND.to_string(),
+            })?;
+        if game.adventuring_parties.len() < 1 {
+            self.games.remove(&current_game_name);
         }
         Ok(())
     }

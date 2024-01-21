@@ -1,5 +1,3 @@
-use std::time::SystemTime;
-
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::combat::CombatTurnResult;
@@ -45,19 +43,22 @@ pub fn send_next_turn_result_to_combatant_event_manager(
         } else if let Some(battle_end_report) = store.current_battle_end_report.clone() {
             let party = store.get_current_party_mut()?;
             match battle_end_report.conclusion {
-                BattleConclusion::Victory => store
-                    .combat_log
-                    .push(AttrValue::from("battle ended in victory")),
+                BattleConclusion::Victory => {
+                    store
+                        .combat_log
+                        .push(AttrValue::from("battle ended in victory"));
+
+                    store.current_battle_id = None;
+                }
                 BattleConclusion::Defeat => {
                     party.time_of_wipe = Some(js_sys::Date::now() as u64);
                     store
                         .combat_log
-                        .push(AttrValue::from("battle ended in defeat (game over)"))
+                        .push(AttrValue::from("battle ended in defeat (game over)"));
                 }
             }
 
             store.current_battle_end_report = None;
-            store.current_battle_id = None;
         }
         Ok(())
     })

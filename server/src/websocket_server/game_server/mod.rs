@@ -5,7 +5,6 @@ use common::game::RoguelikeRacerGame;
 use common::packets::client_to_server::PlayerInputs;
 use common::packets::server_to_client::GameServerUpdatePackets;
 use common::packets::WebsocketChannelNamespace;
-use common::utils::generate_random_username;
 use std::collections::HashMap;
 use std::collections::HashSet;
 pub mod connection_handler;
@@ -17,6 +16,8 @@ pub mod player_input_handlers;
 mod remove_user_from_websocket_channel;
 pub mod send_messages;
 pub mod update_packet_creators;
+use crate::utils::generate_random_username;
+
 use super::AppMessage;
 use super::ClientBinaryMessage;
 use super::ClientMessage;

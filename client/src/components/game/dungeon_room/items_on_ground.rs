@@ -26,7 +26,7 @@ pub fn items_on_ground() -> Html {
 
     html!(
     <ul id="items on ground"
-        class="list-none"
+        class="list-none overflow-y-auto"
     >
         {items_to_display.iter().map(|item|
             html!(
@@ -66,16 +66,8 @@ pub fn item_on_ground(props: &ItemOnGroundProps) -> Html {
         )
     });
 
-    // let cloned_websocket_state = websocket_state.clone();
-    // use_effect_with((), move |_| {
-    //     send_client_input(
-    //         &cloned_websocket_state.websocket,
-    //         PlayerInputs::AcknowledgeReceiptOfItemOnGroundUpdate(item_id),
-    //     )
-    // });
-
     html!(
-    <li class="h-10 w-full flex border border-slate-400 mb-2 last:mb-0" >
+    <li class="h-10 w-full max-w-full flex border border-slate-400 mb-2 last:mb-0 whitespace-nowrap text-ellipsis overflow-hidden" >
         <ButtonBasic
             extra_styles="border-0 border-r hover:bg-slate-950 h-full"
             onclick={take_item}

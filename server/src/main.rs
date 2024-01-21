@@ -1,12 +1,20 @@
 use actix::*;
-use actix_web::{
-    middleware::Logger, web, App, Error, HttpRequest, HttpResponse, HttpServer, Responder,
-};
+use actix_web::middleware::Logger;
+use actix_web::web;
+use actix_web::App;
+use actix_web::Error;
+use actix_web::HttpRequest;
+use actix_web::HttpResponse;
+use actix_web::HttpServer;
+use actix_web::Responder;
 use actix_web_actors::ws;
 use rand::Rng;
-use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::atomic::AtomicUsize;
+use std::sync::atomic::Ordering;
 use std::time::Instant;
 use websocket_server::websocket_actor::WebsocketActor;
+mod random_names;
+mod utils;
 mod websocket_server;
 
 /// Entry point for our websocket route
@@ -39,6 +47,12 @@ async fn main() -> std::io::Result<()> {
     // start chat server actor
     let game_server_actor_address = websocket_server::game_server::GameServer::new().start();
 
+    // for i in 0..100 {
+    //     let EquipmentPropertiesAndRequirements {
+    //         equipment_properties,
+    //         requirements,
+    //     } = generate_equipment_properties_from_base_item(0);
+    // }
     log::info!("starting HTTP server at http://localhost:8082");
 
     HttpServer::new(move || {

@@ -44,6 +44,8 @@ pub fn send_next_turn_result_to_combatant_event_manager(
             let party = store.get_current_party_mut()?;
             match battle_end_report.conclusion {
                 BattleConclusion::Victory => {
+                    party.current_room.monsters = None;
+                    party.battle_id = None;
                     store
                         .combat_log
                         .push(AttrValue::from("battle ended in victory"));

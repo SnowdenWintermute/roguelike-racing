@@ -9,9 +9,12 @@ pub fn combat_log() -> Html {
     html!(
         <div class="h-full flex flex-col">
             <h3 class="flex-grow-0 flex-shrink" >{"Combat log"}</h3>
-            <ul class="list-none overflow-y-auto flex-auto" >
-                {game_state.combat_log.iter().map(|log_entry| html!(<li>{log_entry}</li>)).collect::<Html>()}
-            </ul>
+            <div class="list-none overflow-y-auto
+           flex flex-col-reverse flex-1" >
+               <ul class="" >
+               {game_state.combat_log.iter().map(|log_entry| html!(<li>{log_entry}</li>)).collect::<Html>()}
+               </ul>
+            </div>
         </div>
     )
 }

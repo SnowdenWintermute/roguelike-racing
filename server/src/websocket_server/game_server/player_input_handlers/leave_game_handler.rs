@@ -63,6 +63,7 @@ impl GameServer {
         }
 
         connected_user.current_game_name = None;
+        println!("removed player from game and set their current game name to None");
         Ok(PlayerRemovedFromGame {
             username: connected_user.username.clone(),
             game_name: game_name_leaving,

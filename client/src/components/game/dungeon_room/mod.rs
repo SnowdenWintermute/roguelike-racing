@@ -3,8 +3,6 @@ use crate::components::websocket_manager::send_client_input::send_client_input;
 use crate::store::websocket_store::WebsocketStore;
 use common::character::Character;
 use common::packets::client_to_server::PlayerInputs;
-use gloo::console::log;
-use wasm_bindgen::JsValue;
 mod enemy_battle_group;
 mod items_on_ground;
 mod players_ready_to_explore;
@@ -24,7 +22,7 @@ pub struct Props {
 #[function_component(DungeonRoom)]
 pub fn dungeon_room(props: &Props) -> Html {
     let (websocket_state, _) = use_store::<WebsocketStore>();
-    let (game_state, _) = use_store::<GameStore>();
+    let (game_state, game_dispatch) = use_store::<GameStore>();
     let game_result = game_state.get_current_game();
     if let Ok(game) = game_result {
         let party = game
@@ -50,22 +48,12 @@ pub fn dungeon_room(props: &Props) -> Html {
         };
 
         let time_of_death_option = if let Some(time_of_wipe) = party.time_of_wipe {
-            let js_date = js_sys::Date::new_0();
-            log!(format!("time of wipe: {:#?}", time_of_wipe));
-            let as_seconds = time_of_wipe / 1000;
-            log!(format!("as_seconds: {:#?}", as_seconds));
-            js_date.set_time(as_seconds as f64);
-            let js_value = wasm_bindgen::JsValue::from(as_seconds);
-            let js_date = js_sys::Date::from(js_value);
-            log!(format!("js date: {:#?}", js_date));
-            let formatted_time = js_date.to_locale_string("en-US", &JsValue::from("{}"));
-            log!(format!("js date: {:#?}", formatted_time));
-            Some(formatted_time)
+            Some("now")
         } else {
             None
         };
         let leave_game = Callback::from(move |_| {
-            send_client_input(&websocket_state.websocket, PlayerInputs::LeaveGame)
+            game_dispatch.set(GameStore::default());
         });
 
         // used to determine which battle group is the enemy
@@ -90,7 +78,7 @@ pub fn dungeon_room(props: &Props) -> Html {
                     }
                 </div>
                 if !game_state.viewing_inventory {
-                <div class="w-1/2 border-l border-slate-400 p-2" >
+                <div class="w-1/2 border-l border-slate-400 p-2 flex flex-col" >
                     if let Some(time_of_death) = time_of_death_option {
                         <div class=" border border-slate-400 bg-slate-700 p-4
                             absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" >

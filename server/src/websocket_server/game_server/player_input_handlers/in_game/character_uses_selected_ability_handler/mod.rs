@@ -134,6 +134,7 @@ impl GameServer {
             })?;
         let loot_option = if in_monster_lair && all_opponents_are_dead {
             let mut loot = vec![];
+            println!("creating loot for dlvl {dlvl}");
             for _ in 0..num_opponents {
                 loot.push(Item::generate(&mut game.id_generator, dlvl))
             }
@@ -223,7 +224,16 @@ impl GameServer {
             if let Some(battle_id) = battle_id_option {
                 game.battles.remove(&battle_id);
             }
-            game.adventuring_parties.remove(&party_id);
+            let players = game.players.clone();
+            for (_, player) in players {
+                if let Some(actor_id) = player.actor_id {
+                    println!("attempting to remove actor id {} from game", actor_id);
+                    let result = self.remove_player_from_game(actor_id);
+                    if let Some(err) = result.err() {
+                        println!("{}", err.message)
+                    }
+                }
+            }
 
             self.emit_packet(
                 &party_websocket_channel_name,
@@ -263,16 +273,6 @@ impl GameServer {
             )?;
         }
 
-        let game = self
-            .games
-            .get_mut(&current_game_name)
-            .ok_or_else(|| AppError {
-                error_type: common::errors::AppErrorTypes::ServerError,
-                message: error_messages::GAME_NOT_FOUND.to_string(),
-            })?;
-        if game.adventuring_parties.len() < 1 {
-            self.games.remove(&current_game_name);
-        }
         Ok(())
     }
 }

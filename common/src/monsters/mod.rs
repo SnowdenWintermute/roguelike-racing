@@ -1,4 +1,6 @@
 #![allow(dead_code)]
+mod random_monster_names;
+
 use crate::combatants::abilities::CombatantAbility;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::combat_attributes::CombatAttributes;
@@ -7,11 +9,14 @@ use crate::combatants::CombatantControlledBy;
 use crate::combatants::CombatantProperties;
 use crate::game::id_generator::IdGenerator;
 use crate::primatives::EntityProperties;
-use crate::utils::generate_random_monster_name;
+use rand::seq::SliceRandom;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
 use strum_macros::EnumIter;
+
+use self::random_monster_names::MONSTER_FIRST_NAMES;
+use self::random_monster_names::MONSTER_LAST_NAMES;
 
 #[derive(Debug, EnumIter, Clone, Copy, PartialEq)]
 pub enum MonsterTraits {
@@ -33,6 +38,14 @@ pub enum MonsterAbilities {
 pub struct Monster {
     pub entity_properties: EntityProperties,
     pub combatant_properties: CombatantProperties,
+}
+
+pub fn generate_random_monster_name() -> String {
+    let mut rng = rand::thread_rng();
+    let first_name = MONSTER_FIRST_NAMES.choose(&mut rng).unwrap();
+    let last_name = MONSTER_LAST_NAMES.choose(&mut rng).unwrap();
+
+    format!("{} {}", first_name, last_name).to_string()
 }
 
 impl Monster {

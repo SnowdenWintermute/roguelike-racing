@@ -34,7 +34,7 @@ jobs:
       - name: connect to vps, pull docker images and relaunch docker compose
         uses: garygrossgarten/github-action-ssh@release
         with:
-          command: cd /app && docker compose down && docker compose pull && docker compose up -d
+          command: cd /app && docker-compose down && docker-compose pull && docker-compose up -d
           host: ${{ secrets.VPS_HOST_ADDRESS }}
           username: ${{ secrets.VPS_USERNAME }}
           password: ${{ secrets.VPS_PASSWORD }}

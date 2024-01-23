@@ -19,10 +19,10 @@ pub fn app() -> Html {
     let in_production = std::env!("TRUNK_PROD");
     log!(format!("in production: {in_production}"));
     let websocket_server_url = if in_production == "true" {
-        "ws://roguelikeracing.com/ws"
+        "wss://roguelikeracing.com/ws"
     } else {
-        "ws://127.0.0.1:8082/ws"
-        // "127.0.0.1:8082/ws"
+        // "wss://roguelikeracing.com/ws"
+        "127.0.0.1:8082/ws"
     };
 
     html! {

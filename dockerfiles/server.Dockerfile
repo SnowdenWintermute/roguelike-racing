@@ -31,4 +31,5 @@ WORKDIR /app
 COPY --from=builder /app/server/target .
 RUN ls -a
 WORKDIR /
+EXPOSE 8082
 CMD ["./app/release/server"]

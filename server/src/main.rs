@@ -36,9 +36,8 @@ async fn game_server_route(
 }
 
 /// Displays state
-async fn get_count(count: web::Data<AtomicUsize>) -> impl Responder {
-    let current_count = count.load(Ordering::SeqCst);
-    format!("Visitors: {current_count}")
+async fn test_the_server() -> impl Responder {
+    format!("reached the game server")
 }
 
 #[actix_web::main]
@@ -58,12 +57,12 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(game_server_actor_address.clone()))
-            .route("/count", web::get().to(get_count))
+            .route("/test", web::get().to(test_the_server))
             .route("/ws", web::get().to(game_server_route))
             .wrap(Logger::default())
     })
     .workers(1)
-    .bind(("127.0.0.1", 8082))?
+    .bind(("0.0.0.0", 8082))?
     .run()
     .await
 }

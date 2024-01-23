@@ -41,6 +41,10 @@ pub fn websocket_manager(props: &Props) -> Html {
     let (_, game_dispatch) = use_store::<GameStore>();
     let (_, alert_dispatch) = use_store::<AlertStore>();
     let server_url = props.server_url.clone();
+    log!(format!(
+        "attempting connection to websocket server: {}",
+        props.server_url
+    ));
 
     use_effect_with((), move |_| {
         let websocket = WebSocket::new(&server_url);

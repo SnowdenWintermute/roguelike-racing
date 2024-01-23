@@ -4,3 +4,7 @@
 /server/target
 
 **/target
+
+# mac computers add this to all their folders
+**/.DS_Store
+

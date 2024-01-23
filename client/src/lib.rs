@@ -8,6 +8,7 @@ use crate::components::lobby::game_setup::GameSetup;
 use crate::components::lobby::Lobby;
 use crate::components::websocket_manager::WebsocketManager;
 use crate::store::game_store::GameStore;
+use gloo::console::log;
 use yew::prelude::*;
 use yewdux::prelude::*;
 
@@ -15,11 +16,18 @@ use yewdux::prelude::*;
 pub fn app() -> Html {
     let (game_state, _) = use_store::<GameStore>();
     let game = game_state.game.clone();
+    let in_production = std::env!("TRUNK_PROD");
+    log!(format!("in production: {in_production}"));
+    let websocket_server_url = if in_production =="true" {
+        "ws://roguelikeracing.com/ws"
+    } else {
+        "ws://127.0.0.1:8082/ws"
+    };
 
     html! {
         <div >
             <GlobalKeyboardEventManager />
-            <WebsocketManager server_url={"ws://127.0.0.1:8082/ws"} />
+            <WebsocketManager server_url={websocket_server_url} />
             <AlertManager />
             if game_state.game.is_some() && game.unwrap().time_started.is_some() {
                 <Game />

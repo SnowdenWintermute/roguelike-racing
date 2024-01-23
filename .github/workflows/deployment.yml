@@ -21,12 +21,19 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Build and push
+        name: Build and push client
         uses: docker/build-push-action@v5
         with:
           push: true
           tags: snowd3n/roguelike-racing:client
           file: ./dockerfiles/client.Dockerfile
+      -
+        name: Build and push server
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: snowd3n/roguelike-racing:server
+          file: ./dockerfiles/server.Dockerfile
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest

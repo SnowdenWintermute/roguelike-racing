@@ -10,19 +10,25 @@ RUN mkdir src \
     && echo "// dummy file" > src/lib.rs
 WORKDIR /app/server
 RUN mkdir src \
-    && echo "// dummy file" > src/lib.rs \
+    && echo "fn main() {}" > src/main.rs \
     && cargo build --release
 
 WORKDIR /app
 COPY /common/src ./common/src
 COPY /server/src ./server/src
 
+WORKDIR /app/common/src
+RUN rm -rf target
+
 WORKDIR /app/server
+RUN rm -rf target
 RUN cargo build --release
 RUN echo LISTING FILES
 RUN ls
 
-# FROM rust:1.70.0:alpine
-# WORKDIR /app
-# COPY --from=builder /app/server/target .
-# RUN cargo run
+FROM debian:bullseye-slim 
+WORKDIR /app
+COPY --from=builder /app/server/target .
+RUN ls -a
+WORKDIR /
+CMD ["./app/release/server"]

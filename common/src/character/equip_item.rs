@@ -1,5 +1,7 @@
 use super::Character;
-use crate::{app_consts::error_messages, errors::AppError, items::equipment::EquipmentSlots};
+use crate::app_consts::error_messages;
+use crate::errors::AppError;
+use crate::items::equipment::EquipmentSlots;
 
 impl Character {
     pub fn slot_item_is_equipped(&self, item_id: &u32) -> Option<EquipmentSlots> {
@@ -10,6 +12,7 @@ impl Character {
         }
         return None;
     }
+
     /// returns list of ids of any items which were unequipped
     pub fn equip_item(&mut self, item_id: u32, alt_slot: bool) -> Result<Vec<u32>, AppError> {
         let mut item_and_index_option = None;

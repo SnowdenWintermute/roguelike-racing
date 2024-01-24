@@ -26,8 +26,8 @@ pub const INVALID_ITEM_ID: &str = "No valid item with the provided id was found"
 pub const ITEM_REQUIREMENTS_NOT_MET: &str =
     "You do not meet the requirements to equip or use that item";
 pub const CANT_EQUIP_NON_EQUIPMENT: &str = "Only equipment items may be equipped";
-pub const INVALID_EQUIPMENT_EQUIPPEND: &str =
-    "An invalid item was found in a character's equippment sloty";
+pub const INVALID_EQUIPMENT_EQUIPPED: &str =
+    "An invalid item was found in a character's equippment slot";
 pub const ITEM_NOT_YET_AVAILABLE: &str = "That item's data is still being sent to other clients";
 pub const ITEM_ON_GROUND_ACKNOWLEDGEMENT_SENT_BEFORE_ITEM_EXISTED: &str =
 "A client sent acknowledgement of receipt of an item on the ground before a registry was created for that item";

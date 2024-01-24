@@ -1,19 +1,24 @@
 use crate::combatants::combat_attributes::CombatAttributes;
-use crate::{
-    game::id_generator::IdGenerator,
-    items::{
-        equipment::{
-            armor_properties::{ArmorCategories, ArmorProperties},
-            body_armors::BodyArmors,
-            head_gears::HeadGears,
-            one_handed_melee_weapons::OneHandedMeleeWeapons,
-            weapon_properties::{DamageClassifications, DamageTypes, WeaponProperties},
-            EquipmentProperties, EquipmentSlots, EquipmentTypes,
-        },
-        Item, ItemProperties,
-    },
-    primatives::{EntityProperties, MaxAndCurrent, Range},
-};
+use crate::game::id_generator::IdGenerator;
+use crate::items::equipment::armor_properties::ArmorCategories;
+use crate::items::equipment::armor_properties::ArmorProperties;
+use crate::items::equipment::body_armors::BodyArmors;
+use crate::items::equipment::head_gears::HeadGears;
+use crate::items::equipment::one_handed_melee_weapons::OneHandedMeleeWeapons;
+use crate::items::equipment::shield_properties::ShieldProperties;
+use crate::items::equipment::shield_properties::ShieldSizes;
+use crate::items::equipment::shields::Shields;
+use crate::items::equipment::weapon_properties::DamageClassifications;
+use crate::items::equipment::weapon_properties::DamageTypes;
+use crate::items::equipment::weapon_properties::WeaponProperties;
+use crate::items::equipment::EquipmentProperties;
+use crate::items::equipment::EquipmentSlots;
+use crate::items::equipment::EquipmentTypes;
+use crate::items::Item;
+use crate::items::ItemProperties;
+use crate::primatives::EntityProperties;
+use crate::primatives::MaxAndCurrent;
+use crate::primatives::Range;
 use std::collections::HashMap;
 
 pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<EquipmentSlots, Item> {
@@ -97,19 +102,32 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
         name: "Mud Soaked Branch".to_string(),
     };
 
-    let main_hand = Item {
+    let _main_hand = Item {
         entity_properties: main_hand_entity_properties,
         item_level: 0,
         requirements: None,
         item_properties: ItemProperties::Equipment(main_hand_properties),
     };
 
+    // let off_hand_properties = EquipmentProperties {
+    //     equipment_type: EquipmentTypes::OneHandedMeleeWeapon(
+    //         OneHandedMeleeWeapons::Stick,
+    //         WeaponProperties {
+    //             damage_classifications: vec![DamageClassifications::Physical(DamageTypes::Blunt)],
+    //             damage: Range::new(1, 4),
+    //         },
+    //     ),
+    //     durability: Some(MaxAndCurrent::new(2, 2)),
+    //     attributes: HashMap::new(),
+    //     affixes: vec![],
+    //     traits: None,
+    // };
     let off_hand_properties = EquipmentProperties {
-        equipment_type: EquipmentTypes::OneHandedMeleeWeapon(
-            OneHandedMeleeWeapons::Stick,
-            WeaponProperties {
-                damage_classifications: vec![DamageClassifications::Physical(DamageTypes::Blunt)],
-                damage: Range::new(1, 4),
+        equipment_type: EquipmentTypes::Shield(
+            Shields::MakeshiftBuckler,
+            ShieldProperties {
+                size: ShieldSizes::Small,
+                armor_class: 100,
             },
         ),
         durability: Some(MaxAndCurrent::new(2, 2)),
@@ -204,7 +222,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
 
     // starting_equipment.insert(EquipmentSlots::Body, chest);
     starting_equipment.insert(EquipmentSlots::Head, head);
-    starting_equipment.insert(EquipmentSlots::MainHand, main_hand);
+    // starting_equipment.insert(EquipmentSlots::MainHand, main_hand);
     starting_equipment.insert(EquipmentSlots::OffHand, off_hand);
     starting_equipment.insert(EquipmentSlots::RightRing, right_ring);
     starting_equipment.insert(EquipmentSlots::LeftRing, left_ring);

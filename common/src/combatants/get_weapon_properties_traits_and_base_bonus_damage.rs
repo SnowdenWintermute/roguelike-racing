@@ -42,7 +42,7 @@ pub fn get_weapon_properties_traits_and_base_bonus_damage<'a>(
         _ => {
             return Err(AppError {
                 error_type: crate::errors::AppErrorTypes::Generic,
-                message: error_messages::INVALID_EQUIPMENT_EQUIPPEND.to_string(),
+                message: error_messages::INVALID_EQUIPMENT_EQUIPPED.to_string(),
             })
         }
     }

@@ -1,5 +1,6 @@
 pub const UNRECOGNIZED_PACKET: &str = "An unrecognized packet was received";
 pub const USER_NOT_FOUND: &str = "The game server couldn't find a user with the provided actor id";
+pub const ACTOR_ID_NOT_FOUND: &str = "The actor id for that player is missing";
 pub const GAME_NOT_FOUND: &str = "No game found by the provided name";
 pub const MISSING_GAME_REFERENCE: &str = "Missing reference to current game";
 pub const ALREADY_IN_GAME: &str = "You are already in a game";
@@ -26,8 +27,8 @@ pub const INVALID_ITEM_ID: &str = "No valid item with the provided id was found"
 pub const ITEM_REQUIREMENTS_NOT_MET: &str =
     "You do not meet the requirements to equip or use that item";
 pub const CANT_EQUIP_NON_EQUIPMENT: &str = "Only equipment items may be equipped";
-pub const INVALID_EQUIPMENT_EQUIPPEND: &str =
-    "An invalid item was found in a character's equippment sloty";
+pub const INVALID_EQUIPMENT_EQUIPPED: &str =
+    "An invalid item was found in a character's equippment slot";
 pub const ITEM_NOT_YET_AVAILABLE: &str = "That item's data is still being sent to other clients";
 pub const ITEM_ON_GROUND_ACKNOWLEDGEMENT_SENT_BEFORE_ITEM_EXISTED: &str =
 "A client sent acknowledgement of receipt of an item on the ground before a registry was created for that item";
@@ -71,3 +72,8 @@ pub const EVENT_MANAGER_MISSING_ACTION_RESULT: &str =
 // EXPLORATION
 pub const CANT_EXPLORE_WHEN_MONSTERS_ARE_PRESENT: &str =
     "Defeat the monsters before exploring the next room";
+pub const CANT_DESCEND_IF_NO_STAIRS_ARE_PRESENT: &str =
+    "You can't go down the stairs if there are no stairs to go down";
+pub const MISSING_ROOM_TYPE_TO_GENERATE: &str =
+    "Tried to generate a new room but the party's list of rooms to generate was empty";
+pub const CLIENT_LIST_MISSING_ROOM_TYPE: &str = "The client's list of room types on the current floor didn't contain a room type at the specified index";

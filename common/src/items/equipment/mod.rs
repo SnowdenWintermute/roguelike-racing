@@ -107,17 +107,6 @@ pub struct EquipmentProperties {
     pub traits: Option<Vec<EquipmentTraits>>,
 }
 
-impl EquipmentProperties {
-    pub fn get_base_armor_class(&self) -> u8 {
-        match &self.equipment_type {
-            EquipmentTypes::BodyArmor(_, armor_properties) => armor_properties.armor_class,
-            EquipmentTypes::HeadGear(_, armor_properties) => armor_properties.armor_class,
-            EquipmentTypes::Shield(_, shield_properties) => shield_properties.armor_class,
-            _ => 0,
-        }
-    }
-}
-
 #[derive(PartialEq, Clone, Debug)]
 pub struct EquipableSlots {
     pub main: EquipmentSlots,
@@ -131,6 +120,15 @@ impl EquipableSlots {
 }
 
 impl EquipmentProperties {
+    pub fn get_base_armor_class(&self) -> u8 {
+        match &self.equipment_type {
+            EquipmentTypes::BodyArmor(_, armor_properties) => armor_properties.armor_class,
+            EquipmentTypes::HeadGear(_, armor_properties) => armor_properties.armor_class,
+            EquipmentTypes::Shield(_, shield_properties) => shield_properties.armor_class,
+            _ => 0,
+        }
+    }
+
     pub fn get_equippable_slots(&self) -> EquipableSlots {
         match self.equipment_type {
             EquipmentTypes::BodyArmor(_, _) => EquipableSlots::new(EquipmentSlots::Body, None),
@@ -151,6 +149,15 @@ impl EquipmentProperties {
                 EquipableSlots::new(EquipmentSlots::MainHand, None)
             }
             EquipmentTypes::Shield(_, _) => EquipableSlots::new(EquipmentSlots::OffHand, None),
+        }
+    }
+
+    pub fn is_weapon(&self) -> bool {
+        match self.equipment_type {
+            EquipmentTypes::OneHandedMeleeWeapon(_, _) |
+            EquipmentTypes::TwoHandedMeleeWeapon(_, _) |
+            EquipmentTypes::TwoHandedRangedWeapon(_, _) => true,
+            _ => false
         }
     }
 

@@ -1,21 +1,20 @@
-pub mod action_handlers;
-mod action_menu_button;
+pub mod action_button_click_handlers;
+pub mod action_button_hover_handlers;
+pub mod action_menu_button;
+mod action_menu_change_detection_manager;
+mod action_menu_page_manager;
 mod action_page_buttons;
-mod available_actions;
-mod create_action_handler;
-mod create_action_mouse_enter_handler;
-mod create_action_mouse_leave_handler;
+mod build_action_button_properties;
 mod determine_action_menu_buttons_disabled;
-mod generate_action_menu_items;
-mod generate_button_text;
-mod get_character_owned_item_by_id;
+mod determine_menu_actions;
+pub mod enums;
+mod get_game_actions_by_menu_type;
 mod set_keyup_listeners;
-mod set_up_actions;
 use crate::components::game::action_menu::action_menu_button::ActionMenuButton;
+use crate::components::game::action_menu::action_menu_change_detection_manager::ActionMenuChangeDetectionManager;
 use crate::components::game::action_menu::action_page_buttons::ActionPageButtons;
-use crate::components::game::action_menu::set_up_actions::ActionMenuButtonProperties;
+use crate::components::game::action_menu::build_action_button_properties::ActionMenuButtonProperties;
 use crate::store::alert_store::AlertStore;
-use crate::store::game_store::get_active_combatant;
 use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
 use crate::store::ui_store::UIStore;
@@ -37,16 +36,16 @@ pub fn action_menu(_: &Props) -> Html {
     let (lobby_state, _) = use_store::<LobbyStore>();
     let (websocket_state, _) = use_store::<WebsocketStore>();
     let (_, alert_dspatch) = use_store::<AlertStore>();
-    let action_button_properties = use_state(|| Vec::<ActionMenuButtonProperties>::new());
+    let action_menu_button_properties = use_state(|| Vec::<ActionMenuButtonProperties>::new());
     let button_props_on_current_page = use_state(|| Vec::<ActionMenuButtonProperties>::new());
 
     let cloned_current_page_number = game_state.action_menu_current_page_number.clone();
-    let cloned_action_button_properties = action_button_properties.clone();
+    let cloned_action_button_properties = action_menu_button_properties.clone();
     let cloned_button_props_on_current_page = button_props_on_current_page.clone();
     use_effect_with(
         (
             game_state.action_menu_current_page_number,
-            action_button_properties.clone(),
+            action_menu_button_properties.clone(),
         ),
         move |_| {
             let min_index = cloned_current_page_number * PAGE_SIZE;
@@ -59,118 +58,6 @@ pub fn action_menu(_: &Props) -> Html {
                 .map(|(_, item)| item.clone())
                 .collect::<Vec<ActionMenuButtonProperties>>();
             cloned_button_props_on_current_page.set(filtered_actions);
-        },
-    );
-
-    let cloned_action_button_properties = action_button_properties.clone();
-    let cloned_game_state = game_state.clone();
-    let selected_item_id = match &game_state.selected_item {
-        Some(item) => Some(item.entity_properties.id),
-        None => None,
-    };
-
-    let party = game_state.get_current_party().expect("to be in a party");
-    let num_items_on_ground = party.current_room.items.len();
-    let battle_id = party.battle_id;
-    let focused_character_option = party.characters.get(&game_state.focused_character_id);
-    let focused_character_equipment_ids = match focused_character_option {
-        Some(focused_character) => Some(
-            focused_character
-                .combatant_properties
-                .equipment
-                .iter()
-                .map(|(_slot, item)| item.entity_properties.id)
-                .collect::<Vec<u32>>(),
-        ),
-        None => None,
-    };
-
-    let num_items_in_focused_character_inventory = match focused_character_option {
-        Some(focused_character) => Some(focused_character.inventory.items.len()),
-        None => None,
-    };
-    let focused_character_selected_ability_option = match focused_character_option {
-        Some(focused_character) => focused_character
-            .combatant_properties
-            .selected_ability_name
-            .clone(),
-        None => None,
-    };
-
-    let focused_character_current_animation_processing_option = match focused_character_option {
-        Some(focused_character) => game_state
-            .action_results_manager
-            .combantant_event_managers
-            .get(&focused_character.entity_properties.id)
-            .expect("to have an event queue for every combatant entity")
-            .animation_queue
-            .front(),
-        None => None,
-    };
-
-    let cloned_focused_character_current_animation_processing_option =
-        match focused_character_current_animation_processing_option {
-            Some(action_result) => Some(action_result.clone()),
-            None => None,
-        };
-
-    let ability_targets = match focused_character_option {
-        Some(focused_character) => focused_character
-            .combatant_properties
-            .ability_targets
-            .clone(),
-
-        None => None,
-    };
-
-    let active_combatant_result = get_active_combatant(&game_state);
-    let active_combatant_id_option = match active_combatant_result {
-        Ok(combatant_option) => match combatant_option {
-            Some((entity_properties, _)) => Some(entity_properties.id),
-            None => None,
-        },
-        Err(_) => None,
-    };
-
-    let cloned_ui_state = ui_state.clone();
-    let cloned_game_dispatch = game_dispatch.clone();
-    let cloned_alert_dispatch = alert_dspatch.clone();
-    use_effect_with(
-        (
-            active_combatant_id_option,
-            cloned_game_state.focused_character_id,
-            cloned_game_state.viewing_inventory,
-            cloned_game_state.viewing_equipped_items,
-            ability_targets,
-            (
-                num_items_in_focused_character_inventory,
-                num_items_on_ground,
-                selected_item_id,
-                focused_character_selected_ability_option,
-                cloned_focused_character_current_animation_processing_option,
-            ),
-            cloned_game_state.viewing_items_on_ground,
-            cloned_game_state.viewing_skill_level_up_menu,
-            cloned_game_state.viewing_attribute_point_assignment_menu,
-            battle_id,
-            cloned_ui_state.mod_key_held,
-            focused_character_equipment_ids,
-        ),
-        move |_| {
-            let re_cloned_game_state = cloned_game_state.clone();
-            let party = re_cloned_game_state
-                .get_current_party()
-                .expect("to be in a party");
-            let actions = set_up_actions::set_up_actions(
-                websocket_state.clone(),
-                cloned_game_state,
-                cloned_game_dispatch,
-                cloned_alert_dispatch,
-                cloned_ui_state,
-                lobby_state,
-                party,
-            );
-            cloned_action_button_properties.set(actions);
         },
     );
 
@@ -189,13 +76,14 @@ pub fn action_menu(_: &Props) -> Html {
     );
 
     let cloned_button_props_on_current_page = button_props_on_current_page.clone();
-    let cloned_action_button_properties = action_button_properties.clone();
+    let cloned_action_button_properties = action_menu_button_properties.clone();
     let num_actions = cloned_action_button_properties.len();
     let number_of_pages = calculate_number_of_pages(PAGE_SIZE as usize, num_actions);
 
     html!(
         <section class="min-w-[350px] w-[350px] border border-slate-400 bg-slate-700 mr-4 overflow-y-auto
         flex flex-col justify-between">
+        <ActionMenuChangeDetectionManager action_menu_button_properties={action_menu_button_properties} />
             <div>
                 {cloned_button_props_on_current_page.deref().iter().enumerate().map(|(i, action)| {
                       html!(

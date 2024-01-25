@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-
 use self::armor::*;
 use self::unmet_requirements_calculator::UnmetRequirementsCalculator;
 use crate::{

@@ -3,6 +3,7 @@ use super::adventuring_party_update_handlers::handle_adventuring_party_created;
 use super::adventuring_party_update_handlers::handle_character_creation;
 use super::adventuring_party_update_handlers::handle_character_deletion;
 use super::adventuring_party_update_handlers::handle_player_changed_adventuring_party;
+use super::dungeon_floor_number_changed_handler::dungeon_floor_number_changed_handler;
 use super::game_full_update_handler::game_full_update_handler;
 use super::handle_battle_victory_report::handle_battle_end_report;
 use super::handle_character_dropped_equipped_item::handle_character_dropped_equipped_item;
@@ -13,7 +14,9 @@ use super::in_game_party_update_handlers::handle_battle_full_update;
 use super::in_game_party_update_handlers::handle_character_ability_selection;
 use super::in_game_party_update_handlers::handle_character_changed_targets;
 use super::in_game_party_update_handlers::handle_new_dungeon_room;
+use super::in_game_party_update_handlers::handle_player_toggled_ready_to_descend;
 use super::in_game_party_update_handlers::handle_player_toggled_ready_to_explore;
+use super::in_game_party_update_handlers::new_dungeon_room_types_on_current_floor;
 use super::inventory_management_update_handlers::handle_character_equipped_item;
 use super::inventory_management_update_handlers::handle_character_unequipped_slot;
 use super::lobby_update_handlers::handle_game_started;
@@ -49,9 +52,13 @@ pub fn handle_packet(
             Ok(set_alert(alert_dispatch, message))
         }
         GameServerUpdatePackets::ClientUserName(username) => {
-            Ok(lobby_dispatch.reduce_mut(|store| {
-                store.username = username;
-            }))
+            lobby_dispatch.reduce_mut(|store| {
+                store.username = username.clone();
+            });
+            log!(format!("set username to : {username}"));
+            log!(format!("username is : {:?}", lobby_state.username));
+
+            Ok(())
         }
         GameServerUpdatePackets::FullUpdate(update) => {
             lobby_dispatch.reduce_mut(|store| {
@@ -103,15 +110,16 @@ pub fn handle_packet(
             game_dispatch.reduce_mut(move |store| handle_game_started(store, timestamp))
         }
         GameServerUpdatePackets::CharacterEquippedItem(packet) => {
-            game_dispatch.reduce_mut(|store| {
-                handle_character_equipped_item(store, packet, &lobby_state.username)
-            })
+            let username = lobby_dispatch.reduce_mut(|store| store.username.clone());
+            game_dispatch
+                .reduce_mut(|store| handle_character_equipped_item(store, packet, &username))
         }
         GameServerUpdatePackets::CharacterUnequippedSlot(packet) => {
             game_dispatch.reduce_mut(|store| handle_character_unequipped_slot(store, packet))
         }
-        GameServerUpdatePackets::PlayerToggledReadyToExplore(username) => game_dispatch
-            .reduce_mut(|store| handle_player_toggled_ready_to_explore(store, username)),
+        GameServerUpdatePackets::PlayerToggledReadyToExplore(username) => {
+            handle_player_toggled_ready_to_explore(game_dispatch, username)
+        }
         GameServerUpdatePackets::DungeonRoomUpdate(new_room) => {
             game_dispatch.reduce_mut(|store| handle_new_dungeon_room(store, new_room))
         }
@@ -139,6 +147,15 @@ pub fn handle_packet(
         }
         GameServerUpdatePackets::CharacterDroppedEquippedItem(packet) => {
             handle_character_dropped_equipped_item(game_dispatch, websocket_dispatch, packet)
+        }
+        GameServerUpdatePackets::PlayerToggledReadyToDescend(packet) => {
+            handle_player_toggled_ready_to_descend(game_dispatch, packet)
+        }
+        GameServerUpdatePackets::DungeonFloorNumber(packet) => {
+            dungeon_floor_number_changed_handler(game_dispatch, packet)
+        }
+        GameServerUpdatePackets::DungeonRoomTypesOnCurrentFloor(packet) => {
+            new_dungeon_room_types_on_current_floor(game_dispatch, packet)
         }
         _ => {
             log!(format!("unhandled packet: {:#?}", data));

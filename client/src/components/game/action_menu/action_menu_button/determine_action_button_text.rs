@@ -1,11 +1,19 @@
-use super::available_actions::GameActions;
+use crate::components::game::action_menu::enums::GameActions;
 use crate::store::game_store::GameStore;
 use common::game::getters::get_party;
 use std::rc::Rc;
 
-pub fn generate_button_text(action: GameActions, game_state: Rc<GameStore>) -> String {
+pub fn determine_action_button_text(action: GameActions, game_state: Rc<GameStore>) -> String {
     match action {
-        GameActions::ToggleReadyToExplore => "Ready to explore".to_string(),
+        GameActions::ToggleReadyToExplore => {
+            let party = game_state
+                .get_current_party()
+                .expect("to be in a party when showing this button");
+            match party.current_room.room_type {
+                common::dungeon_rooms::DungeonRoomTypes::Stairs => "Vote to stay".to_string(),
+                _ => "Ready to explore".to_string(),
+            }
+        }
         GameActions::SetInventoryOpen(open_status) => {
             if open_status {
                 "Open inventory".to_string()
@@ -48,6 +56,7 @@ pub fn generate_button_text(action: GameActions, game_state: Rc<GameStore>) -> S
         GameActions::CycleTargetingScheme => "Targeting scheme".to_string(),
         GameActions::DeselectAbility => "Cancel".to_string(),
         GameActions::UseSelectedAbility => "Execute".to_string(),
+        GameActions::ToggleReadyToDescend => "Vote to descend".to_string(),
     }
 }
 

@@ -18,18 +18,18 @@ pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Charact
     inherent_attributes.insert(CombatAttributes::Agility, 1);
 
     // ABILITIES
-    combatant_properties.abilities.insert(
-        CombatantAbilityNames::Fire,
-        CombatantAbility::new(CombatantAbilityNames::Fire),
-    );
-    combatant_properties.abilities.insert(
-        CombatantAbilityNames::Heal,
-        CombatantAbility::new(CombatantAbilityNames::Heal),
-    );
-    combatant_properties.abilities.insert(
-        CombatantAbilityNames::RainStorm,
-        CombatantAbility::new(CombatantAbilityNames::RainStorm),
-    );
+    // combatant_properties.abilities.insert(
+    //     CombatantAbilityNames::Fire,
+    //     CombatantAbility::new(CombatantAbilityNames::Fire),
+    // );
+    // combatant_properties.abilities.insert(
+    //     CombatantAbilityNames::Heal,
+    //     CombatantAbility::new(CombatantAbilityNames::Heal),
+    // );
+    // combatant_properties.abilities.insert(
+    //     CombatantAbilityNames::RainStorm,
+    //     CombatantAbility::new(CombatantAbilityNames::RainStorm),
+    // );
 
     // TEST INVENTORY ITEMS
     // for _ in 0..8 {

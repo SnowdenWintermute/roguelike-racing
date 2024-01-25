@@ -1,3 +1,5 @@
+use std::collections::VecDeque;
+
 use crate::websocket_server::game_server::getters::get_mut_game;
 use crate::websocket_server::game_server::getters::get_mut_user;
 use crate::websocket_server::game_server::GameServer;
@@ -11,7 +13,6 @@ use common::game::getters::get_mut_party;
 use common::game::getters::get_mut_player;
 use common::packets::server_to_client::GameServerUpdatePackets;
 use common::packets::WebsocketChannelNamespace;
-use std::collections::HashSet;
 
 impl GameServer {
     pub fn toggle_ready_to_explore_handler(&mut self, actor_id: u32) -> Result<(), AppError> {
@@ -38,7 +39,10 @@ impl GameServer {
         }
 
         let current_floor = party.current_floor;
-        //
+        // can't be trying to explore and descend at the same time
+        if party.players_ready_to_descend.contains(&username) {
+            party.players_ready_to_descend.remove(&username);
+        }
         if party.players_ready_to_explore.contains(&username) {
             party.players_ready_to_explore.remove(&username);
         } else {
@@ -65,23 +69,58 @@ impl GameServer {
                 break;
             }
         }
-        println!(
-            "all players ready to explore: {}",
-            all_players_ready_to_explore
-        );
 
         let mut new_room = None;
         if all_players_ready_to_explore {
-            party.players_ready_to_explore = HashSet::new();
+            // @TODO - if next room would be stairs and the party is on the final floor, set their
+            // time of escape
+            // @TODO - if current room is stairs, reset the room order on the current floor
+
+            party.players_ready_to_explore.clear();
+            let room_type_to_generate_option = party.unexplored_rooms.pop_front();
+            let mut new_room_types_list_for_client_option = None;
+            let room_type_to_generate = match room_type_to_generate_option {
+                Some(room_type_to_generate) => room_type_to_generate,
+                None => {
+                    party.generate_unexplored_rooms_queue();
+                    new_room_types_list_for_client_option = Some(party.unexplored_rooms.clone());
+                    party.unexplored_rooms.pop_front().ok_or_else(|| AppError {
+                        error_type: common::errors::AppErrorTypes::ServerError,
+                        message: error_messages::MISSING_ROOM_TYPE_TO_GENERATE.to_string(),
+                    })?
+                }
+            };
+
             new_room = Some(DungeonRoom::generate(
                 &mut game.id_generator,
                 current_floor,
                 false,
-                Some(DungeonRoomTypes::MonsterLair),
+                Some(room_type_to_generate),
             ));
             //
+            if let Some(new_room_types_list_for_client) = new_room_types_list_for_client_option {
+                let new_room_types_list_for_client = new_room_types_list_for_client
+                    .into_iter()
+                    .map(|item| {
+                        if item == DungeonRoomTypes::MonsterLair {
+                            Some(DungeonRoomTypes::MonsterLair)
+                        } else {
+                            None
+                        }
+                    })
+                    .collect::<VecDeque<Option<DungeonRoomTypes>>>();
+                self.emit_packet(
+                    &party_websocket_channel_name,
+                    &WebsocketChannelNamespace::Party,
+                    &GameServerUpdatePackets::DungeonRoomTypesOnCurrentFloor(
+                        new_room_types_list_for_client,
+                    ),
+                    None,
+                )?;
+            }
         }
 
+        let game = get_mut_game(&mut self.games, &game_name)?;
         let party = get_mut_party(game, party_id)?;
         if let Some(room) = new_room {
             party.current_room = room.clone();

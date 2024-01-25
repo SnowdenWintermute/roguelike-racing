@@ -2,10 +2,12 @@ use crate::websocket_server::game_server::getters::get_mut_game;
 use crate::websocket_server::game_server::getters::get_mut_user;
 use crate::websocket_server::game_server::GameServer;
 use common::app_consts::error_messages;
+use common::dungeon_rooms::DungeonRoomTypes;
 use common::errors::AppError;
 use common::game::getters::get_mut_player;
 use common::packets::server_to_client::GameServerUpdatePackets;
 use common::packets::WebsocketChannelNamespace;
+use std::collections::VecDeque;
 use std::time::SystemTime;
 use std::time::UNIX_EPOCH;
 
@@ -53,6 +55,18 @@ impl GameServer {
         println!("all players readied: {}", all_players_ready);
         // if all players have their name in the readied list, start the game
         if all_players_ready {
+            let actor_ids: Vec<Option<u32>> = game
+                .players
+                .iter()
+                .map(|(_, player)| player.actor_id)
+                .collect();
+            for actor_id in actor_ids {
+                self.toggle_ready_to_explore_handler(actor_id.ok_or_else(|| AppError {
+                    error_type: common::errors::AppErrorTypes::ServerError,
+                    message: error_messages::ACTOR_ID_NOT_FOUND.to_string(),
+                })?)?;
+            }
+            let game = get_mut_game(&mut self.games, &game_name)?;
             game.time_started = Some(
                 SystemTime::now()
                     .duration_since(UNIX_EPOCH)

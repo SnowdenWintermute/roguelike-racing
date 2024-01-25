@@ -32,4 +32,5 @@ COPY --from=builder /app/server/target .
 RUN ls -a
 WORKDIR /
 EXPOSE 8082
+ENV RUST_BACKTRACE=1
 CMD ["./app/release/server"]

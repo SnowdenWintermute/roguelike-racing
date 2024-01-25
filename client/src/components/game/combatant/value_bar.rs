@@ -23,7 +23,7 @@ pub fn value_bar(props: &Props) -> Html {
     html!(
     <div class={container_styles}>
         <div class={inner_bar_styles} style={format!("width: {percent_of_max}%;")} />
-        <div class="text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" >{format!("{curr} / {max}")}</div>
+        <div class="text-xs text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" >{format!("{curr} / {max}")}</div>
     </div>
     )
 }

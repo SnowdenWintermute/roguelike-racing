@@ -1,51 +1,10 @@
-#![allow(dead_code, unused)]
+use super::enums::GameActions;
+use super::enums::MenuTypes;
 use common::combatants::abilities::CombatantAbilityNames;
-use common::combatants::combat_attributes::CombatAttributes;
-use common::items::Item;
 use common::primatives::NextOrPrevious;
-use gloo::console::log;
-
-pub enum MenuTypes {
-    InCombat,
-    AbilitySelected,
-    OutOfCombat,
-    LevelUpAbilities,
-    AttributePointAssignment,
-    InventoryOpen,
-    ViewingEquipedItems,
-    ItemSelected(u32),
-    ItemsOnGround,
-    UnopenedChest,
-}
-
-#[derive(Hash, Eq, PartialEq, Clone)]
-pub enum GameActions {
-    ToggleReadyToExplore,
-    SetInventoryOpen(bool),
-    ToggleInventoryOpen,
-    ToggleViewingEquipedItems,
-    UseAutoinjector,
-    SelectItem(u32),
-    OpenTreasureChest,
-    TakeItem,
-    // Item Selected
-    UseItem(u32),
-    DropItem(u32),
-    ShardItem(u32),
-    DeselectItem,
-    // InCombat
-    SelectAbility(CombatantAbilityNames),
-    DeselectAbility,
-    CycleTargets(NextOrPrevious),
-    CycleTargetingScheme,
-    UseSelectedAbility,
-    LevelUpAbility(CombatantAbilityNames),
-    SetAssignAttributePointsMenuOpen(bool),
-    AssignAttributePoint(CombatAttributes),
-}
 
 impl MenuTypes {
-    pub fn get_menu(
+    pub fn get_actions(
         menu_types: &Vec<MenuTypes>,
         item_ids: Option<Vec<u32>>,
         abilities: Option<Vec<CombatantAbilityNames>>,
@@ -106,6 +65,7 @@ impl MenuTypes {
                 MenuTypes::AttributePointAssignment => {
                     menu_items.push(GameActions::SetAssignAttributePointsMenuOpen(false));
                 }
+                MenuTypes::Staircase => menu_items.push(GameActions::ToggleReadyToDescend),
             }
         }
 

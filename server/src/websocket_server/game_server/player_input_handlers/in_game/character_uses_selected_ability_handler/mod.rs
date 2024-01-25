@@ -135,7 +135,8 @@ impl GameServer {
         let loot_option = if in_monster_lair && all_opponents_are_dead {
             let mut loot = vec![];
             println!("creating loot for dlvl {dlvl}");
-            for _ in 0..num_opponents {
+            // for _ in 0..num_opponents {
+            for _ in 0..30 {
                 loot.push(Item::generate(&mut game.id_generator, dlvl))
             }
             Some(loot)

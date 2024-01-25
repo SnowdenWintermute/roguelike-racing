@@ -14,6 +14,7 @@ use common::items::Item;
 use common::packets::server_to_client::BattleEndReportPacket;
 use common::primatives::EntityProperties;
 use std::collections::HashSet;
+use std::rc::Rc;
 use yew::AttrValue;
 use yewdux::prelude::*;
 
@@ -279,5 +280,29 @@ pub fn set_compared_item<'a>(
                 }
             }
         }
+    });
+}
+
+pub fn get_item_owned_by_focused_character(
+    id: &u32,
+    game_state: Rc<GameStore>,
+) -> Result<Item, AppError> {
+    let character = get_focused_character(&game_state)?;
+
+    for (_, item) in &character.combatant_properties.equipment {
+        if item.entity_properties.id == *id {
+            return Ok(item.clone());
+        }
+    }
+
+    for item in &character.inventory.items {
+        if item.entity_properties.id == *id {
+            return Ok(item.clone());
+        }
+    }
+
+    return Err(AppError {
+        error_type: common::errors::AppErrorTypes::ClientError,
+        message: error_messages::INVALID_ITEM_ID.to_string(),
     });
 }

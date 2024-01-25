@@ -1,9 +1,9 @@
-use super::create_action_handler::create_action_handler;
-use super::create_action_mouse_enter_handler::create_action_mouse_enter_handler;
-use super::create_action_mouse_leave_handler::create_action_mouse_leave_handler;
+use super::action_button_click_handlers::create_action_button_click_handler;
+use super::action_button_hover_handlers::create_action_mouse_enter_handler;
+use super::action_button_hover_handlers::create_action_mouse_leave_handler;
+use super::action_menu_button::determine_action_button_text::determine_action_button_text;
 use super::determine_action_menu_buttons_disabled::determine_action_menu_buttons_disabled;
-use super::generate_action_menu_items;
-use super::generate_button_text::generate_button_text;
+use super::determine_menu_actions::determine_menu_actions;
 use crate::store::alert_store::AlertStore;
 use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
@@ -27,7 +27,7 @@ pub struct ActionMenuButtonProperties {
     pub should_be_disabled: bool,
 }
 
-pub fn set_up_actions(
+pub fn build_action_button_properties(
     websocket_state: Rc<WebsocketStore>,
     game_state: Rc<GameStore>,
     game_dispatch: Dispatch<GameStore>,
@@ -36,8 +36,7 @@ pub fn set_up_actions(
     lobby_state: Rc<LobbyStore>,
     party: &AdventuringParty,
 ) -> Vec<ActionMenuButtonProperties> {
-    let new_actions =
-        generate_action_menu_items::generate_action_menu_items(&game_state, &lobby_state, party);
+    let new_actions = determine_menu_actions(&game_state, &lobby_state, party);
     let mut button_properties = Vec::new();
 
     for action in new_actions {
@@ -48,7 +47,7 @@ pub fn set_up_actions(
         let cloned_ui_state = ui_state.clone();
         let cloned_alert_dispatch = alert_dispatch.clone();
         let click_handler = Callback::from(move |_| {
-            create_action_handler(
+            create_action_button_click_handler(
                 cloned_action.clone(),
                 cloned_game_dispatch.clone(),
                 cloned_game_state.clone(),
@@ -98,7 +97,7 @@ pub fn set_up_actions(
             )()
         });
         let cloned_game_state = game_state.clone();
-        let text = generate_button_text(action.clone(), cloned_game_state);
+        let text = determine_action_button_text(action.clone(), cloned_game_state);
 
         let should_be_disabled =
             determine_action_menu_buttons_disabled(&action, &game_state, &lobby_state);

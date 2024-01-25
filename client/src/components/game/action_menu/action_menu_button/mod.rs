@@ -1,4 +1,5 @@
-use super::set_up_actions::ActionMenuButtonProperties;
+pub mod determine_action_button_text;
+use super::build_action_button_properties::ActionMenuButtonProperties;
 use yew::prelude::*;
 
 #[derive(Properties, PartialEq)]

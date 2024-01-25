@@ -39,59 +39,84 @@ impl RoguelikeRacerGame {
         let user_total_attributes = user_combatant_properties.get_total_attributes();
         let target_total_attributes = target_combatant_properties.get_total_attributes();
 
-        let mh_weapon_option =
+        let mh_equipment_option =
             user_combatant_properties.get_equipped_item(&EquipmentSlots::MainHand);
-        let oh_weapon_option =
+        let oh_equipment_option =
             user_combatant_properties.get_equipped_item(&EquipmentSlots::OffHand);
+        let mh_weapon_option = match mh_equipment_option {
+            Some(equipment_properties) => match equipment_properties.is_weapon() {
+                true => Some(equipment_properties),
+                false => None,
+            },
+            None => None,
+        };
+        let oh_weapon_option = match oh_equipment_option {
+            Some(equipment_properties) => match equipment_properties.is_weapon() {
+                true => Some(equipment_properties),
+                false => None,
+            },
+            None => None,
+        };
 
         if mh_weapon_option.is_some() || oh_weapon_option.is_some() {
             let mh_swing_ends_turn = oh_weapon_option.is_none();
-            if let Some(mh_equipment_properties) = mh_weapon_option {
+            println!("main hand swing ends turn ARMED: {mh_swing_ends_turn}");
+            if let Some(mh_weapon_properties) = mh_weapon_option {
                 action_results.push(calculate_weapon_swing_result(
                     ability_user_id,
                     ability_target,
                     *target_entity_id,
                     &user_total_attributes,
                     &target_total_attributes,
-                    mh_equipment_properties,
+                    mh_weapon_properties,
                     false,
                     mh_swing_ends_turn,
                 )?);
             };
-            if let Some(oh_equipment_properties) = oh_weapon_option {
+            if let Some(oh_weapon_properties) = oh_weapon_option {
                 action_results.push(calculate_weapon_swing_result(
                     ability_user_id,
                     ability_target,
                     *target_entity_id,
                     &user_total_attributes,
                     &target_total_attributes,
-                    oh_equipment_properties,
+                    oh_weapon_properties,
                     true,
                     true,
                 )?);
             };
         } else {
-            // UNARMED
-            action_results.push(calculate_weapon_swing_result(
-                ability_user_id,
-                ability_target,
-                *target_entity_id,
-                &user_total_attributes,
-                &target_total_attributes,
-                &FIST,
-                false,
-                false,
-            )?);
-            action_results.push(calculate_weapon_swing_result(
-                ability_user_id,
-                ability_target,
-                *target_entity_id,
-                &user_total_attributes,
-                &target_total_attributes,
-                &FIST,
-                true,
-                true,
-            )?);
+            // UNARMED (on)
+            let mh_swing_ends_turn = oh_equipment_option.is_some();
+            println!("oh equipment option: {:#?}", oh_equipment_option);
+            println!("unarmed mh swing ends turn: {:#?}", mh_swing_ends_turn);
+            if mh_equipment_option.is_none() {
+                action_results.push(calculate_weapon_swing_result(
+                    ability_user_id,
+                    ability_target,
+                    *target_entity_id,
+                    &user_total_attributes,
+                    &target_total_attributes,
+                    &FIST,
+                    false,
+                    mh_swing_ends_turn,
+                )?);
+            }
+            if !mh_swing_ends_turn {
+                println!("calculating oh unarmed swing: ");
+                if oh_equipment_option.is_none() {
+                    action_results.push(calculate_weapon_swing_result(
+                        ability_user_id,
+                        ability_target,
+                        *target_entity_id,
+                        &user_total_attributes,
+                        &target_total_attributes,
+                        &FIST,
+                        true,
+                        true,
+                    )?);
+                }
+            }
         }
 
         Ok(action_results)

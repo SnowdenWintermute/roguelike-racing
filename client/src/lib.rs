@@ -17,12 +17,12 @@ pub fn app() -> Html {
     let (game_state, _) = use_store::<GameStore>();
     let game = game_state.game.clone();
     let in_production = std::env!("TRUNK_PROD");
-    log!(format!("in production: {in_production}"));
+    // log!(format!("in production: {in_production}"));
     let websocket_server_url = if in_production == "true" {
         "wss://roguelikeracing.com/ws"
     } else {
         // "wss://roguelikeracing.com/ws"
-        "127.0.0.1:8082/ws"
+        "ws://127.0.0.1:8082/ws"
     };
 
     html! {

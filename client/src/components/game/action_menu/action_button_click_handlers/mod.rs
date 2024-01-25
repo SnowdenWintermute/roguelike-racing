@@ -1,11 +1,11 @@
-use super::action_handlers::handle_cycle_targeting_schemes::handle_cycle_targeting_schemes;
-use super::action_handlers::handle_cycle_targets::handle_cycle_targets;
-use super::available_actions::GameActions;
-use super::get_character_owned_item_by_id::get_character_owned_item_by_id;
-use crate::components::game::action_menu::action_handlers::handle_select_ability::handle_select_ability;
+pub mod handle_cycle_targeting_schemes;
+pub mod handle_cycle_targets;
+pub mod handle_select_ability;
+use super::enums::GameActions;
 use crate::components::websocket_manager::send_client_input::send_client_input;
 use crate::store::alert_store::AlertStore;
 use crate::store::game_store::get_focused_character;
+use crate::store::game_store::get_item_owned_by_focused_character;
 use crate::store::game_store::select_item;
 use crate::store::game_store::GameStore;
 use crate::store::ui_store::UIStore;
@@ -18,7 +18,7 @@ use common::packets::CharacterAndSlot;
 use std::rc::Rc;
 use yewdux::prelude::Dispatch;
 
-pub fn create_action_handler<'a>(
+pub fn create_action_button_click_handler<'a>(
     game_action: GameActions,
     game_dispatch: Dispatch<GameStore>,
     game_state: Rc<GameStore>,
@@ -61,7 +61,7 @@ pub fn create_action_handler<'a>(
             });
         }),
         GameActions::SelectItem(id) => Box::new(move || {
-            let item = get_character_owned_item_by_id(&id, game_state.clone())
+            let item = get_item_owned_by_focused_character(&id, game_state.clone())
                 .expect("a character should only be able to select their own items");
             let cloned_dispatch = game_dispatch.clone();
             select_item(cloned_dispatch, Some(item));
@@ -100,7 +100,7 @@ pub fn create_action_handler<'a>(
         GameActions::SelectAbility(ability_name) => Box::new(move || {
             let cloned_dispatch = game_dispatch.clone();
             let cloned_alert_dispatch = alert_dispatch.clone();
-            handle_select_ability(
+            handle_select_ability::handle_select_ability(
                 cloned_dispatch,
                 cloned_alert_dispatch,
                 &websocket_state.websocket,
@@ -125,7 +125,7 @@ pub fn create_action_handler<'a>(
         }),
         GameActions::CycleTargets(next_or_previous) => Box::new(move || {
             let cloned_dispatch = game_dispatch.clone();
-            handle_cycle_targets(
+            handle_cycle_targets::handle_cycle_targets(
                 cloned_dispatch,
                 &websocket_state.websocket,
                 &next_or_previous,
@@ -133,7 +133,10 @@ pub fn create_action_handler<'a>(
         }),
         GameActions::CycleTargetingScheme => Box::new(move || {
             game_dispatch.reduce_mut(|store| {
-                handle_cycle_targeting_schemes(store, &websocket_state.websocket)
+                handle_cycle_targeting_schemes::handle_cycle_targeting_schemes(
+                    store,
+                    &websocket_state.websocket,
+                )
             })
         }),
         GameActions::UseSelectedAbility => Box::new(move || {
@@ -187,13 +190,12 @@ pub fn create_action_handler<'a>(
                 store.detailed_entity = None;
             });
         }),
-        _ => Box::new(|| ()), // GameActions::OpenTreasureChest => || (),
-                              // GameActions::TakeItem => || (),
-                              // GameActions::DropItem => || (),
-                              // GameActions::ShardItem => || (),
-                              // GameActions::Attack => || (),
-                              // GameActions::LevelUpAbility(_) => || (),
-                              // GameActions::SetAssignAttributePointsMenuOpen(_) => || (),
-                              // GameActions::AssignAttributePoint(_) => || (),
+        GameActions::ToggleReadyToDescend => Box::new(move || {
+            send_client_input(
+                &websocket_state.websocket,
+                PlayerInputs::ToggleReadyToGoDownStairs,
+            );
+        }),
+        _ => Box::new(|| ()),
     }
 }

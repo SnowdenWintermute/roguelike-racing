@@ -1,6 +1,5 @@
-mod generate_next_room;
+mod generate_unexplored_rooms_queue;
 use crate::app_consts::error_messages;
-use crate::app_consts::error_messages::INVALID_ITEM_ID;
 use crate::character::Character;
 use crate::combatants::CombatantProperties;
 use crate::dungeon_rooms::DungeonRoom;
@@ -13,6 +12,7 @@ use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
 use std::collections::HashSet;
+use std::collections::VecDeque;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct RoomsExplored {
@@ -27,11 +27,14 @@ pub struct AdventuringParty {
     pub websocket_channel_name: String,
     pub player_usernames: HashSet<String>,
     pub players_ready_to_explore: HashSet<String>,
+    pub players_ready_to_descend: HashSet<String>,
     pub characters: HashMap<u32, Character>,
     pub character_positions: Vec<u32>,
     pub current_floor: u8,
     pub rooms_explored: RoomsExplored,
     pub current_room: DungeonRoom,
+    pub unexplored_rooms: VecDeque<DungeonRoomTypes>,
+    pub client_current_floor_rooms_list: VecDeque<Option<DungeonRoomTypes>>,
     pub battle_id: Option<u32>,
     pub time_of_wipe: Option<u64>,
     pub time_of_escape: Option<u64>,
@@ -46,12 +49,13 @@ impl AdventuringParty {
             websocket_channel_name,
             player_usernames: HashSet::new(),
             players_ready_to_explore: HashSet::new(),
+            players_ready_to_descend: HashSet::new(),
             characters: HashMap::new(),
             character_positions: Vec::new(),
             current_floor: 1,
             rooms_explored: RoomsExplored {
-                total: 1,
-                on_current_floor: 1,
+                total: 0,
+                on_current_floor: 0,
             },
             current_room: DungeonRoom {
                 room_type: DungeonRoomTypes::Empty,
@@ -59,6 +63,8 @@ impl AdventuringParty {
                 items: Vec::new(),
                 monsters: None,
             },
+            unexplored_rooms: VecDeque::new(),
+            client_current_floor_rooms_list: VecDeque::new(),
             battle_id: None,
             time_of_wipe: None,
             time_of_escape: None,

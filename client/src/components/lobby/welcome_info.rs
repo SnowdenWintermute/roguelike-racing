@@ -21,6 +21,9 @@ pub fn welcome_info() -> Html {
                 <li>{"Equip, trade and discard equipment"}</li>
                 <li>{"Try to reach the lowest floor of the dungeon by descending the stairs"}</li>
             </ul>
+            <p>
+                {"a lot is not implemented, balanced or at all good, but if anything is severely broken you can report it at https://github.com/SnowdenWintermute/roguelike-racing/issues"}
+            </p>
         </section>
     )
 }

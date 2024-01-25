@@ -1,6 +1,5 @@
 mod generate_next_room;
 use crate::app_consts::error_messages;
-use crate::app_consts::error_messages::INVALID_ITEM_ID;
 use crate::character::Character;
 use crate::combatants::CombatantProperties;
 use crate::dungeon_rooms::DungeonRoom;
@@ -27,6 +26,7 @@ pub struct AdventuringParty {
     pub websocket_channel_name: String,
     pub player_usernames: HashSet<String>,
     pub players_ready_to_explore: HashSet<String>,
+    pub players_ready_to_descend: HashSet<String>,
     pub characters: HashMap<u32, Character>,
     pub character_positions: Vec<u32>,
     pub current_floor: u8,
@@ -46,6 +46,7 @@ impl AdventuringParty {
             websocket_channel_name,
             player_usernames: HashSet::new(),
             players_ready_to_explore: HashSet::new(),
+            players_ready_to_descend: HashSet::new(),
             characters: HashMap::new(),
             character_positions: Vec::new(),
             current_floor: 1,

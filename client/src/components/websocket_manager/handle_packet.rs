@@ -3,6 +3,7 @@ use super::adventuring_party_update_handlers::handle_adventuring_party_created;
 use super::adventuring_party_update_handlers::handle_character_creation;
 use super::adventuring_party_update_handlers::handle_character_deletion;
 use super::adventuring_party_update_handlers::handle_player_changed_adventuring_party;
+use super::dungeon_floor_number_changed_handler::dungeon_floor_number_changed_handler;
 use super::game_full_update_handler::game_full_update_handler;
 use super::handle_battle_victory_report::handle_battle_end_report;
 use super::handle_character_dropped_equipped_item::handle_character_dropped_equipped_item;
@@ -13,6 +14,7 @@ use super::in_game_party_update_handlers::handle_battle_full_update;
 use super::in_game_party_update_handlers::handle_character_ability_selection;
 use super::in_game_party_update_handlers::handle_character_changed_targets;
 use super::in_game_party_update_handlers::handle_new_dungeon_room;
+use super::in_game_party_update_handlers::handle_player_toggled_ready_to_descend;
 use super::in_game_party_update_handlers::handle_player_toggled_ready_to_explore;
 use super::inventory_management_update_handlers::handle_character_equipped_item;
 use super::inventory_management_update_handlers::handle_character_unequipped_slot;
@@ -114,8 +116,9 @@ pub fn handle_packet(
         GameServerUpdatePackets::CharacterUnequippedSlot(packet) => {
             game_dispatch.reduce_mut(|store| handle_character_unequipped_slot(store, packet))
         }
-        GameServerUpdatePackets::PlayerToggledReadyToExplore(username) => game_dispatch
-            .reduce_mut(|store| handle_player_toggled_ready_to_explore(store, username)),
+        GameServerUpdatePackets::PlayerToggledReadyToExplore(username) => {
+            handle_player_toggled_ready_to_explore(game_dispatch, username)
+        }
         GameServerUpdatePackets::DungeonRoomUpdate(new_room) => {
             game_dispatch.reduce_mut(|store| handle_new_dungeon_room(store, new_room))
         }
@@ -143,6 +146,12 @@ pub fn handle_packet(
         }
         GameServerUpdatePackets::CharacterDroppedEquippedItem(packet) => {
             handle_character_dropped_equipped_item(game_dispatch, websocket_dispatch, packet)
+        }
+        GameServerUpdatePackets::PlayerToggledReadyToDescend(packet) => {
+            handle_player_toggled_ready_to_descend(game_dispatch, packet)
+        }
+        GameServerUpdatePackets::DungeonFloorNumber(packet) => {
+            dungeon_floor_number_changed_handler(game_dispatch, packet)
         }
         _ => {
             log!(format!("unhandled packet: {:#?}", data));

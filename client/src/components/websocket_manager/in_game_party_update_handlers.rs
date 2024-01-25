@@ -9,21 +9,43 @@ use common::packets::client_to_server::ChangeTargetsPacket;
 use common::packets::server_to_client::CharacterSelectedAbilityPacket;
 use gloo::console::log;
 use std::collections::HashMap;
+use yewdux::Dispatch;
 
 pub fn handle_player_toggled_ready_to_explore(
-    game_store: &mut GameStore,
+    game_dispatch: Dispatch<GameStore>,
     username: String,
 ) -> Result<(), AppError> {
     log!("player toggled ready to explore");
-    let party = game_store.get_current_party_mut()?;
+    game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
+        let party = store.get_current_party_mut()?;
+        if party.players_ready_to_descend.contains(&username) {
+            party.players_ready_to_descend.remove(&username);
+        }
+        if party.players_ready_to_explore.contains(&username) {
+            party.players_ready_to_explore.remove(&username);
+        } else {
+            party.players_ready_to_explore.insert(username.clone());
+        };
+        Ok(())
+    })
+}
 
-    if party.players_ready_to_explore.contains(&username) {
-        party.players_ready_to_explore.remove(&username);
-    } else {
-        party.players_ready_to_explore.insert(username.clone());
-    };
-
-    Ok(())
+pub fn handle_player_toggled_ready_to_descend(
+    game_dispatch: Dispatch<GameStore>,
+    username: String,
+) -> Result<(), AppError> {
+    game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
+        let party = store.get_current_party_mut()?;
+        if party.players_ready_to_explore.contains(&username) {
+            party.players_ready_to_explore.remove(&username);
+        }
+        if party.players_ready_to_descend.contains(&username) {
+            party.players_ready_to_descend.remove(&username);
+        } else {
+            party.players_ready_to_descend.insert(username.clone());
+        };
+        Ok(())
+    })
 }
 
 pub fn handle_new_dungeon_room(
@@ -41,6 +63,7 @@ pub fn handle_new_dungeon_room(
     }
     let party = game_store.get_current_party_mut()?;
     party.players_ready_to_explore.clear();
+    party.players_ready_to_descend.clear();
     party.current_room = packet;
     party.rooms_explored.on_current_floor += 1;
     party.rooms_explored.total += 1;

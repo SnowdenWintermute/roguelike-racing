@@ -1,5 +1,6 @@
 pub const UNRECOGNIZED_PACKET: &str = "An unrecognized packet was received";
 pub const USER_NOT_FOUND: &str = "The game server couldn't find a user with the provided actor id";
+pub const ACTOR_ID_NOT_FOUND: &str = "The actor id for that player is missing";
 pub const GAME_NOT_FOUND: &str = "No game found by the provided name";
 pub const MISSING_GAME_REFERENCE: &str = "Missing reference to current game";
 pub const ALREADY_IN_GAME: &str = "You are already in a game";
@@ -71,3 +72,5 @@ pub const EVENT_MANAGER_MISSING_ACTION_RESULT: &str =
 // EXPLORATION
 pub const CANT_EXPLORE_WHEN_MONSTERS_ARE_PRESENT: &str =
     "Defeat the monsters before exploring the next room";
+pub const CANT_DESCEND_IF_NO_STAIRS_ARE_PRESENT: &str =
+    "You can't go down the stairs if there are no stairs to go down";

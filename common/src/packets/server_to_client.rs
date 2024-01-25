@@ -48,6 +48,7 @@ pub enum GameServerUpdatePackets {
     CharacterEquippedItem(CharacterEquippedItemPacket),
     CharacterUnequippedSlot(CharacterAndSlot),
     PlayerToggledReadyToExplore(String),
+    PlayerToggledReadyToDescend(String),
     DungeonRoomUpdate(DungeonRoom),
     CharacterSelectedAbility(CharacterSelectedAbilityPacket),
     CharacterChangedTargets(ChangeTargetsPacket),
@@ -58,6 +59,7 @@ pub enum GameServerUpdatePackets {
     CharacterPickedUpItem(CharacterAndItem),
     CharacterDroppedItem(CharacterAndItem),
     CharacterDroppedEquippedItem(CharacterAndSlot),
+    DungeonFloorNumber(u8),
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Default)]

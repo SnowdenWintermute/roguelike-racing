@@ -1,4 +1,4 @@
-use super::available_actions::GameActions;
+use super::enums::GameActions;
 use crate::store::game_store::get_current_battle_option;
 use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;

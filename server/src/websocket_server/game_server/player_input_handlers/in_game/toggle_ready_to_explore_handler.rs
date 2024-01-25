@@ -11,7 +11,6 @@ use common::game::getters::get_mut_party;
 use common::game::getters::get_mut_player;
 use common::packets::server_to_client::GameServerUpdatePackets;
 use common::packets::WebsocketChannelNamespace;
-use std::collections::HashSet;
 
 impl GameServer {
     pub fn toggle_ready_to_explore_handler(&mut self, actor_id: u32) -> Result<(), AppError> {
@@ -38,7 +37,10 @@ impl GameServer {
         }
 
         let current_floor = party.current_floor;
-        //
+        // can't be trying to explore and descend at the same time
+        if party.players_ready_to_descend.contains(&username) {
+            party.players_ready_to_descend.remove(&username);
+        }
         if party.players_ready_to_explore.contains(&username) {
             party.players_ready_to_explore.remove(&username);
         } else {
@@ -65,19 +67,19 @@ impl GameServer {
                 break;
             }
         }
-        println!(
-            "all players ready to explore: {}",
-            all_players_ready_to_explore
-        );
 
         let mut new_room = None;
         if all_players_ready_to_explore {
-            party.players_ready_to_explore = HashSet::new();
+            // @TODO - if next room would be stairs and the party is on the final floor, set their
+            // time of escape
+            // @TODO - if current room is stairs, reset the room order on the current floor
+
+            party.players_ready_to_explore.clear();
             new_room = Some(DungeonRoom::generate(
                 &mut game.id_generator,
                 current_floor,
                 false,
-                Some(DungeonRoomTypes::MonsterLair),
+                Some(DungeonRoomTypes::Stairs),
             ));
             //
         }

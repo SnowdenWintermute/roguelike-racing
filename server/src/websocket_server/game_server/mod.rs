@@ -131,6 +131,9 @@ impl Handler<ClientBinaryMessage> for GameServer {
             Ok(PlayerInputs::ToggleReadyToExplore) => {
                 self.toggle_ready_to_explore_handler(message.actor_id)
             }
+            Ok(PlayerInputs::ToggleReadyToGoDownStairs) => {
+                self.toggle_ready_to_descend_handler(message.actor_id)
+            }
             Ok(PlayerInputs::SelectAbility(packet)) => {
                 self.character_selects_ability_handler(message.actor_id, packet)
             }

@@ -3,9 +3,10 @@ pub mod game_list_item;
 pub mod game_setup;
 pub mod lobby_menu;
 pub mod user_list;
+use crate::components::lobby::game_list::GameList;
+use crate::components::lobby::lobby_menu::LobbyMenu;
+use crate::components::lobby::user_list::UserList;
 use yew::prelude::*;
-
-use crate::components::lobby::{game_list::GameList, lobby_menu::LobbyMenu, user_list::UserList};
 
 #[function_component(Lobby)]
 pub fn lobby() -> Html {

@@ -1,11 +1,12 @@
 use crate::components::common_components::atoms::button_basic::ButtonBasic;
-use crate::components::websocket_manager::send_client_input::send_client_input;
+use crate::components::game::dungeon_room::stairs::Stairs;
 use crate::store::websocket_store::WebsocketStore;
 use common::character::Character;
-use common::packets::client_to_server::PlayerInputs;
+use common::dungeon_rooms::DungeonRoomTypes;
 mod enemy_battle_group;
 mod items_on_ground;
 mod players_ready_to_explore;
+mod stairs;
 use crate::components::game::combatant::Combatant;
 use crate::components::game::dungeon_room::enemy_battle_group::EnemyBattleGroup;
 use crate::components::game::dungeon_room::items_on_ground::ItemsOnGround;
@@ -55,6 +56,12 @@ pub fn dungeon_room(props: &Props) -> Html {
         let leave_game = Callback::from(move |_| {
             game_dispatch.set(GameStore::default());
         });
+        let players_ready_to_descend_option =
+            if party.current_room.room_type == DungeonRoomTypes::Stairs {
+                Some(party.players_ready_to_descend.clone())
+            } else {
+                None
+            };
 
         // used to determine which battle group is the enemy
         let ally_combatant_id = characters.first().expect("party to have characters").0;
@@ -72,7 +79,8 @@ pub fn dungeon_room(props: &Props) -> Html {
                     </div>
                     if party.current_room.monsters.is_none() {
                         <PlayersReadyToExplore
-                            players_ready={party.players_ready_to_explore.clone()}
+                            players_ready_to_explore={party.players_ready_to_explore.clone()}
+                            players_ready_to_descend_option={players_ready_to_descend_option}
                             players={party.player_usernames.clone()}
                         />
                     }
@@ -89,6 +97,9 @@ pub fn dungeon_room(props: &Props) -> Html {
                                 {"Leave Game"}
                             </ButtonBasic>
                         </div>
+                    }
+                    if party.current_room.room_type == DungeonRoomTypes::Stairs {
+                        <Stairs />
                     }
                     if let Some(battle_id) = game_state.current_battle_id {
                         <EnemyBattleGroup battle_id={battle_id} ally_combatant_id={ally_combatant_id} />

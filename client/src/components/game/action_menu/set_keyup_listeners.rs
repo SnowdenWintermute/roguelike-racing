@@ -1,7 +1,8 @@
-use super::set_up_actions::ActionMenuButtonProperties;
+use super::build_action_button_properties::ActionMenuButtonProperties;
 use gloo::events::EventListener;
 use gloo_utils::window;
-use wasm_bindgen::{JsCast, UnwrapThrowExt};
+use wasm_bindgen::JsCast;
+use wasm_bindgen::UnwrapThrowExt;
 use web_sys::MouseEvent;
 use yew::UseStateHandle;
 

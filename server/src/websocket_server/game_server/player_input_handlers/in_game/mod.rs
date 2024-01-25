@@ -7,5 +7,6 @@ mod character_selects_ability_handler;
 mod character_uses_selected_ability_handler;
 mod client_acknowledges_receipt_of_item_on_ground_handler;
 mod equip_item_handler;
+mod toggle_ready_to_descend_handler;
 mod toggle_ready_to_explore_handler;
 mod unequip_slot_handler;

@@ -1,8 +1,10 @@
 use crate::components::common_components::atoms::button_basic::ButtonBasic;
+use crate::components::game::dungeon_room::empty_room::EmptyRoom;
 use crate::components::game::dungeon_room::stairs::Stairs;
 use crate::store::websocket_store::WebsocketStore;
 use common::character::Character;
 use common::dungeon_rooms::DungeonRoomTypes;
+mod empty_room;
 mod enemy_battle_group;
 mod items_on_ground;
 mod players_ready_to_explore;
@@ -100,6 +102,9 @@ pub fn dungeon_room(props: &Props) -> Html {
                     }
                     if party.current_room.room_type == DungeonRoomTypes::Stairs {
                         <Stairs />
+                    }
+                    if party.current_room.room_type == DungeonRoomTypes::Empty {
+                        <EmptyRoom />
                     }
                     if let Some(battle_id) = game_state.current_battle_id {
                         <EnemyBattleGroup battle_id={battle_id} ally_combatant_id={ally_combatant_id} />

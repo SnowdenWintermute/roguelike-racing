@@ -74,3 +74,6 @@ pub const CANT_EXPLORE_WHEN_MONSTERS_ARE_PRESENT: &str =
     "Defeat the monsters before exploring the next room";
 pub const CANT_DESCEND_IF_NO_STAIRS_ARE_PRESENT: &str =
     "You can't go down the stairs if there are no stairs to go down";
+pub const MISSING_ROOM_TYPE_TO_GENERATE: &str =
+    "Tried to generate a new room but the party's list of rooms to generate was empty";
+pub const CLIENT_LIST_MISSING_ROOM_TYPE: &str = "The client's list of room types on the current floor didn't contain a room type at the specified index";

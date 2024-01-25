@@ -1,3 +1,5 @@
+use std::collections::VecDeque;
+
 use crate::websocket_server::game_server::getters::get_mut_game;
 use crate::websocket_server::game_server::getters::get_mut_user;
 use crate::websocket_server::game_server::GameServer;
@@ -75,15 +77,50 @@ impl GameServer {
             // @TODO - if current room is stairs, reset the room order on the current floor
 
             party.players_ready_to_explore.clear();
+            let room_type_to_generate_option = party.unexplored_rooms.pop_front();
+            let mut new_room_types_list_for_client_option = None;
+            let room_type_to_generate = match room_type_to_generate_option {
+                Some(room_type_to_generate) => room_type_to_generate,
+                None => {
+                    party.generate_unexplored_rooms_queue();
+                    new_room_types_list_for_client_option = Some(party.unexplored_rooms.clone());
+                    party.unexplored_rooms.pop_front().ok_or_else(|| AppError {
+                        error_type: common::errors::AppErrorTypes::ServerError,
+                        message: error_messages::MISSING_ROOM_TYPE_TO_GENERATE.to_string(),
+                    })?
+                }
+            };
+
             new_room = Some(DungeonRoom::generate(
                 &mut game.id_generator,
                 current_floor,
                 false,
-                Some(DungeonRoomTypes::Stairs),
+                Some(room_type_to_generate),
             ));
             //
+            if let Some(new_room_types_list_for_client) = new_room_types_list_for_client_option {
+                let new_room_types_list_for_client = new_room_types_list_for_client
+                    .into_iter()
+                    .map(|item| {
+                        if item == DungeonRoomTypes::MonsterLair {
+                            Some(DungeonRoomTypes::MonsterLair)
+                        } else {
+                            None
+                        }
+                    })
+                    .collect::<VecDeque<Option<DungeonRoomTypes>>>();
+                self.emit_packet(
+                    &party_websocket_channel_name,
+                    &WebsocketChannelNamespace::Party,
+                    &GameServerUpdatePackets::DungeonRoomTypesOnCurrentFloor(
+                        new_room_types_list_for_client,
+                    ),
+                    None,
+                )?;
+            }
         }
 
+        let game = get_mut_game(&mut self.games, &game_name)?;
         let party = get_mut_party(game, party_id)?;
         if let Some(room) = new_room {
             party.current_room = room.clone();

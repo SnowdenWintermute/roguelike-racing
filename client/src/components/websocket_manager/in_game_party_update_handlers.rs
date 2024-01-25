@@ -3,13 +3,27 @@ use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::combat::battle::Battle;
 use common::dungeon_rooms::DungeonRoom;
+use common::dungeon_rooms::DungeonRoomTypes;
 use common::errors::AppError;
 use common::game::getters::get_mut_party;
 use common::packets::client_to_server::ChangeTargetsPacket;
 use common::packets::server_to_client::CharacterSelectedAbilityPacket;
 use gloo::console::log;
 use std::collections::HashMap;
+use std::collections::VecDeque;
 use yewdux::Dispatch;
+
+pub fn new_dungeon_room_types_on_current_floor(
+    game_dispatch: Dispatch<GameStore>,
+    packet: VecDeque<Option<DungeonRoomTypes>>,
+) -> Result<(), AppError> {
+    game_dispatch.reduce_mut(|store| {
+        let party = store.get_current_party_mut()?;
+        party.client_current_floor_rooms_list = packet;
+        party.rooms_explored.on_current_floor = 0;
+        Ok(())
+    })
+}
 
 pub fn handle_player_toggled_ready_to_explore(
     game_dispatch: Dispatch<GameStore>,
@@ -64,9 +78,19 @@ pub fn handle_new_dungeon_room(
     let party = game_store.get_current_party_mut()?;
     party.players_ready_to_explore.clear();
     party.players_ready_to_descend.clear();
+    let current_room_type = packet.room_type;
     party.current_room = packet;
     party.rooms_explored.on_current_floor += 1;
+    let num_rooms_explored_on_current_floor = party.rooms_explored.on_current_floor;
     party.rooms_explored.total += 1;
+    let room_to_reveal = party
+        .client_current_floor_rooms_list
+        .get_mut((num_rooms_explored_on_current_floor - 1).into())
+        .ok_or_else(|| AppError {
+            error_type: common::errors::AppErrorTypes::ClientError,
+            message: error_messages::CLIENT_LIST_MISSING_ROOM_TYPE.to_string(),
+        })?;
+    *room_to_reveal = Some(current_room_type);
 
     Ok(())
 }

@@ -11,11 +11,13 @@ use crate::combatants::abilities::AbilityTarget;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::CombatantClass;
 use crate::dungeon_rooms::DungeonRoom;
+use crate::dungeon_rooms::DungeonRoomTypes;
 use crate::game::RoguelikeRacerGame;
 use crate::items::Item;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashSet;
+use std::collections::VecDeque;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum GameServerUpdatePackets {
@@ -60,6 +62,7 @@ pub enum GameServerUpdatePackets {
     CharacterDroppedItem(CharacterAndItem),
     CharacterDroppedEquippedItem(CharacterAndSlot),
     DungeonFloorNumber(u8),
+    DungeonRoomTypesOnCurrentFloor(VecDeque<Option<DungeonRoomTypes>>),
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Default)]

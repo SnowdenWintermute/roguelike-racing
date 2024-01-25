@@ -67,6 +67,7 @@ impl GameServer {
         if all_players_ready_to_descend {
             // increase the floor count
             party.current_floor += 1;
+            party.generate_unexplored_rooms_queue();
             let current_floor = party.current_floor;
             party.players_ready_to_descend.clear();
             let player_usernames = party.player_usernames.clone();

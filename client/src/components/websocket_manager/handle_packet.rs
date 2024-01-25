@@ -16,6 +16,7 @@ use super::in_game_party_update_handlers::handle_character_changed_targets;
 use super::in_game_party_update_handlers::handle_new_dungeon_room;
 use super::in_game_party_update_handlers::handle_player_toggled_ready_to_descend;
 use super::in_game_party_update_handlers::handle_player_toggled_ready_to_explore;
+use super::in_game_party_update_handlers::new_dungeon_room_types_on_current_floor;
 use super::inventory_management_update_handlers::handle_character_equipped_item;
 use super::inventory_management_update_handlers::handle_character_unequipped_slot;
 use super::lobby_update_handlers::handle_game_started;
@@ -152,6 +153,9 @@ pub fn handle_packet(
         }
         GameServerUpdatePackets::DungeonFloorNumber(packet) => {
             dungeon_floor_number_changed_handler(game_dispatch, packet)
+        }
+        GameServerUpdatePackets::DungeonRoomTypesOnCurrentFloor(packet) => {
+            new_dungeon_room_types_on_current_floor(game_dispatch, packet)
         }
         _ => {
             log!(format!("unhandled packet: {:#?}", data));

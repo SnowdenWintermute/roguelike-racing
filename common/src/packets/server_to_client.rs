@@ -1,6 +1,7 @@
 use super::client_to_server::ChangeTargetsPacket;
 use super::CharacterAndItem;
 use super::CharacterAndSlot;
+use super::GameMessages;
 use super::WebsocketChannelNamespace;
 use crate::app_consts::LOBBY_CHANNEL;
 use crate::character::Character;
@@ -63,6 +64,7 @@ pub enum GameServerUpdatePackets {
     CharacterDroppedEquippedItem(CharacterAndSlot),
     DungeonFloorNumber(u8),
     DungeonRoomTypesOnCurrentFloor(VecDeque<Option<DungeonRoomTypes>>),
+    GameMessage(GameMessages),
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Default)]

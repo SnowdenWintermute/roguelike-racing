@@ -1,3 +1,5 @@
+use crate::components::game::combat_log::combat_log_message::CombatLogMessage;
+use crate::components::game::combat_log::combat_log_message::CombatLogMessageStyle;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::combat::CombatTurnResult;
@@ -46,17 +48,21 @@ pub fn send_next_turn_result_to_combatant_event_manager(
                 BattleConclusion::Victory => {
                     party.current_room.monsters = None;
                     party.battle_id = None;
-                    store
-                        .combat_log
-                        .push(AttrValue::from("battle ended in victory"));
+                    store.combat_log.push(CombatLogMessage::new(
+                        AttrValue::from("battle ended in victory"),
+                        CombatLogMessageStyle::BattleVictory,
+                        0,
+                    ));
 
                     store.current_battle_id = None;
                 }
                 BattleConclusion::Defeat => {
                     party.time_of_wipe = Some(js_sys::Date::now() as u64);
-                    store
-                        .combat_log
-                        .push(AttrValue::from("battle ended in defeat (game over)"));
+                    store.combat_log.push(CombatLogMessage::new(
+                        AttrValue::from("battle ended in defeat"),
+                        CombatLogMessageStyle::PartyWipe,
+                        0,
+                    ));
                 }
             }
 

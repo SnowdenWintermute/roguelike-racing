@@ -151,14 +151,6 @@ pub fn create_action_button_click_handler<'a>(
                     &websocket_state.websocket,
                     PlayerInputs::UseSelectedAbility(game_state.focused_character_id),
                 );
-
-                send_client_input(
-                    &websocket_state.websocket,
-                    PlayerInputs::SelectAbility(ClientSelectAbilityPacket {
-                        character_id: focused_character_id,
-                        ability_name_option: None,
-                    }),
-                )
             });
         }),
         GameActions::DropItem(item_id) => Box::new(move || {

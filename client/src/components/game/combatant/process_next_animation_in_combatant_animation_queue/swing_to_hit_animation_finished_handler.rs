@@ -1,3 +1,5 @@
+use crate::components::game::combat_log::combat_log_message::CombatLogMessage;
+use crate::components::game::combat_log::combat_log_message::CombatLogMessageStyle;
 use crate::components::mesh_manager::CombatantAnimation;
 use crate::components::mesh_manager::FloatingNumber;
 use crate::store::game_store::GameStore;
@@ -16,12 +18,20 @@ pub fn swing_to_hit_animation_finished_handler(
 ) -> Result<(), AppError> {
     game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
         let game = store.get_current_game_mut()?;
-        let (_, combatant_properties) = game.get_mut_combatant_by_id(&target_id)?;
+        let (attacker_entity_properties, _) = game.get_mut_combatant_by_id(&combatant_id)?;
+        let attacker_name = attacker_entity_properties.name.clone();
+        let (entity_properties, combatant_properties) = game.get_mut_combatant_by_id(&target_id)?;
+        let target_name = entity_properties.name.clone();
         let new_hp = if let Some(hp_change) = hp_change_option {
             let new_hp = combatant_properties.change_hp(hp_change);
-            store.combat_log.push(AttrValue::from(format!(
-                "{combatant_id} hit {target_id} for {hp_change}"
-            )));
+            store.combat_log.push(CombatLogMessage::new(
+                AttrValue::from(format!(
+                    "{} ({combatant_id}) hit {} ({target_id}) for {hp_change}",
+                    attacker_name, target_name
+                )),
+                CombatLogMessageStyle::Basic,
+                0,
+            ));
             new_hp
         } else {
             combatant_properties.hit_points
@@ -37,9 +47,14 @@ pub fn swing_to_hit_animation_finished_handler(
             })?;
 
         if evaded {
-            store.combat_log.push(AttrValue::from(format!(
-                "{target_id} evaded an attack from {combatant_id}"
-            )));
+            store.combat_log.push(CombatLogMessage::new(
+                AttrValue::from(format!(
+                    "{} ({target_id}) evaded an attack from {} ({combatant_id})",
+                    target_name, attacker_name,
+                )),
+                CombatLogMessageStyle::Basic,
+                0,
+            ));
             if target_event_manager.action_result_queue.front().is_none() {
                 target_event_manager.animation_queue = VecDeque::from([CombatantAnimation::Evasion])
             }
@@ -58,9 +73,11 @@ pub fn swing_to_hit_animation_finished_handler(
                 if new_hp == 0 {
                     target_event_manager.animation_queue =
                         VecDeque::from([CombatantAnimation::Death(Some(hp_change))]);
-                    store
-                        .combat_log
-                        .push(AttrValue::from(format!("{target_id} died")));
+                    store.combat_log.push(CombatLogMessage::new(
+                        AttrValue::from(format!("{} ({target_id}) died", target_name)),
+                        CombatLogMessageStyle::Basic,
+                        0,
+                    ));
                 } else {
                     target_event_manager.animation_queue =
                         VecDeque::from([CombatantAnimation::HitRecovery(hp_change)])

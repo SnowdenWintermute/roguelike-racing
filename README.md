@@ -1,6 +1,7 @@
 # Roguelike Racing
 
 A multiplayer turn based game in the spirit of For the King, Diablo and Final Fantasy.
+Live at [label](https://roguelikeracing.com)
 
 UI written with the Yew frontend framework, backend uses websockets via Actix.
 

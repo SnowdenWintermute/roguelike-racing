@@ -1,4 +1,5 @@
 mod adventuring_party_update_handlers;
+mod dungeon_floor_number_changed_handler;
 mod game_full_update_handler;
 mod handle_battle_victory_report;
 mod handle_character_dropped_equipped_item;
@@ -9,9 +10,9 @@ mod handle_packet;
 mod in_game_party_update_handlers;
 mod inventory_management_update_handlers;
 mod lobby_update_handlers;
+mod new_game_message_handler;
 pub mod send_client_input;
 mod websocket_channel_packet_handlers;
-mod dungeon_floor_number_changed_handler;
 use crate::components::alerts::set_alert;
 use crate::store::alert_store::AlertStore;
 use crate::store::game_store::GameStore;

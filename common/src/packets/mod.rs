@@ -24,3 +24,10 @@ pub struct CharacterAndSlot {
     pub character_id: u32,
     pub slot: EquipmentSlots,
 }
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub enum GameMessages {
+    PartyDescent(String, u8),
+    PartyEscape(String, u64),
+    PartyWipe(String, u8, u64),
+}

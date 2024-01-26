@@ -91,9 +91,10 @@ impl Actor for GameServer {
 impl Handler<ClientBinaryMessage> for GameServer {
     type Result = ();
     fn handle(&mut self, message: ClientBinaryMessage, _: &mut Context<Self>) {
-        // println!("message received: {:?}", message.content);
+        println!("message received: {:?}", message.content);
         let byte_slice = &message.content[..];
         let deserialized: Result<PlayerInputs, _> = serde_cbor::from_slice(byte_slice);
+        println!("deserialized: {:?}", deserialized);
         let result = match deserialized {
             Ok(PlayerInputs::CreateGame(game_creation_data)) => {
                 self.create_game_handler(message.actor_id, game_creation_data)

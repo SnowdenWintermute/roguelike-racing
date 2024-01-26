@@ -12,7 +12,7 @@ pub fn welcome_info() -> Html {
         <section class="flex-1 p-4 mb-4 mr-4 bg-slate-700 border border-slate-400 overflow-y-auto">
         <h3 class="text-lg">{"Roguelike Racing"}</h3>
         <button onclick={handle_show_patch_notes_click} class="mb-2">
-            {"alpha 0.2.1 ⓘ"}
+            {"alpha 0.3.0 ⓘ"}
         </button>
         if *show_patch_notes_state == false {
             <WelcomeMessage />

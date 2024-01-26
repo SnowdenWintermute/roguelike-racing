@@ -3,7 +3,7 @@ use yew::prelude::*;
 #[function_component(WelcomeInfo)]
 pub fn welcome_info() -> Html {
     html!(
-        <section class="flex-1 p-4 mb-4 mr-4 bg-slate-700 border border-slate-400 overflow-y-scroll">
+        <section class="flex-1 p-4 mb-4 mr-4 bg-slate-700 border border-slate-400 overflow-y-auto">
             <h3 class="text-lg">{"Roguelike Racing"}</h3>
             <h5 class="mb-2">
             {"alpha 0.2.0"}

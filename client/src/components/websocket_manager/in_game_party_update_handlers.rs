@@ -17,6 +17,7 @@ pub fn new_dungeon_room_types_on_current_floor(
     game_dispatch: Dispatch<GameStore>,
     packet: VecDeque<Option<DungeonRoomTypes>>,
 ) -> Result<(), AppError> {
+    log!("got new room types list");
     game_dispatch.reduce_mut(|store| {
         let party = store.get_current_party_mut()?;
         party.client_current_floor_rooms_list = packet;

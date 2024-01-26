@@ -64,7 +64,7 @@ fn players_included_in_list(props: &PlayersIncludedInListProps) -> Html {
                  let is_ready = props.list_to_check.contains(username);
                  let mut ready_class = "";
                  if is_ready {
-                     ready_class = "text-green-400"
+                     ready_class = "text-green-600"
                  }
                  html!(
                     <div class={ready_class}>

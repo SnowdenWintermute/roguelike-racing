@@ -1,3 +1,4 @@
+use crate::components::game::combat_log::combat_log_message::CombatLogMessage;
 use crate::components::mesh_manager::ActionResultsManager;
 use common::adventuring_party::AdventuringParty;
 use common::app_consts::error_messages::{self};
@@ -15,7 +16,6 @@ use common::packets::server_to_client::BattleEndReportPacket;
 use common::primatives::EntityProperties;
 use std::collections::HashSet;
 use std::rc::Rc;
-use yew::AttrValue;
 use yewdux::prelude::*;
 
 #[derive(PartialEq, Clone, Debug)]
@@ -61,7 +61,7 @@ pub struct GameStore {
     pub viewing_items_on_ground: bool,
     pub parent_menu_pages: Vec<u8>,
     pub action_menu_current_page_number: u8,
-    pub combat_log: Vec<AttrValue>,
+    pub combat_log: Vec<CombatLogMessage>,
 }
 
 pub fn get_current_party_option<'a>(game_state: &'a GameStore) -> Option<&'a AdventuringParty> {

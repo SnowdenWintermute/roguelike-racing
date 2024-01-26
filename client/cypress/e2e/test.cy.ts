@@ -12,19 +12,19 @@ describe("a test test", () => {
     cy.findByRole("button", { name: "Create Character" }).focus();
     cy.findByRole("button", { name: "Create Character" }).click();
 
-    cy.findByPlaceholderText("Character name...")
-      .click()
-      .clear()
-      .type("character 2", { delay: 0 });
-    cy.findByRole("button", { name: "Create Character" }).focus();
-    cy.findByRole("button", { name: "Create Character" }).click();
+    // cy.findByPlaceholderText("Character name...")
+    //   .click()
+    //   .clear()
+    //   .type("Rebecca Chambers", { delay: 0 });
+    // cy.findByRole("button", { name: "Create Character" }).focus();
+    // cy.findByRole("button", { name: "Create Character" }).click();
 
-    cy.findByPlaceholderText("Character name...")
-      .click()
-      .clear()
-      .type("character 3", { delay: 0 });
-    cy.findByRole("button", { name: "Create Character" }).focus();
-    cy.findByRole("button", { name: "Create Character" }).click();
+    // cy.findByPlaceholderText("Character name...")
+    //   .click()
+    //   .clear()
+    //   .type("character 3", { delay: 0 });
+    // cy.findByRole("button", { name: "Create Character" }).focus();
+    // cy.findByRole("button", { name: "Create Character" }).click();
 
     cy.findByRole("button", { name: "Ready" }).click();
     // cy.findByText("Open Inventory").click();

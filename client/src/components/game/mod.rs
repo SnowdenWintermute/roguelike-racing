@@ -1,7 +1,7 @@
 mod action_menu;
 mod character_autofocus_manager;
 mod character_sheet;
-mod combat_log;
+pub mod combat_log;
 pub mod combatant;
 mod combatant_detail_tab;
 pub mod debug;
@@ -70,7 +70,6 @@ pub fn game() -> Html {
     });
 
     let focused_character = party.characters.get(&game_state.focused_character_id);
-
 
     html!(
         <main class="h-screen w-screen p-4 bg-gray-600 text-zinc-300 flex flex-col relative">

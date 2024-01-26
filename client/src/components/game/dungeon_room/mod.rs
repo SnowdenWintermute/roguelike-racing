@@ -87,7 +87,7 @@ pub fn dungeon_room(props: &Props) -> Html {
                         />
                     }
                 </div>
-                if !game_state.viewing_inventory {
+                // if !game_state.viewing_inventory {
                 <div class="w-1/2 border-l border-slate-400 p-2 flex flex-col" >
                     if let Some(time_of_death) = time_of_death_option {
                         <div class=" border border-slate-400 bg-slate-700 p-4
@@ -112,7 +112,7 @@ pub fn dungeon_room(props: &Props) -> Html {
                         <ItemsOnGround />
                     }
                 </div>
-                }
+                // }
             </section>
         )
     } else {

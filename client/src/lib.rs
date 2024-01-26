@@ -1,6 +1,7 @@
 mod components;
 mod router;
 mod store;
+pub mod utils;
 use crate::components::alerts::alert_manager::AlertManager;
 use crate::components::game::Game;
 use crate::components::global_keyboard_event_manager::GlobalKeyboardEventManager;

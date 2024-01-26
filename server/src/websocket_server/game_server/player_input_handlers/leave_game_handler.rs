@@ -52,6 +52,7 @@ impl GameServer {
                 })?;
 
         let game = get_mut_game(&mut self.games, &game_name_leaving)?;
+        let game_name = game.name.clone();
         game.remove_player_from_adventuring_party(connected_user.username.clone())?;
 
         game.players.remove(&connected_user.username.clone());
@@ -59,6 +60,7 @@ impl GameServer {
             .remove(&connected_user.username.clone());
 
         if game.get_number_of_players() < 1 {
+            println!("no players remain in game named '{game_name}', removing game from server");
             self.games.remove(&game_name_leaving);
         }
 

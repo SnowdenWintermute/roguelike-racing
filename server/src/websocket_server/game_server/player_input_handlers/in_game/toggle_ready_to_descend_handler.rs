@@ -1,12 +1,17 @@
+use std::time::SystemTime;
+use std::time::UNIX_EPOCH;
+
 use crate::websocket_server::game_server::getters::get_mut_game;
 use crate::websocket_server::game_server::getters::get_mut_user;
 use crate::websocket_server::game_server::GameServer;
 use common::app_consts::error_messages;
+use common::app_consts::LEVEL_TO_REACH_FOR_ESCAPE;
 use common::dungeon_rooms::DungeonRoomTypes;
 use common::errors::AppError;
 use common::game::getters::get_mut_party;
 use common::game::getters::get_mut_player;
 use common::packets::server_to_client::GameServerUpdatePackets;
+use common::packets::GameMessages;
 use common::packets::WebsocketChannelNamespace;
 
 impl GameServer {
@@ -67,6 +72,8 @@ impl GameServer {
         if all_players_ready_to_descend {
             // increase the floor count
             party.current_floor += 1;
+            let party_name = party.name.clone();
+            let new_party_floor = party.current_floor;
             party.unexplored_rooms.clear();
             let current_floor = party.current_floor;
             party.players_ready_to_descend.clear();
@@ -90,6 +97,36 @@ impl GameServer {
                 &GameServerUpdatePackets::DungeonFloorNumber(current_floor),
                 None,
             )?;
+
+            self.emit_packet(
+                &game_name,
+                &WebsocketChannelNamespace::Game,
+                &GameServerUpdatePackets::GameMessage(GameMessages::PartyDescent(
+                    party_name.clone(),
+                    new_party_floor,
+                )),
+                None,
+            )?;
+
+            if new_party_floor == LEVEL_TO_REACH_FOR_ESCAPE {
+                let time_of_escape = SystemTime::now()
+                    .duration_since(UNIX_EPOCH)
+                    .expect("time went backwards")
+                    .as_secs();
+                let game = get_mut_game(&mut self.games, &game_name)?;
+                let party = get_mut_party(game, party_id)?;
+                party.time_of_escape = Some(time_of_escape);
+                self.emit_packet(
+                    &game_name,
+                    &WebsocketChannelNamespace::Game,
+                    &GameServerUpdatePackets::GameMessage(GameMessages::PartyEscape(
+                        party_name,
+                        time_of_escape,
+                    )),
+                    None,
+                )?;
+            }
+
             for player_actor_id in actor_ids {
                 self.toggle_ready_to_explore_handler(player_actor_id)?;
             }

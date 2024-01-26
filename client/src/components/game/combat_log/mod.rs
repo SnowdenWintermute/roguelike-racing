@@ -1,3 +1,5 @@
+pub mod combat_log_message;
+use self::combat_log_message::CombatLogMessage;
 use crate::store::game_store::GameStore;
 use yew::prelude::*;
 use yewdux::use_store;
@@ -12,9 +14,32 @@ pub fn combat_log() -> Html {
             <div class="list-none overflow-y-auto
            flex flex-col-reverse flex-1" >
                <ul class="" >
-               {game_state.combat_log.iter().map(|log_entry| html!(<li>{log_entry}</li>)).collect::<Html>()}
+               {game_state.combat_log.iter().map(|log_entry| html!(
+                       <CombatLogMessageElement combat_log_message={log_entry.clone()} />))
+                   .collect::<Html>()}
                </ul>
             </div>
         </div>
+    )
+}
+
+#[derive(Properties, PartialEq)]
+pub struct Props {
+    combat_log_message: CombatLogMessage,
+}
+
+#[function_component(CombatLogMessageElement)]
+pub fn combat_log_message_element(props: &Props) -> Html {
+    let Props { combat_log_message } = props;
+    let color = match combat_log_message.style {
+        combat_log_message::CombatLogMessageStyle::Basic => "",
+        combat_log_message::CombatLogMessageStyle::PartyProgress => "text-yellow-400",
+        combat_log_message::CombatLogMessageStyle::PartyWipe => "text-red-400",
+        combat_log_message::CombatLogMessageStyle::PartyEscape => "text-green-600",
+        combat_log_message::CombatLogMessageStyle::BattleVictory => "text-green-600",
+    };
+
+    html!(
+        <li class={color}>{combat_log_message.message.clone()}</li>
     )
 }

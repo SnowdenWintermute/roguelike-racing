@@ -52,13 +52,13 @@ pub fn character_autofocus_manager() -> Html {
             });
             // if battle ended, focus first owned character
             let _ = (|| -> Result<(), AppError> {
+                let party = game_state.get_current_party()?;
+                let character_positions = party.character_positions.clone();
                 if current_battle_id.is_none()
                     && prev_current_battle_id_state.is_some()
                     && !game_state.viewing_inventory
                 {
                     let username = &lobby_state.username;
-                    let party = game_state.get_current_party()?;
-                    let character_positions = party.character_positions.clone();
                     let game = game_state.get_current_game()?;
                     let player = get_player(game, username.to_string())?;
                     for character_id in character_positions {
@@ -73,6 +73,18 @@ pub fn character_autofocus_manager() -> Html {
                             break;
                         }
                     }
+                } else {
+                    game_dispatch.reduce_mut(|store| {
+                        if let Some(active_combatant_id) = active_combatant_id_option {
+                            if !store.viewing_inventory
+                                && character_positions.contains(&active_combatant_id)
+                            {
+                                if store.current_battle_id != *prev_current_battle_id_state {
+                                    store.focused_character_id = active_combatant_id
+                                }
+                            }
+                        }
+                    })
                 }
                 Ok(())
             })();

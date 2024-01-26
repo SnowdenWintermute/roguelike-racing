@@ -23,6 +23,7 @@ use super::lobby_update_handlers::handle_game_started;
 use super::lobby_update_handlers::handle_player_toggled_ready;
 use super::lobby_update_handlers::handle_user_joined_game;
 use super::lobby_update_handlers::handle_user_left_game;
+use super::new_game_message_handler::new_game_message_handler;
 use super::websocket_channel_packet_handlers::handle_user_joined_websocket_channel;
 use super::websocket_channel_packet_handlers::handle_user_left_websocket_channel;
 use super::websocket_channel_packet_handlers::handle_websocket_channels_full_update;
@@ -156,6 +157,9 @@ pub fn handle_packet(
         }
         GameServerUpdatePackets::DungeonRoomTypesOnCurrentFloor(packet) => {
             new_dungeon_room_types_on_current_floor(game_dispatch, packet)
+        }
+        GameServerUpdatePackets::GameMessage(packet) => {
+            new_game_message_handler(game_dispatch, packet)
         }
         _ => {
             log!(format!("unhandled packet: {:#?}", data));

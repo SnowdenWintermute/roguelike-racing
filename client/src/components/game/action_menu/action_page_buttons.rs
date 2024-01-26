@@ -1,7 +1,8 @@
 use crate::store::game_store::GameStore;
 use gloo::events::EventListener;
 use gloo_utils::window;
-use wasm_bindgen::{JsCast, UnwrapThrowExt};
+use wasm_bindgen::JsCast;
+use wasm_bindgen::UnwrapThrowExt;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
@@ -56,7 +57,7 @@ pub fn action_page_buttons(props: &Props) -> Html {
             if event.code() == "KeyW" {
                 cloned_prev_page();
             }
-            if event.code() == "KeyE" {
+            if event.code() == "KeyR" {
                 cloned_next_page();
             }
         });

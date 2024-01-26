@@ -44,7 +44,6 @@ pub fn game() -> Html {
                         .iter()
                         .enumerate()
                         .map(|(i, room_type_option )| {
-                            log!(format!("room box index: {i} explored on current floor: {}", party.rooms_explored.on_current_floor));
                             let current_room_class = if party.rooms_explored.on_current_floor == ( i + 1 ) as u16 {
                                 "border-yellow-400"
                             } else {

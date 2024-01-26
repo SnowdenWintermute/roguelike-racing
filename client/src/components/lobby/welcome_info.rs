@@ -27,16 +27,27 @@ pub fn welcome_info() -> Html {
 fn welcome_message() -> Html {
     html!(
         <>
-    <p>{"0.2.1"}</p>
+    <p>{"0.3.0 1/26/2024"}</p>
+    <p>{"Fixed bugs:"}</p>
+    <ul class="list-disc list-inside mb-1">
+        <li>{"Opening the inventory while combat animations were playing would cause the client to desync"}</li>
+        <li>{"Focus now shifts to the active character at the beginning of combat if not in the inventory"}</li>
+    </ul>
+    <p>{"Added features:"}</p>
+    <ul class="list-disc list-inside mb-1">
+        <li>{"Color coded messages now display in the combat log when any party in a game descends to a new floor, escapes the dungeon or wipes"}</li>
+        <li>{"Version history now shows dates"}</li>
+    </ul>
+    <p>{"0.2.1 1/25/2024"}</p>
     <ul class="list-disc list-inside mb-1">
         <li>{"Added patch notes section to welcome info"}</li>
         <li>{"Fixed a bug where the room exploration tracker wouldn't work on any floor except the first"}</li>
     </ul>
-    <p>{"0.2.0"}</p>
+    <p>{"0.2.0 1/24/2024"}</p>
     <p>{"Fixed bugs:"}</p>
     <ul class="list-disc list-inside mb-1">
-        <li>{"players couldn't attack while wearing a shield"}</li>
-        <li>{"unequipping an item would not change focus to the unequipped item"}</li>
+        <li>{"Players couldn't attack while wearing a shield"}</li>
+        <li>{"Unequipping an item would not change focus to the unequipped item"}</li>
     </ul>
     <p>{"Added features:"}</p>
     <ul class="list-disc list-inside mb-1">

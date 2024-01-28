@@ -143,7 +143,7 @@ impl GameServer {
                 loot.push(Item::generate(
                     &mut game.id_generator,
                     dlvl,
-                    ItemCategories::Equipment,
+                    ItemCategories::Consumable,
                 ))
             }
             Some(loot)

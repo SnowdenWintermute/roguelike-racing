@@ -8,6 +8,7 @@ use common::errors::AppError;
 use common::game::getters::get_mut_party;
 use common::packets::client_to_server::ChangeTargetsPacket;
 use common::packets::server_to_client::CharacterSelectedAbilityPacket;
+use common::packets::server_to_client::CharacterSelectedConsumablePacket;
 use gloo::console::log;
 use std::collections::HashMap;
 use std::collections::VecDeque;
@@ -133,6 +134,24 @@ pub fn handle_character_ability_selection(
     character.combatant_properties.selected_ability_name = ability_name_option;
     character.combatant_properties.ability_targets = targets_option;
     Ok(())
+}
+
+pub fn handle_character_consumable_selection(
+    game_dispatch: Dispatch<GameStore>,
+    packet: CharacterSelectedConsumablePacket,
+) -> Result<(), AppError> {
+    let CharacterSelectedConsumablePacket {
+        character_id,
+        targets_option,
+        consumable_id_option,
+    } = packet;
+
+    game_dispatch.reduce_mut(|store| {
+        let character = store.get_mut_character(character_id)?;
+        character.combatant_properties.selected_consumable = consumable_id_option;
+        character.combatant_properties.ability_targets = targets_option;
+        Ok(())
+    })
 }
 
 pub fn handle_character_changed_targets(

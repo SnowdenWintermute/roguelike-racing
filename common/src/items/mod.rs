@@ -2,6 +2,7 @@ pub mod consumables;
 pub mod equipment;
 pub mod items_by_level;
 use self::consumables::ConsumableProperties;
+use self::consumables::ConsumableTypes;
 use self::equipment::equipment_generation::generate_equipment_properties_from_base_item;
 use self::equipment::equipment_generation::name_equipment::name_equipment;
 use self::equipment::equipment_generation::EquipmentPropertiesAndRequirements;
@@ -39,7 +40,7 @@ pub struct Item {
 impl Item {
     pub fn generate(
         id_generator: &mut IdGenerator,
-        level: u8,
+        item_level: u8,
         forced_type: ItemCategories,
     ) -> Item {
         match forced_type {
@@ -47,7 +48,7 @@ impl Item {
                 let EquipmentPropertiesAndRequirements {
                     equipment_properties,
                     requirements,
-                } = generate_equipment_properties_from_base_item(level);
+                } = generate_equipment_properties_from_base_item(item_level);
                 let item_name = name_equipment(&equipment_properties);
                 println!("generated item: {item_name}");
 
@@ -56,12 +57,27 @@ impl Item {
                         id: id_generator.get_next_entity_id(),
                         name: item_name,
                     },
-                    item_level: level as u8,
+                    item_level,
                     requirements,
                     item_properties: ItemProperties::Equipment(equipment_properties),
                 }
             }
-            ItemCategories::Consumable => todo!(),
+            ItemCategories::Consumable => {
+                let consumable_type = ConsumableTypes::random();
+                let item_name = format!("{}", consumable_type);
+                Item {
+                    entity_properties: EntityProperties {
+                        id: id_generator.get_next_entity_id(),
+                        name: item_name,
+                    },
+                    item_level,
+                    requirements: consumable_type.get_requirements(item_level),
+                    item_properties: ItemProperties::Consumable(ConsumableProperties {
+                        consumable_type,
+                        uses_remaining: 1,
+                    }),
+                }
+            }
         }
     }
 

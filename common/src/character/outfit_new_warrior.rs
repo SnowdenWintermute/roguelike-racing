@@ -2,6 +2,8 @@ use super::Character;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::game::RoguelikeRacerGame;
 use crate::items::equipment::equipment_generation::create_starting_equipment::create_starting_equipment;
+use crate::items::Item;
+use crate::items::ItemCategories;
 
 pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Character) {
     let combatant_properties = &mut character.combatant_properties;
@@ -30,10 +32,11 @@ pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Charact
     // );
 
     // TEST INVENTORY ITEMS
-    // for _ in 0..8 {
-    //     let random_equipment = Item::generate(&mut game.id_generator, 5);
-    //     character.inventory.items.push(random_equipment);
-    // }
+    for _ in 0..8 {
+        let random_consumable =
+            Item::generate(&mut game.id_generator, 5, ItemCategories::Consumable);
+        character.inventory.items.push(random_consumable);
+    }
     // for _ in 0..8 {
     //     let random_equipment = Item::generate(&mut game.id_generator, 7);
     //     character.inventory.items.push(random_equipment);

@@ -1,4 +1,7 @@
 mod get_consumable_properties;
+mod get_consumable_requirements;
+use std::fmt::Display;
+
 use rand::seq::SliceRandom;
 use serde::Deserialize;
 use serde::Serialize;
@@ -19,8 +22,19 @@ pub enum ConsumableTypes {
     // Antidote,
 }
 
+impl Display for ConsumableTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let to_write = match self {
+            ConsumableTypes::Autoinjector => "Autoinjector",
+            ConsumableTypes::Grenade => "Grenade",
+            ConsumableTypes::SmokeBomb => "Smoke Bomb",
+        };
+        write!(f, "{}", to_write)
+    }
+}
+
 impl ConsumableTypes {
-    pub fn random(&self) -> Self {
+    pub fn random() -> Self {
         let vec: Vec<_> = ConsumableTypes::iter().collect();
         *vec.choose(&mut rand::thread_rng()).unwrap()
     }

@@ -27,6 +27,7 @@ pub const INVALID_ITEM_ID: &str = "No valid item with the provided id was found"
 pub const ITEM_REQUIREMENTS_NOT_MET: &str =
     "You do not meet the requirements to equip or use that item";
 pub const CANT_EQUIP_NON_EQUIPMENT: &str = "Only equipment items may be equipped";
+pub const CANT_CONSUME_NON_CONSUMABLE_ITEM: &str = "Only consumable items may be consumed";
 pub const INVALID_EQUIPMENT_EQUIPPED: &str =
     "An invalid item was found in a character's equippment slot";
 pub const ITEM_NOT_YET_AVAILABLE: &str = "That item's data is still being sent to other clients";

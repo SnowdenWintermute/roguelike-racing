@@ -13,6 +13,7 @@ use super::handle_combat_turn_results::handle_combat_turn_results;
 use super::in_game_party_update_handlers::handle_battle_full_update;
 use super::in_game_party_update_handlers::handle_character_ability_selection;
 use super::in_game_party_update_handlers::handle_character_changed_targets;
+use super::in_game_party_update_handlers::handle_character_consumable_selection;
 use super::in_game_party_update_handlers::handle_new_dungeon_room;
 use super::in_game_party_update_handlers::handle_player_toggled_ready_to_descend;
 use super::in_game_party_update_handlers::handle_player_toggled_ready_to_explore;
@@ -126,6 +127,9 @@ pub fn handle_packet(
         }
         GameServerUpdatePackets::CharacterSelectedAbility(packet) => {
             game_dispatch.reduce_mut(|store| handle_character_ability_selection(store, packet))
+        }
+        GameServerUpdatePackets::CharacterSelectedConsumable(packet) => {
+            handle_character_consumable_selection(game_dispatch, packet)
         }
         GameServerUpdatePackets::CharacterChangedTargets(packet) => {
             game_dispatch.reduce_mut(|store| handle_character_changed_targets(store, packet))

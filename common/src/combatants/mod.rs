@@ -80,7 +80,7 @@ pub struct CombatantProperties {
     pub equipment: HashMap<EquipmentSlots, Item>,
     pub abilities: HashMap<CombatantAbilityNames, CombatantAbility>,
     // pub traits: HashSet<CombatantTraits>
-    pub selected_item_slot: Option<u8>,
+    pub selected_consumable: Option<u32>,
     pub selected_ability_name: Option<CombatantAbilityNames>,
     pub ability_targets: Option<CombatActionTarget>,
     pub ability_target_preferences: CombatActionTargetPreferences,
@@ -101,7 +101,7 @@ impl CombatantProperties {
             status_effects: vec![],
             equipment: HashMap::new(),
             abilities,
-            selected_item_slot: None,
+            selected_consumable: None,
             selected_ability_name: None,
             ability_targets: None,
             ability_target_preferences: CombatActionTargetPreferences::default(),

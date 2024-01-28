@@ -6,16 +6,16 @@ use common::combat::combat_actions::filter_possible_target_ids_by_prohibited_com
 use common::errors::AppError;
 use common::errors::AppErrorTypes;
 use common::game::getters::get_mut_party;
-use common::packets::client_to_server::ClientSelectAbilityPacket;
-use common::packets::server_to_client::CharacterSelectedAbilityPacket;
+use common::packets::client_to_server::ClientSelectConsumablePacket;
+use common::packets::server_to_client::CharacterSelectedConsumablePacket;
 use common::packets::server_to_client::GameServerUpdatePackets;
 use common::packets::WebsocketChannelNamespace;
 
 impl GameServer {
-    pub fn character_selects_ability_handler(
+    pub fn character_selects_consumable_handler(
         &mut self,
         actor_id: u32,
-        packet: ClientSelectAbilityPacket,
+        packet: ClientSelectConsumablePacket,
     ) -> Result<(), AppError> {
         let ActorIdAssociatedGameData {
             game,
@@ -23,21 +23,12 @@ impl GameServer {
             player_character_ids_option,
             ..
         } = get_mut_game_data_from_actor_id(self, actor_id)?;
+
         let party = get_mut_party(game, party_id)?;
         let party_websocket_channel_name = party.websocket_channel_name.clone();
 
-        let new_targets_option = if packet.ability_name_option.is_none() {
-            let character = party
-                .get_mut_character_if_owned(player_character_ids_option, packet.character_id)?;
-            character.combatant_properties.selected_ability_name = None;
-            character.combatant_properties.ability_targets = None;
-            None
-        } else {
+        let new_targets_option = if let Some(item_id) = packet.consumable_id_option {
             let battle_id_option = party.battle_id;
-            println!(
-                "battle_id option at character_selects_ability_handler: {:?}",
-                battle_id_option
-            );
             let character_positions = party.character_positions.clone();
             let character = party.get_mut_character_if_owned(
                 player_character_ids_option.clone(),
@@ -48,13 +39,11 @@ impl GameServer {
                 .ability_target_preferences
                 .clone();
 
-            let ability_name = packet.ability_name_option.clone().expect("is_none checked");
-            let ability_attributes = ability_name.get_attributes();
-            let combat_action_properties = ability_attributes.combat_action_properties;
-            // don't allow selection of unowned ability
-            let _ = character
-                .combatant_properties
-                .get_mut_ability_if_owned(&ability_name)?;
+            let consumable_properties = character.inventory.get_consumable(&item_id)?;
+
+            let combat_action_properties = consumable_properties
+                .consumable_type
+                .get_combat_action_properties();
 
             let (ally_ids, opponent_ids_option) = if let Some(battle_id) = battle_id_option {
                 let battle = game.battles.get(&battle_id).ok_or_else(|| AppError {
@@ -101,20 +90,28 @@ impl GameServer {
             let party = get_mut_party(game, party_id)?;
             let character = party
                 .get_mut_character_if_owned(player_character_ids_option, packet.character_id)?;
-            character.combatant_properties.selected_ability_name = Some(ability_name);
+            character.combatant_properties.selected_consumable = Some(item_id);
             character.combatant_properties.ability_target_preferences = new_target_preferences;
             character.combatant_properties.ability_targets = Some(new_targets.clone());
             Some(new_targets)
+        } else {
+            let character = party
+                .get_mut_character_if_owned(player_character_ids_option, packet.character_id)?;
+            character.combatant_properties.selected_consumable = None;
+            character.combatant_properties.ability_targets = None;
+            None
         };
 
         self.emit_packet(
             &party_websocket_channel_name,
             &WebsocketChannelNamespace::Party,
-            &GameServerUpdatePackets::CharacterSelectedAbility(CharacterSelectedAbilityPacket {
-                character_id: packet.character_id,
-                ability_name_option: packet.ability_name_option,
-                targets_option: new_targets_option,
-            }),
+            &GameServerUpdatePackets::CharacterSelectedConsumable(
+                CharacterSelectedConsumablePacket {
+                    character_id: packet.character_id,
+                    consumable_id_option: packet.consumable_id_option,
+                    targets_option: new_targets_option,
+                },
+            ),
             Some(actor_id),
         )
     }

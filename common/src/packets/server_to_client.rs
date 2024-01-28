@@ -54,6 +54,7 @@ pub enum GameServerUpdatePackets {
     PlayerToggledReadyToDescend(String),
     DungeonRoomUpdate(DungeonRoom),
     CharacterSelectedAbility(CharacterSelectedAbilityPacket),
+    CharacterSelectedConsumable(CharacterSelectedConsumablePacket),
     CharacterChangedTargets(ChangeTargetsPacket),
     ActionResults(Vec<ActionResult>),
     CombatTurnResults(CombatTurnResultsPacket),
@@ -179,6 +180,13 @@ pub struct CharacterEquippedItemPacket {
 pub struct CharacterSelectedAbilityPacket {
     pub character_id: u32,
     pub ability_name_option: Option<CombatantAbilityNames>,
+    pub targets_option: Option<CombatActionTarget>,
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+pub struct CharacterSelectedConsumablePacket {
+    pub character_id: u32,
+    pub consumable_id_option: Option<u32>,
     pub targets_option: Option<CombatActionTarget>,
 }
 

@@ -4,6 +4,7 @@ mod character_drops_equipped_item;
 mod character_drops_item;
 mod character_picks_up_item_from_ground_handler;
 mod character_selects_ability_handler;
+mod character_selects_consumable_handler;
 mod character_uses_selected_ability_handler;
 mod client_acknowledges_receipt_of_item_on_ground_handler;
 mod equip_item_handler;

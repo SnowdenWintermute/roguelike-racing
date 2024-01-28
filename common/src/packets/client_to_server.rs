@@ -22,9 +22,9 @@ pub enum PlayerInputs {
     DeleteCharacter(u32),
     ToggleReady,
     // use items and abilities
-    SelectConsumable(u8),
     UseSelectedConsumable,
     SelectAbility(ClientSelectAbilityPacket),
+    SelectConsumable(ClientSelectConsumablePacket),
     UseSelectedAbility(u32),
     ChangeTargets(ChangeTargetsPacket),
     ClearConsumableAndAbilitySelections,
@@ -90,6 +90,12 @@ pub struct UnequipSlotRequest {
 pub struct ClientSelectAbilityPacket {
     pub character_id: u32,
     pub ability_name_option: Option<CombatantAbilityNames>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct ClientSelectConsumablePacket {
+    pub character_id: u32,
+    pub consumable_id_option: Option<u32>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

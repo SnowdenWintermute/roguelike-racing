@@ -2,7 +2,7 @@ use crate::combat::ability_handlers::ability_resolution_calculators::calculate_w
 use crate::combat::battle::Battle;
 use crate::app_consts::error_messages;
 use crate::combat::ActionResult;
-use crate::combatants::abilities::AbilityTarget;
+use crate::combat::combat_actions::CombatActionTarget;
 use crate::errors::AppError;
 use crate::game::RoguelikeRacerGame;
 use crate::items::equipment::EquipmentSlots;
@@ -12,7 +12,7 @@ impl RoguelikeRacerGame {
     pub fn attack_handler(
         &mut self,
         ability_user_id: u32,
-        ability_target: &AbilityTarget,
+        ability_target: &CombatActionTarget,
         battle_option: Option<&Battle>,
     ) -> Result<Vec<ActionResult>, AppError> {
         let mut action_results = vec![];
@@ -22,7 +22,7 @@ impl RoguelikeRacerGame {
         })?;
 
         let target_entity_id = match ability_target {
-            AbilityTarget::Single(id) => id,
+            CombatActionTarget::Single(id) => id,
             _ => {
                 return Err(AppError {
                     error_type: crate::errors::AppErrorTypes::InvalidInput,

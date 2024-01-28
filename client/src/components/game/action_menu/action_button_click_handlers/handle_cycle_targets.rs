@@ -2,7 +2,7 @@ use crate::components::websocket_manager::send_client_input::send_client_input;
 use crate::store::game_store::get_cloned_current_battle_option;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
-use common::combatants::abilities::filter_possible_target_ids_by_prohibited_combatant_states::filter_possible_target_ids_by_prohibited_combatant_states;
+use common::combat::combat_actions::filter_possible_target_ids_by_prohibited_combatant_states::filter_possible_target_ids_by_prohibited_combatant_states;
 use common::errors::AppError;
 use common::game::getters::get_ally_ids_and_opponent_ids_option;
 use common::game::getters::get_mut_party;
@@ -48,9 +48,11 @@ pub fn handle_cycle_targets(
                     message: error_messages::MISSING_ABILITY_REFERENCE.to_string(),
                 })?;
             let ability_name = ability_name.clone();
-            let prohibited_target_combatant_states = ability_name
-                .get_attributes()
-                .prohibited_target_combatant_states;
+            let ability_attributes = ability_name.get_attributes();
+            let prohibited_target_combatant_states = ability_attributes
+                .combat_action_properties
+                .prohibited_target_combatant_states
+                .clone();
 
             let current_targets = focused_character
                 .combatant_properties
@@ -71,18 +73,20 @@ pub fn handle_cycle_targets(
             let (ally_ids, opponent_ids_option) =
                 filter_possible_target_ids_by_prohibited_combatant_states(
                     game,
-                    prohibited_target_combatant_states,
+                    &prohibited_target_combatant_states,
                     ally_ids,
                     opponent_ids_option,
                 )?;
 
-            let new_targets = ability_name.clone().get_next_or_previous_targets(
-                &current_targets,
-                direction,
-                &focused_character_id,
-                &ally_ids,
-                &opponent_ids_option,
-            )?;
+            let new_targets = ability_attributes
+                .combat_action_properties
+                .get_next_or_previous_targets(
+                    &current_targets,
+                    direction,
+                    &focused_character_id,
+                    &ally_ids,
+                    &opponent_ids_option,
+                )?;
 
             let party = get_mut_party(game, party_id)?;
             let focused_character = party
@@ -96,7 +100,7 @@ pub fn handle_cycle_targets(
                 .combatant_properties
                 .ability_target_preferences
                 .get_updated_preferences(
-                    &ability_name,
+                    &ability_attributes.combat_action_properties,
                     &new_targets,
                     ally_ids,
                     opponent_ids_option,

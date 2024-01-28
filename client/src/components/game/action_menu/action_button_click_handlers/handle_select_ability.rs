@@ -4,7 +4,7 @@ use crate::store::alert_store::AlertStore;
 use crate::store::game_store::get_cloned_current_battle_option;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
-use common::combatants::abilities::filter_possible_target_ids_by_prohibited_combatant_states::filter_possible_target_ids_by_prohibited_combatant_states;
+use common::combat::combat_actions::filter_possible_target_ids_by_prohibited_combatant_states::filter_possible_target_ids_by_prohibited_combatant_states;
 use common::combatants::abilities::CombatantAbilityNames;
 use common::errors::AppError;
 use common::game::getters::get_ally_ids_and_opponent_ids_option;
@@ -51,27 +51,32 @@ pub fn handle_select_ability(
             focused_character_id,
         )?;
 
-        let prohibited_target_combatant_states = ability_name
-            .get_attributes()
-            .prohibited_target_combatant_states;
+        let ability_attributes = ability_name.get_attributes();
+
+        let prohibited_target_combatant_states = ability_attributes
+            .combat_action_properties
+            .prohibited_target_combatant_states
+            .clone();
 
         let (ally_ids, opponent_ids_option) =
             filter_possible_target_ids_by_prohibited_combatant_states(
                 game,
-                prohibited_target_combatant_states,
+                &prohibited_target_combatant_states,
                 ally_ids,
                 opponent_ids_option,
             )?;
 
-        let targets = ability_name.targets_by_saved_preference_or_default(
-            focused_character_id,
-            &target_preferences,
-            ally_ids.clone(),
-            opponent_ids_option.clone(),
-        )?;
+        let targets = ability_attributes
+            .combat_action_properties
+            .targets_by_saved_preference_or_default(
+                focused_character_id,
+                &target_preferences,
+                ally_ids.clone(),
+                opponent_ids_option.clone(),
+            )?;
 
         let new_target_preferences = target_preferences.get_updated_preferences(
-            &ability_name,
+            &ability_attributes.combat_action_properties,
             &targets,
             ally_ids,
             opponent_ids_option,

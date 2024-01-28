@@ -1,8 +1,8 @@
 use crate::store::game_store::get_active_combatant;
 use crate::store::game_store::get_current_party_option;
 use crate::store::game_store::GameStore;
-use common::combatants::abilities::AbilityTarget;
-use common::combatants::abilities::FriendOrFoe;
+use common::combat::combat_actions::CombatActionTarget;
+use common::combat::combat_actions::FriendOrFoe;
 use std::rc::Rc;
 
 pub fn combatant_is_targeted(game_state: Rc<GameStore>, combatant_id: &u32) -> bool {
@@ -17,8 +17,8 @@ pub fn combatant_is_targeted(game_state: Rc<GameStore>, combatant_id: &u32) -> b
             let targets_option = &active_character.1.ability_targets;
             if let Some(targets) = targets_option {
                 match targets {
-                    AbilityTarget::Single(targeted_id) => combatant_id == targeted_id,
-                    AbilityTarget::Group(category) => match category {
+                    CombatActionTarget::Single(targeted_id) => combatant_id == targeted_id,
+                    CombatActionTarget::Group(category) => match category {
                         FriendOrFoe::Friendly => party.character_positions.contains(combatant_id),
                         FriendOrFoe::Hostile => {
                             if let Ok(monster_ids) = party.get_monster_ids() {
@@ -28,7 +28,7 @@ pub fn combatant_is_targeted(game_state: Rc<GameStore>, combatant_id: &u32) -> b
                             }
                         }
                     },
-                    AbilityTarget::All => true,
+                    CombatActionTarget::All => true,
                 }
             } else {
                 false

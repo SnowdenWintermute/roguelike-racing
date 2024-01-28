@@ -11,6 +11,7 @@ use common::dungeon_rooms::DungeonRoomTypes;
 use common::errors::AppError;
 use common::game::getters::get_mut_party;
 use common::items::Item;
+use common::items::ItemCategories;
 use common::packets::server_to_client::BattleConclusion;
 use common::packets::server_to_client::BattleEndReportPacket;
 use common::packets::server_to_client::CombatTurnResultsPacket;
@@ -88,8 +89,7 @@ impl GameServer {
         };
 
         validate_character_ability_use(
-            &ability_name,
-            &ability_attributes,
+            &ability_attributes.combat_action_properties,
             battle_option.as_ref(),
             &ally_ids,
             &targets,
@@ -140,7 +140,11 @@ impl GameServer {
             println!("creating loot for dlvl {dlvl}");
             for _ in 0..num_opponents {
                 // for _ in 0..30 {
-                loot.push(Item::generate(&mut game.id_generator, dlvl))
+                loot.push(Item::generate(
+                    &mut game.id_generator,
+                    dlvl,
+                    ItemCategories::Equipment,
+                ))
             }
             Some(loot)
         } else {

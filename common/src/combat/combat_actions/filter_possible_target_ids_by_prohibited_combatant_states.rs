@@ -1,10 +1,10 @@
-use super::get_combatant_ability_attributes::ProhibitedTargetCombatantStates;
+use super::ProhibitedTargetCombatantStates;
 use crate::errors::AppError;
 use crate::game::RoguelikeRacerGame;
 
 pub fn filter_possible_target_ids_by_prohibited_combatant_states(
     game: &RoguelikeRacerGame,
-    prohibited_combatant_states_option: Option<Vec<ProhibitedTargetCombatantStates>>,
+    prohibited_combatant_states_option: &Option<Vec<ProhibitedTargetCombatantStates>>,
     ally_ids: Vec<u32>,
     opponent_ids_option: Option<Vec<u32>>,
 ) -> Result<(Vec<u32>, Option<Vec<u32>>), AppError> {

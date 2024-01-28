@@ -1,20 +1,19 @@
-use super::get_combatant_ability_attributes::TargetCategories;
-use super::get_combatant_ability_attributes::TargetingScheme;
-use super::AbilityTarget;
-use super::CombatantAbilityNames;
+use super::CombatActionProperties;
+use super::CombatActionTarget;
 use super::FriendOrFoe;
+use super::TargetCategories;
+use super::TargetingScheme;
 
-impl CombatantAbilityNames {
+impl CombatActionProperties {
     pub fn targets_are_valid(
         &self,
         ability_user_id: u32,
-        targets: &AbilityTarget,
+        targets: &CombatActionTarget,
         ally_ids: &Vec<u32>,
         opponent_ids_option: &Option<Vec<u32>>,
     ) -> bool {
-        let ability_attributes = self.get_attributes();
         match targets {
-            AbilityTarget::Single(id) => match ability_attributes.valid_target_categories {
+            CombatActionTarget::Single(id) => match self.valid_target_categories {
                 TargetCategories::Opponent => {
                     if let Some(opponent_ids) = opponent_ids_option {
                         opponent_ids.contains(id)
@@ -34,12 +33,9 @@ impl CombatantAbilityNames {
                     }
                 }
             },
-            AbilityTarget::Group(category) => {
-                if ability_attributes
-                    .targeting_schemes
-                    .contains(&TargetingScheme::Area)
-                {
-                    match ability_attributes.valid_target_categories {
+            CombatActionTarget::Group(category) => {
+                if self.targeting_schemes.contains(&TargetingScheme::Area) {
+                    match self.valid_target_categories {
                         TargetCategories::Opponent => category == &FriendOrFoe::Hostile,
                         TargetCategories::User => false,
                         TargetCategories::Friendly => category == &FriendOrFoe::Friendly,
@@ -51,9 +47,7 @@ impl CombatantAbilityNames {
                     false
                 }
             }
-            AbilityTarget::All => ability_attributes
-                .targeting_schemes
-                .contains(&TargetingScheme::All),
+            CombatActionTarget::All => self.targeting_schemes.contains(&TargetingScheme::All),
         }
     }
 }

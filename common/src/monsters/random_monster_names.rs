@@ -1,5 +1,3 @@
-use once_cell::unsync::Lazy;
-
 pub static MONSTER_FIRST_NAMES: [&str; 9] = [
     "rock",
     "ghost",

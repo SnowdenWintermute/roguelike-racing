@@ -1,59 +1,23 @@
 use super::CombatantAbilityNames;
-use serde::Deserialize;
-use serde::Serialize;
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub enum TargetingScheme {
-    Single,
-    Area,
-    All,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub enum TargetCategories {
-    Opponent,
-    User,
-    Friendly,
-    Any,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub enum ProhibitedTargetCombatantStates {
-    Dead,
-    Alive,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub enum AbilityUsableContext {
-    All,
-    InCombat,
-    OutOfCombat,
-}
+use crate::combat::combat_actions::CombatActionProperties;
+use crate::combat::combat_actions::ProhibitedTargetCombatantStates;
 
 pub struct CombatantAbilityAttributes {
-    pub targeting_schemes: Vec<TargetingScheme>,
-    pub valid_target_categories: TargetCategories,
-    pub usability_context: AbilityUsableContext,
-    pub prohibited_target_combatant_states: Option<Vec<ProhibitedTargetCombatantStates>>,
+    pub combat_action_properties: CombatActionProperties,
     pub is_melee: bool,
     pub mana_cost: u8,
     pub mana_cost_level_multiplier: u8,
     pub shard_cost: u8,
-    pub requires_combat_turn: bool,
 }
 
 impl Default for CombatantAbilityAttributes {
     fn default() -> Self {
         CombatantAbilityAttributes {
-            targeting_schemes: vec![TargetingScheme::Single],
-            valid_target_categories: TargetCategories::Opponent,
-            usability_context: AbilityUsableContext::InCombat,
-            prohibited_target_combatant_states: None,
+            combat_action_properties: CombatActionProperties::default(),
             is_melee: false,
             mana_cost: 1,
             mana_cost_level_multiplier: 1,
             shard_cost: 0,
-            requires_combat_turn: true,
         }
     }
 }
@@ -64,9 +28,12 @@ impl CombatantAbilityNames {
             CombatantAbilityNames::Attack => CombatantAbilityAttributes {
                 mana_cost: 0,
                 is_melee: true,
-                prohibited_target_combatant_states: Some(vec![
-                    ProhibitedTargetCombatantStates::Dead,
-                ]),
+                combat_action_properties: CombatActionProperties {
+                    prohibited_target_combatant_states: Some(vec![
+                        ProhibitedTargetCombatantStates::Dead,
+                    ]),
+                    ..Default::default()
+                },
                 ..Default::default()
             },
             CombatantAbilityNames::ArmorBreak => CombatantAbilityAttributes {
@@ -77,22 +44,12 @@ impl CombatantAbilityNames {
                 ..Default::default()
             },
             CombatantAbilityNames::Fire => CombatantAbilityAttributes {
-                targeting_schemes: vec![TargetingScheme::Single, TargetingScheme::Area],
-                valid_target_categories: TargetCategories::Any,
                 ..Default::default()
             },
             CombatantAbilityNames::Heal => CombatantAbilityAttributes {
-                targeting_schemes: vec![TargetingScheme::Single, TargetingScheme::Area],
-                valid_target_categories: TargetCategories::Friendly,
                 ..Default::default()
             },
             CombatantAbilityNames::RainStorm => CombatantAbilityAttributes {
-                targeting_schemes: vec![
-                    TargetingScheme::Single,
-                    TargetingScheme::Area,
-                    TargetingScheme::All,
-                ],
-                valid_target_categories: TargetCategories::Any,
                 ..Default::default()
             },
         }

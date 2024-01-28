@@ -1,24 +1,22 @@
-use super::get_combatant_ability_attributes::TargetCategories;
-use super::AbilityTarget;
-use super::CombatantAbilityNames;
+use super::CombatActionProperties;
+use super::CombatActionTarget;
 use super::FriendOrFoe;
+use super::TargetCategories;
 use crate::app_consts::error_messages;
 use crate::errors::AppError;
 use crate::primatives::NextOrPrevious;
 
-impl CombatantAbilityNames {
+impl CombatActionProperties {
     pub fn get_next_or_previous_targets(
         &self,
-        current_targets: &AbilityTarget,
+        current_targets: &CombatActionTarget,
         direction: &NextOrPrevious,
         ability_user_id: &u32,
         ally_ids: &Vec<u32>,
         opponent_ids_option: &Option<Vec<u32>>,
-    ) -> Result<AbilityTarget, AppError> {
-        let ability_attributes = self.get_attributes();
-
+    ) -> Result<CombatActionTarget, AppError> {
         match current_targets {
-            AbilityTarget::Single(id) => match ability_attributes.valid_target_categories {
+            CombatActionTarget::Single(id) => match self.valid_target_categories {
                 TargetCategories::Opponent => {
                     let possible_target_ids =
                         opponent_ids_option.clone().ok_or_else(|| AppError {
@@ -30,13 +28,13 @@ impl CombatantAbilityNames {
                         *id,
                         &direction,
                     )?;
-                    Ok(AbilityTarget::Single(new_target_id))
+                    Ok(CombatActionTarget::Single(new_target_id))
                 }
-                TargetCategories::User => Ok(AbilityTarget::Single(*ability_user_id)),
+                TargetCategories::User => Ok(CombatActionTarget::Single(*ability_user_id)),
                 TargetCategories::Friendly => {
                     let new_target_id =
                         get_next_or_prev_id_from_ordered_id_list(&ally_ids, *id, &direction)?;
-                    Ok(AbilityTarget::Single(new_target_id))
+                    Ok(CombatActionTarget::Single(new_target_id))
                 }
                 TargetCategories::Any => {
                     let mut possible_target_ids = vec![];
@@ -49,19 +47,19 @@ impl CombatantAbilityNames {
                         *id,
                         &direction,
                     )?;
-                    Ok(AbilityTarget::Single(new_target_id))
+                    Ok(CombatActionTarget::Single(new_target_id))
                 }
             },
-            AbilityTarget::Group(category) => match ability_attributes.valid_target_categories {
-                TargetCategories::Opponent => Ok(AbilityTarget::Group(FriendOrFoe::Hostile)),
-                TargetCategories::User => Ok(AbilityTarget::Single(*ability_user_id)),
-                TargetCategories::Friendly => Ok(AbilityTarget::Group(FriendOrFoe::Friendly)),
+            CombatActionTarget::Group(category) => match self.valid_target_categories {
+                TargetCategories::Opponent => Ok(CombatActionTarget::Group(FriendOrFoe::Hostile)),
+                TargetCategories::User => Ok(CombatActionTarget::Single(*ability_user_id)),
+                TargetCategories::Friendly => Ok(CombatActionTarget::Group(FriendOrFoe::Friendly)),
                 TargetCategories::Any => match category {
-                    FriendOrFoe::Friendly => Ok(AbilityTarget::Group(FriendOrFoe::Hostile)),
-                    FriendOrFoe::Hostile => Ok(AbilityTarget::Group(FriendOrFoe::Friendly)),
+                    FriendOrFoe::Friendly => Ok(CombatActionTarget::Group(FriendOrFoe::Hostile)),
+                    FriendOrFoe::Hostile => Ok(CombatActionTarget::Group(FriendOrFoe::Friendly)),
                 },
             },
-            AbilityTarget::All => Ok(AbilityTarget::All),
+            CombatActionTarget::All => Ok(CombatActionTarget::All),
         }
     }
 }

@@ -3,8 +3,8 @@ mod queue_melee_ability_animations;
 mod queue_return_to_home_position_animations;
 use self::queue_attack_animations::queue_attack_animations;
 use crate::store::game_store::GameStore;
+use common::combat::combat_actions::CombatAction;
 use common::combat::ActionResult;
-use common::combat::CombatAction;
 use common::combatants::abilities::CombatantAbilityNames;
 use common::errors::AppError;
 use yewdux::Dispatch;
@@ -32,9 +32,7 @@ pub fn process_next_action_result_in_combatant_event_queue(
                     _ => Ok(()),
                 }
             }
-            CombatAction::ItemUsed(_) => {
-                todo!()
-            }
+            CombatAction::ConsumableUsed(_) => Ok(()),
         }
     } else {
         queue_return_to_home_position_animations::queue_return_to_home_position_animations(

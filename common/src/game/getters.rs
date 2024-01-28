@@ -4,8 +4,8 @@ use crate::adventuring_party::AdventuringParty;
 use crate::app_consts::error_messages;
 use crate::character::Character;
 use crate::combat::battle::Battle;
-use crate::combatants::abilities::AbilityTarget;
-use crate::combatants::abilities::FriendOrFoe;
+use crate::combat::combat_actions::CombatActionTarget;
+use crate::combat::combat_actions::FriendOrFoe;
 use crate::errors::AppError;
 use crate::errors::AppErrorTypes;
 
@@ -108,12 +108,12 @@ impl RoguelikeRacerGame {
         &self,
         party_id: u32,
         battle_option: Option<&Battle>,
-        ability_target: &AbilityTarget,
+        ability_target: &CombatActionTarget,
         ability_user_id: u32,
     ) -> Result<Vec<u32>, AppError> {
         let ids = match ability_target {
-            AbilityTarget::Single(id) => vec![*id],
-            AbilityTarget::Group(friend_or_foe) => match friend_or_foe {
+            CombatActionTarget::Single(id) => vec![*id],
+            CombatActionTarget::Group(friend_or_foe) => match friend_or_foe {
                 FriendOrFoe::Friendly => {
                     if let Some(battle) = battle_option {
                         let (ally_battle_group, _) =
@@ -134,7 +134,7 @@ impl RoguelikeRacerGame {
                     enemy_battle_group.combatant_ids
                 }
             },
-            AbilityTarget::All => {
+            CombatActionTarget::All => {
                 if let Some(battle) = battle_option {
                     let (ally_battle_group, enemy_battle_group) =
                         battle.get_ally_and_enemy_battle_groups(&ability_user_id)?;

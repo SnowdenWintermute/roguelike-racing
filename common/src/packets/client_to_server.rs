@@ -1,6 +1,6 @@
 use super::CharacterAndItem;
 use super::CharacterAndSlot;
-use crate::combatants::abilities::AbilityTarget;
+use crate::combat::combat_actions::CombatActionTarget;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::CombatantClass;
 use crate::items::equipment::EquipmentSlots;
@@ -95,5 +95,5 @@ pub struct ClientSelectAbilityPacket {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ChangeTargetsPacket {
     pub character_id: u32,
-    pub new_targets: AbilityTarget,
+    pub new_targets: CombatActionTarget,
 }

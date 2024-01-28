@@ -1,25 +1,7 @@
-pub mod filter_possible_target_ids_by_prohibited_combatant_states;
 pub mod get_combatant_ability_attributes;
-mod get_default_targets;
-mod get_next_or_previous_targets;
-mod targets_are_valid;
-pub mod targets_by_saved_preference_or_default;
 use serde::Deserialize;
 use serde::Serialize;
 use std::fmt::Display;
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub enum FriendOrFoe {
-    Friendly,
-    Hostile,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub enum AbilityTarget {
-    Single(u32),
-    Group(FriendOrFoe),
-    All,
-}
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct CombatantAbility {

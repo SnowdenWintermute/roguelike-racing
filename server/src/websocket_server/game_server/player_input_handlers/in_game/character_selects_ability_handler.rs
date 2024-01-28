@@ -2,7 +2,7 @@ use crate::websocket_server::game_server::getters::get_mut_game;
 use crate::websocket_server::game_server::getters::get_user;
 use crate::websocket_server::game_server::GameServer;
 use common::app_consts::error_messages;
-use common::combatants::abilities::filter_possible_target_ids_by_prohibited_combatant_states::filter_possible_target_ids_by_prohibited_combatant_states;
+use common::combat::combat_actions::filter_possible_target_ids_by_prohibited_combatant_states::filter_possible_target_ids_by_prohibited_combatant_states;
 use common::errors::AppError;
 use common::errors::AppErrorTypes;
 use common::game::getters::get_mut_party;
@@ -62,6 +62,8 @@ impl GameServer {
                 .clone();
 
             let ability_name = packet.ability_name_option.clone().expect("is_none checked");
+            let ability_attributes = ability_name.get_attributes();
+            let combat_action_properties = ability_attributes.combat_action_properties;
             // don't allow selection of unowned ability
             let _ = character
                 .combatant_properties
@@ -78,14 +80,14 @@ impl GameServer {
                 (character_positions, None)
             };
 
-            let prohibited_target_combatant_states = ability_name
-                .get_attributes()
-                .prohibited_target_combatant_states;
+            let prohibited_target_combatant_states = combat_action_properties
+                .prohibited_target_combatant_states
+                .clone();
 
             let (ally_ids, opponent_ids_option) =
                 filter_possible_target_ids_by_prohibited_combatant_states(
                     game,
-                    prohibited_target_combatant_states,
+                    &prohibited_target_combatant_states,
                     ally_ids,
                     opponent_ids_option,
                 )?;
@@ -96,7 +98,7 @@ impl GameServer {
                 packet.character_id,
             )?;
 
-            let new_targets = ability_name.targets_by_saved_preference_or_default(
+            let new_targets = combat_action_properties.targets_by_saved_preference_or_default(
                 character.entity_properties.id,
                 &target_preferences,
                 ally_ids.clone(),
@@ -104,7 +106,7 @@ impl GameServer {
             )?;
 
             let new_target_preferences = target_preferences.get_updated_preferences(
-                &ability_name,
+                &combat_action_properties,
                 &new_targets,
                 ally_ids,
                 opponent_ids_option,

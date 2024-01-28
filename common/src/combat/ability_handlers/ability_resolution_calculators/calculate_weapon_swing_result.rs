@@ -1,8 +1,8 @@
 use super::physical_attack_evaded::physical_attack_evaded;
 use super::physical_damage_after_defense::physical_damage_after_defense;
+use crate::combat::combat_actions::CombatActionTarget;
 use crate::combat::ActionResult;
 use crate::combat::CombatAction;
-use crate::combatants::abilities::AbilityTarget;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::combatants::get_weapon_properties_traits_and_base_bonus_damage::get_weapon_properties_traits_and_base_bonus_damage;
@@ -15,7 +15,7 @@ use std::collections::HashSet;
 
 pub fn calculate_weapon_swing_result(
     ability_user_id: u32,
-    ability_target: &AbilityTarget,
+    ability_target: &CombatActionTarget,
     target_entity_id: u32,
     user_total_attributes: &HashMap<CombatAttributes, u16>,
     target_total_attributes: &HashMap<CombatAttributes, u16>,

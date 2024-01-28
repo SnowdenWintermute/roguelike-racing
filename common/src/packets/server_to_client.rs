@@ -6,9 +6,9 @@ use super::WebsocketChannelNamespace;
 use crate::app_consts::LOBBY_CHANNEL;
 use crate::character::Character;
 use crate::combat::battle::Battle;
+use crate::combat::combat_actions::CombatActionTarget;
 use crate::combat::ActionResult;
 use crate::combat::CombatTurnResult;
-use crate::combatants::abilities::AbilityTarget;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::CombatantClass;
 use crate::dungeon_rooms::DungeonRoom;
@@ -179,7 +179,7 @@ pub struct CharacterEquippedItemPacket {
 pub struct CharacterSelectedAbilityPacket {
     pub character_id: u32,
     pub ability_name_option: Option<CombatantAbilityNames>,
-    pub targets_option: Option<AbilityTarget>,
+    pub targets_option: Option<CombatActionTarget>,
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]

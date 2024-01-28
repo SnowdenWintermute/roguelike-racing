@@ -3,7 +3,7 @@ use super::enums::MenuTypes;
 use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
 use common::adventuring_party::AdventuringParty;
-use common::combatants::abilities::get_combatant_ability_attributes::AbilityUsableContext;
+use common::combat::combat_actions::AbilityUsableContext;
 use common::combatants::abilities::CombatantAbilityNames;
 use common::dungeon_rooms::DungeonRoomTypes;
 use gloo::console::log;
@@ -120,7 +120,13 @@ fn get_ability_menu_names(
     if let Some(character) = focused_character {
         for (ability_name, ability) in &character.combatant_properties.abilities {
             if let Some(excluded_context) = &excluded_usable_context {
-                if &ability.ability_name.get_attributes().usability_context != excluded_context {
+                if &ability
+                    .ability_name
+                    .get_attributes()
+                    .combat_action_properties
+                    .usability_context
+                    != excluded_context
+                {
                     ability_names.push(ability_name.clone());
                 }
             }

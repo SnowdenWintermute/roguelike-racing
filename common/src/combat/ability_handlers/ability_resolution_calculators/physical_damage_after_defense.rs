@@ -18,6 +18,7 @@ pub fn physical_damage_after_defense(
     let rolled_damage_squared = rolled_damage.pow(2);
     println!("rolled damage squared: {rolled_damage_squared}");
     let damage_after_ac = (5 * rolled_damage_squared) / (penetrated_ac + 5 * rolled_damage);
+    println!("damage_after_ac: {rolled_damage_squared}");
 
     let physical_damage_reduction = cmp::min(
         user_total_attributes
@@ -27,6 +28,10 @@ pub fn physical_damage_after_defense(
     );
 
     let max_u16_value: u32 = u16::MAX as u32;
+    println!(
+        "damage after reduction: {}",
+        damage_after_ac * (*physical_damage_reduction as u32 / 100)
+    );
     let damage_after_damage_reduction =
         damage_after_ac - damage_after_ac * (*physical_damage_reduction as u32 / 100);
     let final_damage: u16 = damage_after_damage_reduction.clamp(0, max_u16_value) as u16;

@@ -4,7 +4,7 @@ use crate::websocket_server::game_server::getters::get_user;
 use crate::websocket_server::game_server::getters::ActorIdAssociatedPartyData;
 use crate::websocket_server::game_server::GameServer;
 use common::app_consts::error_messages::{self};
-use common::combatants::abilities::filter_possible_target_ids_by_prohibited_combatant_states::filter_possible_target_ids_by_prohibited_combatant_states;
+use common::combat::combat_actions::filter_possible_target_ids_by_prohibited_combatant_states::filter_possible_target_ids_by_prohibited_combatant_states;
 use common::errors::AppError;
 use common::errors::AppErrorTypes;
 use common::game::getters::get_mut_party;
@@ -53,8 +53,9 @@ impl GameServer {
                 error_type: AppErrorTypes::Generic,
                 message: error_messages::NO_ABILITY_SELECTED.to_string(),
             })?;
-        let ability = combatant.get_ability_if_owned(&ability_name)?;
-        let ability_name = ability.ability_name.clone();
+        let _ = combatant.get_ability_if_owned(&ability_name)?;
+        let ability_attributes = ability_name.get_attributes();
+        let combat_action_properties = ability_attributes.combat_action_properties;
 
         let (ally_ids, opponent_ids_option) = if let Some(battle_id) = battle_id_option {
             let battle = game.battles.get(&battle_id).ok_or_else(|| AppError {
@@ -67,18 +68,18 @@ impl GameServer {
             (character_positions.clone(), None)
         };
 
-        let prohibited_target_combatant_states = ability_name
-            .get_attributes()
-            .prohibited_target_combatant_states;
+        let prohibited_target_combatant_states = combat_action_properties
+            .prohibited_target_combatant_states
+            .clone();
         let (ally_ids, opponent_ids_option) =
             filter_possible_target_ids_by_prohibited_combatant_states(
                 game,
-                prohibited_target_combatant_states,
+                &prohibited_target_combatant_states,
                 ally_ids,
                 opponent_ids_option,
             )?;
 
-        let new_targets = if ability_name.targets_are_valid(
+        let new_targets = if combat_action_properties.targets_are_valid(
             character_id,
             &new_targets,
             &ally_ids,
@@ -86,7 +87,11 @@ impl GameServer {
         ) {
             new_targets
         } else {
-            ability_name.get_default_targets(character_id, &ally_ids, &opponent_ids_option)?
+            combat_action_properties.get_default_targets(
+                character_id,
+                &ally_ids,
+                &opponent_ids_option,
+            )?
         };
 
         let ActorIdAssociatedPartyData {
@@ -99,7 +104,7 @@ impl GameServer {
 
         let target_preferences = &character.combatant_properties.ability_target_preferences;
         let new_target_preferences = target_preferences.get_updated_preferences(
-            &ability_name,
+            &combat_action_properties,
             &new_targets,
             ally_ids,
             opponent_ids_option,

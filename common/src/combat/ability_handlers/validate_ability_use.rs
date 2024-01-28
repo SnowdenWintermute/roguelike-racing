@@ -1,18 +1,16 @@
 use crate::app_consts::error_messages;
 use crate::combat::battle::Battle;
-use crate::combatants::abilities::get_combatant_ability_attributes::AbilityUsableContext;
-use crate::combatants::abilities::get_combatant_ability_attributes::CombatantAbilityAttributes;
-use crate::combatants::abilities::AbilityTarget;
-use crate::combatants::abilities::CombatantAbilityNames;
+use crate::combat::combat_actions::AbilityUsableContext;
+use crate::combat::combat_actions::CombatActionProperties;
+use crate::combat::combat_actions::CombatActionTarget;
 use crate::errors::AppError;
 use crate::errors::AppErrorTypes;
 
 pub fn validate_character_ability_use(
-    ability_name: &CombatantAbilityNames,
-    ability_attributes: &CombatantAbilityAttributes,
+    combat_action_properties: &CombatActionProperties,
     battle_option: Option<&Battle>,
     ally_ids: &Vec<u32>,
-    targets: &AbilityTarget,
+    targets: &CombatActionTarget,
     character_id: u32,
 ) -> Result<(), AppError> {
     let (ally_ids, opponent_ids_option) = if let Some(battle) = battle_option {
@@ -24,7 +22,7 @@ pub fn validate_character_ability_use(
             });
         }
         // check if ability is usable in combat
-        if ability_attributes.usability_context == AbilityUsableContext::OutOfCombat {
+        if combat_action_properties.usability_context == AbilityUsableContext::OutOfCombat {
             return Err(AppError {
                 error_type: AppErrorTypes::InvalidInput,
                 message: error_messages::INVALID_ABILITY_CONTEXT.to_string(),
@@ -36,8 +34,12 @@ pub fn validate_character_ability_use(
     };
 
     // check if targets are valid
-    let targets_are_valid =
-        ability_name.targets_are_valid(character_id, &targets, &ally_ids, &opponent_ids_option);
+    let targets_are_valid = combat_action_properties.targets_are_valid(
+        character_id,
+        &targets,
+        &ally_ids,
+        &opponent_ids_option,
+    );
 
     if !targets_are_valid {
         return Err(AppError {

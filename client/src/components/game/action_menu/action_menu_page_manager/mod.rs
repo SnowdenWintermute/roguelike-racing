@@ -1,7 +1,4 @@
 use yew::prelude::*;
-use yewdux::use_store;
-
-use crate::store::game_store::GameStore;
 
 #[derive(Properties, Eq, PartialEq)]
 pub struct Props {}

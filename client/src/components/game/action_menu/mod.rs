@@ -14,11 +14,7 @@ use crate::components::game::action_menu::action_menu_button::ActionMenuButton;
 use crate::components::game::action_menu::action_menu_change_detection_manager::ActionMenuChangeDetectionManager;
 use crate::components::game::action_menu::action_page_buttons::ActionPageButtons;
 use crate::components::game::action_menu::build_action_button_properties::ActionMenuButtonProperties;
-use crate::store::alert_store::AlertStore;
 use crate::store::game_store::GameStore;
-use crate::store::lobby_store::LobbyStore;
-use crate::store::ui_store::UIStore;
-use crate::store::websocket_store::WebsocketStore;
 use common::utils::calculate_number_of_pages;
 use gloo::events::EventListener;
 use std::ops::Deref;
@@ -31,11 +27,7 @@ pub struct Props {}
 const PAGE_SIZE: u8 = 6;
 #[function_component(ActionMenu)]
 pub fn action_menu(_: &Props) -> Html {
-    let (game_state, game_dispatch) = use_store::<GameStore>();
-    let (ui_state, _) = use_store::<UIStore>();
-    let (lobby_state, _) = use_store::<LobbyStore>();
-    let (websocket_state, _) = use_store::<WebsocketStore>();
-    let (_, alert_dspatch) = use_store::<AlertStore>();
+    let (game_state, _) = use_store::<GameStore>();
     let action_menu_button_properties = use_state(|| Vec::<ActionMenuButtonProperties>::new());
     let button_props_on_current_page = use_state(|| Vec::<ActionMenuButtonProperties>::new());
 

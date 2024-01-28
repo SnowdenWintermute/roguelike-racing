@@ -9,7 +9,6 @@ use crate::components::lobby::game_setup::GameSetup;
 use crate::components::lobby::Lobby;
 use crate::components::websocket_manager::WebsocketManager;
 use crate::store::game_store::GameStore;
-use gloo::console::log;
 use yew::prelude::*;
 use yewdux::prelude::*;
 

@@ -27,30 +27,47 @@ pub fn welcome_info() -> Html {
 fn welcome_message() -> Html {
     html!(
         <>
-    <p>{"0.3.0 1/26/2024"}</p>
+    <p class="font-bold" >{""}</p>
+    <p>{"Fixed bugs:"}</p>
+    <ul class="list-disc list-inside mb-1">
+        <li>{""}</li>
+        <li>{""}</li>
+    </ul>
+    <p >{"Added features:"}</p>
+    <ul class="list-disc list-inside mb-1">
+        <li>{"Attacks can now be evaded. Agility and +Evasion gear increase a combatant's chance of evading."}</li>
+        <li>{""}</li>
+    </ul>
+    <p class="font-bold" >{"0.3.0 1/26/2024"}</p>
+    <p>{"Fixed bugs:"}</p>
+    <ul class="list-disc list-inside mb-2">
+        <li>{"Opening the inventory while combat animations were playing would cause the client to desync"}</li>
+        <li>{"Focus now shifts to the active character at the beginning of combat if not in the inventory"}</li>
+    </ul>
+    <p class="font-bold" >{"0.3.0 1/26/2024"}</p>
     <p>{"Fixed bugs:"}</p>
     <ul class="list-disc list-inside mb-1">
         <li>{"Opening the inventory while combat animations were playing would cause the client to desync"}</li>
         <li>{"Focus now shifts to the active character at the beginning of combat if not in the inventory"}</li>
     </ul>
-    <p>{"Added features:"}</p>
+    <p >{"Added features:"}</p>
     <ul class="list-disc list-inside mb-1">
         <li>{"Color coded messages now display in the combat log when any party in a game descends to a new floor, escapes the dungeon or wipes"}</li>
         <li>{"Version history now shows dates"}</li>
     </ul>
-    <p>{"0.2.1 1/25/2024"}</p>
-    <ul class="list-disc list-inside mb-1">
+    <p class="font-bold" >{"0.2.1 1/25/2024"}</p>
+    <ul class="list-disc list-inside mb-2">
         <li>{"Added patch notes section to welcome info"}</li>
         <li>{"Fixed a bug where the room exploration tracker wouldn't work on any floor except the first"}</li>
     </ul>
-    <p>{"0.2.0 1/24/2024"}</p>
+    <p class="font-bold" >{"0.2.0 1/24/2024"}</p>
     <p>{"Fixed bugs:"}</p>
     <ul class="list-disc list-inside mb-1">
         <li>{"Players couldn't attack while wearing a shield"}</li>
         <li>{"Unequipping an item would not change focus to the unequipped item"}</li>
     </ul>
     <p>{"Added features:"}</p>
-    <ul class="list-disc list-inside mb-1">
+    <ul class="list-disc list-inside mb-2">
         <li>{"Stairs down now appear in the dungeon and players can vote to keep exploring the current floor or descend to the next one"}</li>
         <li>{"An explored rooms tracker now appears as part of the top info bar"}</li>
         <li>{"The top info bar can be re positioned by clicking on it"}</li>

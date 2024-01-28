@@ -1,6 +1,4 @@
 use super::Character;
-use crate::combatants::abilities::CombatantAbility;
-use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::game::RoguelikeRacerGame;
 use crate::items::equipment::equipment_generation::create_starting_equipment::create_starting_equipment;

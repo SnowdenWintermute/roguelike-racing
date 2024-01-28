@@ -2,7 +2,6 @@ use crate::components::game::turn_order_bar::TurnOrderBar;
 use crate::store::game_store::get_current_battle_option;
 use crate::store::game_store::get_current_party_option;
 use crate::store::game_store::GameStore;
-use gloo::console::log;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
@@ -12,7 +11,7 @@ pub fn game() -> Html {
     let battle_option = get_current_battle_option(&game_state);
     let party_option = get_current_party_option(&game_state);
 
-    let top_bar_display_state = use_state(|| 1);
+    let top_bar_display_state = use_state(|| 0);
     let cloned_top_bar_display_state = top_bar_display_state.clone();
     let on_click_top_bar = Callback::from(move |_| {
         if *cloned_top_bar_display_state == 1 {

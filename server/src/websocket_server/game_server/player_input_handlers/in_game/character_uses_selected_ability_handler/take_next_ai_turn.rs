@@ -51,7 +51,11 @@ pub fn take_ai_controlled_turns(
 
         active_combatant_turn_action_results.append(&mut action_results);
 
-        if ability_name.get_attributes().requires_combat_turn {
+        if ability_name
+            .get_attributes()
+            .combat_action_properties
+            .requires_combat_turn
+        {
             ai_turn_results.push(CombatTurnResult {
                 combatant_id: active_combatant_entity_id,
                 action_results: active_combatant_turn_action_results.clone(),

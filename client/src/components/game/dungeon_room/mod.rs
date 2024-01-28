@@ -1,7 +1,6 @@
 use crate::components::common_components::atoms::button_basic::ButtonBasic;
 use crate::components::game::dungeon_room::empty_room::EmptyRoom;
 use crate::components::game::dungeon_room::stairs::Stairs;
-use crate::store::websocket_store::WebsocketStore;
 use common::character::Character;
 use common::dungeon_rooms::DungeonRoomTypes;
 mod empty_room;
@@ -24,7 +23,6 @@ pub struct Props {
 
 #[function_component(DungeonRoom)]
 pub fn dungeon_room(props: &Props) -> Html {
-    let (websocket_state, _) = use_store::<WebsocketStore>();
     let (game_state, game_dispatch) = use_store::<GameStore>();
     let game_result = game_state.get_current_game();
     if let Ok(game) = game_result {
@@ -51,7 +49,7 @@ pub fn dungeon_room(props: &Props) -> Html {
         };
 
         let time_of_death_option = if let Some(time_of_wipe) = party.time_of_wipe {
-            Some("now")
+            Some(format!("unix timestamp ({})", time_of_wipe))
         } else {
             None
         };

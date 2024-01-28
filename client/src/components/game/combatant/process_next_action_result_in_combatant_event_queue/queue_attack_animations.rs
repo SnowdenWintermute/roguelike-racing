@@ -1,8 +1,8 @@
 use crate::components::mesh_manager::CombatantAnimation;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
+use common::combat::combat_actions::CombatActionTarget;
 use common::combat::ActionResult;
-use common::combatants::abilities::AbilityTarget;
 use common::errors::AppError;
 use std::collections::VecDeque;
 use yewdux::Dispatch;
@@ -20,7 +20,7 @@ pub fn queue_attack_animations(
             .expect("none checked");
 
         let target_id = match action_result.targets {
-            AbilityTarget::Single(id) => id,
+            CombatActionTarget::Single(id) => id,
             _ => {
                 return Err(AppError {
                     error_type: common::errors::AppErrorTypes::Generic,

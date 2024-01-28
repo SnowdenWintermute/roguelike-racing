@@ -43,7 +43,8 @@ pub fn handle_cycle_targeting_schemes(
             })?;
         // if only one targeting scheme, return early
         let ability_attributes = ability_name.get_attributes();
-        if ability_attributes.targeting_schemes.len() < 2 {
+        let combat_action_properties = ability_attributes.combat_action_properties;
+        if combat_action_properties.targeting_schemes.len() < 2 {
             return Ok(());
         }
 
@@ -52,11 +53,11 @@ pub fn handle_cycle_targeting_schemes(
             .ability_target_preferences
             .targeting_scheme_preference;
 
-        let new_targeting_scheme = if !ability_attributes
+        let new_targeting_scheme = if !combat_action_properties
             .targeting_schemes
             .contains(last_used_targeting_scheme)
         {
-            ability_attributes
+            combat_action_properties
                 .targeting_schemes
                 .first()
                 .ok_or_else(|| AppError {
@@ -64,19 +65,19 @@ pub fn handle_cycle_targeting_schemes(
                     message: error_messages::MISSING_ABILITY_REFERENCE.to_string(),
                 })?
         } else {
-            let last_used_targeting_scheme_index = ability_attributes
+            let last_used_targeting_scheme_index = combat_action_properties
                 .targeting_schemes
                 .iter()
                 .position(|scheme| scheme == last_used_targeting_scheme)
                 .expect("checked it contains above");
             let new_scheme_index = if last_used_targeting_scheme_index
-                == ability_attributes.targeting_schemes.len() - 1
+                == combat_action_properties.targeting_schemes.len() - 1
             {
                 0
             } else {
                 last_used_targeting_scheme_index + 1
             };
-            ability_attributes
+            combat_action_properties
                 .targeting_schemes
                 .get(new_scheme_index)
                 .expect("a valid index")
@@ -102,14 +103,6 @@ pub fn handle_cycle_targeting_schemes(
                 error_type: common::errors::AppErrorTypes::ClientError,
                 message: error_messages::CHARACTER_NOT_FOUND.to_string(),
             })?;
-        let ability_name = focused_character
-            .combatant_properties
-            .selected_ability_name
-            .as_ref()
-            .ok_or_else(|| AppError {
-                error_type: common::errors::AppErrorTypes::ClientError,
-                message: error_messages::MISSING_ABILITY_REFERENCE.to_string(),
-            })?;
 
         let (ally_ids, opponent_ids_option) = get_ally_ids_and_opponent_ids_option(
             &cloned_character_positions,
@@ -117,7 +110,7 @@ pub fn handle_cycle_targeting_schemes(
             focused_character.entity_properties.id,
         )?;
 
-        let new_targets = ability_name.targets_by_saved_preference_or_default(
+        let new_targets = combat_action_properties.targets_by_saved_preference_or_default(
             focused_character.entity_properties.id,
             &focused_character
                 .combatant_properties
@@ -129,7 +122,12 @@ pub fn handle_cycle_targeting_schemes(
         let new_preferences = focused_character
             .combatant_properties
             .ability_target_preferences
-            .get_updated_preferences(ability_name, &new_targets, ally_ids, opponent_ids_option);
+            .get_updated_preferences(
+                &combat_action_properties,
+                &new_targets,
+                ally_ids,
+                opponent_ids_option,
+            );
         let focused_character = party
             .characters
             .get_mut(&game_store.focused_character_id)

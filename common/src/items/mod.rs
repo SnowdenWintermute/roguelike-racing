@@ -13,8 +13,12 @@ use crate::game::id_generator::IdGenerator;
 use crate::primatives::EntityProperties;
 use serde::Deserialize;
 use serde::Serialize;
-mod generate_consumable_properties;
 use std::collections::HashMap;
+
+pub enum ItemCategories {
+    Equipment,
+    Consumable,
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum ItemProperties {
@@ -33,22 +37,31 @@ pub struct Item {
 // const CHANCE_OF_CONSUMABLE_DROP: u16 = 20;
 
 impl Item {
-    pub fn generate(id_generator: &mut IdGenerator, level: u8) -> Item {
-        let EquipmentPropertiesAndRequirements {
-            equipment_properties,
-            requirements,
-        } = generate_equipment_properties_from_base_item(level);
-        let item_name = name_equipment(&equipment_properties);
-        println!("generated item: {item_name}");
+    pub fn generate(
+        id_generator: &mut IdGenerator,
+        level: u8,
+        forced_type: ItemCategories,
+    ) -> Item {
+        match forced_type {
+            ItemCategories::Equipment => {
+                let EquipmentPropertiesAndRequirements {
+                    equipment_properties,
+                    requirements,
+                } = generate_equipment_properties_from_base_item(level);
+                let item_name = name_equipment(&equipment_properties);
+                println!("generated item: {item_name}");
 
-        Item {
-            entity_properties: EntityProperties {
-                id: id_generator.get_next_entity_id(),
-                name: item_name,
-            },
-            item_level: level as u8,
-            requirements,
-            item_properties: ItemProperties::Equipment(equipment_properties),
+                Item {
+                    entity_properties: EntityProperties {
+                        id: id_generator.get_next_entity_id(),
+                        name: item_name,
+                    },
+                    item_level: level as u8,
+                    requirements,
+                    item_properties: ItemProperties::Equipment(equipment_properties),
+                }
+            }
+            ItemCategories::Consumable => todo!(),
         }
     }
 

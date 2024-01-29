@@ -31,6 +31,13 @@ pub fn determine_menu_actions(
             false
         }
     };
+    let focused_character_is_selecting_consumable = {
+        if let Some(character) = focused_character_option {
+            character.combatant_properties.selected_consumable.is_some()
+        } else {
+            false
+        }
+    };
 
     if game_state.viewing_items_on_ground {
         menu_types.push(MenuTypes::ItemsOnGround);
@@ -96,6 +103,9 @@ pub fn determine_menu_actions(
         new_actions = MenuTypes::get_actions(&menu_types, None, Some(ability_names));
     } else if focused_character_is_selecting_ability && player_owns_character {
         menu_types.push(MenuTypes::AbilitySelected);
+        new_actions = MenuTypes::get_actions(&menu_types, None, None);
+    } else if focused_character_is_selecting_consumable && player_owns_character {
+        menu_types.push(MenuTypes::ConsumableSelected);
         new_actions = MenuTypes::get_actions(&menu_types, None, None);
     } else {
         menu_types.push(MenuTypes::InCombat);

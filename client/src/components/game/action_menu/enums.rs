@@ -6,6 +6,7 @@ use common::primatives::NextOrPrevious;
 pub enum MenuTypes {
     InCombat,
     AbilitySelected,
+    ConsumableSelected,
     OutOfCombat,
     LevelUpAbilities,
     AttributePointAssignment,
@@ -33,6 +34,7 @@ pub enum GameActions {
     DropItem(u32),
     ShardItem(u32),
     DeselectItem,
+    DeselectConsumable,
     // InCombat
     SelectAbility(CombatantAbilityNames),
     DeselectAbility,

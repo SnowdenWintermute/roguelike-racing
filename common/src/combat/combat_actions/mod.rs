@@ -29,12 +29,35 @@ pub enum TargetingScheme {
     All,
 }
 
+impl Display for TargetingScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let to_write = match self {
+            TargetingScheme::Single => "Single",
+            TargetingScheme::Area => "Area",
+            TargetingScheme::All => "All",
+        };
+        write!(f, "{}", to_write)
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum TargetCategories {
     Opponent,
     User,
     Friendly,
     Any,
+}
+
+impl Display for TargetCategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let to_write = match self {
+            TargetCategories::Opponent => "Enemy",
+            TargetCategories::User => "Self",
+            TargetCategories::Friendly => "Friendly",
+            TargetCategories::Any => "Any",
+        };
+        write!(f, "{}", to_write)
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -48,6 +71,17 @@ pub enum AbilityUsableContext {
     All,
     InCombat,
     OutOfCombat,
+}
+
+impl Display for AbilityUsableContext {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let to_write = match self {
+            AbilityUsableContext::All => "any time",
+            AbilityUsableContext::InCombat => "in combat",
+            AbilityUsableContext::OutOfCombat => "out of combat",
+        };
+        write!(f, "{}", to_write)
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]

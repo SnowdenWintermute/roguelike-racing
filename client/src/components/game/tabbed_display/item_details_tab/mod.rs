@@ -1,12 +1,15 @@
+mod consumable_details;
 mod equipment_details;
-use crate::{
-    components::game::tabbed_display::item_details_tab::equipment_details::EquipmentDetails,
-    store::{
-        game_store::{set_compared_item, GameStore},
-        ui_store::UIStore,
-    },
-};
-use common::items::{equipment::EquipmentSlots, Item};
+mod requirements;
+mod unmet_requirements_calculator;
+use crate::components::game::tabbed_display::item_details_tab::consumable_details::ConsumableDetails;
+use crate::components::game::tabbed_display::item_details_tab::equipment_details::EquipmentDetails;
+use crate::store::game_store::set_compared_item;
+use crate::store::game_store::GameStore;
+use crate::store::ui_store::UIStore;
+use common::items::equipment::EquipmentSlots;
+use common::items::Item;
+use common::items::ItemProperties;
 use std::rc::Rc;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
@@ -49,15 +52,21 @@ pub fn item_details_tab(props: &Props) -> Html {
     };
 
     let display = match &props.item.item_properties {
-        common::items::ItemProperties::Consumable(_) => html!({ "Consumable item" }),
-        common::items::ItemProperties::Equipment(properties) => {
-            html!(<EquipmentDetails
-                  equipment_properties={properties.clone()}
-                  requirements={props.item.requirements.clone()}
-                  entity_id={item_id}
-                  is_compared_item={false}
-                  />)
-        }
+        ItemProperties::Consumable(properties) => html!(
+        <ConsumableDetails
+            consumable_properties={properties.clone()}
+            requirements={props.item.requirements.clone()}
+            entity_id={item_id}
+        />
+        ),
+        ItemProperties::Equipment(properties) => html!(
+        <EquipmentDetails
+              equipment_properties={properties.clone()}
+              requirements={props.item.requirements.clone()}
+              entity_id={item_id}
+              is_compared_item={false}
+        />
+              ),
     };
 
     let compared_item_name = match &compared_item {

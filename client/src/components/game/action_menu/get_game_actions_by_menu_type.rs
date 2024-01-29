@@ -34,6 +34,13 @@ impl MenuTypes {
                     menu_items.push(GameActions::UseSelectedAbility);
                     menu_items.push(GameActions::CycleTargetingScheme);
                 }
+                MenuTypes::ConsumableSelected => {
+                    menu_items.push(GameActions::DeselectConsumable);
+                    menu_items.push(GameActions::CycleTargets(NextOrPrevious::Next));
+                    menu_items.push(GameActions::CycleTargets(NextOrPrevious::Previous));
+                    menu_items.push(GameActions::UseSelectedAbility);
+                    menu_items.push(GameActions::CycleTargetingScheme);
+                }
                 MenuTypes::LevelUpAbilities => {
                     menu_items.push(GameActions::SetAssignAttributePointsMenuOpen(true));
                     add_abilities_to_menu(&abilities, &mut menu_items);

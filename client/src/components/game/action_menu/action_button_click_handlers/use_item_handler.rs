@@ -1,3 +1,4 @@
+use super::handle_select_consumable::handle_select_consumable;
 use crate::components::websocket_manager::send_client_input::send_client_input;
 use crate::store::alert_store::AlertStore;
 use crate::store::game_store::get_focused_character;
@@ -10,8 +11,6 @@ use common::packets::client_to_server::PlayerInputs;
 use common::packets::CharacterAndSlot;
 use std::rc::Rc;
 use yewdux::Dispatch;
-
-use super::handle_select_consumable::handle_select_consumable;
 
 pub fn use_item_handler(
     game_dispatch: Dispatch<GameStore>,
@@ -26,9 +25,12 @@ pub fn use_item_handler(
     let alt_slot = ui_state.mod_key_held;
     if let Some(item) = item_option {
         match item.item_properties {
-            common::items::ItemProperties::Consumable(_) => {
-                handle_select_consumable(game_dispatch, alert_dispatch, &websocket_state.websocket, item_id)
-            }
+            common::items::ItemProperties::Consumable(_) => handle_select_consumable(
+                game_dispatch,
+                alert_dispatch,
+                &websocket_state.websocket,
+                item_id,
+            ),
             common::items::ItemProperties::Equipment(_) => {
                 use_equipment_handler(game_dispatch, websocket_state, character_id, item, alt_slot)
             }

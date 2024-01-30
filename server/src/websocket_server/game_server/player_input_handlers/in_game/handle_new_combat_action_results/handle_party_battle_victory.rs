@@ -21,7 +21,7 @@ impl GameServer {
         let party = get_mut_party(game, party_id)?;
         let party_websocket_channel_name = party.websocket_channel_name.clone();
         let dlvl = party.current_floor;
-        let mut loot = generate_loot(game, num_opponents, dlvl);
+        let loot = generate_loot(game, num_opponents, dlvl);
 
         let party = get_mut_party(game, party_id)?;
         // make sure all clients receive the item's existance or else one client can take
@@ -36,7 +36,8 @@ impl GameServer {
         println!("all opponents defeated, concluding battle as victory");
         party.battle_id = None;
         party.current_room.monsters = None;
-        party.current_room.items.append(&mut loot);
+        party.current_room.items.append(&mut loot.clone());
+        println!("new party items on floor: {:#?}", party.current_room.items);
         game.battles.remove(&battle_id);
 
         self.emit_packet(

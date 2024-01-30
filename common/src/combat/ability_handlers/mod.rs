@@ -6,7 +6,6 @@ use crate::errors::AppError;
 use crate::game::RoguelikeRacerGame;
 mod ability_resolution_calculators;
 pub mod attack;
-pub mod validate_ability_use;
 
 impl RoguelikeRacerGame {
     pub fn get_ability_results(

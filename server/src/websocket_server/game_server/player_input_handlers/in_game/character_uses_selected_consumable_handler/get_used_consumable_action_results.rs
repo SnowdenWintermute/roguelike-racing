@@ -8,7 +8,7 @@ use common::game::getters::get_party;
 use common::game::getters::get_player;
 
 impl GameServer {
-    pub fn get_ability_action_results(
+    pub fn get_used_consumable_action_results(
         &self,
         actor_id: u32,
         character_id: u32,
@@ -36,19 +36,15 @@ impl GameServer {
         let battle_id_option = party.battle_id;
         let character_positions = party.character_positions.clone();
         let character = party.get_character_if_owned(player_character_ids_option, character_id)?;
-        let ability_name = character
+        let consumable_id = character
             .combatant_properties
-            .selected_ability_name
-            .clone()
+            .selected_consumable
             .ok_or_else(|| AppError {
-                error_type: common::errors::AppErrorTypes::InvalidInput,
-                message: error_messages::NO_ABILITY_SELECTED.to_string(),
+                error_type: common::errors::AppErrorTypes::Generic,
+                message: error_messages::NO_CONSUMABLE_SELECTED.to_string(),
             })?;
-        let ability_attributes = ability_name.get_attributes();
-        // check if they own the ability
-        let _ = character
-            .combatant_properties
-            .get_ability_if_owned(&ability_name)?;
+        let consumable = character.inventory.get_consumable(&consumable_id)?;
+        let combat_action_properties = consumable.consumable_type.get_combat_action_properties();
 
         let targets = character
             .combatant_properties
@@ -80,16 +76,17 @@ impl GameServer {
             character_positions.clone()
         };
 
-        ability_attributes.combat_action_properties.validate_use(
+        combat_action_properties.validate_use(
             battle_option.as_ref(),
             &ally_ids,
             &targets,
             character_id,
         )?;
 
-        game.get_ability_results(
+        game.get_consumable_use_results(
+            party_id,
             character_id,
-            &ability_name,
+            consumable_id,
             &targets,
             battle_option.as_ref(),
         )

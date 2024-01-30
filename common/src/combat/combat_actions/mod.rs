@@ -3,6 +3,7 @@ pub mod get_default_targets;
 pub mod get_next_or_previous_targets;
 pub mod targets_are_valid;
 pub mod targets_by_saved_preference_or_default;
+pub mod validate_use;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::items::Item;
 use serde::Deserialize;

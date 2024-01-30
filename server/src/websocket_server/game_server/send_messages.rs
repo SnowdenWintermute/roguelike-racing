@@ -30,6 +30,10 @@ impl GameServer {
         packet: &GameServerUpdatePackets,
         skip_id: Option<u32>,
     ) -> Result<(), AppError> {
+        println!(
+            "emitting packet on channel :{websocket_channel} in namespace: {:?} packet: {:#?}",
+            channel_namespace, packet
+        );
         let channels_in_namespace =
             self.websocket_channels
                 .get(channel_namespace)

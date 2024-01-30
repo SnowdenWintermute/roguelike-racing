@@ -63,7 +63,8 @@ impl Item {
                 }
             }
             ItemCategories::Consumable => {
-                let consumable_type = ConsumableTypes::random();
+                // let consumable_type = ConsumableTypes::random();
+                let consumable_type = ConsumableTypes::Autoinjector;
                 let item_name = format!("{}", consumable_type);
                 Item {
                     entity_properties: EntityProperties {

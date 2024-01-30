@@ -1,8 +1,17 @@
-pub mod handle_cycle_targeting_schemes;
-pub mod handle_cycle_targets;
+pub mod handle_cycle_ability_targeting_schemes;
+pub mod handle_cycle_ability_targets;
+pub mod handle_cycle_combat_action_targeting_schemes;
+pub mod handle_cycle_combat_action_targets;
+pub mod handle_cycle_consumable_targeting_schemes;
+mod handle_cycle_consumable_targets;
+pub mod handle_deselect_consumable;
 pub mod handle_select_ability;
 pub mod handle_select_consumable;
 mod use_item_handler;
+use self::handle_cycle_ability_targeting_schemes::handle_cycle_ability_targeting_schemes;
+use self::handle_cycle_ability_targets::handle_cycle_ability_targets;
+use self::handle_cycle_consumable_targeting_schemes::handle_cycle_consumable_targeting_schemes;
+use self::handle_cycle_consumable_targets::handle_cycle_consumable_targets;
 use super::enums::GameActions;
 use crate::components::websocket_manager::send_client_input::send_client_input;
 use crate::store::alert_store::AlertStore;
@@ -34,9 +43,6 @@ pub fn create_action_button_click_handler<'a>(
                 &websocket_state.websocket,
                 PlayerInputs::ToggleReadyToExplore,
             )
-        }),
-        GameActions::UseAutoinjector => Box::new(move || {
-            //
         }),
         GameActions::SetInventoryOpen(status) => Box::new(move || {
             game_dispatch.reduce_mut(|game_state| game_state.viewing_inventory = status.clone());
@@ -83,6 +89,16 @@ pub fn create_action_button_click_handler<'a>(
                 &id,
             )
         }),
+        GameActions::DeselectConsumable => Box::new(move || {
+            let cloned_game_dispatch = game_dispatch.clone();
+            let cloned_websocket_state = websocket_state.clone();
+            let cloned_alert_dispatch = alert_dispatch.clone();
+            handle_deselect_consumable::handle_deselect_consumable(
+                cloned_game_dispatch,
+                cloned_alert_dispatch,
+                &cloned_websocket_state.websocket,
+            );
+        }),
         GameActions::SelectAbility(ability_name) => Box::new(move || {
             let cloned_dispatch = game_dispatch.clone();
             let cloned_alert_dispatch = alert_dispatch.clone();
@@ -99,7 +115,7 @@ pub fn create_action_button_click_handler<'a>(
                     .get_mut_character(game_store.focused_character_id)
                     .expect("to have a valid focused character");
                 focused_character.combatant_properties.selected_ability_name = None;
-                focused_character.combatant_properties.ability_targets = None;
+                focused_character.combatant_properties.combat_action_targets = None;
                 send_client_input(
                     &websocket_state.websocket,
                     PlayerInputs::SelectAbility(ClientSelectAbilityPacket {
@@ -109,21 +125,29 @@ pub fn create_action_button_click_handler<'a>(
                 )
             });
         }),
-        GameActions::CycleTargets(next_or_previous) => Box::new(move || {
+        GameActions::CycleAbilityTargets(next_or_previous) => Box::new(move || {
             let cloned_dispatch = game_dispatch.clone();
-            handle_cycle_targets::handle_cycle_targets(
+            handle_cycle_ability_targets(
                 cloned_dispatch,
                 &websocket_state.websocket,
                 &next_or_previous,
             )
         }),
-        GameActions::CycleTargetingScheme => Box::new(move || {
-            game_dispatch.reduce_mut(|store| {
-                handle_cycle_targeting_schemes::handle_cycle_targeting_schemes(
-                    store,
-                    &websocket_state.websocket,
-                )
-            })
+        GameActions::CycleConsumableTargets(next_or_previous) => Box::new(move || {
+            let cloned_dispatch = game_dispatch.clone();
+            handle_cycle_consumable_targets(
+                cloned_dispatch,
+                &websocket_state.websocket,
+                &next_or_previous,
+            )
+        }),
+        GameActions::CycleAbilityTargetingScheme => Box::new(move || {
+            let cloned_dispatch = game_dispatch.clone();
+            handle_cycle_ability_targeting_schemes(cloned_dispatch, &websocket_state.websocket)
+        }),
+        GameActions::CycleConsumableTargetingScheme => Box::new(move || {
+            let cloned_dispatch = game_dispatch.clone();
+            handle_cycle_consumable_targeting_schemes(cloned_dispatch, &websocket_state.websocket)
         }),
         GameActions::UseSelectedAbility => Box::new(move || {
             game_dispatch.reduce_mut(|store| {
@@ -132,7 +156,7 @@ pub fn create_action_button_click_handler<'a>(
                     .get_mut_character(focused_character_id)
                     .expect("to have a valid focused character");
                 focused_character.combatant_properties.selected_ability_name = None;
-                focused_character.combatant_properties.ability_targets = None;
+                focused_character.combatant_properties.combat_action_targets = None;
                 send_client_input(
                     &websocket_state.websocket,
                     PlayerInputs::UseSelectedAbility(game_state.focused_character_id),

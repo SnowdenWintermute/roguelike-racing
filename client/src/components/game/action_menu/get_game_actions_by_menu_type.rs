@@ -16,7 +16,6 @@ impl MenuTypes {
                 MenuTypes::OutOfCombat => {
                     menu_items.push(GameActions::ToggleInventoryOpen);
                     menu_items.push(GameActions::ToggleReadyToExplore);
-                    menu_items.push(GameActions::UseAutoinjector);
                     add_abilities_to_menu(&abilities, &mut menu_items);
                     menu_items.push(GameActions::SetAssignAttributePointsMenuOpen(true))
                 }
@@ -24,22 +23,23 @@ impl MenuTypes {
                 MenuTypes::ItemsOnGround => menu_items.push(GameActions::TakeItem),
                 MenuTypes::InCombat => {
                     add_abilities_to_menu(&abilities, &mut menu_items);
-                    menu_items.push(GameActions::UseAutoinjector);
                     menu_items.push(GameActions::ToggleInventoryOpen);
                 }
                 MenuTypes::AbilitySelected => {
                     menu_items.push(GameActions::DeselectAbility);
-                    menu_items.push(GameActions::CycleTargets(NextOrPrevious::Next));
-                    menu_items.push(GameActions::CycleTargets(NextOrPrevious::Previous));
+                    menu_items.push(GameActions::CycleAbilityTargets(NextOrPrevious::Next));
+                    menu_items.push(GameActions::CycleAbilityTargets(NextOrPrevious::Previous));
                     menu_items.push(GameActions::UseSelectedAbility);
-                    menu_items.push(GameActions::CycleTargetingScheme);
+                    menu_items.push(GameActions::CycleAbilityTargetingScheme);
                 }
                 MenuTypes::ConsumableSelected => {
                     menu_items.push(GameActions::DeselectConsumable);
-                    menu_items.push(GameActions::CycleTargets(NextOrPrevious::Next));
-                    menu_items.push(GameActions::CycleTargets(NextOrPrevious::Previous));
+                    menu_items.push(GameActions::CycleConsumableTargets(NextOrPrevious::Next));
+                    menu_items.push(GameActions::CycleConsumableTargets(
+                        NextOrPrevious::Previous,
+                    ));
                     menu_items.push(GameActions::UseSelectedAbility);
-                    menu_items.push(GameActions::CycleTargetingScheme);
+                    menu_items.push(GameActions::CycleConsumableTargetingScheme);
                 }
                 MenuTypes::LevelUpAbilities => {
                     menu_items.push(GameActions::SetAssignAttributePointsMenuOpen(true));

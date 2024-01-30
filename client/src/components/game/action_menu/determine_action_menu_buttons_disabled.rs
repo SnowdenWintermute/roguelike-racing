@@ -76,12 +76,6 @@ pub fn determine_action_menu_buttons_disabled(
             }
             false
         }
-        GameActions::UseAutoinjector => {
-            if !player_owns_character {
-                return true;
-            }
-            false
-        }
         GameActions::ShardItem(_) => !player_owns_character,
 
         _ => false,

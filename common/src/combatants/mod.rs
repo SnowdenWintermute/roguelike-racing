@@ -82,8 +82,8 @@ pub struct CombatantProperties {
     // pub traits: HashSet<CombatantTraits>
     pub selected_consumable: Option<u32>,
     pub selected_ability_name: Option<CombatantAbilityNames>,
-    pub ability_targets: Option<CombatActionTarget>,
-    pub ability_target_preferences: CombatActionTargetPreferences,
+    pub combat_action_targets: Option<CombatActionTarget>,
+    pub combat_action_target_preferences: CombatActionTargetPreferences,
     pub controlled_by: CombatantControlledBy,
 }
 
@@ -103,8 +103,8 @@ impl CombatantProperties {
             abilities,
             selected_consumable: None,
             selected_ability_name: None,
-            ability_targets: None,
-            ability_target_preferences: CombatActionTargetPreferences::default(),
+            combat_action_targets: None,
+            combat_action_target_preferences: CombatActionTargetPreferences::default(),
             controlled_by,
         }
     }

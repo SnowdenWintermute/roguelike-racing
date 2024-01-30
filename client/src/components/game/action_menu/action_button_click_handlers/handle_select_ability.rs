@@ -42,7 +42,7 @@ pub fn handle_select_ability(
 
         let target_preferences = &focused_character
             .combatant_properties
-            .ability_target_preferences
+            .combat_action_target_preferences
             .clone();
 
         let (ally_ids, opponent_ids_option) = get_ally_ids_and_opponent_ids_option(
@@ -92,10 +92,10 @@ pub fn handle_select_ability(
                 message: error_messages::CHARACTER_NOT_FOUND.to_string(),
             })?;
         focused_character.combatant_properties.selected_ability_name = Some(ability_name.clone());
-        focused_character.combatant_properties.ability_targets = Some(targets.clone());
+        focused_character.combatant_properties.combat_action_targets = Some(targets.clone());
         focused_character
             .combatant_properties
-            .ability_target_preferences = new_target_preferences;
+            .combat_action_target_preferences = new_target_preferences;
 
         send_client_input(
             websocket_option,

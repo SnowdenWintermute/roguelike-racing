@@ -132,7 +132,7 @@ pub fn handle_character_ability_selection(
 
     let character = game_store.get_mut_character(character_id)?;
     character.combatant_properties.selected_ability_name = ability_name_option;
-    character.combatant_properties.ability_targets = targets_option;
+    character.combatant_properties.combat_action_targets = targets_option;
     Ok(())
 }
 
@@ -140,6 +140,10 @@ pub fn handle_character_consumable_selection(
     game_dispatch: Dispatch<GameStore>,
     packet: CharacterSelectedConsumablePacket,
 ) -> Result<(), AppError> {
+    log!(format!(
+        "selected consumable packet received {:#?}",
+        &packet
+    ));
     let CharacterSelectedConsumablePacket {
         character_id,
         targets_option,
@@ -149,7 +153,7 @@ pub fn handle_character_consumable_selection(
     game_dispatch.reduce_mut(|store| {
         let character = store.get_mut_character(character_id)?;
         character.combatant_properties.selected_consumable = consumable_id_option;
-        character.combatant_properties.ability_targets = targets_option;
+        character.combatant_properties.combat_action_targets = targets_option;
         Ok(())
     })
 }
@@ -163,7 +167,7 @@ pub fn handle_character_changed_targets(
         new_targets,
     } = packet;
     let character = game_store.get_mut_character(character_id)?;
-    character.combatant_properties.ability_targets = Some(new_targets.clone());
+    character.combatant_properties.combat_action_targets = Some(new_targets.clone());
 
     Ok(())
 }

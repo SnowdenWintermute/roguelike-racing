@@ -1,3 +1,4 @@
+use crate::utils::generate_random_game_name;
 use crate::websocket_server::game_server::getters::get_mut_user;
 use crate::websocket_server::game_server::GameServer;
 use common::app_consts::error_messages;
@@ -23,7 +24,11 @@ impl GameServer {
                 message: error_messages::ALREADY_IN_GAME.to_string(),
             });
         }
-        if self.games.get(game_name).is_some() {
+        let mut game_name = game_name.clone();
+        if game_name == "" {
+            game_name = generate_random_game_name().to_string();
+        }
+        if self.games.get(&game_name).is_some() {
             return Err(AppError {
                 error_type: common::errors::AppErrorTypes::InvalidInput,
                 message: error_messages::GAME_ALREADY_EXISTS.to_string(),

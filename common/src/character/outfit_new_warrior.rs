@@ -1,4 +1,6 @@
 use super::Character;
+use crate::combatants::abilities::CombatantAbility;
+use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::game::RoguelikeRacerGame;
 use crate::items::equipment::equipment_generation::create_starting_equipment::create_starting_equipment;
@@ -18,10 +20,10 @@ pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Charact
     inherent_attributes.insert(CombatAttributes::Agility, 1);
 
     // ABILITIES
-    // combatant_properties.abilities.insert(
-    //     CombatantAbilityNames::Fire,
-    //     CombatantAbility::new(CombatantAbilityNames::Fire),
-    // );
+    combatant_properties.abilities.insert(
+        CombatantAbilityNames::Fire,
+        CombatantAbility::new(CombatantAbilityNames::Fire),
+    );
     // combatant_properties.abilities.insert(
     //     CombatantAbilityNames::Heal,
     //     CombatantAbility::new(CombatantAbilityNames::Heal),

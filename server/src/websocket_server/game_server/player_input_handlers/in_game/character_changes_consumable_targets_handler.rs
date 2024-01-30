@@ -14,7 +14,7 @@ use common::packets::server_to_client::GameServerUpdatePackets;
 use common::packets::WebsocketChannelNamespace;
 
 impl GameServer {
-    pub fn character_changes_ability_targets_handler(
+    pub fn character_changes_consumable_targets_handler(
         &mut self,
         actor_id: u32,
         packet: ChangeTargetsPacket,
@@ -50,16 +50,19 @@ impl GameServer {
         let battle_id_option = party.battle_id.clone();
         let character_positions = party.character_positions.clone();
         let (_, combatant) = party.get_mut_combatant_by_id(&character_id)?;
-        let ability_name = combatant
-            .selected_ability_name
+        let consumable_id = combatant
+            .selected_consumable
             .clone()
             .ok_or_else(|| AppError {
                 error_type: AppErrorTypes::Generic,
-                message: error_messages::NO_ABILITY_SELECTED.to_string(),
+                message: error_messages::NO_CONSUMABLE_SELECTED.to_string(),
             })?;
-        let _ = combatant.get_ability_if_owned(&ability_name)?;
-        let ability_attributes = ability_name.get_attributes();
-        let combat_action_properties = ability_attributes.combat_action_properties;
+        let character =
+            party.get_character_if_owned(player_character_ids_option.clone(), character_id)?;
+        let conusmable_properties = character.inventory.get_consumable(&consumable_id)?;
+        let combat_action_properties = conusmable_properties
+            .consumable_type
+            .get_combat_action_properties();
 
         let (new_targets, new_target_preferences) =
             character_changes_combat_action_targets_handler(

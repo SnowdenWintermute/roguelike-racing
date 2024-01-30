@@ -104,6 +104,24 @@ pub fn get_ally_ids_and_opponent_ids_option(
 }
 
 impl RoguelikeRacerGame {
+    pub fn get_battle_option(
+        &self,
+        battle_id_option: &Option<u32>,
+    ) -> Result<Option<Battle>, AppError> {
+        if let Some(battle_id) = battle_id_option {
+            Ok(Some(
+                self.battles
+                    .get(&battle_id)
+                    .ok_or_else(|| AppError {
+                        error_type: AppErrorTypes::ServerError,
+                        message: error_messages::BATTLE_NOT_FOUND.to_string(),
+                    })?
+                    .clone(),
+            ))
+        } else {
+            Ok(None)
+        }
+    }
     pub fn get_ids_from_ability_target(
         &self,
         party_id: u32,

@@ -36,7 +36,7 @@ impl GameServer {
             )?;
             let target_preferences = character
                 .combatant_properties
-                .ability_target_preferences
+                .combat_action_target_preferences
                 .clone();
 
             let consumable_properties = character.inventory.get_consumable(&item_id)?;
@@ -91,14 +91,16 @@ impl GameServer {
             let character = party
                 .get_mut_character_if_owned(player_character_ids_option, packet.character_id)?;
             character.combatant_properties.selected_consumable = Some(item_id);
-            character.combatant_properties.ability_target_preferences = new_target_preferences;
-            character.combatant_properties.ability_targets = Some(new_targets.clone());
+            character
+                .combatant_properties
+                .combat_action_target_preferences = new_target_preferences;
+            character.combatant_properties.combat_action_targets = Some(new_targets.clone());
             Some(new_targets)
         } else {
             let character = party
                 .get_mut_character_if_owned(player_character_ids_option, packet.character_id)?;
             character.combatant_properties.selected_consumable = None;
-            character.combatant_properties.ability_targets = None;
+            character.combatant_properties.combat_action_targets = None;
             None
         };
 

@@ -9,8 +9,8 @@ impl ConsumableTypes {
     pub fn get_combat_action_properties(&self) -> CombatActionProperties {
         match self {
             ConsumableTypes::Autoinjector => CombatActionProperties {
-                targeting_schemes: vec![TargetingScheme::Single],
-                valid_target_categories: TargetCategories::User,
+                targeting_schemes: vec![TargetingScheme::Single, TargetingScheme::Area],
+                valid_target_categories: TargetCategories::Friendly,
                 usability_context: AbilityUsableContext::All,
                 prohibited_target_combatant_states: Some(vec![
                     ProhibitedTargetCombatantStates::Dead,

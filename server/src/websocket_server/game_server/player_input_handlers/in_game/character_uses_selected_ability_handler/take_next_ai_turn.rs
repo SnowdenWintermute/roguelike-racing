@@ -5,7 +5,7 @@ use common::combatants::CombatantControlledBy;
 use common::errors::AppError;
 use common::game::RoguelikeRacerGame;
 
-pub fn take_ai_controlled_turns(
+pub fn take_ai_controlled_turns_if_appropriate(
     game: &mut RoguelikeRacerGame,
     battle_id: u32,
     active_combatant_id: u32,

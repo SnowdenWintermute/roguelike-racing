@@ -10,7 +10,7 @@ use crate::items::equipment::unarmed::FIST;
 
 impl RoguelikeRacerGame {
     pub fn attack_handler(
-        &mut self,
+        &self,
         ability_user_id: u32,
         ability_target: &CombatActionTarget,
         battle_option: Option<&Battle>,

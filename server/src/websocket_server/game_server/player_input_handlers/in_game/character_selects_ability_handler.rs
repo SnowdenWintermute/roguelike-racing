@@ -30,7 +30,7 @@ impl GameServer {
             let character = party
                 .get_mut_character_if_owned(player_character_ids_option, packet.character_id)?;
             character.combatant_properties.selected_ability_name = None;
-            character.combatant_properties.ability_targets = None;
+            character.combatant_properties.combat_action_targets = None;
             None
         } else {
             let battle_id_option = party.battle_id;
@@ -45,7 +45,7 @@ impl GameServer {
             )?;
             let target_preferences = character
                 .combatant_properties
-                .ability_target_preferences
+                .combat_action_target_preferences
                 .clone();
 
             let ability_name = packet.ability_name_option.clone().expect("is_none checked");
@@ -102,8 +102,10 @@ impl GameServer {
             let character = party
                 .get_mut_character_if_owned(player_character_ids_option, packet.character_id)?;
             character.combatant_properties.selected_ability_name = Some(ability_name);
-            character.combatant_properties.ability_target_preferences = new_target_preferences;
-            character.combatant_properties.ability_targets = Some(new_targets.clone());
+            character
+                .combatant_properties
+                .combat_action_target_preferences = new_target_preferences;
+            character.combatant_properties.combat_action_targets = Some(new_targets.clone());
             Some(new_targets)
         };
 

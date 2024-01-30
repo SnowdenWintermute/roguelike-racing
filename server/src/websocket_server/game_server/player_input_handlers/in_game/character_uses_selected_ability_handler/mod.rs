@@ -1,15 +1,16 @@
-mod take_next_ai_turn;
-use self::take_next_ai_turn::take_ai_controlled_turns;
+mod get_ability_action_results;
+pub mod take_next_ai_turn;
+use self::take_next_ai_turn::take_ai_controlled_turns_if_appropriate;
 use super::apply_action_results::apply_action_results;
 use crate::websocket_server::game_server::getters::get_mut_game_data_from_actor_id;
 use crate::websocket_server::game_server::getters::ActorIdAssociatedGameData;
 use crate::websocket_server::game_server::GameServer;
 use common::app_consts::error_messages;
-use common::combat::ability_handlers::validate_ability_use::validate_character_ability_use;
 use common::combat::CombatTurnResult;
 use common::dungeon_rooms::DungeonRoomTypes;
 use common::errors::AppError;
 use common::game::getters::get_mut_party;
+use common::game::getters::get_party;
 use common::items::Item;
 use common::items::ItemCategories;
 use common::packets::server_to_client::BattleConclusion;
@@ -29,43 +30,18 @@ impl GameServer {
         let ActorIdAssociatedGameData {
             game,
             party_id,
-            player_character_ids_option,
             current_game_name,
             ..
         } = get_mut_game_data_from_actor_id(self, actor_id)?;
         let party_id = party_id.clone();
         let current_game_name = current_game_name.clone();
-        let party = get_mut_party(game, party_id)?;
+        let party = get_party(game, party_id)?;
         let party_name = party.name.clone();
         let in_monster_lair = { party.current_room.room_type == DungeonRoomTypes::MonsterLair };
         let dlvl = party.current_floor;
         let battle_id_option = party.battle_id;
         let character_positions = party.character_positions.clone();
         let party_websocket_channel_name = party.websocket_channel_name.clone();
-        let character =
-            party.get_mut_character_if_owned(player_character_ids_option, character_id)?;
-        let ability_name = character
-            .combatant_properties
-            .selected_ability_name
-            .clone()
-            .ok_or_else(|| AppError {
-                error_type: common::errors::AppErrorTypes::InvalidInput,
-                message: error_messages::NO_ABILITY_SELECTED.to_string(),
-            })?;
-        let ability_attributes = ability_name.get_attributes();
-        // check if they own the ability
-        let _ = character
-            .combatant_properties
-            .get_ability_if_owned(&ability_name)?;
-
-        let targets = character
-            .combatant_properties
-            .ability_targets
-            .clone()
-            .ok_or_else(|| AppError {
-                error_type: common::errors::AppErrorTypes::InvalidInput,
-                message: error_messages::NO_POSSIBLE_TARGETS_PROVIDED.to_string(),
-            })?;
 
         let battle_option = if let Some(battle_id) = battle_id_option {
             Some(
@@ -88,20 +64,13 @@ impl GameServer {
             character_positions.clone()
         };
 
-        validate_character_ability_use(
-            &ability_attributes.combat_action_properties,
-            battle_option.as_ref(),
-            &ally_ids,
-            &targets,
-            character_id,
-        )?;
+        let action_results = self.get_ability_action_results(actor_id, character_id)?;
 
-        let action_results = game.get_ability_results(
-            character_id,
-            &ability_name,
-            &targets,
-            battle_option.as_ref(),
-        )?;
+        // HANDLE NEW COMBAT ACTION RESULTS
+        // PROCCESS COMBAT_ACTION RESULTS
+
+        let ActorIdAssociatedGameData { game, .. } =
+            get_mut_game_data_from_actor_id(self, actor_id)?;
 
         apply_action_results(game, &action_results)?;
 
@@ -191,7 +160,7 @@ impl GameServer {
                     game.end_active_combatant_turn(battle_id_option.expect("checked above"))?;
                 let active_combatant_id = active_combatant_turn_tracker.entity_id;
 
-                let mut ai_controlled_turn_results = take_ai_controlled_turns(
+                let mut ai_controlled_turn_results = take_ai_controlled_turns_if_appropriate(
                     game,
                     battle_id_option.expect("checked above"),
                     active_combatant_id,

@@ -1,6 +1,7 @@
 use super::CombatantAbilityNames;
 use crate::combat::combat_actions::CombatActionProperties;
 use crate::combat::combat_actions::ProhibitedTargetCombatantStates;
+use crate::combat::combat_actions::TargetingScheme;
 
 pub struct CombatantAbilityAttributes {
     pub combat_action_properties: CombatActionProperties,
@@ -44,6 +45,10 @@ impl CombatantAbilityNames {
                 ..Default::default()
             },
             CombatantAbilityNames::Fire => CombatantAbilityAttributes {
+                combat_action_properties: CombatActionProperties {
+                    targeting_schemes: vec![TargetingScheme::Area, TargetingScheme::Single],
+                    ..Default::default()
+                },
                 ..Default::default()
             },
             CombatantAbilityNames::Heal => CombatantAbilityAttributes {

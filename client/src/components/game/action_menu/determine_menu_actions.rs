@@ -6,7 +6,6 @@ use common::adventuring_party::AdventuringParty;
 use common::combat::combat_actions::AbilityUsableContext;
 use common::combatants::abilities::CombatantAbilityNames;
 use common::dungeon_rooms::DungeonRoomTypes;
-use gloo::console::log;
 use std::rc::Rc;
 
 // determine menu actions
@@ -21,25 +20,21 @@ pub fn determine_menu_actions(
     let focused_character_option = party.characters.get(&game_state.focused_character_id);
     let player_owns_character =
         party.player_owns_character(&lobby_state.username, game_state.focused_character_id);
-    let focused_character_is_selecting_ability = {
-        if let Some(character) = focused_character_option {
+    let focused_character_is_selecting_ability = focused_character_option
+        .map(|character| {
             character
                 .combatant_properties
                 .selected_ability_name
                 .is_some()
-        } else {
-            false
-        }
-    };
-    let focused_character_is_selecting_consumable = {
-        if let Some(character) = focused_character_option {
-            character.combatant_properties.selected_consumable.is_some()
-        } else {
-            false
-        }
-    };
-
-    if game_state.viewing_items_on_ground {
+        })
+        .unwrap_or(false);
+    let focused_character_is_selecting_consumable = focused_character_option
+        .map(|character| character.combatant_properties.selected_consumable.is_some())
+        .unwrap_or(false);
+    if focused_character_is_selecting_consumable && player_owns_character {
+        menu_types.push(MenuTypes::ConsumableSelected);
+        new_actions = MenuTypes::get_actions(&menu_types, None, None);
+    } else if game_state.viewing_items_on_ground {
         menu_types.push(MenuTypes::ItemsOnGround);
         new_actions = MenuTypes::get_actions(&menu_types, None, None);
         //
@@ -91,21 +86,12 @@ pub fn determine_menu_actions(
         if party.current_room.items.len() > 0 {
             menu_types.push(MenuTypes::ItemsOnGround);
         }
-        log!(format!(
-            "current room type: {}",
-            party.current_room.room_type
-        ));
-
         if party.current_room.room_type == DungeonRoomTypes::Stairs {
-            log!("pushing staircase menu");
             menu_types.push(MenuTypes::Staircase)
         }
         new_actions = MenuTypes::get_actions(&menu_types, None, Some(ability_names));
     } else if focused_character_is_selecting_ability && player_owns_character {
         menu_types.push(MenuTypes::AbilitySelected);
-        new_actions = MenuTypes::get_actions(&menu_types, None, None);
-    } else if focused_character_is_selecting_consumable && player_owns_character {
-        menu_types.push(MenuTypes::ConsumableSelected);
         new_actions = MenuTypes::get_actions(&menu_types, None, None);
     } else {
         menu_types.push(MenuTypes::InCombat);

@@ -39,7 +39,7 @@ pub struct CustomFormData {}
 #[function_component(WebsocketManager)]
 pub fn websocket_manager(props: &Props) -> Html {
     let (_, websocket_dispatch) = use_store::<WebsocketStore>();
-    let (lobby_state, lobby_dispatch) = use_store::<LobbyStore>();
+    let (_, lobby_dispatch) = use_store::<LobbyStore>();
     let (_, game_dispatch) = use_store::<GameStore>();
     let (_, alert_dispatch) = use_store::<AlertStore>();
     let server_url = props.server_url.clone();
@@ -66,7 +66,6 @@ pub fn websocket_manager(props: &Props) -> Html {
                             if let Ok(data) = deserialized {
                                 let cloned_alert_dispatch = alert_dispatch.clone();
                                 let cloned_lobby_dispatch = lobby_dispatch.clone();
-                                let cloned_lobby_state = lobby_state.clone();
                                 let cloned_game_dispatch = game_dispatch.clone();
                                 let cloned_websocket_dispatch = cloned_websocket_dispatch.clone();
 
@@ -74,7 +73,6 @@ pub fn websocket_manager(props: &Props) -> Html {
                                     data,
                                     cloned_alert_dispatch,
                                     cloned_lobby_dispatch,
-                                    cloned_lobby_state,
                                     cloned_game_dispatch,
                                     cloned_websocket_dispatch,
                                 )?

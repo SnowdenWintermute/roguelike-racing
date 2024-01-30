@@ -10,7 +10,7 @@ pub mod validate_ability_use;
 
 impl RoguelikeRacerGame {
     pub fn get_ability_results(
-        &mut self,
+        &self,
         ability_user_id: u32,
         ability_name: &CombatantAbilityNames,
         ability_target: &CombatActionTarget,

@@ -37,17 +37,16 @@ use common::app_consts::error_messages;
 use common::errors::AppError;
 use common::packets::server_to_client::GameServerUpdatePackets;
 use gloo::console::log;
-use std::rc::Rc;
 use yewdux::prelude::Dispatch;
 
 pub fn handle_packet(
     data: GameServerUpdatePackets,
     alert_dispatch: Dispatch<AlertStore>,
     lobby_dispatch: Dispatch<LobbyStore>,
-    lobby_state: Rc<LobbyStore>,
     game_dispatch: Dispatch<GameStore>,
     websocket_dispatch: Dispatch<WebsocketStore>,
 ) -> Result<(), AppError> {
+    // log!(format!("data from server: {:#?}", data));
     match data {
         GameServerUpdatePackets::Error(message) => {
             log!(format!("received error from server: {message}"));
@@ -57,9 +56,6 @@ pub fn handle_packet(
             lobby_dispatch.reduce_mut(|store| {
                 store.username = username.clone();
             });
-            log!(format!("set username to : {username}"));
-            log!(format!("username is : {:?}", lobby_state.username));
-
             Ok(())
         }
         GameServerUpdatePackets::FullUpdate(update) => {

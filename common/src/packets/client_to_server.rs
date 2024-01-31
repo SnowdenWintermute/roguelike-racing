@@ -22,10 +22,10 @@ pub enum PlayerInputs {
     DeleteCharacter(u32),
     ToggleReady,
     // use items and abilities
-    UseSelectedConsumable,
+    UseSelectedConsumable(u32), // character_id
     SelectAbility(ClientSelectAbilityPacket),
     SelectConsumable(ClientSelectConsumablePacket),
-    UseSelectedAbility(u32),
+    UseSelectedAbility(u32), // character_id
     ChangeAbilityTargets(ChangeTargetsPacket),
     ChangeConsumableTargets(ChangeTargetsPacket),
     ClearConsumableAndAbilitySelections,

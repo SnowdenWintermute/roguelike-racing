@@ -7,6 +7,19 @@ use std::fmt::Display;
 use yew::AttrValue;
 
 #[derive(PartialEq, Clone, Debug)]
+pub enum AutoinjectorTypes {
+    Hp,
+}
+
+impl Display for AutoinjectorTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
+        match self {
+            AutoinjectorTypes::Hp => write!(f, "HP"),
+        }
+    }
+}
+
+#[derive(PartialEq, Clone, Debug)]
 pub enum CombatantAnimation {
     TurnToFaceCombatant(u32),
     ApproachCombatant(u32),
@@ -18,6 +31,7 @@ pub enum CombatantAnimation {
     HitRecovery(i16),
     Death(Option<i16>),
     Evasion,
+    UseAutoinjector(AutoinjectorTypes, i16),
 }
 
 impl Display for CombatantAnimation {
@@ -38,6 +52,9 @@ impl Display for CombatantAnimation {
             CombatantAnimation::HitRecovery(hp_change) => format!("hit recovery {hp_change}"),
             CombatantAnimation::Death(hp_change) => format!("death {:?}", hp_change),
             CombatantAnimation::Evasion => format!("evaded"),
+            CombatantAnimation::UseAutoinjector(autoinjector_type, hp_change) => {
+                format!("using autoinjector ({autoinjector_type}, {hp_change})")
+            }
         };
         write!(f, "{:?}", to_write)
     }

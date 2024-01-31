@@ -10,7 +10,7 @@ use strum_macros::EnumIter;
 
 #[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq)]
 pub enum ConsumableTypes {
-    Autoinjector,
+    HpAutoinjector,
     Grenade,
     SmokeBomb,
     // RoomFinder,
@@ -25,7 +25,7 @@ pub enum ConsumableTypes {
 impl Display for ConsumableTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let to_write = match self {
-            ConsumableTypes::Autoinjector => "Autoinjector",
+            ConsumableTypes::HpAutoinjector => "HpAutoinjector",
             ConsumableTypes::Grenade => "Grenade",
             ConsumableTypes::SmokeBomb => "Smoke Bomb",
         };

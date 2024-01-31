@@ -10,6 +10,7 @@ use super::handle_character_dropped_equipped_item::handle_character_dropped_equi
 use super::handle_character_dropped_item::handle_character_dropped_item;
 use super::handle_character_picked_up_item::handle_character_picked_up_item;
 use super::handle_combat_turn_results::handle_combat_turn_results;
+use super::handle_raw_action_results::handle_raw_action_results;
 use super::in_game_party_update_handlers::handle_battle_full_update;
 use super::in_game_party_update_handlers::handle_character_ability_selection;
 use super::in_game_party_update_handlers::handle_character_changed_targets;
@@ -130,7 +131,9 @@ pub fn handle_packet(
         GameServerUpdatePackets::CharacterChangedTargets(packet) => {
             game_dispatch.reduce_mut(|store| handle_character_changed_targets(store, packet))
         }
-        GameServerUpdatePackets::ActionResults(_) => todo!(),
+        GameServerUpdatePackets::ActionResults(packet) => {
+            game_dispatch.reduce_mut(|store| handle_raw_action_results(store, packet))
+        }
         GameServerUpdatePackets::CombatTurnResults(packet) => {
             handle_combat_turn_results(game_dispatch, packet.turn_results)
         }

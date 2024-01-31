@@ -60,8 +60,8 @@ pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Charact
 
     let total_attributes = combatant_properties.get_total_attributes();
     let max_hp_option = total_attributes.get(&CombatAttributes::Hp);
-    if let Some(max_hp) = max_hp_option {
-        combatant_properties.hit_points = *max_hp
+    if let Some(_max_hp) = max_hp_option {
+        combatant_properties.hit_points = 1
     }
     let max_mana_option = total_attributes.get(&CombatAttributes::Mp);
     if let Some(max_mana) = max_mana_option {

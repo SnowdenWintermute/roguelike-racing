@@ -42,6 +42,7 @@ pub fn handle_animation_finished(
             )
         }
         CombatantAnimation::Evasion => Ok(()),
+        CombatantAnimation::UseAutoinjector(_, _) => todo!(),
     }?;
 
     game_dispatch.reduce_mut(|store| -> Result<(), AppError> {

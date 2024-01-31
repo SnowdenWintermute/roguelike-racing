@@ -15,7 +15,7 @@ pub fn targeting_indicator(props: &Props) -> Html {
 
     if let Some(consumable) = &props.consumable_option {
         match consumable.consumable_type {
-            ConsumableTypes::Autoinjector => color = "green-600",
+            ConsumableTypes::HpAutoinjector => color = "green-600",
             ConsumableTypes::Grenade => (),
             ConsumableTypes::SmokeBomb => color = "gray-700",
         }

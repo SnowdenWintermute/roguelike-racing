@@ -27,13 +27,13 @@ pub fn physical_damage_after_defense(
         &100,
     );
 
-    let max_u16_value: u32 = u16::MAX as u32;
+    let max_i16_value: u32 = i16::MAX as u32;
     println!(
         "damage after reduction: {}",
         damage_after_ac * (*physical_damage_reduction as u32 / 100)
     );
     let damage_after_damage_reduction =
         damage_after_ac - damage_after_ac * (*physical_damage_reduction as u32 / 100);
-    let final_damage: u16 = damage_after_damage_reduction.clamp(0, max_u16_value) as u16;
+    let final_damage: u16 = damage_after_damage_reduction.clamp(0, max_i16_value) as u16;
     final_damage
 }

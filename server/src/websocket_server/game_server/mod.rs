@@ -141,6 +141,9 @@ impl Handler<ClientBinaryMessage> for GameServer {
             Ok(PlayerInputs::SelectConsumable(packet)) => {
                 self.character_selects_consumable_handler(message.actor_id, packet)
             }
+            Ok(PlayerInputs::UseSelectedConsumable(character_id)) => {
+                self.character_uses_selected_consumable_handler(message.actor_id, character_id)
+            }
             Ok(PlayerInputs::ChangeAbilityTargets(packet)) => {
                 self.character_changes_ability_targets_handler(message.actor_id, packet)
             }

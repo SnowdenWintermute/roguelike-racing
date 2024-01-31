@@ -38,7 +38,7 @@ impl MenuTypes {
                     menu_items.push(GameActions::CycleConsumableTargets(
                         NextOrPrevious::Previous,
                     ));
-                    menu_items.push(GameActions::UseSelectedAbility);
+                    menu_items.push(GameActions::UseSelectedConsumable);
                     menu_items.push(GameActions::CycleConsumableTargetingScheme);
                 }
                 MenuTypes::LevelUpAbilities => {

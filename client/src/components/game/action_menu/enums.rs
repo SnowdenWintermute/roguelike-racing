@@ -42,6 +42,7 @@ pub enum GameActions {
     CycleAbilityTargetingScheme,
     CycleConsumableTargetingScheme,
     UseSelectedAbility,
+    UseSelectedConsumable,
     LevelUpAbility(CombatantAbilityNames),
     SetAssignAttributePointsMenuOpen(bool),
     AssignAttributePoint(CombatAttributes),

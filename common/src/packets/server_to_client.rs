@@ -56,7 +56,7 @@ pub enum GameServerUpdatePackets {
     CharacterSelectedAbility(CharacterSelectedAbilityPacket),
     CharacterSelectedConsumable(CharacterSelectedConsumablePacket),
     CharacterChangedTargets(ChangeTargetsPacket),
-    ActionResults(Vec<ActionResult>),
+    ActionResults(ActionResultsPacket),
     CombatTurnResults(CombatTurnResultsPacket),
     BattleFullUpdate(Option<Battle>),
     BattleEndReport(BattleEndReportPacket),
@@ -193,6 +193,12 @@ pub struct CharacterSelectedConsumablePacket {
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct CombatTurnResultsPacket {
     pub turn_results: Vec<CombatTurnResult>,
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+pub struct ActionResultsPacket {
+    pub action_taker_id: u32,
+    pub action_results: Vec<ActionResult>,
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]

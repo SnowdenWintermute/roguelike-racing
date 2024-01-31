@@ -78,7 +78,9 @@ pub fn swing_to_hit_animation_finished_handler(
                         CombatLogMessageStyle::Basic,
                         0,
                     ));
-                } else {
+                } else if combatant_id != target_id {
+                    // don't hit recovery if attacking self or else return to home animation won't
+                    // play and trigger next
                     target_event_manager.animation_queue =
                         VecDeque::from([CombatantAnimation::HitRecovery(hp_change)])
                 }

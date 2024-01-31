@@ -8,8 +8,7 @@ impl GameServer {
         actor_id: u32,
         character_id: u32,
     ) -> Result<(), AppError> {
-        // let action_results = self.get_used_consumable_action_results(actor_id, character_id)?;
-        // self.handle_new_combat_action_results(actor_id, action_results, character_id)
-        Ok(())
+        let action_results = self.get_used_consumable_action_results(actor_id, character_id)?;
+        self.handle_new_combat_action_results(actor_id, action_results, character_id)
     }
 }

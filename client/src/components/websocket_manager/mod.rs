@@ -7,6 +7,7 @@ mod handle_character_dropped_item;
 mod handle_character_picked_up_item;
 pub mod handle_combat_turn_results;
 mod handle_packet;
+mod handle_raw_action_results;
 mod in_game_party_update_handlers;
 mod inventory_management_update_handlers;
 mod lobby_update_handlers;

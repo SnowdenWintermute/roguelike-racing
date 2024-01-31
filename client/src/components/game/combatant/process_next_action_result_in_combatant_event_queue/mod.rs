@@ -1,7 +1,10 @@
 mod queue_attack_animations;
+mod queue_consumable_use_animations;
 mod queue_melee_ability_animations;
 mod queue_return_to_home_position_animations;
 use self::queue_attack_animations::queue_attack_animations;
+use self::queue_consumable_use_animations::queue_consumable_use_animations;
+use self::queue_melee_ability_animations::queue_melee_ability_animations;
 use crate::store::game_store::GameStore;
 use common::combat::combat_actions::CombatAction;
 use common::combat::ActionResult;
@@ -18,7 +21,7 @@ pub fn process_next_action_result_in_combatant_event_queue(
         match &new_action_result.action {
             CombatAction::AbilityUsed(ability_name) => {
                 match ability_name.get_attributes().is_melee {
-                    true => queue_melee_ability_animations::queue_melee_ability_animations(
+                    true => queue_melee_ability_animations(
                         game_dispatch.clone(),
                         combatant_id,
                         new_action_result,
@@ -32,7 +35,9 @@ pub fn process_next_action_result_in_combatant_event_queue(
                     _ => Ok(()),
                 }
             }
-            CombatAction::ConsumableUsed(_) => Ok(()),
+            CombatAction::ConsumableUsed(_) => {
+                queue_consumable_use_animations(game_dispatch, combatant_id, new_action_result)
+            }
         }
     } else {
         queue_return_to_home_position_animations::queue_return_to_home_position_animations(

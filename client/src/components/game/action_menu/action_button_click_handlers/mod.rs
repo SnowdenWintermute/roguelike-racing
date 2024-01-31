@@ -163,6 +163,20 @@ pub fn create_action_button_click_handler<'a>(
                 );
             });
         }),
+        GameActions::UseSelectedConsumable => Box::new(move || {
+            game_dispatch.reduce_mut(|store| {
+                let focused_character_id = store.focused_character_id;
+                let focused_character = store
+                    .get_mut_character(focused_character_id)
+                    .expect("to have a valid focused character");
+                focused_character.combatant_properties.selected_consumable = None;
+                focused_character.combatant_properties.combat_action_targets = None;
+                send_client_input(
+                    &websocket_state.websocket,
+                    PlayerInputs::UseSelectedConsumable(game_state.focused_character_id),
+                );
+            })
+        }),
         GameActions::DropItem(item_id) => Box::new(move || {
             game_dispatch.reduce_mut(|store| {
                 let focused_character = get_focused_character(store).expect("to be in game");

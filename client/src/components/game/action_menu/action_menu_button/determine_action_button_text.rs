@@ -57,7 +57,9 @@ pub fn determine_action_button_text(action: GameActions, game_state: Rc<GameStor
             "Targeting scheme".to_string()
         }
         GameActions::DeselectAbility | GameActions::DeselectConsumable => "Cancel".to_string(),
-        GameActions::UseSelectedAbility => "Execute".to_string(),
+        GameActions::UseSelectedAbility | GameActions::UseSelectedConsumable => {
+            "Execute".to_string()
+        }
         GameActions::ToggleReadyToDescend => "Vote to descend".to_string(),
     }
 }

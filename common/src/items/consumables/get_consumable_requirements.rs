@@ -5,7 +5,7 @@ use std::collections::HashMap;
 impl ConsumableTypes {
     pub fn get_requirements(&self, item_level: u8) -> Option<HashMap<CombatAttributes, u8>> {
         match self {
-            ConsumableTypes::Autoinjector => None,
+            ConsumableTypes::HpAutoinjector => None,
             ConsumableTypes::Grenade => Some(HashMap::from([(
                 CombatAttributes::Intelligence,
                 item_level,

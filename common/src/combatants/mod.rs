@@ -1,7 +1,9 @@
 pub mod abilities;
 pub mod combat_attributes;
+pub mod combatant_traits;
 mod equip_item;
 pub mod get_base_ability_damage_bonus;
+use self::combatant_traits::CombatantTraits;
 mod get_equipped_item;
 mod get_equipped_weapon_properties;
 mod get_total_attributes;
@@ -27,6 +29,7 @@ use core::fmt;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
+use std::collections::HashSet;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub enum CombatantClass {
@@ -84,7 +87,7 @@ pub struct CombatantProperties {
     pub equipment: HashMap<EquipmentSlots, Item>,
     pub inventory: Inventory,
     pub abilities: HashMap<CombatantAbilityNames, CombatantAbility>,
-    // pub traits: HashSet<CombatantTraits>
+    pub traits: HashMap<CombatantTraits, u8>,
     pub selected_consumable: Option<u32>,
     pub selected_ability_name: Option<CombatantAbilityNames>,
     pub combat_action_targets: Option<CombatActionTarget>,
@@ -107,6 +110,7 @@ impl CombatantProperties {
             equipment: HashMap::new(),
             inventory: Inventory::new(),
             abilities,
+            traits: HashMap::new(),
             selected_consumable: None,
             selected_ability_name: None,
             combat_action_targets: None,

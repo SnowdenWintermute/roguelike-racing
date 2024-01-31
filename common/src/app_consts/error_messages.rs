@@ -49,15 +49,18 @@ pub const NO_ABILITY_SELECTED: &str = "No ability is selected";
 pub const MISSING_ABILITY_REFERENCE: &str = "The character has no ability selected";
 pub const ABILITY_HAS_NO_TARGETING_SCHEME: &str = "The selected ability has no targeting scheme";
 pub const INVALID_ABILITY_CONTEXT: &str = "The selected ability can not be used in this context";
+pub const ALREADY_FULL_HP: &str = "The target is already at full HP";
+// COMBAT ACTIONS
+pub const INVALID_ACTION_TYPE: &str = "Invalid action type";
 // TARGETING
 pub const NO_POSSIBLE_TARGETS_PROVIDED: &str =
-    "No possible targets were found for the selected ability";
+    "No possible targets were found for the selected action";
 pub const TRIED_TO_CYCLE_TARGETS_WHEN_NO_TARGETS: &str =
     "Client tried to cycle targets but they weren't targeting anything";
-pub const NO_TARGETING_SCHEMES: &str = "The selected ability has no targeting schemes";
+pub const NO_TARGETING_SCHEMES: &str = "The selected action has no targeting schemes";
 pub const INVALID_TARGETING_SCHEME: &str = "An invalid targeting scheme was selected";
-pub const INVALID_TARGETS_SELECTED: &str = "Invalid ability targets provided";
-pub const NO_VALID_TARGETS_FOUND: &str = "No valid targets exist for that ability";
+pub const INVALID_TARGETS_SELECTED: &str = "Invalid targets provided";
+pub const NO_VALID_TARGETS_FOUND: &str = "No valid targets exist for that action";
 // BATTLES
 pub const MISSING_BATTLE_REFERENCE: &str = "Missing a battle reference";
 pub const BATTLE_NOT_FOUND: &str = "No battle was found by the provided ID";

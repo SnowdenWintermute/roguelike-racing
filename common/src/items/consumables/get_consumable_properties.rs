@@ -8,7 +8,7 @@ use crate::combat::combat_actions::TargetingScheme;
 impl ConsumableTypes {
     pub fn get_combat_action_properties(&self) -> CombatActionProperties {
         match self {
-            ConsumableTypes::Autoinjector => CombatActionProperties {
+            ConsumableTypes::HpAutoinjector => CombatActionProperties {
                 targeting_schemes: vec![TargetingScheme::Single, TargetingScheme::Area],
                 valid_target_categories: TargetCategories::Friendly,
                 usability_context: AbilityUsableContext::All,

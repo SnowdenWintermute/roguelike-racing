@@ -46,6 +46,7 @@ pub fn combatant_targeted_by(
             let consumable_type_option =
                 if let Some(consumable_id) = character.combatant_properties.selected_consumable {
                     character
+                        .combatant_properties
                         .inventory
                         .get_consumable(&consumable_id)
                         .cloned()

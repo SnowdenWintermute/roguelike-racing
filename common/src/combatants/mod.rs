@@ -1,10 +1,13 @@
 pub mod abilities;
 pub mod combat_attributes;
+mod equip_item;
 pub mod get_base_ability_damage_bonus;
 mod get_equipped_item;
 mod get_equipped_weapon_properties;
 mod get_total_attributes;
 mod get_weapon_damage_and_hit_chance;
+pub mod inventory;
+mod unequip_item;
 use crate::combat::combat_actions::CombatActionTarget;
 use crate::combat::combat_actions::FriendOrFoe;
 use crate::combat::combat_actions::TargetingScheme;
@@ -13,6 +16,7 @@ mod set_new_ability_target_preferences;
 use self::abilities::CombatantAbility;
 use self::abilities::CombatantAbilityNames;
 use self::combat_attributes::CombatAttributes;
+use self::inventory::Inventory;
 use crate::app_consts::error_messages;
 use crate::errors::AppError;
 use crate::items::equipment::EquipmentSlots;
@@ -78,6 +82,7 @@ pub struct CombatantProperties {
     pub mana: u16,
     pub status_effects: Vec<StatusEffects>,
     pub equipment: HashMap<EquipmentSlots, Item>,
+    pub inventory: Inventory,
     pub abilities: HashMap<CombatantAbilityNames, CombatantAbility>,
     // pub traits: HashSet<CombatantTraits>
     pub selected_consumable: Option<u32>,
@@ -100,6 +105,7 @@ impl CombatantProperties {
             mana: 0,
             status_effects: vec![],
             equipment: HashMap::new(),
+            inventory: Inventory::new(),
             abilities,
             selected_consumable: None,
             selected_ability_name: None,

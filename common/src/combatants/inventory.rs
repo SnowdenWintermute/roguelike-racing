@@ -9,16 +9,16 @@ use serde::Deserialize;
 use serde::Serialize;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub struct CharacterInventory {
+pub struct Inventory {
     pub items: Vec<Item>,
     pub capacity: u8,
     pub shards: u16,
     pub autoinjectors: u16,
 }
 
-impl CharacterInventory {
-    pub fn new() -> CharacterInventory {
-        CharacterInventory {
+impl Inventory {
+    pub fn new() -> Inventory {
+        Inventory {
             items: Vec::new(),
             capacity: CHARACTER_INVENTORY_DEFAULT_CAPACITY as u8,
             shards: 0,

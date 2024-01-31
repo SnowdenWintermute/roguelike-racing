@@ -6,7 +6,6 @@ use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
 use crate::store::ui_store::UIStore;
 use crate::store::websocket_store::WebsocketStore;
-use gloo::console::log;
 use yew::prelude::*;
 use yewdux::use_store;
 
@@ -52,20 +51,14 @@ pub fn action_menu_change_detection_manager(props: &Props) -> Html {
         Some(item) => Some(item.entity_properties.id),
         None => None,
     };
-    let selected_consumable_id = match &focused_character_option {
-        Some(focused_character) => focused_character.combatant_properties.selected_consumable,
-        None => None,
-    };
-    log!(format!(
-        "selected consumable id: {:?}",
-        selected_consumable_id
-    ));
 
     let num_items_in_focused_character_inventory = match focused_character_option {
-        Some(focused_character) => Some(focused_character.inventory.items.len()),
+        Some(focused_character) => {
+            Some(focused_character.combatant_properties.inventory.items.len())
+        }
         None => None,
     };
-    let combat_action_targets = match focused_character_option {
+    let ability_targets = match focused_character_option {
         Some(focused_character) => focused_character
             .combatant_properties
             .combat_action_targets
@@ -108,13 +101,12 @@ pub fn action_menu_change_detection_manager(props: &Props) -> Html {
             cloned_game_state.focused_character_id,
             cloned_game_state.viewing_inventory,
             cloned_game_state.viewing_equipped_items,
-            combat_action_targets,
+            ability_targets,
             (
                 room_type,
                 num_items_in_focused_character_inventory,
                 num_items_on_ground,
                 selected_item_id,
-                selected_consumable_id,
                 focused_character_selected_ability_option,
                 cloned_focused_character_current_animation_processing_option,
             ),
@@ -144,3 +136,4 @@ pub fn action_menu_change_detection_manager(props: &Props) -> Html {
     );
     html!()
 }
+

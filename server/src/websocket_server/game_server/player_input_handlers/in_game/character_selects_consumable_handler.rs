@@ -39,7 +39,7 @@ impl GameServer {
                 .combat_action_target_preferences
                 .clone();
 
-            let consumable_properties = character.inventory.get_consumable(&item_id)?;
+            let consumable_properties = character.combatant_properties.inventory.get_consumable(&item_id)?;
 
             let combat_action_properties = consumable_properties
                 .consumable_type

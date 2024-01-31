@@ -21,22 +21,18 @@ pub fn handle_character_equipped_item(
         item_id,
         alt_slot,
     } = packet;
-    log!(format!("player username: {player_username}"));
     let player_owns_character = game_store
         .get_current_party_mut()?
         .player_owns_character(player_username, character_id);
     let character = game_store.get_mut_character(character_id)?;
-    log!(format!(
-        "character controller username: {}",
-        character.name_of_controlling_user
-    ));
 
-    let unequipped_item_ids = character.equip_item(item_id, alt_slot)?;
-    log!(format!("unequipped {:?}", unequipped_item_ids));
+    let unequipped_item_ids = character
+        .combatant_properties
+        .equip_item(item_id, alt_slot)?;
     let item_to_select = match unequipped_item_ids.get(0) {
         Some(id) => {
             let mut item = None;
-            for item_in_inventory in &character.inventory.items {
+            for item_in_inventory in &character.combatant_properties.inventory.items {
                 if item_in_inventory.entity_properties.id == *id {
                     item = Some(item_in_inventory.clone())
                 }
@@ -73,7 +69,9 @@ pub fn handle_character_unequipped_slot(
 ) -> Result<(), AppError> {
     let CharacterAndSlot { character_id, slot } = packet;
     let character = game_store.get_mut_character(character_id)?;
-    character.unequip_slots(&vec![slot], false);
+    character
+        .combatant_properties
+        .unequip_slots(&vec![slot], false);
     Ok(())
 }
 

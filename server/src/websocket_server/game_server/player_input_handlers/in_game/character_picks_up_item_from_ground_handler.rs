@@ -45,7 +45,7 @@ impl GameServer {
         let character = party
             .get_mut_character_if_owned(player_character_ids_option.clone(), packet.character_id)?;
         let character_id = character.entity_properties.id;
-        character.inventory.items.push(item);
+        character.combatant_properties.inventory.items.push(item);
         println!("character picked up item");
         self.emit_packet(
             &party_websocket_channel_name,

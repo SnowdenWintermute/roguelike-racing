@@ -51,6 +51,7 @@ pub fn handle_cycle_consumable_targeting_schemes(
                 })?;
 
             let consumable_properties = focused_character
+                .combatant_properties
                 .inventory
                 .get_consumable(&selected_consumable_id)?;
             let combat_action_properties = consumable_properties

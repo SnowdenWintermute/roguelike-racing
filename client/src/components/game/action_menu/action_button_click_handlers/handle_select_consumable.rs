@@ -50,7 +50,7 @@ pub fn handle_select_consumable(
             focused_character_id,
         )?;
 
-        let consumable_properties = focused_character.inventory.get_consumable(&item_id)?;
+        let consumable_properties = focused_character.combatant_properties.inventory.get_consumable(&item_id)?;
         let combat_action_properties = consumable_properties
             .consumable_type
             .get_combat_action_properties();

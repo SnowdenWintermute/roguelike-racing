@@ -57,7 +57,7 @@ pub fn determine_menu_actions(
         menu_types.push(MenuTypes::InventoryOpen);
         if let Some(character) = focused_character_option {
             let mut ids = Vec::new();
-            for item in &character.inventory.items {
+            for item in &character.combatant_properties.inventory.items {
                 ids.push(item.entity_properties.id);
             }
             new_actions = MenuTypes::get_actions(&menu_types, Some(ids), None);

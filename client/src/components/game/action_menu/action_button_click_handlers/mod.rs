@@ -166,7 +166,9 @@ pub fn create_action_button_click_handler<'a>(
         GameActions::DropItem(item_id) => Box::new(move || {
             game_dispatch.reduce_mut(|store| {
                 let focused_character = get_focused_character(store).expect("to be in game");
-                let slot_item_is_equipped = focused_character.slot_item_is_equipped(&item_id);
+                let slot_item_is_equipped = focused_character
+                    .combatant_properties
+                    .slot_item_is_equipped(&item_id);
                 if let Some(slot) = slot_item_is_equipped {
                     send_client_input(
                         &websocket_state.websocket,

@@ -79,7 +79,7 @@ fn determine_use_item_text<'a>(id: &u32, game_state: Rc<GameStore>) -> &'a str {
         }
     }
 
-    for item in &character.inventory.items {
+    for item in &character.combatant_properties.inventory.items {
         if item.entity_properties.id == *id {
             match item.item_properties {
                 common::items::ItemProperties::Consumable(_) => return "Use",
@@ -107,7 +107,7 @@ fn determine_select_item_text(id: &u32, game_state: Rc<GameStore>) -> String {
         }
     }
 
-    for item in &character.inventory.items {
+    for item in &character.combatant_properties.inventory.items {
         if item.entity_properties.id == *id {
             return item.entity_properties.name.clone();
         }

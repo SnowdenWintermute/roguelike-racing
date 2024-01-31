@@ -49,6 +49,7 @@ pub fn determine_action_menu_buttons_disabled(
                 .expect("button should only be shown when item is selected");
             if !focused_character.combatant_properties.can_use_item(&item)
                 && focused_character
+                    .combatant_properties
                     .slot_item_is_equipped(&item.entity_properties.id)
                     .is_none()
             {

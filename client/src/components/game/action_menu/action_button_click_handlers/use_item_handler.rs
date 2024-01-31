@@ -47,8 +47,9 @@ fn use_equipment_handler(
 ) {
     game_dispatch.reduce_mut(|game_store| {
         let focused_character = get_focused_character(game_store).expect("to be in game");
-        let slot_item_is_equipped =
-            focused_character.slot_item_is_equipped(&item.entity_properties.id);
+        let slot_item_is_equipped = focused_character
+            .combatant_properties
+            .slot_item_is_equipped(&item.entity_properties.id);
         if let Some(slot) = slot_item_is_equipped {
             send_client_input(
                 &websocket_state.websocket,

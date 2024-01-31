@@ -5,7 +5,6 @@ pub mod targets_are_valid;
 pub mod targets_by_saved_preference_or_default;
 pub mod validate_use;
 use crate::combatants::abilities::CombatantAbilityNames;
-use crate::items::Item;
 use serde::Deserialize;
 use serde::Serialize;
 use std::fmt::Display;
@@ -88,7 +87,7 @@ impl Display for AbilityUsableContext {
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub enum CombatAction {
     AbilityUsed(CombatantAbilityNames),
-    ConsumableUsed(Item),
+    ConsumableUsed(u32),
 }
 
 pub struct CombatActionProperties {
@@ -115,8 +114,8 @@ impl Display for CombatAction {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
         let to_write = match self {
             CombatAction::AbilityUsed(ability_name) => format!("ability {ability_name}"),
-            CombatAction::ConsumableUsed(consumable) => {
-                format!("item {}", consumable.entity_properties.name)
+            CombatAction::ConsumableUsed(consumable_id) => {
+                format!("consumable used {consumable_id}")
             }
         };
         write!(f, "{to_write}")

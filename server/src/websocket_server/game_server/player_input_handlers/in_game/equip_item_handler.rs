@@ -40,7 +40,9 @@ impl GameServer {
                 message: error_messages::CHARACTER_NOT_OWNED.to_string(),
             }),
         }?;
-        character.equip_item(item_id, alt_slot)?;
+        character
+            .combatant_properties
+            .equip_item(item_id, alt_slot)?;
 
         self.emit_packet(
             &party_websocket_channel_name,

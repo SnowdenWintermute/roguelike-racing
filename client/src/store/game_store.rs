@@ -295,7 +295,7 @@ pub fn get_item_owned_by_focused_character(
         }
     }
 
-    for item in &character.inventory.items {
+    for item in &character.combatant_properties.inventory.items {
         if item.entity_properties.id == *id {
             return Ok(item.clone());
         }

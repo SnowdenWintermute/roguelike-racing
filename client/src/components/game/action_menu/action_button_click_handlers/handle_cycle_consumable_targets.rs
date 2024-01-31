@@ -43,6 +43,7 @@ pub fn handle_cycle_consumable_targets(
                     message: error_messages::NO_CONSUMABLE_SELECTED.to_string(),
                 })?;
             let consumable = focused_character
+                .combatant_properties
                 .inventory
                 .get_consumable(&selected_consumable_id)?;
             let combat_action_properties =

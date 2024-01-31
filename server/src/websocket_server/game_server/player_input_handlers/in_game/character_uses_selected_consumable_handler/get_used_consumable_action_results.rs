@@ -43,7 +43,10 @@ impl GameServer {
                 error_type: common::errors::AppErrorTypes::Generic,
                 message: error_messages::NO_CONSUMABLE_SELECTED.to_string(),
             })?;
-        let consumable = character.inventory.get_consumable(&consumable_id)?;
+        let consumable = character
+            .combatant_properties
+            .inventory
+            .get_consumable(&consumable_id)?;
         let combat_action_properties = consumable.consumable_type.get_combat_action_properties();
 
         let targets = character
@@ -84,7 +87,6 @@ impl GameServer {
         )?;
 
         game.get_consumable_use_results(
-            party_id,
             character_id,
             consumable_id,
             &targets,

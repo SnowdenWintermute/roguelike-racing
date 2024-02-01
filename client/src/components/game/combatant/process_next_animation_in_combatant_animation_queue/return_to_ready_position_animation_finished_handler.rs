@@ -8,6 +8,7 @@ use yewdux::Dispatch;
 pub fn return_to_ready_position_animation_finished_handler(
     game_dispatch: Dispatch<GameStore>,
     combatant_id: u32,
+    ends_turn: bool,
 ) -> Result<(), AppError> {
     // if in battle, call for next turn result to be passed to it's enitity
     let battle_id_option = game_dispatch.reduce_mut(|store| -> Result<Option<u32>, AppError> {
@@ -25,15 +26,18 @@ pub fn return_to_ready_position_animation_finished_handler(
     });
 
     if let Ok(Some(battle_id)) = battle_id_option {
-        game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
-            let game = store.game.as_mut().ok_or_else(|| AppError {
-                error_type: common::errors::AppErrorTypes::ClientError,
-                message: error_messages::GAME_NOT_FOUND.to_string(),
+        if ends_turn {
+            game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
+                let game = store.game.as_mut().ok_or_else(|| AppError {
+                    error_type: common::errors::AppErrorTypes::ClientError,
+                    message: error_messages::GAME_NOT_FOUND.to_string(),
+                })?;
+                game.end_active_combatant_turn(battle_id)?;
+                Ok(())
             })?;
-            game.end_active_combatant_turn(battle_id)?;
-            Ok(())
-        })?;
-        send_next_turn_result_to_combatant_event_manager(game_dispatch)
+            send_next_turn_result_to_combatant_event_manager(game_dispatch)?
+        }
+        Ok(())
     } else {
         Ok(())
     }

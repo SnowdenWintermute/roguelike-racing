@@ -67,8 +67,7 @@ pub fn swing_to_hit_animation_finished_handler(
                     value: hp_change,
                     color: AttrValue::from("rgba(255,255,255,0)"),
                 });
-            // don't animate hit recovery if they hit themselves during an
-            // action of their own doing
+
             if target_event_manager.action_result_queue.front().is_none() {
                 if new_hp == 0 {
                     target_event_manager.animation_queue =

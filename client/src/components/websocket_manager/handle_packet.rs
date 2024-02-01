@@ -47,7 +47,7 @@ pub fn handle_packet(
     game_dispatch: Dispatch<GameStore>,
     websocket_dispatch: Dispatch<WebsocketStore>,
 ) -> Result<(), AppError> {
-    // log!(format!("data from server: {:#?}", data));
+    log!(format!("data from server: {:#?}", data));
     match data {
         GameServerUpdatePackets::Error(message) => {
             log!(format!("received error from server: {message}"));
@@ -132,7 +132,7 @@ pub fn handle_packet(
             game_dispatch.reduce_mut(|store| handle_character_changed_targets(store, packet))
         }
         GameServerUpdatePackets::ActionResults(packet) => {
-            game_dispatch.reduce_mut(|store| handle_raw_action_results(store, packet))
+            handle_raw_action_results(game_dispatch, packet)
         }
         GameServerUpdatePackets::CombatTurnResults(packet) => {
             handle_combat_turn_results(game_dispatch, packet.turn_results)

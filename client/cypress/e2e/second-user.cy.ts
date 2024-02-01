@@ -13,7 +13,13 @@ describe("a test test", () => {
     cy.findByRole("button", { name: "Create Character" }).click();
     cy.task("checkpoint", "second player character created");
     cy.findByRole("button", { name: "Ready" }).click();
-    cy.findByText("Ready to explore").click();
+
+    cy.findByText("Open Inventory").click();
+    cy.findAllByText("HpAutoinjector").first().click();
+    cy.findByText("Use").click();
+    cy.findByText("Execute").click();
+
+    // cy.findByText("Ready to explore").click();
 
     // cy.task("waitForCheckpoint", "first attack executed");
 

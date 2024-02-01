@@ -33,11 +33,8 @@ impl CombatActionProperties {
                 }
                 TargetCategories::User => Ok(CombatActionTarget::Single(ability_user_id)),
                 TargetCategories::Friendly => {
-                    let default_target = ally_ids.first().ok_or_else(|| AppError {
-                        error_type: crate::errors::AppErrorTypes::ServerError,
-                        message: error_messages::ALLY_COMBATANTS_NOT_FOUND.to_string(),
-                    })?;
-                    Ok(CombatActionTarget::Single(*default_target))
+                    let default_target = ability_user_id;
+                    Ok(CombatActionTarget::Single(default_target))
                 }
                 TargetCategories::Any => {
                     if let Some(opponent_ids) = opponent_ids_option {

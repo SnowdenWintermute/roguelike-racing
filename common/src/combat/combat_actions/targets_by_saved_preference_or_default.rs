@@ -58,6 +58,7 @@ fn targeting_scheme_targets_or_defaults(
             TargetCategories::Opponent => preferred_single_target_or_default(
                 FriendOrFoe::Hostile,
                 &target_preferences,
+                character_id,
                 ally_ids,
                 opponent_ids_option,
             ),
@@ -65,6 +66,7 @@ fn targeting_scheme_targets_or_defaults(
             TargetCategories::Friendly => preferred_single_target_or_default(
                 FriendOrFoe::Friendly,
                 &target_preferences,
+                character_id,
                 ally_ids,
                 opponent_ids_option,
             ),
@@ -73,12 +75,14 @@ fn targeting_scheme_targets_or_defaults(
                     FriendOrFoe::Friendly => preferred_single_target_or_default(
                         FriendOrFoe::Friendly,
                         &target_preferences,
+                        character_id,
                         ally_ids,
                         opponent_ids_option,
                     ),
                     FriendOrFoe::Hostile => preferred_single_target_or_default(
                         FriendOrFoe::Hostile,
                         &target_preferences,
+                        character_id,
                         ally_ids,
                         opponent_ids_option,
                     ),
@@ -111,23 +115,21 @@ fn targeting_scheme_targets_or_defaults(
 fn preferred_single_target_or_default(
     category: FriendOrFoe,
     target_preferences: &CombatActionTargetPreferences,
+    character_id: u32,
     ally_ids: Vec<u32>,
     opponent_ids_option: Option<Vec<u32>>,
 ) -> Result<CombatActionTarget, AppError> {
     match category {
         FriendOrFoe::Friendly => {
-            let default_ally_id = ally_ids.first().ok_or_else(|| AppError {
-                error_type: crate::errors::AppErrorTypes::ClientError,
-                message: error_messages::NO_VALID_TARGETS_FOUND.to_string(),
-            })?;
+            let default_ally_id = character_id;
             if let Some(previously_targeted_id) = target_preferences.friendly_single {
                 if ally_ids.contains(&previously_targeted_id) {
                     Ok(CombatActionTarget::Single(previously_targeted_id))
                 } else {
-                    Ok(CombatActionTarget::Single(*default_ally_id))
+                    Ok(CombatActionTarget::Single(default_ally_id))
                 }
             } else {
-                Ok(CombatActionTarget::Single(*default_ally_id))
+                Ok(CombatActionTarget::Single(default_ally_id))
             }
         }
         FriendOrFoe::Hostile => {

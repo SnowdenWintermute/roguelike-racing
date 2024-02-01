@@ -4,7 +4,10 @@ pub mod get_next_or_previous_targets;
 pub mod targets_are_valid;
 pub mod targets_by_saved_preference_or_default;
 pub mod validate_use;
+use crate::app_consts::error_messages;
 use crate::combatants::abilities::CombatantAbilityNames;
+use crate::errors::AppError;
+use crate::errors::AppErrorTypes;
 use serde::Deserialize;
 use serde::Serialize;
 use std::fmt::Display;
@@ -20,6 +23,18 @@ pub enum CombatActionTarget {
     Single(u32),
     Group(FriendOrFoe),
     All,
+}
+
+impl CombatActionTarget {
+    pub fn get_single_target_id(&self) -> Result<u32, AppError> {
+        match self {
+            CombatActionTarget::Single(id) => Ok(*id),
+            _ => Err(AppError {
+                error_type: AppErrorTypes::Generic,
+                message: error_messages::INVALID_TARGETING_SCHEME.to_string(),
+            }),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]

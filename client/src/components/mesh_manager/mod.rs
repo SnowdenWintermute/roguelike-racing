@@ -27,11 +27,11 @@ pub enum CombatantAnimation {
     SwingOffHandToHit,
     MainHandFollowThroughSwing,
     OffHandFollowThroughSwing,
-    ReturnToReadyPosition,
+    ReturnToReadyPosition(bool), // Ends turn
     HitRecovery(i16),
     Death(Option<i16>),
     Evasion,
-    UseAutoinjector(AutoinjectorTypes, i16),
+    UseAutoinjector(AutoinjectorTypes, u32, i16),
 }
 
 impl Display for CombatantAnimation {
@@ -48,11 +48,13 @@ impl Display for CombatantAnimation {
             CombatantAnimation::SwingOffHandToHit => format!("swung offhand to hit"),
             CombatantAnimation::MainHandFollowThroughSwing => format!("main hand follow through"),
             CombatantAnimation::OffHandFollowThroughSwing => format!("off hand follow through"),
-            CombatantAnimation::ReturnToReadyPosition => format!("returing to ready position"),
+            CombatantAnimation::ReturnToReadyPosition(_ends_turn) => {
+                format!("returing to ready position")
+            }
             CombatantAnimation::HitRecovery(hp_change) => format!("hit recovery {hp_change}"),
             CombatantAnimation::Death(hp_change) => format!("death {:?}", hp_change),
             CombatantAnimation::Evasion => format!("evaded"),
-            CombatantAnimation::UseAutoinjector(autoinjector_type, hp_change) => {
+            CombatantAnimation::UseAutoinjector(autoinjector_type, _user_id, hp_change) => {
                 format!("using autoinjector ({autoinjector_type}, {hp_change})")
             }
         };
@@ -73,6 +75,7 @@ pub struct CombatantEventManager {
     pub animation_queue: VecDeque<CombatantAnimation>,
     pub floating_numbers_queue: VecDeque<FloatingNumber>,
     pub visual_location: CombatantVisualLocation,
+    pub last_processed_action_ended_turn: bool,
 }
 
 #[derive(PartialEq, Clone)]
@@ -89,6 +92,7 @@ impl CombatantEventManager {
             animation_queue: vec![].into(),
             floating_numbers_queue: vec![].into(),
             visual_location: CombatantVisualLocation::HomePosition,
+            last_processed_action_ended_turn: false,
         }
     }
 }

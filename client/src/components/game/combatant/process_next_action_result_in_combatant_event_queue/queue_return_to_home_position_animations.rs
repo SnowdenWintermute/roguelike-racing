@@ -7,6 +7,7 @@ use yewdux::Dispatch;
 pub fn queue_return_to_home_position_animations(
     game_dispatch: Dispatch<GameStore>,
     combatant_id: u32,
+    ends_turn: bool,
 ) -> Result<(), AppError> {
     game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
         let event_manager = store
@@ -20,7 +21,7 @@ pub fn queue_return_to_home_position_animations(
 
         event_manager
             .animation_queue
-            .push_back(CombatantAnimation::ReturnToReadyPosition);
+            .push_back(CombatantAnimation::ReturnToReadyPosition(ends_turn));
 
         Ok(())
     })

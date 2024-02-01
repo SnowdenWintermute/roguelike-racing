@@ -57,7 +57,7 @@ pub fn determine_action_menu_buttons_disabled(
             }
             false
         }
-        GameActions::TakeItem => {
+        GameActions::TakeItem | GameActions::DropItem(_) => {
             if !player_owns_character {
                 return true;
             }

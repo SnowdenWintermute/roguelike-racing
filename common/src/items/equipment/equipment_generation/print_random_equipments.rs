@@ -8,7 +8,11 @@ pub fn print_random_equipments(game: &mut RoguelikeRacerGame) {
     for _i in 1..=10 {
         for j in 1..=DEEPEST_FLOOR {
             let level = j;
-            let item = Item::generate(&mut game.id_generator, level, ItemCategories::Equipment);
+            let item = Item::generate(
+                &mut game.id_generator,
+                level,
+                Some(ItemCategories::Equipment),
+            );
             let item_name = match &item.item_properties {
                 crate::items::ItemProperties::Consumable(_) => todo!(),
                 crate::items::ItemProperties::Equipment(equipment_properties) => {

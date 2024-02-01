@@ -68,7 +68,7 @@ pub fn dungeon_room(props: &Props) -> Html {
 
         html!(
             <section class={format!("h-full border border-slate-400 bg-slate-700 flex {}", conditional_styles)} >
-                <div class="w-1/2 flex p-2" >
+                <div class="w-1/2 flex p-2 overflow-y-auto" >
                     <div class="flex flex-col mr-2" >
                         {characters.iter().map(|(_id, character)|
                             html!{<Combatant
@@ -98,10 +98,10 @@ pub fn dungeon_room(props: &Props) -> Html {
                             </ButtonBasic>
                         </div>
                     }
-                    if party.current_room.room_type == DungeonRoomTypes::Stairs {
+                    if party.current_room.room_type == DungeonRoomTypes::Stairs && !game_state.viewing_inventory {
                         <Stairs />
                     }
-                    if party.current_room.room_type == DungeonRoomTypes::Empty {
+                    if party.current_room.room_type == DungeonRoomTypes::Empty && !game_state.viewing_inventory {
                         <EmptyRoom />
                     }
                     if let Some(battle_id) = game_state.current_battle_id {

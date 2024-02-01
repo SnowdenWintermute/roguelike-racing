@@ -29,7 +29,6 @@ use core::fmt;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
-use std::collections::HashSet;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub enum CombatantClass {

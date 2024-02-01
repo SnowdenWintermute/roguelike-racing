@@ -59,7 +59,10 @@ impl GameServer {
             })?;
         let character =
             party.get_character_if_owned(player_character_ids_option.clone(), character_id)?;
-        let conusmable_properties = character.combatant_properties.inventory.get_consumable(&consumable_id)?;
+        let conusmable_properties = character
+            .combatant_properties
+            .inventory
+            .get_consumable(&consumable_id)?;
         let combat_action_properties = conusmable_properties
             .consumable_type
             .get_combat_action_properties();

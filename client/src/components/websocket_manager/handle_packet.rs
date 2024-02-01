@@ -47,7 +47,7 @@ pub fn handle_packet(
     game_dispatch: Dispatch<GameStore>,
     websocket_dispatch: Dispatch<WebsocketStore>,
 ) -> Result<(), AppError> {
-    log!(format!("data from server: {:#?}", data));
+    // log!(format!("data from server: {:#?}", data));
     match data {
         GameServerUpdatePackets::Error(message) => {
             log!(format!("received error from server: {message}"));

@@ -25,7 +25,7 @@ pub enum ConsumableTypes {
 impl Display for ConsumableTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let to_write = match self {
-            ConsumableTypes::HpAutoinjector => "HpAutoinjector",
+            ConsumableTypes::HpAutoinjector => "HP Autoinjector",
             ConsumableTypes::Grenade => "Grenade",
             ConsumableTypes::SmokeBomb => "Smoke Bomb",
         };
@@ -37,6 +37,16 @@ impl ConsumableTypes {
     pub fn random() -> Self {
         let vec: Vec<_> = ConsumableTypes::iter().collect();
         *vec.choose(&mut rand::thread_rng()).unwrap()
+    }
+
+    pub fn get_description(&self) -> &str {
+        match self {
+            ConsumableTypes::HpAutoinjector => "Heal a friendly target.",
+            ConsumableTypes::Grenade => "Damage a group of hostile targets.",
+            ConsumableTypes::SmokeBomb => {
+                "Apply a temporary Evasion bonus to a group of friendly targets."
+            }
+        }
     }
 }
 

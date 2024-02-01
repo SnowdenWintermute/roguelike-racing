@@ -29,8 +29,17 @@ pub fn process_next_action_result_in_combatant_event_queue(
                     message: error_messages::COMBANTANT_EVENT_MANAGER_NOT_FOUND.to_string(),
                 })?;
             event_manager.last_processed_action_ended_turn = new_action_result.ends_turn;
+
+            let game = store.get_current_game_mut()?;
+            let (_, action_user_combatant_properties) =
+                game.get_mut_combatant_by_id(&combatant_id)?;
+            action_user_combatant_properties.selected_consumable = None;
+            action_user_combatant_properties.selected_ability_name = None;
+            action_user_combatant_properties.combat_action_targets = None;
+
             Ok(())
-        });
+        })?;
+
         match &new_action_result.action {
             CombatAction::AbilityUsed(ability_name) => {
                 match ability_name.get_attributes().is_melee {
@@ -48,8 +57,28 @@ pub fn process_next_action_result_in_combatant_event_queue(
                     _ => Ok(()),
                 }
             }
-            CombatAction::ConsumableUsed(_) => {
-                queue_consumable_use_animations(game_dispatch, combatant_id, new_action_result)
+            CombatAction::ConsumableUsed(item_id) => {
+                queue_consumable_use_animations(
+                    game_dispatch.clone(),
+                    combatant_id,
+                    new_action_result,
+                )?;
+                game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
+                    let game = store.get_current_game_mut()?;
+                    let (_, action_user_combatant_properties) =
+                        game.get_mut_combatant_by_id(&combatant_id)?;
+                    let consumable = action_user_combatant_properties
+                        .inventory
+                        .get_consumable_mut(&item_id)?;
+                    consumable.uses_remaining -= 1;
+                    let should_be_removed_from_inventory = consumable.uses_remaining == 0;
+                    if should_be_removed_from_inventory {
+                        action_user_combatant_properties
+                            .inventory
+                            .remove_item(*item_id)?;
+                    }
+                    Ok(())
+                })
             }
         }
     } else {

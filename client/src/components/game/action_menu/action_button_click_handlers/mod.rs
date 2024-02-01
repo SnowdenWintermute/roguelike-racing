@@ -150,27 +150,15 @@ pub fn create_action_button_click_handler<'a>(
             handle_cycle_consumable_targeting_schemes(cloned_dispatch, &websocket_state.websocket)
         }),
         GameActions::UseSelectedAbility => Box::new(move || {
-            game_dispatch.reduce_mut(|store| {
-                let focused_character_id = store.focused_character_id;
-                let focused_character = store
-                    .get_mut_character(focused_character_id)
-                    .expect("to have a valid focused character");
-                focused_character.combatant_properties.selected_ability_name = None;
-                focused_character.combatant_properties.combat_action_targets = None;
-                send_client_input(
-                    &websocket_state.websocket,
-                    PlayerInputs::UseSelectedAbility(game_state.focused_character_id),
-                );
-            });
+            send_client_input(
+                &websocket_state.websocket,
+                PlayerInputs::UseSelectedAbility(game_state.focused_character_id),
+            );
         }),
         GameActions::UseSelectedConsumable => Box::new(move || {
             game_dispatch.reduce_mut(|store| {
-                let focused_character_id = store.focused_character_id;
-                let focused_character = store
-                    .get_mut_character(focused_character_id)
-                    .expect("to have a valid focused character");
-                focused_character.combatant_properties.selected_consumable = None;
-                focused_character.combatant_properties.combat_action_targets = None;
+                store.selected_item = None;
+                store.detailed_entity = None;
                 send_client_input(
                     &websocket_state.websocket,
                     PlayerInputs::UseSelectedConsumable(game_state.focused_character_id),

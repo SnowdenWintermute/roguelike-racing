@@ -12,6 +12,7 @@ use crate::combatants::combat_attributes::CombatAttributes;
 use crate::errors::AppError;
 use crate::game::id_generator::IdGenerator;
 use crate::primatives::EntityProperties;
+use rand::Rng;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
@@ -41,9 +42,21 @@ impl Item {
     pub fn generate(
         id_generator: &mut IdGenerator,
         item_level: u8,
-        forced_type: ItemCategories,
+        forced_type_option: Option<ItemCategories>,
     ) -> Item {
-        match forced_type {
+        let item_type = match forced_type_option {
+            Some(forced_type) => forced_type,
+            None => {
+                let mut rng = rand::thread_rng();
+                let category_roll = rng.gen_range(0..=4);
+                if category_roll > 0 {
+                    ItemCategories::Equipment
+                } else {
+                    ItemCategories::Consumable
+                }
+            }
+        };
+        match item_type {
             ItemCategories::Equipment => {
                 let EquipmentPropertiesAndRequirements {
                     equipment_properties,

@@ -15,11 +15,12 @@ describe("a test test", () => {
     cy.findByRole("button", { name: "Ready" }).click();
 
     cy.findByText("Open Inventory").click();
-    cy.findAllByText("HpAutoinjector").first().click();
+    cy.findAllByText("HP Autoinjector").first().click();
     cy.findByText("Use").click();
     cy.findByText("Execute").click();
+    cy.findByText("Close Inventory").click();
 
-    // cy.findByText("Ready to explore").click();
+    cy.findByText("Ready to explore").click();
 
     // cy.task("waitForCheckpoint", "first attack executed");
 

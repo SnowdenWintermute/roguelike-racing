@@ -90,7 +90,7 @@ pub fn combatant(props: &Props) -> Html {
                     {"active"}
                 </div>
             }
-            <button class={"flex flex-col
+            <button class={"flex flex-col bg-slate-700
                 text-left p-2 cursor-help w-full overflow-hidden"} onclick={handle_click} id={format!("combatant-{}", id)} >
                 <div class="pointer-events-none" >
                     {name}

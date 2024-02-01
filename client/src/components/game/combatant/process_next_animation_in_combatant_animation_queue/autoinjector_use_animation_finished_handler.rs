@@ -23,7 +23,7 @@ pub fn autoinjector_use_animation_finished_handler(
         let target_name = target_entity_properties.name.clone();
         match autoinjector_type {
             AutoinjectorTypes::Hp => {
-                let new_hp = target_combatant_properties.change_hp(value_change);
+                let _ = target_combatant_properties.change_hp(value_change);
                 let target_text = if user_id == target_id {
                     "themselves".to_string()
                 } else {

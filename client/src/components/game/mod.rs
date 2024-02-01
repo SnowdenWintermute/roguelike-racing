@@ -72,21 +72,23 @@ pub fn game() -> Html {
     let focused_character = party.characters.get(&game_state.focused_character_id);
 
     html!(
-        <main class="h-screen w-screen p-4 bg-gray-600 text-zinc-300 flex flex-col relative">
-            // <GameDebug />
-            <CharacterAutofocusManager />
-            if !game_state.viewing_inventory {
-                <TopInfoBar />
-            }
-            <div class="h-1/2 flex mb-4" >
-                <DungeonRoom party_id={party_id} />
-                if game_state.viewing_inventory && focused_character.is_some(){
-                    <CharacterSheet character={focused_character.as_deref().expect("is_some checked").clone()} />
+        <main class="h-screen w-screen bg-slate-800 flex justify-center relative">
+            <div class="w-full h-full max-w-[80rem] p-4 text-zinc-300 flex flex-col" >
+                // <GameDebug />
+                <CharacterAutofocusManager />
+                if !game_state.viewing_inventory {
+                    <TopInfoBar />
                 }
-            </div>
-            <div class="flex h-1/2 max-h-[453px]" >
-                <ActionMenu />
-                <TabbedDisplay />
+                <div class="flex-1 flex mb-4" >
+                    <DungeonRoom party_id={party_id} />
+                    if game_state.viewing_inventory && focused_character.is_some(){
+                        <CharacterSheet character={focused_character.as_deref().expect("is_some checked").clone()} />
+                    }
+                </div>
+                <div class="flex max-h-[28rem] h-1/2 " >
+                    <ActionMenu />
+                    <TabbedDisplay />
+                </div>
             </div>
         </main>
     )

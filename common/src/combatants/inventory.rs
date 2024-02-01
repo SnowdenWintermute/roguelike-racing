@@ -42,12 +42,38 @@ impl Inventory {
         })
     }
 
+    pub fn get_item_mut<'a>(&'a mut self, item_id: &u32) -> Result<&'a mut Item, AppError> {
+        for item in &mut self.items {
+            if item.entity_properties.id == *item_id {
+                return Ok(item);
+            }
+        }
+        Err(AppError {
+            error_type: crate::errors::AppErrorTypes::Generic,
+            message: error_messages::INVALID_ITEM_ID.to_string(),
+        })
+    }
+
     pub fn get_consumable<'a>(
         &'a self,
         item_id: &u32,
     ) -> Result<&'a ConsumableProperties, AppError> {
         let consumable_in_inventory = self.get_item(&item_id)?;
         match &consumable_in_inventory.item_properties {
+            ItemProperties::Consumable(conumable_properties) => Ok(conumable_properties),
+            ItemProperties::Equipment(_) => Err(AppError {
+                error_type: AppErrorTypes::InvalidInput,
+                message: error_messages::CANT_CONSUME_NON_CONSUMABLE_ITEM.to_string(),
+            }),
+        }
+    }
+
+    pub fn get_consumable_mut<'a>(
+        &'a mut self,
+        item_id: &u32,
+    ) -> Result<&'a mut ConsumableProperties, AppError> {
+        let consumable_in_inventory = self.get_item_mut(&item_id)?;
+        match &mut consumable_in_inventory.item_properties {
             ItemProperties::Consumable(conumable_properties) => Ok(conumable_properties),
             ItemProperties::Equipment(_) => Err(AppError {
                 error_type: AppErrorTypes::InvalidInput,

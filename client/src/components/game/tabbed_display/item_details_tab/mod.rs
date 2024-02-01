@@ -10,6 +10,7 @@ use crate::store::ui_store::UIStore;
 use common::items::equipment::EquipmentSlots;
 use common::items::Item;
 use common::items::ItemProperties;
+use common::items::equipment::EquipmentTypes;
 use std::rc::Rc;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
@@ -69,6 +70,13 @@ pub fn item_details_tab(props: &Props) -> Html {
               ),
     };
 
+    let consumable_description_option = match &props.item.item_properties {
+        ItemProperties::Consumable(properties) => {
+            Some(properties.consumable_type.get_description())
+        }
+        ItemProperties::Equipment(_) => None,
+    };
+
     let compared_item_name = match &compared_item {
         Some(item) => &item.entity_properties.name,
         None => "",
@@ -76,8 +84,8 @@ pub fn item_details_tab(props: &Props) -> Html {
 
     let compared_display_option = match &compared_item {
         Some(compared_item) => match &compared_item.item_properties {
-            common::items::ItemProperties::Consumable(_) => None,
-            common::items::ItemProperties::Equipment(properties) => Some(html!(<EquipmentDetails
+            ItemProperties::Consumable(_) => None,
+            ItemProperties::Equipment(properties) => Some(html!(<EquipmentDetails
                       equipment_properties={properties.clone()}
                       requirements={compared_item.requirements.clone()}
                       entity_id={compared_item.entity_properties.id}
@@ -112,6 +120,14 @@ pub fn item_details_tab(props: &Props) -> Html {
                 <div class="opacity-50 fill-slate-400 h-40 absolute bottom-5 right-3">
                     <img src="public/img/equipment-icons/1h-sword-a.svg" class="h-40 filter" />
                 </div>
+            } else if let Some(consumable_description) = consumable_description_option{
+                <div class="flex justify-between pr-2">
+                    {"Description"}
+                </div>
+                <div class="mr-2 mb-1 mt-1 h-[1px] bg-slate-400" />
+                <div>
+                    {consumable_description}
+                </div>
             }
             </div>
         </div>
@@ -123,11 +139,11 @@ fn should_display_mod_tooltip(game_state: &Rc<GameStore>, equipped_item: &Item) 
         || game_state.compared_slot == Some(EquipmentSlots::MainHand)
     {
         match &equipped_item.item_properties {
-            common::items::ItemProperties::Consumable(_) => false,
-            common::items::ItemProperties::Equipment(equipment_properties) => {
+            ItemProperties::Consumable(_) => false,
+            ItemProperties::Equipment(equipment_properties) => {
                 match equipment_properties.equipment_type {
-                    common::items::equipment::EquipmentTypes::Ring => true,
-                    common::items::equipment::EquipmentTypes::OneHandedMeleeWeapon(_, _) => true,
+                    EquipmentTypes::Ring => true,
+                    EquipmentTypes::OneHandedMeleeWeapon(_, _) => true,
 
                     _ => false,
                 }

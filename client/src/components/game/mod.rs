@@ -1,4 +1,4 @@
-mod action_menu;
+pub mod action_menu;
 mod character_autofocus_manager;
 mod character_sheet;
 pub mod combat_log;
@@ -72,20 +72,20 @@ pub fn game() -> Html {
     let focused_character = party.characters.get(&game_state.focused_character_id);
 
     html!(
-        <main class="h-screen w-screen bg-slate-800 flex justify-center relative">
-            <div class="w-full h-full max-w-[80rem] p-4 text-zinc-300 flex flex-col" >
+        <main class="h-screen w-screen bg-slate-800 flex justify-center relative overflow-y-auto">
+            <div class="w-full h-full max-h-full max-w-[80rem] pr-4 pl-4 text-zinc-300 flex flex-col" >
                 // <GameDebug />
                 <CharacterAutofocusManager />
                 if !game_state.viewing_inventory {
                     <TopInfoBar />
                 }
-                <div class="flex-1 flex mb-4" >
+                <div class="flex-1 flex mt-4 mb-2 h-[60%] max-h-1/2 overflow-y-auto" >
                     <DungeonRoom party_id={party_id} />
                     if game_state.viewing_inventory && focused_character.is_some(){
                         <CharacterSheet character={focused_character.as_deref().expect("is_some checked").clone()} />
                     }
                 </div>
-                <div class="flex max-h-[28rem] h-1/2 " >
+                <div class="flex max-h-1/2 h-[40%] mt-2 mb-4 overflow-y-auto" >
                     <ActionMenu />
                     <TabbedDisplay />
                 </div>

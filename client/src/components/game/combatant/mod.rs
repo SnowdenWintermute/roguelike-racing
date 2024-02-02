@@ -58,7 +58,7 @@ pub fn combatant(props: &Props) -> Html {
     let selected_style = if is_selected { "border-yellow-400" } else { "" };
 
     let styles = format!(
-        "flex border border-slate-400 mb-2 last:mb-0 w-40 relative {}",
+        "flex border border-slate-400 mb-2 w-40 relative {}",
         selected_style
     );
 

@@ -306,3 +306,21 @@ pub fn get_item_owned_by_focused_character(
         message: error_messages::INVALID_ITEM_ID.to_string(),
     });
 }
+
+pub fn get_item_on_ground(id: &u32, game_state: Rc<GameStore>) -> Result<Item, AppError> {
+    let party = get_current_party_option(&game_state).ok_or_else(|| AppError {
+        error_type: common::errors::AppErrorTypes::ClientError,
+        message: error_messages::PARTY_NOT_FOUND.to_string(),
+    })?;
+
+    for item in &party.current_room.items {
+        if item.entity_properties.id == *id {
+            return Ok(item.clone());
+        }
+    }
+
+    return Err(AppError {
+        error_type: common::errors::AppErrorTypes::ClientError,
+        message: error_messages::INVALID_ITEM_ID.to_string(),
+    });
+}

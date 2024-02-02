@@ -6,6 +6,7 @@ use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
 use crate::store::ui_store::UIStore;
 use crate::store::websocket_store::WebsocketStore;
+use gloo::console::log;
 use yew::prelude::*;
 use yewdux::use_store;
 
@@ -22,6 +23,7 @@ pub fn action_menu_change_detection_manager(props: &Props) -> Html {
     let (websocket_state, _) = use_store::<WebsocketStore>();
     let (_, alert_dspatch) = use_store::<AlertStore>();
     let cloned_game_state = game_state.clone();
+    let previously_focused_character_id_state = use_state(|| game_state.focused_character_id);
 
     let active_combatant_result = get_active_combatant(&game_state);
     let active_combatant_id_option = match active_combatant_result {
@@ -95,10 +97,11 @@ pub fn action_menu_change_detection_manager(props: &Props) -> Html {
     let cloned_game_dispatch = game_dispatch.clone();
     let cloned_alert_dispatch = alert_dspatch.clone();
     let cloned_action_menu_button_properties = props.action_menu_button_properties.clone();
+    let focused_character_id = game_state.focused_character_id;
     use_effect_with(
         (
             active_combatant_id_option,
-            cloned_game_state.focused_character_id,
+            focused_character_id,
             cloned_game_state.viewing_inventory,
             cloned_game_state.viewing_equipped_items,
             ability_targets,
@@ -118,6 +121,10 @@ pub fn action_menu_change_detection_manager(props: &Props) -> Html {
             focused_character_equipment_ids,
         ),
         move |_| {
+            if *previously_focused_character_id_state != focused_character_id {
+                cloned_game_dispatch.reduce_mut(|store| store.action_menu_current_page_number = 0);
+            }
+            previously_focused_character_id_state.set(focused_character_id);
             let re_cloned_game_state = cloned_game_state.clone();
             let party = re_cloned_game_state
                 .get_current_party()
@@ -136,4 +143,3 @@ pub fn action_menu_change_detection_manager(props: &Props) -> Html {
     );
     html!()
 }
-

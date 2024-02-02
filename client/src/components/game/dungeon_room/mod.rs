@@ -44,7 +44,7 @@ pub fn dungeon_room(props: &Props) -> Html {
         });
 
         let conditional_styles = match game_state.viewing_inventory {
-            true => "min-w-[350px] w-[350px] mr-4",
+            true => "w-[22rem] mr-4",
             false => "w-full",
         };
 
@@ -85,7 +85,6 @@ pub fn dungeon_room(props: &Props) -> Html {
                         />
                     }
                 </div>
-                // if !game_state.viewing_inventory {
                 <div class="w-1/2 border-l border-slate-400 p-2 flex flex-col" >
                     if let Some(time_of_death) = time_of_death_option {
                         <div class=" border border-slate-400 bg-slate-700 p-4

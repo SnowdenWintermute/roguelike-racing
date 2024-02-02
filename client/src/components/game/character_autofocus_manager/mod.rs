@@ -11,7 +11,7 @@ use yewdux::prelude::use_store;
 pub fn character_autofocus_manager() -> Html {
     let (game_state, game_dispatch) = use_store::<GameStore>();
     let (lobby_state, _) = use_store::<LobbyStore>();
-    let prev_active_combatant_id_option = use_state(|| None);
+    let prev_active_combatant_id_option: UseStateHandle<Option<u32>> = use_state(|| None);
     let focused_character_id = game_state.focused_character_id;
     let active_combatant_result = get_active_combatant(&game_state);
     let active_combatant_id_option = match active_combatant_result {
@@ -39,6 +39,12 @@ pub fn character_autofocus_manager() -> Html {
                         if let Ok(party) = party_result {
                             if party.character_positions.contains(&new_active_combatant_id) {
                                 if focused_character_id == prev_active_combatant_id
+                                    && !game_state.viewing_inventory
+                                {
+                                    store.focused_character_id = new_active_combatant_id
+                                } else if !party
+                                    .character_positions
+                                    .contains(&prev_active_combatant_id)
                                     && !game_state.viewing_inventory
                                 {
                                     store.focused_character_id = new_active_combatant_id

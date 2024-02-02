@@ -70,11 +70,7 @@ pub fn build_action_button_properties(
         let cloned_game_state = game_state.clone();
         let cloned_game_dispatch = game_dispatch.clone();
         let mouse_leave_handler = Callback::from(move |_| {
-            create_action_mouse_leave_handler(
-                cloned_action.clone(),
-                cloned_game_dispatch.clone(),
-                cloned_game_state.clone(),
-            )()
+            create_action_mouse_leave_handler(cloned_action.clone(), cloned_game_dispatch.clone())()
         });
         let cloned_action = action.clone();
         let cloned_game_state = game_state.clone();
@@ -93,7 +89,6 @@ pub fn build_action_button_properties(
             create_action_mouse_leave_handler(
                 cloned_action.clone(),
                 cloned_game_dispatch.clone(),
-                cloned_game_state.clone(),
             )()
         });
         let cloned_game_state = game_state.clone();

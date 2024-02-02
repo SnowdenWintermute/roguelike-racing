@@ -69,10 +69,6 @@ pub fn handle_animation_finished(
                 message: error_messages::COMBANTANT_EVENT_MANAGER_NOT_FOUND.to_string(),
             })?;
         let finished = event_manager.animation_queue.pop_front();
-        log!(format!(
-            "finished animation and removed from queue: {:#?}",
-            finished
-        ));
 
         Ok(())
     })

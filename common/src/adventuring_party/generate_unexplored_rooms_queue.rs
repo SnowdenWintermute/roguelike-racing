@@ -8,7 +8,7 @@ impl AdventuringParty {
     /// their dungeon
     pub fn generate_unexplored_rooms_queue(&mut self) {
         let monster_lairs_per_floor = 1;
-        let empty_rooms_per_floor = 1;
+        let empty_rooms_per_floor = 0;
 
         self.unexplored_rooms.clear();
         self.rooms_explored.on_current_floor += 1;

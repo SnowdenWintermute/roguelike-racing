@@ -48,7 +48,7 @@ pub fn action_page_buttons(props: &Props) -> Html {
                     cloned_number_of_pages,
                 )
             }
-            if event.code() == "KeyR" {
+            if event.code() == "KeyE" {
                 next_page(
                     game_dispatch.clone(),
                     cloned_current_page_number,
@@ -60,7 +60,7 @@ pub fn action_page_buttons(props: &Props) -> Html {
     });
 
     html!(
-        <div class="h-10 min-h-10 border-t border-slate-400 flex">
+        <div class="h-10 min-h-[2.5rem] border-t border-slate-400 flex">
             <button
                 onclick={prev_page_callback}
                 class="h-full w-[40%] flex items-center justify-center">

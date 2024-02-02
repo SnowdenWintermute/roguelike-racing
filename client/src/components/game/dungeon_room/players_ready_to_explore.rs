@@ -26,7 +26,7 @@ pub fn players_ready_to_explore(props: &Props) -> Html {
         );
     }
     html!(
-    <div class="flex flex-col flex-1 max-h-full overflow-y-auto">
+    <div class="flex flex-col flex-grow max-h-full overflow-y-auto">
         <PlayersIncludedInList
             title={ready_to_explore_title}
             waiting_message={ready_to_explore_waiting_message}

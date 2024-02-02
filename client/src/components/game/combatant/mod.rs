@@ -85,7 +85,7 @@ pub fn combatant(props: &Props) -> Html {
                     </div>
             }
             if is_active_combatant {
-                <div class={format!("absolute top-1/2 -translate-y-1/2 {}
+                <div class={format!("absolute z-50 top-1/2 -translate-y-1/2 {}
                                     pr-2 pl-2 border border-slate-400 bg-slate-700", turn_indicator_style)} >
                     {"active"}
                 </div>

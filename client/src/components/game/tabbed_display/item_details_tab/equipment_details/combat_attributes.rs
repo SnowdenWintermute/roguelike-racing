@@ -1,6 +1,7 @@
 use common::combatants::combat_attributes::CombatAttributes;
 use common::combatants::combat_attributes::CORE_ATTRIBUTES;
 use common::items::equipment::affixes::Affix;
+use common::items::equipment::affixes::SuffixTypes;
 use common::items::equipment::EquipmentProperties;
 use yew::html;
 use yew::virtual_dom::VNode;
@@ -17,6 +18,7 @@ pub fn combat_attributes(equipment_properties: &EquipmentProperties) -> Vec<VNod
         .clone()
         .into_iter()
         .collect::<Vec<(CombatAttributes, u16)>>();
+    // let attributes_sorted = Vec::new();
     attributes_as_vec.sort_by(move |a, b| a.0.partial_cmp(&b.0).unwrap());
 
     // DISPLAY CORE CORE_ATTRIBUTES AS ONE LINE

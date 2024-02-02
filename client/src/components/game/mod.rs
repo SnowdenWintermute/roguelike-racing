@@ -76,14 +76,14 @@ pub fn game() -> Html {
             <div class="w-full h-full max-h-full max-w-[80rem] pr-4 pl-4 text-zinc-300 flex flex-col" >
                 // <GameDebug />
                 <CharacterAutofocusManager />
-                if !game_state.viewing_inventory {
+                <div class="flex-1 flex flex-col mb-2 mt-4 h-[60%] max-h-1/2 overflow-y-auto" >
                     <TopInfoBar />
-                }
-                <div class="flex-1 flex mt-4 mb-2 h-[60%] max-h-1/2 overflow-y-auto" >
-                    <DungeonRoom party_id={party_id} />
-                    if game_state.viewing_inventory && focused_character.is_some(){
-                        <CharacterSheet character={focused_character.as_deref().expect("is_some checked").clone()} />
-                    }
+                    <div class="flex flex-grow">
+                        <DungeonRoom party_id={party_id} />
+                        if game_state.viewing_inventory && focused_character.is_some(){
+                            <CharacterSheet character={focused_character.as_deref().expect("is_some checked").clone()} />
+                        }
+                    </div>
                 </div>
                 <div class="flex max-h-1/2 h-[40%] mt-2 mb-4 overflow-y-auto" >
                     <ActionMenu />

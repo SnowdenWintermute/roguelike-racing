@@ -18,8 +18,11 @@ use crate::components::game::action_menu::action_menu_page_buttons::ActionPageBu
 use crate::components::game::action_menu::build_action_button_properties::ActionMenuButtonProperties;
 use crate::store::game_store::GameStore;
 use common::utils::calculate_number_of_pages;
+use gloo::console::log;
 use gloo::events::EventListener;
 use std::ops::Deref;
+use wasm_bindgen::JsCast;
+use web_sys::HtmlElement;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
@@ -74,7 +77,17 @@ pub fn action_menu(_: &Props) -> Html {
     let num_actions = cloned_action_button_properties.len();
     let number_of_pages = calculate_number_of_pages(PAGE_SIZE as usize, num_actions);
 
+    let action_menu_node_ref = use_node_ref();
+    let cloned_action_menu_node_ref = action_menu_node_ref.clone();
     let handle_wheel = Callback::from(move |e: WheelEvent| {
+        let element_option = cloned_action_menu_node_ref.cast::<HtmlElement>();
+        if let Some(element) = element_option {
+            let scroll_height = element.scroll_height();
+            let client_height = element.client_height();
+            if scroll_height != client_height {
+                return;
+            }
+        }
         if e.delta_y() > 0.0 {
             prev_page(
                 game_dispatch.clone(),
@@ -93,10 +106,12 @@ pub fn action_menu(_: &Props) -> Html {
     html!(
         <section class="w-[22rem] border border-slate-400 bg-slate-700 mr-4 overflow-y-auto
         flex flex-col justify-between"
-        onwheel={handle_wheel}
         >
         <ActionMenuChangeDetectionManager action_menu_button_properties={action_menu_button_properties} />
-            <div class="overflow-y-auto">
+            <div class="overflow-y-auto flex-grow"
+                ref={action_menu_node_ref}
+                onwheel={handle_wheel}
+            >
                 {cloned_button_props_on_current_page.deref().iter().enumerate().map(|(i, action)| {
                       html!(
                           <ActionMenuButton

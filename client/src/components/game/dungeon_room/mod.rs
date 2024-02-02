@@ -68,8 +68,8 @@ pub fn dungeon_room(props: &Props) -> Html {
 
         html!(
             <section class={format!("h-full border border-slate-400 bg-slate-700 flex {}", conditional_styles)} >
-                <div class="w-1/2 flex p-2 overflow-y-auto" >
-                    <div class="flex flex-col mr-2" >
+                <div class="w-1/2 flex p-2 h-full" >
+                    <div class="flex flex-col mr-4 h-full flex-grow" >
                         {characters.iter().map(|(_id, character)|
                             html!{<Combatant
                                 entity_properties={character.entity_properties.clone()}
@@ -77,7 +77,7 @@ pub fn dungeon_room(props: &Props) -> Html {
                                 />}).collect::<Html>()
                         }
                     </div>
-                    if party.current_room.monsters.is_none() {
+                    if party.current_room.monsters.is_none() && !game_state.viewing_inventory {
                         <PlayersReadyToExplore
                             players_ready_to_explore={party.players_ready_to_explore.clone()}
                             players_ready_to_descend_option={players_ready_to_descend_option}

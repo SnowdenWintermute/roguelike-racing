@@ -122,12 +122,16 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
     //     affixes: vec![],
     //     traits: None,
     // };
+    // let off_hand_entity_properties = EntityProperties {
+    //     id: id_generator.get_next_entity_id(),
+    //     name: "Rotted Stick".to_string(),
+    // };
     let off_hand_properties = EquipmentProperties {
         equipment_type: EquipmentTypes::Shield(
             Shields::MakeshiftBuckler,
             ShieldProperties {
                 size: ShieldSizes::Small,
-                armor_class: 100,
+                armor_class: 5,
             },
         ),
         durability: Some(MaxAndCurrent::new(2, 2)),
@@ -138,7 +142,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
 
     let off_hand_entity_properties = EntityProperties {
         id: id_generator.get_next_entity_id(),
-        name: "Rotted Stick".to_string(),
+        name: "Pot Lid".to_string(),
     };
 
     let off_hand = Item {

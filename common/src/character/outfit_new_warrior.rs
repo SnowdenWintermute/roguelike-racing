@@ -12,7 +12,7 @@ pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Charact
     let inherent_attributes = &mut combatant_properties.inherent_attributes;
     inherent_attributes.insert(CombatAttributes::Hp, 30);
     inherent_attributes.insert(CombatAttributes::Damage, 1);
-    inherent_attributes.insert(CombatAttributes::Strength, 20);
+    inherent_attributes.insert(CombatAttributes::Strength, 2);
     inherent_attributes.insert(CombatAttributes::Dexterity, 1);
     inherent_attributes.insert(CombatAttributes::Vitality, 2);
     inherent_attributes.insert(CombatAttributes::Resilience, 2);
@@ -20,10 +20,10 @@ pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Charact
     inherent_attributes.insert(CombatAttributes::Agility, 1);
 
     // ABILITIES
-    combatant_properties.abilities.insert(
-        CombatantAbilityNames::Fire,
-        CombatantAbility::new(CombatantAbilityNames::Fire),
-    );
+    // combatant_properties.abilities.insert(
+    //     CombatantAbilityNames::Fire,
+    //     CombatantAbility::new(CombatantAbilityNames::Fire),
+    // );
     // combatant_properties.abilities.insert(
     //     CombatantAbilityNames::Heal,
     //     CombatantAbility::new(CombatantAbilityNames::Heal),

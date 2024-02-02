@@ -12,6 +12,7 @@ use crate::primatives::EntityProperties;
 use rand::seq::SliceRandom;
 use serde::Deserialize;
 use serde::Serialize;
+use std::cmp;
 use std::collections::HashMap;
 use strum_macros::EnumIter;
 
@@ -49,7 +50,7 @@ pub fn generate_random_monster_name() -> String {
 }
 
 impl Monster {
-    pub fn generate(id_generator: &mut IdGenerator, _level: u8, hp: u16) -> Monster {
+    pub fn generate(id_generator: &mut IdGenerator, level: u8, hp: u16) -> Monster {
         let mut monster = Monster {
             entity_properties: EntityProperties {
                 id: id_generator.get_next_entity_id(),
@@ -65,11 +66,15 @@ impl Monster {
         let inherent_attributes = &mut monster.combatant_properties.inherent_attributes;
         inherent_attributes.insert(CombatAttributes::Hp, hp);
         inherent_attributes.insert(CombatAttributes::Damage, 1);
-        inherent_attributes.insert(CombatAttributes::Strength, 15);
-        inherent_attributes.insert(CombatAttributes::Dexterity, 1);
-        inherent_attributes.insert(CombatAttributes::Vitality, 2);
-        inherent_attributes.insert(CombatAttributes::Resilience, 2);
-        inherent_attributes.insert(CombatAttributes::Agility, 1);
+        inherent_attributes.insert(CombatAttributes::Strength, 1 * level as u16);
+        inherent_attributes.insert(CombatAttributes::Dexterity, 1 * level as u16);
+        inherent_attributes.insert(CombatAttributes::Vitality, 1 * level as u16);
+        inherent_attributes.insert(CombatAttributes::Resilience, 1 * level as u16);
+        inherent_attributes.insert(CombatAttributes::ArmorClass, 10 * (level - 1) as u16);
+        inherent_attributes.insert(
+            CombatAttributes::Agility,
+            cmp::max(1, 1 * (level as u16 / 2)),
+        );
         inherent_attributes.insert(CombatAttributes::Accuracy, 75);
 
         let total_attributes = monster.combatant_properties.get_total_attributes();

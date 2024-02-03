@@ -81,18 +81,14 @@ pub enum EquipmentTraits {
 impl fmt::Display for EquipmentTraits {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            EquipmentTraits::LifeStealPercentage(number) => {
-                write!(f, "Life steal percentage: {}", number)
+            EquipmentTraits::LifeStealPercentage(value) => {
+                write!(f, "{value}% lifesteal")
             }
-            EquipmentTraits::DurabilityBonus(number) => write!(f, "Durability bonus: {}", number),
-            EquipmentTraits::ArmorClassPercentage(number) => {
-                write!(f, "Bonus armor class percentage: {}", number)
-            }
-            EquipmentTraits::DamagePercentage(number) => {
-                write!(f, "Bonus damage percentage: {}", number)
-            }
+            EquipmentTraits::DurabilityBonus(_) => write!(f, "Increased durability"),
+            EquipmentTraits::ArmorClassPercentage(value) => write!(f, "+{value}% armor class"),
+            EquipmentTraits::DamagePercentage(value) => write!(f, "+{value}% weapon damage"),
             EquipmentTraits::RandomDamageTypeSelection => {
-                write!(f, "Damage classification selected randomly")
+                write!(f, "Damage type selected randomly")
             }
         }
     }
@@ -154,10 +150,10 @@ impl EquipmentProperties {
 
     pub fn is_weapon(&self) -> bool {
         match self.equipment_type {
-            EquipmentTypes::OneHandedMeleeWeapon(_, _) |
-            EquipmentTypes::TwoHandedMeleeWeapon(_, _) |
-            EquipmentTypes::TwoHandedRangedWeapon(_, _) => true,
-            _ => false
+            EquipmentTypes::OneHandedMeleeWeapon(_, _)
+            | EquipmentTypes::TwoHandedMeleeWeapon(_, _)
+            | EquipmentTypes::TwoHandedRangedWeapon(_, _) => true,
+            _ => false,
         }
     }
 

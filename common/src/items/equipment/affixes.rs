@@ -3,8 +3,6 @@ use serde::Deserialize;
 use serde::Serialize;
 use strum_macros::EnumIter;
 
-use crate::combatants::combat_attributes::CombatAttributes;
-
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone)]
 pub enum Affix {
     Prefix(PrefixTypes, u8),

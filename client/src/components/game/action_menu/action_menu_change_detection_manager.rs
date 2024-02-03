@@ -6,7 +6,6 @@ use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
 use crate::store::ui_store::UIStore;
 use crate::store::websocket_store::WebsocketStore;
-use gloo::console::log;
 use yew::prelude::*;
 use yewdux::use_store;
 

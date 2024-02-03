@@ -6,7 +6,6 @@ use crate::components::mesh_manager::CombatantAnimation;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::errors::AppError;
-use gloo::console::log;
 use yewdux::Dispatch;
 use super::autoinjector_use_animation_finished_handler::autoinjector_use_animation_finished_handler;
 
@@ -68,7 +67,7 @@ pub fn handle_animation_finished(
                 error_type: common::errors::AppErrorTypes::ClientError,
                 message: error_messages::COMBANTANT_EVENT_MANAGER_NOT_FOUND.to_string(),
             })?;
-        let finished = event_manager.animation_queue.pop_front();
+        let _ = event_manager.animation_queue.pop_front();
 
         Ok(())
     })

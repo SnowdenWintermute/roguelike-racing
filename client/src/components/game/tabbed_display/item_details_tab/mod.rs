@@ -8,9 +8,9 @@ use crate::store::game_store::set_compared_item;
 use crate::store::game_store::GameStore;
 use crate::store::ui_store::UIStore;
 use common::items::equipment::EquipmentSlots;
+use common::items::equipment::EquipmentTypes;
 use common::items::Item;
 use common::items::ItemProperties;
-use common::items::equipment::EquipmentTypes;
 use std::rc::Rc;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
@@ -82,17 +82,20 @@ pub fn item_details_tab(props: &Props) -> Html {
         None => "",
     };
 
-    let compared_display_option = match &compared_item {
-        Some(compared_item) => match &compared_item.item_properties {
-            ItemProperties::Consumable(_) => None,
-            ItemProperties::Equipment(properties) => Some(html!(<EquipmentDetails
+    let compared_display_option = match props.item.item_properties {
+        ItemProperties::Consumable(_) => None,
+        ItemProperties::Equipment(_) => match &compared_item {
+            Some(compared_item) => match &compared_item.item_properties {
+                ItemProperties::Consumable(_) => None,
+                ItemProperties::Equipment(properties) => Some(html!(<EquipmentDetails
                       equipment_properties={properties.clone()}
                       requirements={compared_item.requirements.clone()}
                       entity_id={compared_item.entity_properties.id}
                       is_compared_item={true}
                       />)),
+            },
+            None => None,
         },
-        None => None,
     };
 
     html!(

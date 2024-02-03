@@ -93,6 +93,7 @@ impl CombatantProperties {
         self.equipment.insert(slot, item_to_equip);
 
         self.clamp_curr_hp_to_max();
+        self.clamp_curr_mp_to_max();
 
         Ok(ids_of_unequipped_items)
     }

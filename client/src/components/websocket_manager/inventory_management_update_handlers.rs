@@ -9,7 +9,6 @@ use common::game::getters::get_party;
 use common::game::RoguelikeRacerGame;
 use common::packets::server_to_client::CharacterEquippedItemPacket;
 use common::packets::CharacterAndSlot;
-use gloo::console::log;
 
 pub fn handle_character_equipped_item(
     game_store: &mut GameStore,
@@ -42,16 +41,9 @@ pub fn handle_character_equipped_item(
         None => None,
     };
 
-    log!(format!("item to select {:#?}", item_to_select));
-    log!(format!("player owns character {player_owns_character}"));
-
     if player_owns_character {
         match item_to_select {
             Some(item) => {
-                log!(format!(
-                    "player owns character, setting selected item to {:#?}",
-                    item
-                ));
                 game_store.selected_item = Some(item.clone());
                 game_store.detailed_entity = Some(DetailableEntities::Item(item.clone()));
                 game_store.hovered_entity = None;

@@ -135,6 +135,18 @@ impl CombatantProperties {
             None => (),
         }
     }
+    pub fn clamp_curr_mp_to_max(&mut self) {
+        // @TODO optimize to only add up HP
+        let total_attributes = self.get_total_attributes();
+        match total_attributes.get(&CombatAttributes::Mp) {
+            Some(max_mp) => {
+                if max_mp < &self.mana {
+                    self.mana = *max_mp
+                }
+            }
+            None => (),
+        }
+    }
 
     pub fn get_mut_ability_if_owned<'a>(
         &'a mut self,

@@ -21,7 +21,6 @@ use common::utils::calculate_number_of_pages;
 use gloo::console::log;
 use gloo::events::EventListener;
 use std::ops::Deref;
-use wasm_bindgen::JsCast;
 use web_sys::HtmlElement;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
@@ -39,14 +38,27 @@ pub fn action_menu(_: &Props) -> Html {
     let cloned_current_page_number = game_state.action_menu_current_page_number.clone();
     let cloned_action_button_properties = action_menu_button_properties.clone();
     let cloned_button_props_on_current_page = button_props_on_current_page.clone();
+    let num_actions = cloned_action_button_properties.len();
+    let number_of_pages = calculate_number_of_pages(PAGE_SIZE as usize, num_actions);
+    let cloned_game_dispatch = game_dispatch.clone();
     use_effect_with(
         (
             game_state.action_menu_current_page_number,
             action_menu_button_properties.clone(),
+            num_actions,
+            number_of_pages,
         ),
         move |_| {
+            log!(format!("number of pages: {number_of_pages}"));
+            log!(format!("current page: {cloned_current_page_number}"));
             let min_index = cloned_current_page_number * PAGE_SIZE;
             let max_index = cloned_current_page_number * PAGE_SIZE + PAGE_SIZE - 1;
+            if number_of_pages > 1 {
+                if (number_of_pages - 1) < cloned_current_page_number as usize {
+                    cloned_game_dispatch
+                        .reduce_mut(|store| store.action_menu_current_page_number = 0);
+                }
+            }
             let filtered_actions = cloned_action_button_properties
                 .deref()
                 .iter()
@@ -58,6 +70,7 @@ pub fn action_menu(_: &Props) -> Html {
         },
     );
 
+    let cloned_action_button_properties = action_menu_button_properties.clone();
     let keyup_listener_state = use_state(|| None::<EventListener>);
     let cloned_button_props_on_current_page = button_props_on_current_page.clone();
     let cloned_button_props_on_current_page_for_effect_change =
@@ -73,9 +86,6 @@ pub fn action_menu(_: &Props) -> Html {
     );
 
     let cloned_button_props_on_current_page = button_props_on_current_page.clone();
-    let cloned_action_button_properties = action_menu_button_properties.clone();
-    let num_actions = cloned_action_button_properties.len();
-    let number_of_pages = calculate_number_of_pages(PAGE_SIZE as usize, num_actions);
 
     let action_menu_node_ref = use_node_ref();
     let cloned_action_menu_node_ref = action_menu_node_ref.clone();

@@ -1,5 +1,8 @@
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::game::id_generator::IdGenerator;
+use crate::items::equipment::affixes::Affix;
+use crate::items::equipment::affixes::PrefixTypes;
+use crate::items::equipment::affixes::SuffixTypes;
 use crate::items::equipment::armor_properties::ArmorCategories;
 use crate::items::equipment::armor_properties::ArmorProperties;
 use crate::items::equipment::body_armors::BodyArmors;
@@ -60,7 +63,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
         ),
         durability: Some(MaxAndCurrent::new(2, 2)),
         attributes: HashMap::new(),
-        affixes: vec![],
+        affixes: vec![Affix::Suffix(SuffixTypes::Intelligence, 1)],
         traits: None,
     };
 
@@ -156,13 +159,13 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
         equipment_type: EquipmentTypes::Ring,
         durability: None,
         attributes: HashMap::new(),
-        affixes: vec![],
+        affixes: vec![Affix::Prefix(PrefixTypes::Mp, 1)],
         traits: None,
     };
 
     right_ring_properties
         .attributes
-        .insert(CombatAttributes::Hp, 2);
+        .insert(CombatAttributes::Mp, 2);
 
     let right_ring_entity_properties = EntityProperties {
         id: id_generator.get_next_entity_id(),
@@ -180,7 +183,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
         equipment_type: EquipmentTypes::Ring,
         durability: None,
         attributes: HashMap::new(),
-        affixes: vec![],
+        affixes: vec![Affix::Suffix(SuffixTypes::Hp, 1)],
         traits: None,
     };
 
@@ -204,7 +207,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
         equipment_type: EquipmentTypes::Amulet,
         durability: None,
         attributes: HashMap::new(),
-        affixes: vec![],
+        affixes: vec![Affix::Prefix(PrefixTypes::Evasion, 1)],
         traits: None,
     };
 

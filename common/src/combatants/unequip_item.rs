@@ -21,6 +21,7 @@ impl CombatantProperties {
 
         if !is_due_to_equipment_swap {
             self.clamp_curr_hp_to_max();
+            self.clamp_curr_mp_to_max();
         }
 
         ids_of_unequipped_items

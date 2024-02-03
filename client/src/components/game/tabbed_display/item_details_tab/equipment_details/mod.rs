@@ -9,10 +9,10 @@ use std::collections::HashMap;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 mod armor;
-mod combat_attributes;
+mod combat_attributes_and_traits;
 mod equipment_durability;
-mod traits;
 mod weapon_damage;
+use self::combat_attributes_and_traits::combat_attributes_and_traits;
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
@@ -46,8 +46,7 @@ pub fn equipment_details(props: &Props) -> Html {
                     durability_option={props.equipment_properties.durability.clone()}
                     equipment_type={props.equipment_properties.equipment_type.clone()}
                 />
-                {combat_attributes::combat_attributes(&props.equipment_properties)}
-                {traits::traits(&props.equipment_properties.traits)}
+                {combat_attributes_and_traits(&props.equipment_properties)}
                 {requirements(&props.requirements, cloned_game_state)}
                 {
                     if !props.is_compared_item {

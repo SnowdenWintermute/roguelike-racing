@@ -18,7 +18,6 @@ use crate::components::game::action_menu::action_menu_page_buttons::ActionPageBu
 use crate::components::game::action_menu::build_action_button_properties::ActionMenuButtonProperties;
 use crate::store::game_store::GameStore;
 use common::utils::calculate_number_of_pages;
-use gloo::console::log;
 use gloo::events::EventListener;
 use std::ops::Deref;
 use web_sys::HtmlElement;
@@ -48,10 +47,6 @@ pub fn action_menu(_: &Props) -> Html {
             action_menu_button_properties.clone(),
         ),
         move |_| {
-            log!(format!(
-                "button_props: {:#?}",
-                cloned_action_button_properties.len()
-            ));
             let min_index = cloned_current_page_number * PAGE_SIZE;
             let max_index = cloned_current_page_number * PAGE_SIZE + PAGE_SIZE - 1;
             let filtered_actions = cloned_action_button_properties
@@ -62,7 +57,6 @@ pub fn action_menu(_: &Props) -> Html {
                 .map(|(_, item)| item.clone())
                 .collect::<Vec<ActionMenuButtonProperties>>();
             let num_actions = filtered_actions.len();
-            log!(format!("filtered_actions: {:#?}", filtered_actions.len()));
             cloned_button_props_on_current_page.set(filtered_actions);
 
             if cloned_current_page_number != 0
@@ -70,10 +64,6 @@ pub fn action_menu(_: &Props) -> Html {
                 && cloned_action_button_properties.len() != 0
                 && cloned_current_page_number == *cloned_last_page_number_filtered
             {
-                log!(format!(
-                    "num props on curr page num_actions filtered: {} setting current page number -1",
-                    num_actions
-                ));
                 cloned_game_dispatch.reduce_mut(|store| {
                     store.action_menu_current_page_number -= 1;
                 });

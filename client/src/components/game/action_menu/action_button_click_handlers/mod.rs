@@ -166,6 +166,13 @@ pub fn create_action_button_click_handler<'a>(
             game_dispatch.reduce_mut(|store| {
                 store.selected_item = None;
                 store.detailed_entity = None;
+                let parent_page_number = store.parent_menu_pages.pop();
+                log!(format!("parent page number: {:?}", parent_page_number));
+                if let Some(page_number) = parent_page_number {
+                    store.action_menu_current_page_number = page_number;
+                } else {
+                    store.action_menu_current_page_number = 0
+                };
                 send_client_input(
                     &websocket_state.websocket,
                     PlayerInputs::UseSelectedConsumable(game_state.focused_character_id),
@@ -201,6 +208,12 @@ pub fn create_action_button_click_handler<'a>(
                 }
                 store.selected_item = None;
                 store.detailed_entity = None;
+                let parent_page_number = store.parent_menu_pages.pop();
+                if let Some(page_number) = parent_page_number {
+                    store.action_menu_current_page_number = page_number;
+                } else {
+                    store.action_menu_current_page_number = 0
+                };
             });
         }),
         GameActions::ToggleReadyToDescend => Box::new(move || {

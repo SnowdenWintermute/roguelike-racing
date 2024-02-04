@@ -31,11 +31,10 @@ impl GameServer {
         turns.push(player_turn);
 
         if !all_opponents_are_dead && !all_allies_are_dead {
-            let active_combatant_turn_tracker = game.end_active_combatant_turn(battle_id)?;
-            let active_combatant_id = active_combatant_turn_tracker.entity_id;
+            let _ = game.end_active_combatant_turn(battle_id)?;
 
             let mut ai_controlled_turn_results =
-                take_ai_controlled_turns_if_appropriate(game, battle_id, active_combatant_id)?;
+                take_ai_controlled_turns_if_appropriate(game, battle_id)?;
             turns.append(&mut ai_controlled_turn_results);
         }
 

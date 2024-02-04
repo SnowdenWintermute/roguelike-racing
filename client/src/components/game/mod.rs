@@ -73,7 +73,7 @@ pub fn game() -> Html {
 
     html!(
         <main class="h-screen w-screen bg-slate-800 flex justify-center relative overflow-y-auto">
-            <div class="w-full h-full max-h-full max-w-[80rem] pr-4 pl-4 text-zinc-300 flex flex-col" >
+            <div class="w-full h-full max-w-[80rem] max-h-[67.5rem] pr-4 pl-4 text-zinc-300 flex flex-col" >
                 // <GameDebug />
                 <CharacterAutofocusManager />
                 <div class="flex-1 flex flex-col mb-2 mt-4 h-[60%] max-h-1/2 overflow-y-auto" >

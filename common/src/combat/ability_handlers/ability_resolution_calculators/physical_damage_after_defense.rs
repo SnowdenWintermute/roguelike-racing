@@ -14,11 +14,11 @@ pub fn physical_damage_after_defense(
         .get(&CombatAttributes::ArmorPenetration)
         .unwrap_or_else(|| &0);
     let penetrated_ac = target_ac.saturating_sub(*user_armor_pen) as u32;
-    println!("rolled damage: {rolled_damage}, penetrated_ac: {penetrated_ac}");
+    // println!("rolled damage: {rolled_damage}, penetrated_ac: {penetrated_ac}");
     let rolled_damage_squared = rolled_damage.pow(2);
-    println!("rolled damage squared: {rolled_damage_squared}");
+    // println!("rolled damage squared: {rolled_damage_squared}");
     let damage_after_ac = (5 * rolled_damage_squared) / (penetrated_ac + 5 * rolled_damage);
-    println!("damage_after_ac: {rolled_damage_squared}");
+    // println!("damage_after_ac: {rolled_damage_squared}");
 
     let physical_damage_reduction = cmp::min(
         user_total_attributes
@@ -28,10 +28,10 @@ pub fn physical_damage_after_defense(
     );
 
     let max_i16_value: u32 = i16::MAX as u32;
-    println!(
-        "damage after reduction: {}",
-        damage_after_ac * (*physical_damage_reduction as u32 / 100)
-    );
+    // println!(
+    //     "damage after reduction: {}",
+    //     damage_after_ac * (*physical_damage_reduction as u32 / 100)
+    // );
     let damage_after_damage_reduction =
         damage_after_ac - damage_after_ac * (*physical_damage_reduction as u32 / 100);
     let final_damage: u16 = damage_after_damage_reduction.clamp(0, max_i16_value) as u16;

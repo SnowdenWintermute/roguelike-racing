@@ -28,7 +28,7 @@ describe("a test test", () => {
 
     cy.findByRole("button", { name: "Ready" }).click();
     // cy.findByText("Open Inventory").click();
-    // cy.findByText("Ready to explore").click();
+    cy.findByText("Ready to explore").click();
 
     // cy.findByText("Attack").click();
     // cy.findByText("Execute").click();

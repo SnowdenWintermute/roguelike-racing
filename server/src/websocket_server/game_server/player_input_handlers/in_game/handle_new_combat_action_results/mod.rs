@@ -5,6 +5,7 @@ mod get_number_of_opponents;
 mod handle_end_of_player_character_turn;
 mod handle_party_battle_victory;
 mod handle_party_wipe;
+mod take_ai_turns_at_battle_start;
 use self::action_result_ended_turn::action_result_ended_turn;
 use self::get_character_ally_ids::get_character_ally_ids;
 use self::get_number_of_opponents::get_number_of_opponents;

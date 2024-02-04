@@ -16,23 +16,30 @@ impl RoguelikeRacerGame {
         _ally_battle_group: BattleGroup,
         enemy_battle_group: BattleGroup,
     ) -> Result<(CombatantAbilityNames, CombatActionTarget), AppError> {
-        let random_enemy_id = {
-            let max = enemy_battle_group.combatant_ids.len() - 1;
-            let min = 0;
-            let mut rng = thread_rng();
-            let random_index = rng.gen_range(min..=max);
-            enemy_battle_group
-                .combatant_ids
-                .get(random_index)
-                .ok_or_else(|| AppError {
-                    error_type: crate::errors::AppErrorTypes::Generic,
-                    message: error_messages::NO_POSSIBLE_TARGETS_PROVIDED.to_string(),
-                })?
-        };
+        let mut random_enemy_id = get_random_enemy_id(&enemy_battle_group)?;
+        let mut combatant = self.get_combatant_by_id(random_enemy_id)?;
+        while combatant.1.hit_points == 0 {
+            random_enemy_id = get_random_enemy_id(&enemy_battle_group)?;
+            combatant = self.get_combatant_by_id(random_enemy_id)?;
+        }
 
         Ok((
             CombatantAbilityNames::Attack,
             CombatActionTarget::Single(*random_enemy_id),
         ))
     }
+}
+
+fn get_random_enemy_id<'a>(enemy_battle_group: &'a BattleGroup) -> Result<&'a u32, AppError> {
+    let max = enemy_battle_group.combatant_ids.len() - 1;
+    let min = 0;
+    let mut rng = thread_rng();
+    let random_index = rng.gen_range(min..=max);
+    enemy_battle_group
+        .combatant_ids
+        .get(random_index)
+        .ok_or_else(|| AppError {
+            error_type: crate::errors::AppErrorTypes::Generic,
+            message: error_messages::NO_POSSIBLE_TARGETS_PROVIDED.to_string(),
+        })
 }

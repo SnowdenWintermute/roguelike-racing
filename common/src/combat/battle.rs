@@ -104,7 +104,7 @@ impl RoguelikeRacerGame {
         group_a: BattleGroup,
         group_b: BattleGroup,
     ) -> Result<u32, AppError> {
-        let turn_trackers = self.get_battle_turn_order(&group_a, &group_b)?;
+        let turn_trackers = self.create_turn_trackers(&group_a, &group_b)?;
         let battle = Battle {
             id: self.id_generator.get_next_entity_id(),
             group_a,

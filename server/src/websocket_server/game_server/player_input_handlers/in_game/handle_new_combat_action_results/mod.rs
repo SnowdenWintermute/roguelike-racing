@@ -35,7 +35,9 @@ impl GameServer {
             ..
         } = get_mut_game_data_from_actor_id(self, actor_id)?;
 
-        apply_action_results(game, &action_results)?;
+        let party = get_party(game, party_id)?;
+        let battle_id_option = party.battle_id;
+        apply_action_results(game, &action_results, battle_id_option)?;
 
         let party_id = party_id.clone();
         let current_game_name = current_game_name.clone();

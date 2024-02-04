@@ -53,6 +53,8 @@ pub const ALREADY_FULL_HP: &str = "The target is already at full HP";
 // COMBAT ACTIONS
 pub const INVALID_ACTION_TYPE: &str = "Invalid action type";
 pub const MISSING_EXPECTED_ACTION_RESULT_DATA: &str = "An action result missing expected data";
+pub const CANT_BE_USED_ON_DEAD_TARGET: &str =
+    "The selected target is beyond the help of this ability";
 // TARGETING
 pub const NO_POSSIBLE_TARGETS_PROVIDED: &str =
     "No possible targets were found for the selected action";

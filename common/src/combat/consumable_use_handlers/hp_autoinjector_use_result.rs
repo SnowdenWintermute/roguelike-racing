@@ -25,6 +25,14 @@ pub fn hp_autoinjector_use_result(
         }
     };
     let (_, target_combatant_properties) = game.get_combatant_by_id(&target_id)?;
+
+    if target_combatant_properties.hit_points == 0 {
+        return Err(AppError {
+            error_type: crate::errors::AppErrorTypes::InvalidInput,
+            message: error_messages::CANT_BE_USED_ON_DEAD_TARGET.to_string(),
+        });
+    }
+
     let bonus_multiplier = *target_combatant_properties
         .traits
         .get(&CombatantTraits::HpBioavailability)

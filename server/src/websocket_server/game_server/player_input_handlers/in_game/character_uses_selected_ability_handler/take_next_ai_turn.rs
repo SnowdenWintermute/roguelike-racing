@@ -57,7 +57,7 @@ pub fn take_ai_controlled_turns_if_appropriate(
             Some(&battle.clone()),
         )?;
         // process result
-        apply_action_results(game, &action_results)?;
+        apply_action_results(game, &action_results, Some(battle.id))?;
         let party_defeated = game.all_combatants_in_group_are_dead(enemy_ids)?;
         // println!("party defeated by ai ability: {party_defeated}");
 

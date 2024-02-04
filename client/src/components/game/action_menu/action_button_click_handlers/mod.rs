@@ -25,6 +25,7 @@ use common::packets::client_to_server::ClientSelectAbilityPacket;
 use common::packets::client_to_server::PlayerInputs;
 use common::packets::CharacterAndItem;
 use common::packets::CharacterAndSlot;
+use gloo::console::log;
 use std::rc::Rc;
 use use_item_handler::use_item_handler;
 use yewdux::prelude::Dispatch;
@@ -64,7 +65,13 @@ pub fn create_action_button_click_handler<'a>(
                 let parent_page_number = store.parent_menu_pages.pop();
                 if let Some(page_number) = parent_page_number {
                     store.action_menu_current_page_number = page_number;
-                }
+                } else {
+                    store.action_menu_current_page_number = 0
+                };
+                log!(format!(
+                    "setting page number to :{} after deselecting item",
+                    store.action_menu_current_page_number
+                ));
                 store.detailed_entity = None;
             });
         }),

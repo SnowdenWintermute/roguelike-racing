@@ -37,11 +37,11 @@ pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Charact
             Item::generate(&mut game.id_generator, 5, Some(ItemCategories::Consumable));
         combatant_properties.inventory.items.push(random_consumable);
     }
-    // for _ in 0..36 {
-    //     let random_equipment =
-    //         Item::generate(&mut game.id_generator, 1, Some(ItemCategories::Equipment));
-    //     combatant_properties.inventory.items.push(random_equipment);
-    // }
+    for _ in 0..6 {
+        let random_equipment =
+            Item::generate(&mut game.id_generator, 1, Some(ItemCategories::Equipment));
+        combatant_properties.inventory.items.push(random_equipment);
+    }
     // for _ in 0..8 {
     //     let random_equipment = Item::generate(&mut game.id_generator, 8);
     //     character.combatant_properties.inventory.items.push(random_equipment);

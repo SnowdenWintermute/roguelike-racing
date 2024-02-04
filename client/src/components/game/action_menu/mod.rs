@@ -34,31 +34,26 @@ pub fn action_menu(_: &Props) -> Html {
     let (game_state, game_dispatch) = use_store::<GameStore>();
     let action_menu_button_properties = use_state(|| Vec::<ActionMenuButtonProperties>::new());
     let button_props_on_current_page = use_state(|| Vec::<ActionMenuButtonProperties>::new());
+    let last_page_number_filtered = use_state(|| 0);
+    let cloned_current_page_number = game_state.action_menu_current_page_number.clone();
 
     let cloned_current_page_number = game_state.action_menu_current_page_number.clone();
     let cloned_action_button_properties = action_menu_button_properties.clone();
     let cloned_button_props_on_current_page = button_props_on_current_page.clone();
-    let num_actions = cloned_action_button_properties.len();
-    let number_of_pages = calculate_number_of_pages(PAGE_SIZE as usize, num_actions);
     let cloned_game_dispatch = game_dispatch.clone();
+    let cloned_last_page_number_filtered = last_page_number_filtered.clone();
     use_effect_with(
         (
             game_state.action_menu_current_page_number,
             action_menu_button_properties.clone(),
-            num_actions,
-            number_of_pages,
         ),
         move |_| {
-            log!(format!("number of pages: {number_of_pages}"));
-            log!(format!("current page: {cloned_current_page_number}"));
+            log!(format!(
+                "button_props: {:#?}",
+                cloned_action_button_properties.len()
+            ));
             let min_index = cloned_current_page_number * PAGE_SIZE;
             let max_index = cloned_current_page_number * PAGE_SIZE + PAGE_SIZE - 1;
-            if number_of_pages > 1 {
-                if (number_of_pages - 1) < cloned_current_page_number as usize {
-                    cloned_game_dispatch
-                        .reduce_mut(|store| store.action_menu_current_page_number = 0);
-                }
-            }
             let filtered_actions = cloned_action_button_properties
                 .deref()
                 .iter()
@@ -66,11 +61,27 @@ pub fn action_menu(_: &Props) -> Html {
                 .filter(|(i, _)| *i as u8 >= min_index && *i as u8 <= max_index)
                 .map(|(_, item)| item.clone())
                 .collect::<Vec<ActionMenuButtonProperties>>();
+            let num_actions = filtered_actions.len();
+            log!(format!("filtered_actions: {:#?}", filtered_actions.len()));
             cloned_button_props_on_current_page.set(filtered_actions);
+
+            if cloned_current_page_number != 0
+                && num_actions == 0
+                && cloned_action_button_properties.len() != 0
+                && cloned_current_page_number == *cloned_last_page_number_filtered
+            {
+                log!(format!(
+                    "num props on curr page num_actions filtered: {} setting current page number -1",
+                    num_actions
+                ));
+                cloned_game_dispatch.reduce_mut(|store| {
+                    store.action_menu_current_page_number -= 1;
+                });
+            }
+            cloned_last_page_number_filtered.set(cloned_current_page_number);
         },
     );
 
-    let cloned_action_button_properties = action_menu_button_properties.clone();
     let keyup_listener_state = use_state(|| None::<EventListener>);
     let cloned_button_props_on_current_page = button_props_on_current_page.clone();
     let cloned_button_props_on_current_page_for_effect_change =
@@ -86,6 +97,9 @@ pub fn action_menu(_: &Props) -> Html {
     );
 
     let cloned_button_props_on_current_page = button_props_on_current_page.clone();
+    let cloned_action_button_properties = action_menu_button_properties.clone();
+    let num_actions = cloned_action_button_properties.len();
+    let number_of_pages = calculate_number_of_pages(PAGE_SIZE as usize, num_actions);
 
     let action_menu_node_ref = use_node_ref();
     let cloned_action_menu_node_ref = action_menu_node_ref.clone();

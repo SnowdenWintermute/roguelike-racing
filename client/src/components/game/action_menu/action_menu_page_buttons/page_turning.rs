@@ -6,7 +6,7 @@ pub fn next_page(
     current_page_number: u8,
     number_of_pages: usize,
 ) {
-    if current_page_number as usize == number_of_pages - 1 {
+    if current_page_number as usize >= number_of_pages - 1 {
         game_dispatch.reduce_mut(|store| store.action_menu_current_page_number = 0)
     } else {
         game_dispatch

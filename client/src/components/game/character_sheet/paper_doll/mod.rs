@@ -24,18 +24,18 @@ pub fn paper_doll(props: &Props) -> Html {
                         item_option={equipment.remove(&EquipmentSlots::RightRing)}
                         character_attributes={props.attributes.clone()}
                         slot={EquipmentSlots::RightRing}
-                        class=" h-10 w-10" />
+                        class=" h-10 max-h-10 w-10 max-w-10" />
                     <PaperDollSlot
                         item_option={equipment.remove(&EquipmentSlots::LeftRing)}
                         character_attributes={props.attributes.clone()}
                         slot={EquipmentSlots::LeftRing}
-                        class=" h-10 w-10" />
+                        class=" h-10 max-h-10 w-10 max-w-10" />
                 </div>
                 <PaperDollSlot
                     item_option={equipment.remove(&EquipmentSlots::MainHand)}
                     character_attributes={props.attributes.clone()}
                     slot={EquipmentSlots::MainHand}
-                    class="h-40 w-full " />
+                    class="h-40 max-h-40 w-full " />
             </div>
             <div class="w-1/3 mr-2 ml-2" >
                 <PaperDollSlot

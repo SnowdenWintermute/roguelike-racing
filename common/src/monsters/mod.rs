@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 mod random_monster_names;
-
+use self::random_monster_names::MONSTER_FIRST_NAMES;
+use self::random_monster_names::MONSTER_LAST_NAMES;
 use crate::combatants::abilities::CombatantAbility;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::combat_attributes::CombatAttributes;
@@ -15,9 +16,6 @@ use serde::Serialize;
 use std::cmp;
 use std::collections::HashMap;
 use strum_macros::EnumIter;
-
-use self::random_monster_names::MONSTER_FIRST_NAMES;
-use self::random_monster_names::MONSTER_LAST_NAMES;
 
 #[derive(Debug, EnumIter, Clone, Copy, PartialEq)]
 pub enum MonsterTraits {
@@ -73,7 +71,7 @@ impl Monster {
         inherent_attributes.insert(CombatAttributes::ArmorClass, 10 * (level - 1) as u16);
         inherent_attributes.insert(
             CombatAttributes::Agility,
-            cmp::max(4, 1 * (level as u16 / 2)),
+            cmp::max(1, 1 * (level as u16 / 4)),
         );
         inherent_attributes.insert(CombatAttributes::Accuracy, 75);
 

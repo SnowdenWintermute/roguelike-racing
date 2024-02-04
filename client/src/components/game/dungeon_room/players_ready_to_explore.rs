@@ -51,7 +51,7 @@ fn players_included_in_list(props: &PlayersIncludedInListProps) -> Html {
     let awaiting_readies = props.list_to_check.len() != props.players.len();
 
     html!(
-        <div class="flex-1 p-2 border border-slate-400 mb-2 last:mb-0">
+        <div class="flex-1 p-2  mb-2 last:mb-0">
             <h3 class="mb-2" >
                 {props.title.clone()}
             </h3>

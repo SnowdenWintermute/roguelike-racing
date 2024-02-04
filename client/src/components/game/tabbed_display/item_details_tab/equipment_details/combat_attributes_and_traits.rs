@@ -18,7 +18,7 @@ pub fn combat_attributes_and_traits(equipment_properties: &EquipmentProperties) 
 
     for affix in &equipment_properties.affixes {
         let text = match affix {
-            Affix::Prefix(prefix_type, _) => match prefix_type {
+            Affix::Prefix(prefix_type, tier) => match prefix_type {
                 PrefixTypes::Mp => format_bonus(equipment_properties, &CombatAttributes::Mp),
                 PrefixTypes::Accuracy => {
                     format_bonus(equipment_properties, &CombatAttributes::Accuracy)
@@ -30,7 +30,7 @@ pub fn combat_attributes_and_traits(equipment_properties: &EquipmentProperties) 
                     ));
                     format_trait(equipment_properties, affix).expect("to have this trait")
                 }
-                PrefixTypes::ArmorClass => "".to_string(),
+                PrefixTypes::ArmorClass => format!("{}% increased armor class", tier * 10),
                 PrefixTypes::Resilience => {
                     format_bonus(equipment_properties, &CombatAttributes::Resilience)
                 }

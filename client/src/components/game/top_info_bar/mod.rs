@@ -40,13 +40,13 @@ fn room_exploration_tracker() -> Html {
                 .enumerate()
                 .map(|(i, room_type_option )| {
                     let current_room_class = if party.rooms_explored.on_current_floor == ( i + 1 ) as u16 {
-                        "border-yellow-400"
+                        "border border-yellow-400"
                     } else {
                         "border-slate-400"
                     };
 
                     html!(
-                        <li class={ format!("p-2 border {}", current_room_class) }>
+                        <li class={ format!("p-2 border-l {}", current_room_class) }>
                         {match room_type_option {
                             Some(room_type) => {format!("{room_type}")},
                             None => { "?".to_string() },

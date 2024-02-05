@@ -2,7 +2,7 @@ use crate::combat::ability_handlers::ability_resolution_calculators::calculate_w
 use crate::combat::battle::Battle;
 use crate::app_consts::error_messages;
 use crate::combat::ActionResult;
-use crate::combat::combat_actions::CombatActionTarget;
+use crate::combat::combat_actions::{CombatActionTarget, TargetingScheme};
 use crate::errors::AppError;
 use crate::game::RoguelikeRacerGame;
 use crate::items::equipment::EquipmentSlots;
@@ -21,18 +21,18 @@ impl RoguelikeRacerGame {
             message: error_messages::INVALID_ABILITY_CONTEXT.to_string(),
         })?;
 
-        let target_entity_id = match ability_target {
-            CombatActionTarget::Single(id) => id,
-            _ => {
-                return Err(AppError {
-                    error_type: crate::errors::AppErrorTypes::InvalidInput,
-                    message: error_messages::INVALID_TARGETS_SELECTED.to_string(),
-                })
-            }
-        };
+        let (ally_ids, opponent_ids_option) =
+            battle.get_ally_ids_and_opponent_ids_option(ability_user_id)?;
+
+        let target_entity_id = ability_target.get_targets_if_scheme_valid(
+            ally_ids,
+            opponent_ids_option,
+            ability_user_id,
+            vec![TargetingScheme::All, TargetingScheme::Area],
+        )?[0];
 
         let (_, target_combatant_properties) =
-            self.get_combatant_in_battle_by_id(&battle, target_entity_id)?;
+            self.get_combatant_in_battle_by_id(&battle, &target_entity_id)?;
         let target_combatant_properties = target_combatant_properties.clone();
         let (_, user_combatant_properties) =
             self.get_combatant_in_battle_by_id(&battle, &ability_user_id)?;
@@ -66,7 +66,7 @@ impl RoguelikeRacerGame {
                 action_results.push(calculate_weapon_swing_result(
                     ability_user_id,
                     ability_target,
-                    *target_entity_id,
+                    target_entity_id,
                     &user_total_attributes,
                     &target_total_attributes,
                     mh_weapon_properties,
@@ -78,7 +78,7 @@ impl RoguelikeRacerGame {
                 action_results.push(calculate_weapon_swing_result(
                     ability_user_id,
                     ability_target,
-                    *target_entity_id,
+                    target_entity_id,
                     &user_total_attributes,
                     &target_total_attributes,
                     oh_weapon_properties,
@@ -93,7 +93,7 @@ impl RoguelikeRacerGame {
                 action_results.push(calculate_weapon_swing_result(
                     ability_user_id,
                     ability_target,
-                    *target_entity_id,
+                    target_entity_id,
                     &user_total_attributes,
                     &target_total_attributes,
                     &FIST,
@@ -107,7 +107,7 @@ impl RoguelikeRacerGame {
                     action_results.push(calculate_weapon_swing_result(
                         ability_user_id,
                         ability_target,
-                        *target_entity_id,
+                        target_entity_id,
                         &user_total_attributes,
                         &target_total_attributes,
                         &FIST,

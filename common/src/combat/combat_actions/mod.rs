@@ -1,6 +1,7 @@
 pub mod filter_possible_target_ids_by_prohibited_combatant_states;
 pub mod get_default_targets;
 pub mod get_next_or_previous_targets;
+mod get_targets;
 pub mod targets_are_valid;
 pub mod targets_by_saved_preference_or_default;
 pub mod validate_use;

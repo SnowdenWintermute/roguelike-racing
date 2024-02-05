@@ -9,7 +9,7 @@ pub fn welcome_info() -> Html {
         cloned_show_patch_notes_state.set(new_state);
     });
     html!(
-        <section class="flex-1 p-4 mb-4 mr-4 bg-slate-700 border border-slate-400 overflow-y-auto">
+        <section class="h-72 max-h-72 p-4 mb-4 mr-4 bg-slate-700 border border-slate-400 overflow-y-auto">
         <h3 class="text-lg">{"Roguelike Racing"}</h3>
         <button onclick={handle_show_patch_notes_click} class="mb-2">
             {"alpha 0.4.0 ⓘ"}
@@ -32,7 +32,7 @@ fn welcome_message() -> Html {
     <ul class="list-disc list-inside mb-1">
         <li>{"The info bar now has a proper home and does not block other UI elements"}</li>
         <li>{"Dead combatants no longer attack"}</li>
-        <li>{"Maximum UI width set to 1280px (relative to root element) and height set to 1080px"}</li>
+        <li>{"Maximum UI dimensions set to 1280px x 1080px relative to root element"}</li>
         <li>{"UI elements should no longer resize their neighbors in strange ways"}</li>
         <li>{"Changing focused character with inventory open sets page to 0 to avoid viewing empty pages"}</li>
         <li>{"Focus should properly switch to the active character when the active status was previously held by a monster"}</li>

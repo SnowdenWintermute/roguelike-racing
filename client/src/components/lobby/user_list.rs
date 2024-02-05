@@ -8,7 +8,7 @@ pub fn user_list() -> Html {
     let lobby_channel = &websocket_state.websocket_channels.main;
 
     html!(
-        <section class="w-[16rem] bg-slate-700 border border-slate-400 p-4">
+        <section class="min-w-[16rem] w-[16rem] bg-slate-700 border border-slate-400 p-4">
             <h2 class="text-slate-200 text-l mb-2">
                 {"Channel: "} {lobby_channel.name.clone()}
             </h2>

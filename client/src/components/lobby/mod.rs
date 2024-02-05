@@ -13,15 +13,15 @@ use yew::prelude::*;
 #[function_component(Lobby)]
 pub fn lobby() -> Html {
     html!(
-        <main class="min-h-screen w-screen bg-slate-800 flex justify-center">
-            <div class="max-w-[80rem] p-4 text-zinc-300 flex flex-col" >
-                <LobbyMenu/>
-                <div class="w-full flex flex-1" >
-                    <div class="w-full flex flex-col" >
+        <main class="min-h-screen max-h-screen w-screen bg-slate-800 text-zinc-300 justify-center overflow-y-auto">
+            <div class="p-4 h-screen max-h-screen max-w-[80rem] mx-auto flex flex-col" >
+                <LobbyMenu />
+                <div class="flex flex-grow" >
+                    <div class="flex flex-col" >
                         <WelcomeInfo />
                         <GameList/>
                     </div>
-                    <UserList/>
+                    <UserList />
                 </div>
             </div>
         </main>

@@ -105,7 +105,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
         name: "Mud Soaked Branch".to_string(),
     };
 
-    let _main_hand = Item {
+    let main_hand = Item {
         entity_properties: main_hand_entity_properties,
         item_level: 0,
         requirements: None,
@@ -229,11 +229,11 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
 
     // starting_equipment.insert(EquipmentSlots::Body, chest);
     starting_equipment.insert(EquipmentSlots::Head, head);
-    // starting_equipment.insert(EquipmentSlots::MainHand, main_hand);
+    starting_equipment.insert(EquipmentSlots::MainHand, main_hand);
     starting_equipment.insert(EquipmentSlots::OffHand, off_hand);
-    starting_equipment.insert(EquipmentSlots::RightRing, right_ring);
-    starting_equipment.insert(EquipmentSlots::LeftRing, left_ring);
-    starting_equipment.insert(EquipmentSlots::Amulet, amulet);
+    // starting_equipment.insert(EquipmentSlots::RightRing, right_ring);
+    // starting_equipment.insert(EquipmentSlots::LeftRing, left_ring);
+    // starting_equipment.insert(EquipmentSlots::Amulet, amulet);
 
     starting_equipment
 }

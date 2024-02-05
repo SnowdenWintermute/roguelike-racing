@@ -87,7 +87,7 @@ impl Monster {
 
         monster.combatant_properties.abilities.insert(
             CombatantAbilityNames::Attack,
-            CombatantAbility::new(CombatantAbilityNames::Attack),
+            CombatantAbility::new(CombatantAbilityNames::Attack, None),
         );
 
         monster

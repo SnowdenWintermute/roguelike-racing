@@ -100,12 +100,9 @@ fn calculate_and_add_derived_attribute(
 ) {
     let total_main_option = total_attributes.get(main);
     let total_secondary = total_attributes.get(&derived).unwrap_or_else(|| &0);
-    println!("total main {}: {:?}", main, total_main_option);
-    println!("base secondary {}: {}", derived, total_secondary);
     if let Some(main) = total_main_option {
         let derived_secondary_bonus = ratio * main;
         let total = total_secondary + derived_secondary_bonus;
-        println!("total secondary {}: {}", derived, total);
         total_attributes.insert(derived, total);
     }
 }

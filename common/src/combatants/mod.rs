@@ -13,6 +13,7 @@ mod unequip_item;
 use crate::combat::combat_actions::CombatActionTarget;
 use crate::combat::combat_actions::FriendOrFoe;
 use crate::combat::combat_actions::TargetingScheme;
+use crate::combat::magical_elements::MagicalElements;
 pub mod get_weapon_properties_traits_and_base_bonus_damage;
 mod set_new_ability_target_preferences;
 use self::abilities::CombatantAbility;
@@ -87,6 +88,7 @@ pub struct CombatantProperties {
     pub inventory: Inventory,
     pub abilities: HashMap<CombatantAbilityNames, CombatantAbility>,
     pub traits: HashMap<CombatantTraits, u8>,
+    pub inherent_elemental_affinities: HashMap<MagicalElements, i16>,
     pub selected_consumable: Option<u32>,
     pub selected_ability_name: Option<CombatantAbilityNames>,
     pub combat_action_targets: Option<CombatActionTarget>,
@@ -110,6 +112,7 @@ impl CombatantProperties {
             inventory: Inventory::new(),
             abilities,
             traits: HashMap::new(),
+            inherent_elemental_affinities: HashMap::new(),
             selected_consumable: None,
             selected_ability_name: None,
             combat_action_targets: None,

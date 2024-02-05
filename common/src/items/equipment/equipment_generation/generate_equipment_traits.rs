@@ -22,9 +22,9 @@ pub fn generate_equipment_traits(affixes: &Vec<Affix>) -> Option<Vec<EquipmentTr
                 }
                 PrefixTypes::Resilience => (),
                 PrefixTypes::Evasion => (),
-                PrefixTypes::Obscurity => (),
                 PrefixTypes::ArmorPenetration => (),
                 PrefixTypes::Agility => (),
+                PrefixTypes::Focus => todo!(),
             },
             Affix::Suffix(suffix, tier) => match suffix {
                 SuffixTypes::Strength => (),
@@ -33,7 +33,6 @@ pub fn generate_equipment_traits(affixes: &Vec<Affix>) -> Option<Vec<EquipmentTr
                 SuffixTypes::Vitality => (),
                 SuffixTypes::AllBase => (),
                 SuffixTypes::Hp => (),
-                SuffixTypes::Focus => (),
                 SuffixTypes::Damage => (),
                 SuffixTypes::Durability => {
                     if *tier != 5 {

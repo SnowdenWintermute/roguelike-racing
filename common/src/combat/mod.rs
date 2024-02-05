@@ -5,6 +5,7 @@ pub mod battle;
 pub mod combat_actions;
 pub mod consumable_use_handlers;
 mod get_combatant_by_id;
+pub mod magical_elements;
 mod turn_order;
 use self::battle::BattleGroup;
 use self::combat_actions::CombatAction;

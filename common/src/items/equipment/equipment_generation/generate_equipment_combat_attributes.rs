@@ -70,13 +70,6 @@ pub fn generate_equipment_combat_attributes(
                             tier * 2.0,
                         ));
                     }
-                    PrefixTypes::Obscurity => {
-                        attribute_templates.push(AttributeValueCreationTemplate::new(
-                            CombatAttributes::Obscurity,
-                            tier,
-                            tier * 2.0,
-                        ));
-                    }
                     PrefixTypes::ArmorPenetration => {
                         attribute_templates.push(AttributeValueCreationTemplate::new(
                             CombatAttributes::ArmorPenetration,
@@ -87,6 +80,13 @@ pub fn generate_equipment_combat_attributes(
                     PrefixTypes::Agility => {
                         attribute_templates.push(AttributeValueCreationTemplate::new(
                             CombatAttributes::Agility,
+                            tier,
+                            tier * 2.0,
+                        ));
+                    }
+                    PrefixTypes::Focus => {
+                        attribute_templates.push(AttributeValueCreationTemplate::new(
+                            CombatAttributes::Focus,
                             tier,
                             tier * 2.0,
                         ));
@@ -145,13 +145,6 @@ pub fn generate_equipment_combat_attributes(
                     SuffixTypes::Hp => {
                         attribute_templates.push(AttributeValueCreationTemplate::new(
                             CombatAttributes::Hp,
-                            tier,
-                            tier * 2.0,
-                        ));
-                    }
-                    SuffixTypes::Focus => {
-                        attribute_templates.push(AttributeValueCreationTemplate::new(
-                            CombatAttributes::Focus,
                             tier,
                             tier * 2.0,
                         ));

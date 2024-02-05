@@ -1,29 +1,34 @@
 use core::fmt;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde::Serialize;
 use strum_macros::EnumIter;
 
 #[derive(
     Debug, EnumIter, Clone, Copy, Hash, Eq, PartialEq, Serialize, Deserialize, PartialOrd, Ord,
 )]
 pub enum CombatAttributes {
+    // DERIVED
+    // offensive
     Damage,           // flat bonus to physical damage
     ArmorPenetration, // negates armor class
-    ArmorClass,       // compared with final damage of physical attack, reduces damage on a curve
     Accuracy,         // chance to hit with physical attacks and abilities
-    Evasion,          // dodge an attack
-    Focus,            // magical accuracy
-    Obscurity,        // chance to fully resist a magical ability
-    Speed,            // determines turn order
-    Hp,               // if reduced to 0 or below, combatant is "dead"
-    Mp,               // a resource for ability use
-    Dexterity,        // ranged damage, accuracy with physical attacks, physical crit chance, armor
-    // penetration for ranged piercing weapons
-    Intelligence, // mp, magic ability damage, obscurity, focus
-    Strength,     // damage with melee attacks, melee crit multiplier, melee armor penetration for
-    // piercing and slashing weapons
-    Vitality,   // hp and %damage reduction after AC damage reduction
-    Resilience, // %magic damage reduction, healing received, magical crit damage reduction
-    Agility,    // movement speed, evasion, physical crit damage reduction
+    // defensive
+    ArmorClass, // compared with final damage of physical attack, reduces damage on a curve
+    Evasion,    // dodge an attack
+    Hp,         // if reduced to 0 or below, combatant is "dead"
+    // utility
+    Speed, // determines turn order
+    Mp,    // a resource for ability use
+    // MAIN
+    // offensive
+    Focus,     // negates %magic reduction and increases spell crit chance and crit multiplier
+    Dexterity, // ranged damage, accuracy, physical crit chance, armor ranged armor pen
+    Intelligence, // mp, magic ability damage
+    Strength,  // damage with melee attacks, melee crit multiplier, melee armor pen
+    // defensive
+    Vitality,   // hp and %physical damage reduction after AC damage reduction
+    Resilience, // %magic damage reduction, healing received
+    Agility,    // movement speed, evasion, physical crit chance reduction
 }
 
 pub const CORE_ATTRIBUTES: [CombatAttributes; 4] = [
@@ -47,7 +52,6 @@ impl fmt::Display for CombatAttributes {
             CombatAttributes::Accuracy => write!(f, "Accuracy"),
             CombatAttributes::Focus => write!(f, "Focus"),
             CombatAttributes::Evasion => write!(f, "Evasion"),
-            CombatAttributes::Obscurity => write!(f, "Obscurity"),
             CombatAttributes::Speed => write!(f, "Speed"),
             CombatAttributes::Hp => write!(f, "HP"),
             CombatAttributes::Mp => write!(f, "MP"),

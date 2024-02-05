@@ -1,4 +1,3 @@
-use self::inventory::CharacterInventory;
 use self::outfit_new_warrior::outfit_new_warrior;
 use crate::combatants::abilities::CombatantAbility;
 use crate::combatants::abilities::CombatantAbilityNames;
@@ -10,17 +9,13 @@ use crate::primatives::EntityProperties;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
-mod equip_item;
-pub mod inventory;
 pub mod outfit_new_warrior;
-mod unequip_item;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Character {
     pub name_of_controlling_user: String,
     pub entity_properties: EntityProperties,
     pub combatant_properties: CombatantProperties,
-    pub inventory: CharacterInventory,
     pub unspent_ability_points: u8,
     pub actions_taken: u8,
 }
@@ -43,7 +38,6 @@ impl Character {
                 HashMap::new(),
                 CombatantControlledBy::Player(name_of_controlling_user),
             ),
-            inventory: CharacterInventory::new(),
             unspent_ability_points: 1,
             actions_taken: 0,
         };

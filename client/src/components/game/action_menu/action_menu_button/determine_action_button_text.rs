@@ -35,7 +35,6 @@ pub fn determine_action_button_text(action: GameActions, game_state: Rc<GameStor
                 "View Equipment".to_string()
             }
         }
-        GameActions::UseAutoinjector => "Use autoinjector".to_string(),
         GameActions::SelectItem(id) => determine_select_item_text(&id, game_state),
         GameActions::OpenTreasureChest => "Open treasure chest".to_string(),
         GameActions::TakeItem => "Pick up item".to_string(),
@@ -49,13 +48,18 @@ pub fn determine_action_button_text(action: GameActions, game_state: Rc<GameStor
             "Assign attributes".to_string()
         }
         GameActions::AssignAttributePoint(_attribute) => "Increase attribute".to_string(),
-        GameActions::CycleTargets(direction) => match direction {
+        GameActions::CycleAbilityTargets(direction)
+        | GameActions::CycleConsumableTargets(direction) => match direction {
             common::primatives::NextOrPrevious::Next => "Next target".to_string(),
             common::primatives::NextOrPrevious::Previous => "Prev target".to_string(),
         },
-        GameActions::CycleTargetingScheme => "Targeting scheme".to_string(),
-        GameActions::DeselectAbility => "Cancel".to_string(),
-        GameActions::UseSelectedAbility => "Execute".to_string(),
+        GameActions::CycleAbilityTargetingScheme | GameActions::CycleConsumableTargetingScheme => {
+            "Targeting scheme".to_string()
+        }
+        GameActions::DeselectAbility | GameActions::DeselectConsumable => "Cancel".to_string(),
+        GameActions::UseSelectedAbility | GameActions::UseSelectedConsumable => {
+            "Execute".to_string()
+        }
         GameActions::ToggleReadyToDescend => "Vote to descend".to_string(),
     }
 }
@@ -77,7 +81,7 @@ fn determine_use_item_text<'a>(id: &u32, game_state: Rc<GameStore>) -> &'a str {
         }
     }
 
-    for item in &character.inventory.items {
+    for item in &character.combatant_properties.inventory.items {
         if item.entity_properties.id == *id {
             match item.item_properties {
                 common::items::ItemProperties::Consumable(_) => return "Use",
@@ -105,7 +109,7 @@ fn determine_select_item_text(id: &u32, game_state: Rc<GameStore>) -> String {
         }
     }
 
-    for item in &character.inventory.items {
+    for item in &character.combatant_properties.inventory.items {
         if item.entity_properties.id == *id {
             return item.entity_properties.name.clone();
         }

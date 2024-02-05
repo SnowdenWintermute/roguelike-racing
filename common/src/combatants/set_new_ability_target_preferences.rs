@@ -1,21 +1,20 @@
-use super::abilities::get_combatant_ability_attributes::TargetingScheme;
-use super::abilities::AbilityTarget;
-use super::abilities::CombatantAbilityNames;
-use super::abilities::FriendOrFoe;
-use super::AbilityTargetPreferences;
+use super::CombatActionTargetPreferences;
+use crate::combat::combat_actions::CombatActionProperties;
+use crate::combat::combat_actions::CombatActionTarget;
+use crate::combat::combat_actions::FriendOrFoe;
+use crate::combat::combat_actions::TargetingScheme;
 
-impl AbilityTargetPreferences {
+impl CombatActionTargetPreferences {
     pub fn get_updated_preferences(
         &self,
-        selected_ability_name: &CombatantAbilityNames,
-        new_targets: &AbilityTarget,
+        combat_action_properties: &CombatActionProperties,
+        new_targets: &CombatActionTarget,
         ally_ids: Vec<u32>,
         opponent_ids_option: Option<Vec<u32>>,
-    ) -> AbilityTargetPreferences {
+    ) -> CombatActionTargetPreferences {
         let mut new_preferences = self.clone();
-        let ability_attributes = selected_ability_name.get_attributes();
         match new_targets {
-            AbilityTarget::Single(id) => {
+            CombatActionTarget::Single(id) => {
                 let is_opponent_id = {
                     if let Some(opponent_ids) = opponent_ids_option {
                         opponent_ids.contains(id)
@@ -31,16 +30,16 @@ impl AbilityTargetPreferences {
                     new_preferences.category_of_last_target = Some(FriendOrFoe::Friendly);
                 }
             }
-            AbilityTarget::Group(category) => {
-                if ability_attributes.targeting_schemes.len() > 1 {
+            CombatActionTarget::Group(category) => {
+                if combat_action_properties.targeting_schemes.len() > 1 {
                     new_preferences.category_of_last_target = Some(category.clone());
                     new_preferences.targeting_scheme_preference = TargetingScheme::Area;
                 } else {
                     // they had no choice, don't update prefs
                 }
             }
-            AbilityTarget::All => {
-                if ability_attributes.targeting_schemes.len() > 1 {
+            CombatActionTarget::All => {
+                if combat_action_properties.targeting_schemes.len() > 1 {
                     new_preferences.targeting_scheme_preference = TargetingScheme::All;
                 } else {
                     // they had no choice, don't update prefs

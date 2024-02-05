@@ -15,7 +15,6 @@ use std::time::UNIX_EPOCH;
 pub mod add_character_to_adventuring_party;
 pub mod getters;
 pub mod id_generator;
-pub mod player_actions;
 pub mod player_input_handlers;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]

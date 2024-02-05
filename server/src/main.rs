@@ -9,8 +9,6 @@ use actix_web::HttpServer;
 use actix_web::Responder;
 use actix_web_actors::ws;
 use rand::Rng;
-use std::sync::atomic::AtomicUsize;
-use std::sync::atomic::Ordering;
 use std::time::Instant;
 use websocket_server::websocket_actor::WebsocketActor;
 mod random_names;

@@ -1,6 +1,6 @@
 use super::CharacterAndItem;
 use super::CharacterAndSlot;
-use crate::combatants::abilities::AbilityTarget;
+use crate::combat::combat_actions::CombatActionTarget;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::CombatantClass;
 use crate::items::equipment::EquipmentSlots;
@@ -22,11 +22,12 @@ pub enum PlayerInputs {
     DeleteCharacter(u32),
     ToggleReady,
     // use items and abilities
-    SelectConsumable(u8),
-    UseSelectedConsumable,
+    UseSelectedConsumable(u32), // character_id
     SelectAbility(ClientSelectAbilityPacket),
-    UseSelectedAbility(u32),
-    ChangeTargets(ChangeTargetsPacket),
+    SelectConsumable(ClientSelectConsumablePacket),
+    UseSelectedAbility(u32), // character_id
+    ChangeAbilityTargets(ChangeTargetsPacket),
+    ChangeConsumableTargets(ChangeTargetsPacket),
     ClearConsumableAndAbilitySelections,
     // manage equipment and items
     UnequipEquipmentSlot(CharacterAndSlot),
@@ -93,7 +94,13 @@ pub struct ClientSelectAbilityPacket {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct ClientSelectConsumablePacket {
+    pub character_id: u32,
+    pub consumable_id_option: Option<u32>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ChangeTargetsPacket {
     pub character_id: u32,
-    pub new_targets: AbilityTarget,
+    pub new_targets: CombatActionTarget,
 }

@@ -1,11 +1,8 @@
-use crate::{
-    components::{
-        common_components::atoms::button_basic::ButtonBasic,
-        websocket_manager::send_client_input::send_client_input,
-    },
-    store::websocket_store::WebsocketStore,
-};
-use common::packets::{client_to_server::PlayerInputs, server_to_client::GameListEntry};
+use crate::components::common_components::atoms::button_basic::ButtonBasic;
+use crate::components::websocket_manager::send_client_input::send_client_input;
+use crate::store::websocket_store::WebsocketStore;
+use common::packets::client_to_server::PlayerInputs;
+use common::packets::server_to_client::GameListEntry;
 use yew::prelude::*;
 use yewdux::prelude::*;
 
@@ -26,7 +23,7 @@ pub fn game_list_item(props: &GameListItemProps) -> Html {
     html!(
         <li class="w-full flex border border-slate-400 mb-4 justify-between">
             <div class="flex">
-                <div class="h-10 flex items-center w-20 border-r border-slate-400 pl-4">
+                <div class="h-10 flex items-center w-40 border-r border-slate-400 pl-4">
                     <div class="overflow-hidden whitespace-nowrap overflow-ellipsis">
                         {props.game.game_name.clone()}
                     </div>

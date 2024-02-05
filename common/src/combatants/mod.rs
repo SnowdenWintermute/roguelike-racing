@@ -1,18 +1,24 @@
 pub mod abilities;
 pub mod combat_attributes;
+pub mod combatant_traits;
+mod equip_item;
 pub mod get_base_ability_damage_bonus;
+use self::combatant_traits::CombatantTraits;
 mod get_equipped_item;
 mod get_equipped_weapon_properties;
 mod get_total_attributes;
 mod get_weapon_damage_and_hit_chance;
+pub mod inventory;
+mod unequip_item;
+use crate::combat::combat_actions::CombatActionTarget;
+use crate::combat::combat_actions::FriendOrFoe;
+use crate::combat::combat_actions::TargetingScheme;
 pub mod get_weapon_properties_traits_and_base_bonus_damage;
 mod set_new_ability_target_preferences;
-use self::abilities::get_combatant_ability_attributes::TargetingScheme;
-use self::abilities::AbilityTarget;
 use self::abilities::CombatantAbility;
 use self::abilities::CombatantAbilityNames;
-use self::abilities::FriendOrFoe;
 use self::combat_attributes::CombatAttributes;
+use self::inventory::Inventory;
 use crate::app_consts::error_messages;
 use crate::errors::AppError;
 use crate::items::equipment::EquipmentSlots;
@@ -44,7 +50,7 @@ impl fmt::Display for CombatantClass {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub struct AbilityTargetPreferences {
+pub struct CombatActionTargetPreferences {
     pub friendly_single: Option<u32>,
     pub hostile_single: Option<u32>,
     pub category_of_last_target: Option<FriendOrFoe>,
@@ -52,9 +58,9 @@ pub struct AbilityTargetPreferences {
     pub targeting_scheme_preference: TargetingScheme,
 }
 
-impl Default for AbilityTargetPreferences {
+impl Default for CombatActionTargetPreferences {
     fn default() -> Self {
-        AbilityTargetPreferences {
+        CombatActionTargetPreferences {
             friendly_single: None,
             hostile_single: None,
             category_of_last_target: None,
@@ -78,12 +84,13 @@ pub struct CombatantProperties {
     pub mana: u16,
     pub status_effects: Vec<StatusEffects>,
     pub equipment: HashMap<EquipmentSlots, Item>,
+    pub inventory: Inventory,
     pub abilities: HashMap<CombatantAbilityNames, CombatantAbility>,
-    // pub traits: HashSet<CombatantTraits>
-    pub selected_item_slot: Option<u8>,
+    pub traits: HashMap<CombatantTraits, u8>,
+    pub selected_consumable: Option<u32>,
     pub selected_ability_name: Option<CombatantAbilityNames>,
-    pub ability_targets: Option<AbilityTarget>,
-    pub ability_target_preferences: AbilityTargetPreferences,
+    pub combat_action_targets: Option<CombatActionTarget>,
+    pub combat_action_target_preferences: CombatActionTargetPreferences,
     pub controlled_by: CombatantControlledBy,
 }
 
@@ -100,11 +107,13 @@ impl CombatantProperties {
             mana: 0,
             status_effects: vec![],
             equipment: HashMap::new(),
+            inventory: Inventory::new(),
             abilities,
-            selected_item_slot: None,
+            traits: HashMap::new(),
+            selected_consumable: None,
             selected_ability_name: None,
-            ability_targets: None,
-            ability_target_preferences: AbilityTargetPreferences::default(),
+            combat_action_targets: None,
+            combat_action_target_preferences: CombatActionTargetPreferences::default(),
             controlled_by,
         }
     }
@@ -121,6 +130,18 @@ impl CombatantProperties {
             Some(max_hp) => {
                 if max_hp < &self.hit_points {
                     self.hit_points = *max_hp
+                }
+            }
+            None => (),
+        }
+    }
+    pub fn clamp_curr_mp_to_max(&mut self) {
+        // @TODO optimize to only add up HP
+        let total_attributes = self.get_total_attributes();
+        match total_attributes.get(&CombatAttributes::Mp) {
+            Some(max_mp) => {
+                if max_mp < &self.mana {
+                    self.mana = *max_mp
                 }
             }
             None => (),

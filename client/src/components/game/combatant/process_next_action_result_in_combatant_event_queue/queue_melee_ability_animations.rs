@@ -2,8 +2,8 @@ use crate::components::mesh_manager::CombatantAnimation;
 use crate::components::mesh_manager::CombatantVisualLocation;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
+use common::combat::combat_actions::CombatActionTarget;
 use common::combat::ActionResult;
-use common::combatants::abilities::AbilityTarget;
 use common::errors::AppError;
 use std::collections::VecDeque;
 use yewdux::Dispatch;
@@ -14,9 +14,9 @@ pub fn queue_melee_ability_animations(
     action_result: &ActionResult,
 ) -> Result<(), AppError> {
     let target_id = match action_result.targets {
-        AbilityTarget::Single(id) => id,
-        AbilityTarget::Group(_) => combatant_id, // @TODO
-        AbilityTarget::All => combatant_id,
+        CombatActionTarget::Single(id) => id,
+        CombatActionTarget::Group(_) => combatant_id, // @TODO
+        CombatActionTarget::All => combatant_id,
     };
     game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
         let event_manager = store

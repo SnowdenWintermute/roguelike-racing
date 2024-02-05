@@ -2,6 +2,7 @@ pub mod consumables;
 pub mod equipment;
 pub mod items_by_level;
 use self::consumables::ConsumableProperties;
+use self::consumables::ConsumableTypes;
 use self::equipment::equipment_generation::generate_equipment_properties_from_base_item;
 use self::equipment::equipment_generation::name_equipment::name_equipment;
 use self::equipment::equipment_generation::EquipmentPropertiesAndRequirements;
@@ -11,10 +12,15 @@ use crate::combatants::combat_attributes::CombatAttributes;
 use crate::errors::AppError;
 use crate::game::id_generator::IdGenerator;
 use crate::primatives::EntityProperties;
+use rand::Rng;
 use serde::Deserialize;
 use serde::Serialize;
-mod generate_consumable_properties;
 use std::collections::HashMap;
+
+pub enum ItemCategories {
+    Equipment,
+    Consumable,
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum ItemProperties {
@@ -33,22 +39,59 @@ pub struct Item {
 // const CHANCE_OF_CONSUMABLE_DROP: u16 = 20;
 
 impl Item {
-    pub fn generate(id_generator: &mut IdGenerator, level: u8) -> Item {
-        let EquipmentPropertiesAndRequirements {
-            equipment_properties,
-            requirements,
-        } = generate_equipment_properties_from_base_item(level);
-        let item_name = name_equipment(&equipment_properties);
-        println!("generated item: {item_name}");
+    pub fn generate(
+        id_generator: &mut IdGenerator,
+        item_level: u8,
+        forced_type_option: Option<ItemCategories>,
+    ) -> Item {
+        let item_type = match forced_type_option {
+            Some(forced_type) => forced_type,
+            None => {
+                let mut rng = rand::thread_rng();
+                let category_roll = rng.gen_range(0..=4);
+                if category_roll > 0 {
+                    ItemCategories::Equipment
+                } else {
+                    ItemCategories::Consumable
+                }
+            }
+        };
+        match item_type {
+            ItemCategories::Equipment => {
+                let EquipmentPropertiesAndRequirements {
+                    equipment_properties,
+                    requirements,
+                } = generate_equipment_properties_from_base_item(item_level);
+                let item_name = name_equipment(&equipment_properties);
+                println!("generated item: {item_name}");
 
-        Item {
-            entity_properties: EntityProperties {
-                id: id_generator.get_next_entity_id(),
-                name: item_name,
-            },
-            item_level: level as u8,
-            requirements,
-            item_properties: ItemProperties::Equipment(equipment_properties),
+                Item {
+                    entity_properties: EntityProperties {
+                        id: id_generator.get_next_entity_id(),
+                        name: item_name,
+                    },
+                    item_level,
+                    requirements,
+                    item_properties: ItemProperties::Equipment(equipment_properties),
+                }
+            }
+            ItemCategories::Consumable => {
+                // let consumable_type = ConsumableTypes::random();
+                let consumable_type = ConsumableTypes::HpAutoinjector;
+                let item_name = format!("{}", consumable_type);
+                Item {
+                    entity_properties: EntityProperties {
+                        id: id_generator.get_next_entity_id(),
+                        name: item_name,
+                    },
+                    item_level,
+                    requirements: consumable_type.get_requirements(item_level),
+                    item_properties: ItemProperties::Consumable(ConsumableProperties {
+                        consumable_type,
+                        uses_remaining: 1,
+                    }),
+                }
+            }
         }
     }
 

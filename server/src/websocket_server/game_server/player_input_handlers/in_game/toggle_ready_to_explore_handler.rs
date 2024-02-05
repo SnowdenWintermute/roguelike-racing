@@ -127,6 +127,16 @@ impl GameServer {
             party.rooms_explored.on_current_floor += 1;
             party.rooms_explored.total += 1;
 
+            self.emit_packet(
+                &party_websocket_channel_name,
+                &WebsocketChannelNamespace::Party,
+                &GameServerUpdatePackets::DungeonRoomUpdate(room.clone()),
+                None,
+            )?;
+
+            let game = get_mut_game(&mut self.games, &game_name)?;
+            let party = get_mut_party(game, party_id)?;
+
             if room.monsters.is_some() {
                 let group_a = BattleGroup {
                     name: format!("{}", party.name).to_string(),
@@ -143,6 +153,8 @@ impl GameServer {
                     group_type: BattleGroupTypes::ComputerControlled,
                 };
                 let battle_id = game.initiate_battle(group_a, group_b)?;
+                println!("ticking combat at battle start");
+                game.tick_combat_until_next_combatant_is_active(battle_id)?;
                 let party = get_mut_party(game, party_id)?;
                 party.battle_id = Some(battle_id);
                 let battle = game.battles.get(&battle_id).clone().expect("just inserted");
@@ -156,12 +168,28 @@ impl GameServer {
                 )?;
             }
 
-            self.emit_packet(
-                &party_websocket_channel_name,
-                &WebsocketChannelNamespace::Party,
-                &GameServerUpdatePackets::DungeonRoomUpdate(room),
-                None,
-            )?;
+            let game = get_mut_game(&mut self.games, &game_name)?;
+            let party = get_mut_party(game, party_id)?;
+            let battle_id_option = party.battle_id;
+            if let Some(battle_id) = party.battle_id {
+                self.take_ai_turns_at_battle_start(
+                    &game_name,
+                    battle_id,
+                    &party_websocket_channel_name,
+                )?;
+                let game = get_mut_game(&mut self.games, &game_name)?;
+                let party = get_mut_party(game, party_id)?;
+                let character_positions = party.character_positions.clone();
+                let all_allies_are_dead =
+                    game.all_combatants_in_group_are_dead(character_positions)?;
+                if all_allies_are_dead {
+                    self.handle_party_wipe(
+                        actor_id,
+                        &party_websocket_channel_name,
+                        &battle_id_option,
+                    )?;
+                }
+            }
         }
         Ok(())
     }

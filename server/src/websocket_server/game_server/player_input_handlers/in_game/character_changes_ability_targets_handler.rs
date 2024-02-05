@@ -1,10 +1,10 @@
+use super::character_changes_combat_action_targets_handler::character_changes_combat_action_targets_handler;
 use crate::websocket_server::game_server::getters::get_mut_game;
 use crate::websocket_server::game_server::getters::get_mut_party_game_name_and_character_ids_from_actor_id;
 use crate::websocket_server::game_server::getters::get_user;
 use crate::websocket_server::game_server::getters::ActorIdAssociatedPartyData;
 use crate::websocket_server::game_server::GameServer;
 use common::app_consts::error_messages::{self};
-use common::combatants::abilities::filter_possible_target_ids_by_prohibited_combatant_states::filter_possible_target_ids_by_prohibited_combatant_states;
 use common::errors::AppError;
 use common::errors::AppErrorTypes;
 use common::game::getters::get_mut_party;
@@ -24,6 +24,10 @@ impl GameServer {
             new_targets,
         } = packet;
 
+        let ActorIdAssociatedPartyData {
+            player_character_ids_option,
+            ..
+        } = get_mut_party_game_name_and_character_ids_from_actor_id(self, actor_id)?;
         let connected_user = get_user(&self.sessions, actor_id)?;
         let username = connected_user.username.clone();
         let current_game_name =
@@ -53,62 +57,30 @@ impl GameServer {
                 error_type: AppErrorTypes::Generic,
                 message: error_messages::NO_ABILITY_SELECTED.to_string(),
             })?;
-        let ability = combatant.get_ability_if_owned(&ability_name)?;
-        let ability_name = ability.ability_name.clone();
+        let _ = combatant.get_ability_if_owned(&ability_name)?;
+        let ability_attributes = ability_name.get_attributes();
+        let combat_action_properties = ability_attributes.combat_action_properties;
 
-        let (ally_ids, opponent_ids_option) = if let Some(battle_id) = battle_id_option {
-            let battle = game.battles.get(&battle_id).ok_or_else(|| AppError {
-                error_type: AppErrorTypes::Generic,
-                message: error_messages::BATTLE_NOT_FOUND.to_string(),
-            })?;
-
-            battle.get_ally_ids_and_opponent_ids_option(character_id)?
-        } else {
-            (character_positions.clone(), None)
-        };
-
-        let prohibited_target_combatant_states = ability_name
-            .get_attributes()
-            .prohibited_target_combatant_states;
-        let (ally_ids, opponent_ids_option) =
-            filter_possible_target_ids_by_prohibited_combatant_states(
+        let (new_targets, new_target_preferences) =
+            character_changes_combat_action_targets_handler(
                 game,
-                prohibited_target_combatant_states,
-                ally_ids,
-                opponent_ids_option,
+                new_targets,
+                combat_action_properties,
+                character_id,
+                battle_id_option,
+                character_positions,
+                player_character_ids_option.clone(),
+                party_id,
             )?;
 
-        let new_targets = if ability_name.targets_are_valid(
-            character_id,
-            &new_targets,
-            &ally_ids,
-            &opponent_ids_option,
-        ) {
-            new_targets
-        } else {
-            ability_name.get_default_targets(character_id, &ally_ids, &opponent_ids_option)?
-        };
-
-        let ActorIdAssociatedPartyData {
-            party,
-            player_character_ids_option,
-            ..
-        } = get_mut_party_game_name_and_character_ids_from_actor_id(self, actor_id)?;
-        let character =
-            party.get_character_if_owned(player_character_ids_option.clone(), character_id)?;
-
-        let target_preferences = &character.combatant_properties.ability_target_preferences;
-        let new_target_preferences = target_preferences.get_updated_preferences(
-            &ability_name,
-            &new_targets,
-            ally_ids,
-            opponent_ids_option,
-        );
+        let party = get_mut_party(game, party_id)?;
         let character =
             party.get_mut_character_if_owned(player_character_ids_option, character_id)?;
 
-        character.combatant_properties.ability_target_preferences = new_target_preferences;
-        character.combatant_properties.ability_targets = Some(new_targets.clone());
+        character
+            .combatant_properties
+            .combat_action_target_preferences = new_target_preferences;
+        character.combatant_properties.combat_action_targets = Some(new_targets.clone());
 
         self.emit_packet(
             &party_websocket_channel_name,

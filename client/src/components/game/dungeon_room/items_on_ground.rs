@@ -1,4 +1,6 @@
-use crate::components::common_components::atoms::button_basic::ButtonBasic;
+use crate::components::game::action_menu::action_button_hover_handlers::create_action_mouse_enter_handler;
+use crate::components::game::action_menu::action_button_hover_handlers::create_action_mouse_leave_handler;
+use crate::components::game::action_menu::enums::GameActions;
 use crate::components::websocket_manager::send_client_input::send_client_input;
 use crate::store::game_store::get_current_party_option;
 use crate::store::game_store::GameStore;
@@ -50,7 +52,7 @@ pub struct ItemOnGroundProps {
 
 #[function_component(ItemOnGround)]
 pub fn item_on_ground(props: &ItemOnGroundProps) -> Html {
-    let (game_state, _) = use_store::<GameStore>();
+    let (game_state, game_dispatch) = use_store::<GameStore>();
     let (websocket_state, _) = use_store::<WebsocketStore>();
 
     let cloned_websocket_state = websocket_state.clone();
@@ -65,17 +67,59 @@ pub fn item_on_ground(props: &ItemOnGroundProps) -> Html {
             }),
         )
     });
+    let cloned_game_state = game_state.clone();
+    let cloned_game_dispatch = game_dispatch.clone();
+    let mouse_enter_handler = Callback::from(move |_| {
+        create_action_mouse_enter_handler(
+            GameActions::SelectItem(item_id),
+            cloned_game_dispatch.clone(),
+            cloned_game_state.clone(),
+        )()
+    });
+    let cloned_game_dispatch = game_dispatch.clone();
+    let mouse_leave_handler = Callback::from(move |_| {
+        create_action_mouse_leave_handler(
+            GameActions::SelectItem(item_id),
+            cloned_game_dispatch.clone(),
+        )()
+    });
+    let cloned_game_state = game_state.clone();
+    let cloned_game_dispatch = game_dispatch.clone();
+    let focus_handler = Callback::from(move |_| {
+        create_action_mouse_enter_handler(
+            GameActions::SelectItem(item_id),
+            cloned_game_dispatch.clone(),
+            cloned_game_state.clone(),
+        )()
+    });
+    let cloned_game_dispatch = game_dispatch.clone();
+    let blur_handler = Callback::from(move |_| {
+        create_action_mouse_leave_handler(
+            GameActions::SelectItem(item_id),
+            cloned_game_dispatch.clone(),
+        )()
+    });
 
     html!(
-    <li class="h-10 w-full max-w-full flex border border-slate-400 mb-2 last:mb-0 whitespace-nowrap text-ellipsis overflow-hidden" >
-        <ButtonBasic
-            extra_styles="border-0 border-r hover:bg-slate-950 h-full"
+    <li class="h-10 w-full max-w-full flex border-r border-l border-b border-slate-400 first:border-t
+    hover:border-yellow-400 hover:border-t box-border
+    whitespace-nowrap text-ellipsis overflow-hidden cursor-default"
+        onmouseenter={mouse_enter_handler}
+        onmouseleave={mouse_leave_handler}
+        >
+        <button
+            class="cursor-pointer pr-4 pl-4 box-border
+            flex justify-center items-center disabled:opacity-50 disabled:cursor-auto
+            border-slate-400 border-r h-full"
             onclick={take_item}
+            onfocus={focus_handler}
+            onblur={blur_handler}
             disabled={props.disabled}
         >
             {"Take"}
-        </ButtonBasic>
-        <div class="flex items-center h-full w-full ">
+        </button>
+        <div class="flex items-center h-full w-full "
+        >
             <div class="pl-2 overflow-hidden whitespace-nowrap text-ellipsis ">
                 {&props.name}{" "}{&props.id}
             </div>

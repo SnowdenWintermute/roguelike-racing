@@ -3,10 +3,9 @@ use super::enums::MenuTypes;
 use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
 use common::adventuring_party::AdventuringParty;
-use common::combatants::abilities::get_combatant_ability_attributes::AbilityUsableContext;
+use common::combat::combat_actions::AbilityUsableContext;
 use common::combatants::abilities::CombatantAbilityNames;
 use common::dungeon_rooms::DungeonRoomTypes;
-use gloo::console::log;
 use std::rc::Rc;
 
 // determine menu actions
@@ -21,18 +20,21 @@ pub fn determine_menu_actions(
     let focused_character_option = party.characters.get(&game_state.focused_character_id);
     let player_owns_character =
         party.player_owns_character(&lobby_state.username, game_state.focused_character_id);
-    let focused_character_is_selecting_ability = {
-        if let Some(character) = focused_character_option {
+    let focused_character_is_selecting_ability = focused_character_option
+        .map(|character| {
             character
                 .combatant_properties
                 .selected_ability_name
                 .is_some()
-        } else {
-            false
-        }
-    };
-
-    if game_state.viewing_items_on_ground {
+        })
+        .unwrap_or(false);
+    let focused_character_is_selecting_consumable = focused_character_option
+        .map(|character| character.combatant_properties.selected_consumable.is_some())
+        .unwrap_or(false);
+    if focused_character_is_selecting_consumable && player_owns_character {
+        menu_types.push(MenuTypes::ConsumableSelected);
+        new_actions = MenuTypes::get_actions(&menu_types, None, None);
+    } else if game_state.viewing_items_on_ground {
         menu_types.push(MenuTypes::ItemsOnGround);
         new_actions = MenuTypes::get_actions(&menu_types, None, None);
         //
@@ -55,7 +57,7 @@ pub fn determine_menu_actions(
         menu_types.push(MenuTypes::InventoryOpen);
         if let Some(character) = focused_character_option {
             let mut ids = Vec::new();
-            for item in &character.inventory.items {
+            for item in &character.combatant_properties.inventory.items {
                 ids.push(item.entity_properties.id);
             }
             new_actions = MenuTypes::get_actions(&menu_types, Some(ids), None);
@@ -84,13 +86,7 @@ pub fn determine_menu_actions(
         if party.current_room.items.len() > 0 {
             menu_types.push(MenuTypes::ItemsOnGround);
         }
-        log!(format!(
-            "current room type: {}",
-            party.current_room.room_type
-        ));
-
         if party.current_room.room_type == DungeonRoomTypes::Stairs {
-            log!("pushing staircase menu");
             menu_types.push(MenuTypes::Staircase)
         }
         new_actions = MenuTypes::get_actions(&menu_types, None, Some(ability_names));
@@ -120,7 +116,13 @@ fn get_ability_menu_names(
     if let Some(character) = focused_character {
         for (ability_name, ability) in &character.combatant_properties.abilities {
             if let Some(excluded_context) = &excluded_usable_context {
-                if &ability.ability_name.get_attributes().usability_context != excluded_context {
+                if &ability
+                    .ability_name
+                    .get_attributes()
+                    .combat_action_properties
+                    .usability_context
+                    != excluded_context
+                {
                     ability_names.push(ability_name.clone());
                 }
             }

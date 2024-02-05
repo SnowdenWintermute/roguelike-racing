@@ -1,4 +1,5 @@
 mod approach_combatant_animation_finished_handler;
+mod autoinjector_use_animation_finished_handler;
 mod follow_through_swing_animation_finished_handler;
 mod handle_animation_finished;
 mod return_to_ready_position_animation_finished_handler;
@@ -18,12 +19,16 @@ pub fn process_next_animation_in_combatant_animation_queue(
 ) {
     if let Some(animation) = animation_queue.front() {
         let cloned_animation = animation.clone();
-        timer_state.set(Some(gloo::timers::callback::Timeout::new(100, move || {
-            let _result = handle_animation_finished::handle_animation_finished(
-                game_dispatch,
-                cloned_animation,
-                combatant_id,
-            );
-        })));
+        let animation_duration = 100;
+        timer_state.set(Some(gloo::timers::callback::Timeout::new(
+            animation_duration,
+            move || {
+                let _result = handle_animation_finished::handle_animation_finished(
+                    game_dispatch,
+                    cloned_animation,
+                    combatant_id,
+                );
+            },
+        )));
     }
 }

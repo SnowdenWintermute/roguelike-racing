@@ -32,8 +32,14 @@ pub fn turn_order_bar() -> Html {
     };
 
     html!(
-    <ul class="list-none flex" >
-        {bar_content}
-    </ul>
+        <div class="flex">
+            <div class="mr-4 flex justify-center items-center pr-2 pl-2 border-slate-400" >
+            {"Turn order: "}
+            </div>
+            <ul class="list-none flex border-l border-slate-400" >
+                {bar_content}
+            </ul>
+        </div>
+
     )
 }

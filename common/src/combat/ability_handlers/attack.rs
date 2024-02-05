@@ -2,7 +2,7 @@ use crate::combat::ability_handlers::ability_resolution_calculators::calculate_w
 use crate::combat::battle::Battle;
 use crate::app_consts::error_messages;
 use crate::combat::ActionResult;
-use crate::combatants::abilities::AbilityTarget;
+use crate::combat::combat_actions::CombatActionTarget;
 use crate::errors::AppError;
 use crate::game::RoguelikeRacerGame;
 use crate::items::equipment::EquipmentSlots;
@@ -10,9 +10,9 @@ use crate::items::equipment::unarmed::FIST;
 
 impl RoguelikeRacerGame {
     pub fn attack_handler(
-        &mut self,
+        &self,
         ability_user_id: u32,
-        ability_target: &AbilityTarget,
+        ability_target: &CombatActionTarget,
         battle_option: Option<&Battle>,
     ) -> Result<Vec<ActionResult>, AppError> {
         let mut action_results = vec![];
@@ -22,7 +22,7 @@ impl RoguelikeRacerGame {
         })?;
 
         let target_entity_id = match ability_target {
-            AbilityTarget::Single(id) => id,
+            CombatActionTarget::Single(id) => id,
             _ => {
                 return Err(AppError {
                     error_type: crate::errors::AppErrorTypes::InvalidInput,
@@ -43,6 +43,7 @@ impl RoguelikeRacerGame {
             user_combatant_properties.get_equipped_item(&EquipmentSlots::MainHand);
         let oh_equipment_option =
             user_combatant_properties.get_equipped_item(&EquipmentSlots::OffHand);
+        // check for sheilds since they can't be used to attack
         let mh_weapon_option = match mh_equipment_option {
             Some(equipment_properties) => match equipment_properties.is_weapon() {
                 true => Some(equipment_properties),
@@ -58,9 +59,9 @@ impl RoguelikeRacerGame {
             None => None,
         };
 
+        // WEILDING WEAPON(S)
         if mh_weapon_option.is_some() || oh_weapon_option.is_some() {
             let mh_swing_ends_turn = oh_weapon_option.is_none();
-            println!("main hand swing ends turn ARMED: {mh_swing_ends_turn}");
             if let Some(mh_weapon_properties) = mh_weapon_option {
                 action_results.push(calculate_weapon_swing_result(
                     ability_user_id,
@@ -86,10 +87,8 @@ impl RoguelikeRacerGame {
                 )?);
             };
         } else {
-            // UNARMED (on)
+            // UNARMED
             let mh_swing_ends_turn = oh_equipment_option.is_some();
-            println!("oh equipment option: {:#?}", oh_equipment_option);
-            println!("unarmed mh swing ends turn: {:#?}", mh_swing_ends_turn);
             if mh_equipment_option.is_none() {
                 action_results.push(calculate_weapon_swing_result(
                     ability_user_id,

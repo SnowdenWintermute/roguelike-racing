@@ -79,7 +79,7 @@ impl AdventuringParty {
                     return Some(item);
                 }
             }
-            for item in &character.inventory.items {
+            for item in &character.combatant_properties.inventory.items {
                 if item.entity_properties.id == id {
                     return Some(item);
                 }

@@ -1,7 +1,6 @@
 use crate::components::common_components::atoms::button_basic::ButtonBasic;
 use crate::components::game::dungeon_room::empty_room::EmptyRoom;
 use crate::components::game::dungeon_room::stairs::Stairs;
-use crate::store::websocket_store::WebsocketStore;
 use common::character::Character;
 use common::dungeon_rooms::DungeonRoomTypes;
 mod empty_room;
@@ -24,7 +23,6 @@ pub struct Props {
 
 #[function_component(DungeonRoom)]
 pub fn dungeon_room(props: &Props) -> Html {
-    let (websocket_state, _) = use_store::<WebsocketStore>();
     let (game_state, game_dispatch) = use_store::<GameStore>();
     let game_result = game_state.get_current_game();
     if let Ok(game) = game_result {
@@ -46,12 +44,12 @@ pub fn dungeon_room(props: &Props) -> Html {
         });
 
         let conditional_styles = match game_state.viewing_inventory {
-            true => "min-w-[350px] w-[350px] mr-4",
+            true => "w-[22rem] mr-4",
             false => "w-full",
         };
 
         let time_of_death_option = if let Some(time_of_wipe) = party.time_of_wipe {
-            Some("now")
+            Some(format!("unix timestamp ({})", time_of_wipe))
         } else {
             None
         };
@@ -70,8 +68,8 @@ pub fn dungeon_room(props: &Props) -> Html {
 
         html!(
             <section class={format!("h-full border border-slate-400 bg-slate-700 flex {}", conditional_styles)} >
-                <div class="w-1/2 flex p-2" >
-                    <div class="flex flex-col mr-2" >
+                <div class="w-1/2 flex p-2 h-full" >
+                    <div class="flex flex-col mr-4 h-full flex-grow" >
                         {characters.iter().map(|(_id, character)|
                             html!{<Combatant
                                 entity_properties={character.entity_properties.clone()}
@@ -79,7 +77,7 @@ pub fn dungeon_room(props: &Props) -> Html {
                                 />}).collect::<Html>()
                         }
                     </div>
-                    if party.current_room.monsters.is_none() {
+                    if party.current_room.monsters.is_none() && !game_state.viewing_inventory {
                         <PlayersReadyToExplore
                             players_ready_to_explore={party.players_ready_to_explore.clone()}
                             players_ready_to_descend_option={players_ready_to_descend_option}
@@ -87,7 +85,6 @@ pub fn dungeon_room(props: &Props) -> Html {
                         />
                     }
                 </div>
-                // if !game_state.viewing_inventory {
                 <div class="w-1/2 border-l border-slate-400 p-2 flex flex-col" >
                     if let Some(time_of_death) = time_of_death_option {
                         <div class=" border border-slate-400 bg-slate-700 p-4
@@ -100,10 +97,10 @@ pub fn dungeon_room(props: &Props) -> Html {
                             </ButtonBasic>
                         </div>
                     }
-                    if party.current_room.room_type == DungeonRoomTypes::Stairs {
+                    if party.current_room.room_type == DungeonRoomTypes::Stairs && !game_state.viewing_inventory {
                         <Stairs />
                     }
-                    if party.current_room.room_type == DungeonRoomTypes::Empty {
+                    if party.current_room.room_type == DungeonRoomTypes::Empty && !game_state.viewing_inventory {
                         <EmptyRoom />
                     }
                     if let Some(battle_id) = game_state.current_battle_id {

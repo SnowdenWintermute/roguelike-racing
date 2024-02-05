@@ -25,8 +25,12 @@ pub fn focus_character_button(props: &Props) -> Html {
     };
 
     let id = props.id;
-    let handle_click =
-        Callback::from(move |_| game_dispatch.reduce_mut(|store| store.focused_character_id = id));
+    let handle_click = Callback::from(move |_| {
+        game_dispatch.reduce_mut(|store| {
+            store.selected_item = None;
+            store.focused_character_id = id;
+        })
+    });
     let conditional_styles = if is_focused_character {
         "bg-green-700"
     } else {

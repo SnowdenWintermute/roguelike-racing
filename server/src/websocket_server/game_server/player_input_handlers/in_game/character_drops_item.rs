@@ -26,7 +26,7 @@ impl GameServer {
             .get_mut_character_if_owned(player_character_ids_option.clone(), packet.character_id)?;
         let character_id = character.entity_properties.id;
 
-        let item = character.inventory.remove_item(packet.item_id)?;
+        let item = character.combatant_properties.inventory.remove_item(packet.item_id)?;
         let item_id = item.entity_properties.id;
         party.current_room.items.push(item);
 

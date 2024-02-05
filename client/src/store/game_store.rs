@@ -14,6 +14,7 @@ use common::items::equipment::EquipmentSlots;
 use common::items::Item;
 use common::packets::server_to_client::BattleEndReportPacket;
 use common::primatives::EntityProperties;
+use gloo::console::log;
 use std::collections::HashSet;
 use std::rc::Rc;
 use yewdux::prelude::*;
@@ -217,6 +218,10 @@ pub fn select_item(game_dispatch: Dispatch<GameStore>, item_option: Option<Item>
         store
             .parent_menu_pages
             .push(store.action_menu_current_page_number);
+        log!(format!(
+            "pushed to parent page number {:?}",
+            store.parent_menu_pages
+        ));
         store.action_menu_current_page_number = 0;
     })
 }
@@ -295,7 +300,25 @@ pub fn get_item_owned_by_focused_character(
         }
     }
 
-    for item in &character.inventory.items {
+    for item in &character.combatant_properties.inventory.items {
+        if item.entity_properties.id == *id {
+            return Ok(item.clone());
+        }
+    }
+
+    return Err(AppError {
+        error_type: common::errors::AppErrorTypes::ClientError,
+        message: error_messages::INVALID_ITEM_ID.to_string(),
+    });
+}
+
+pub fn get_item_on_ground(id: &u32, game_state: Rc<GameStore>) -> Result<Item, AppError> {
+    let party = get_current_party_option(&game_state).ok_or_else(|| AppError {
+        error_type: common::errors::AppErrorTypes::ClientError,
+        message: error_messages::PARTY_NOT_FOUND.to_string(),
+    })?;
+
+    for item in &party.current_room.items {
         if item.entity_properties.id == *id {
             return Ok(item.clone());
         }

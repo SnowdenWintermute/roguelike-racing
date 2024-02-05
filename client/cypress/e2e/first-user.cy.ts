@@ -23,15 +23,20 @@ describe("a test test", () => {
     cy.task("waitForCheckpoint", "second player character created");
 
     cy.findByRole("button", { name: "Ready" }).click();
-    // cy.findByText("Open Inventory").click();
+    cy.findByText("Open Inventory").click();
+    cy.findAllByText("HP Autoinjector").first().click();
+    cy.findByText("Use").click();
+    cy.findByText("Execute").click();
+    cy.findByText("Close Inventory").click();
+
     cy.findByText("Ready to explore").click();
-    // cy.findByText("Attack").click();
-    // cy.findByText("Execute").click();
+    cy.findByText("Attack").click();
+    cy.findByText("Execute").click();
 
-    // cy.wait(2000);
+    cy.wait(2000);
 
-    // cy.findByText("Attack").click();
-    // cy.findByText("Execute").click();
+    cy.findByText("Attack").click();
+    cy.findByText("Execute").click();
     // cy.task("checkpoint", "first attack executed");
 
     // cy.findAllByText("Take").first().click({ force: true });

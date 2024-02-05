@@ -1,5 +1,8 @@
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::game::id_generator::IdGenerator;
+use crate::items::equipment::affixes::Affix;
+use crate::items::equipment::affixes::PrefixTypes;
+use crate::items::equipment::affixes::SuffixTypes;
 use crate::items::equipment::armor_properties::ArmorCategories;
 use crate::items::equipment::armor_properties::ArmorProperties;
 use crate::items::equipment::body_armors::BodyArmors;
@@ -60,7 +63,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
         ),
         durability: Some(MaxAndCurrent::new(2, 2)),
         attributes: HashMap::new(),
-        affixes: vec![],
+        affixes: vec![Affix::Suffix(SuffixTypes::Intelligence, 1)],
         traits: None,
     };
 
@@ -102,7 +105,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
         name: "Mud Soaked Branch".to_string(),
     };
 
-    let _main_hand = Item {
+    let main_hand = Item {
         entity_properties: main_hand_entity_properties,
         item_level: 0,
         requirements: None,
@@ -122,12 +125,16 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
     //     affixes: vec![],
     //     traits: None,
     // };
+    // let off_hand_entity_properties = EntityProperties {
+    //     id: id_generator.get_next_entity_id(),
+    //     name: "Rotted Stick".to_string(),
+    // };
     let off_hand_properties = EquipmentProperties {
         equipment_type: EquipmentTypes::Shield(
             Shields::MakeshiftBuckler,
             ShieldProperties {
                 size: ShieldSizes::Small,
-                armor_class: 100,
+                armor_class: 5,
             },
         ),
         durability: Some(MaxAndCurrent::new(2, 2)),
@@ -138,7 +145,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
 
     let off_hand_entity_properties = EntityProperties {
         id: id_generator.get_next_entity_id(),
-        name: "Rotted Stick".to_string(),
+        name: "Pot Lid".to_string(),
     };
 
     let off_hand = Item {
@@ -152,13 +159,13 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
         equipment_type: EquipmentTypes::Ring,
         durability: None,
         attributes: HashMap::new(),
-        affixes: vec![],
+        affixes: vec![Affix::Prefix(PrefixTypes::Mp, 1)],
         traits: None,
     };
 
     right_ring_properties
         .attributes
-        .insert(CombatAttributes::Hp, 2);
+        .insert(CombatAttributes::Mp, 2);
 
     let right_ring_entity_properties = EntityProperties {
         id: id_generator.get_next_entity_id(),
@@ -176,7 +183,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
         equipment_type: EquipmentTypes::Ring,
         durability: None,
         attributes: HashMap::new(),
-        affixes: vec![],
+        affixes: vec![Affix::Suffix(SuffixTypes::Hp, 1)],
         traits: None,
     };
 
@@ -200,7 +207,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
         equipment_type: EquipmentTypes::Amulet,
         durability: None,
         attributes: HashMap::new(),
-        affixes: vec![],
+        affixes: vec![Affix::Prefix(PrefixTypes::Evasion, 1)],
         traits: None,
     };
 
@@ -222,11 +229,11 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
 
     // starting_equipment.insert(EquipmentSlots::Body, chest);
     starting_equipment.insert(EquipmentSlots::Head, head);
-    // starting_equipment.insert(EquipmentSlots::MainHand, main_hand);
+    starting_equipment.insert(EquipmentSlots::MainHand, main_hand);
     starting_equipment.insert(EquipmentSlots::OffHand, off_hand);
-    starting_equipment.insert(EquipmentSlots::RightRing, right_ring);
-    starting_equipment.insert(EquipmentSlots::LeftRing, left_ring);
-    starting_equipment.insert(EquipmentSlots::Amulet, amulet);
+    // starting_equipment.insert(EquipmentSlots::RightRing, right_ring);
+    // starting_equipment.insert(EquipmentSlots::LeftRing, left_ring);
+    // starting_equipment.insert(EquipmentSlots::Amulet, amulet);
 
     starting_equipment
 }

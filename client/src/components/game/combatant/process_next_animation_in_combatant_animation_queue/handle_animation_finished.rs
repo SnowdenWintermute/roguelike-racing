@@ -7,6 +7,7 @@ use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::errors::AppError;
 use yewdux::Dispatch;
+use super::autoinjector_use_animation_finished_handler::autoinjector_use_animation_finished_handler;
 
 pub fn handle_animation_finished(
     game_dispatch: Dispatch<GameStore>,
@@ -28,8 +29,12 @@ pub fn handle_animation_finished(
             follow_through_swing_animation_finished_handler(game_dispatch.clone(), combatant_id)
         }
         CombatantAnimation::OffHandFollowThroughSwing => todo!(),
-        CombatantAnimation::ReturnToReadyPosition => {
-            return_to_ready_position_animation_finished_handler(game_dispatch.clone(), combatant_id)
+        CombatantAnimation::ReturnToReadyPosition(ends_turn) => {
+            return_to_ready_position_animation_finished_handler(
+                game_dispatch.clone(),
+                combatant_id,
+                ends_turn,
+            )
         }
         CombatantAnimation::HitRecovery(_) => Ok(()),
         CombatantAnimation::Death(_) => Ok(()),
@@ -42,6 +47,15 @@ pub fn handle_animation_finished(
             )
         }
         CombatantAnimation::Evasion => Ok(()),
+        CombatantAnimation::UseAutoinjector(autoinjector_type, target_id, value_change) => {
+            autoinjector_use_animation_finished_handler(
+                game_dispatch.clone(),
+                autoinjector_type,
+                value_change,
+                combatant_id,
+                target_id,
+            )
+        }
     }?;
 
     game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
@@ -53,7 +67,7 @@ pub fn handle_animation_finished(
                 error_type: common::errors::AppErrorTypes::ClientError,
                 message: error_messages::COMBANTANT_EVENT_MANAGER_NOT_FOUND.to_string(),
             })?;
-        event_manager.animation_queue.pop_front();
+        let _ = event_manager.animation_queue.pop_front();
 
         Ok(())
     })

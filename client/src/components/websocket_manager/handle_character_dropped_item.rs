@@ -21,7 +21,7 @@ pub fn handle_character_dropped_item(
 
     game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
         let character = store.get_mut_character(packet.character_id)?;
-        let item = character.inventory.remove_item(packet.item_id)?;
+        let item = character.combatant_properties.inventory.remove_item(packet.item_id)?;
         let party = store.get_current_party_mut()?;
         party.current_room.items.push(item);
         Ok(())

@@ -26,7 +26,7 @@ pub fn players_ready_to_explore(props: &Props) -> Html {
         );
     }
     html!(
-    <div class="flex flex-col flex-1">
+    <div class="flex flex-col flex-grow max-h-full overflow-y-auto">
         <PlayersIncludedInList
             title={ready_to_explore_title}
             waiting_message={ready_to_explore_waiting_message}
@@ -51,7 +51,7 @@ fn players_included_in_list(props: &PlayersIncludedInListProps) -> Html {
     let awaiting_readies = props.list_to_check.len() != props.players.len();
 
     html!(
-        <div class="flex-1 p-2 border border-slate-400 mb-2 last:mb-0">
+        <div class="flex-1 p-2  mb-2 last:mb-0">
             <h3 class="mb-2" >
                 {props.title.clone()}
             </h3>

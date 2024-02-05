@@ -7,6 +7,7 @@ mod handle_character_dropped_item;
 mod handle_character_picked_up_item;
 pub mod handle_combat_turn_results;
 mod handle_packet;
+mod handle_raw_action_results;
 mod in_game_party_update_handlers;
 mod inventory_management_update_handlers;
 mod lobby_update_handlers;
@@ -39,7 +40,7 @@ pub struct CustomFormData {}
 #[function_component(WebsocketManager)]
 pub fn websocket_manager(props: &Props) -> Html {
     let (_, websocket_dispatch) = use_store::<WebsocketStore>();
-    let (lobby_state, lobby_dispatch) = use_store::<LobbyStore>();
+    let (_, lobby_dispatch) = use_store::<LobbyStore>();
     let (_, game_dispatch) = use_store::<GameStore>();
     let (_, alert_dispatch) = use_store::<AlertStore>();
     let server_url = props.server_url.clone();
@@ -66,7 +67,6 @@ pub fn websocket_manager(props: &Props) -> Html {
                             if let Ok(data) = deserialized {
                                 let cloned_alert_dispatch = alert_dispatch.clone();
                                 let cloned_lobby_dispatch = lobby_dispatch.clone();
-                                let cloned_lobby_state = lobby_state.clone();
                                 let cloned_game_dispatch = game_dispatch.clone();
                                 let cloned_websocket_dispatch = cloned_websocket_dispatch.clone();
 
@@ -74,7 +74,6 @@ pub fn websocket_manager(props: &Props) -> Html {
                                     data,
                                     cloned_alert_dispatch,
                                     cloned_lobby_dispatch,
-                                    cloned_lobby_state,
                                     cloned_game_dispatch,
                                     cloned_websocket_dispatch,
                                 )?

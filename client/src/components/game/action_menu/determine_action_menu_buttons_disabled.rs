@@ -49,6 +49,7 @@ pub fn determine_action_menu_buttons_disabled(
                 .expect("button should only be shown when item is selected");
             if !focused_character.combatant_properties.can_use_item(&item)
                 && focused_character
+                    .combatant_properties
                     .slot_item_is_equipped(&item.entity_properties.id)
                     .is_none()
             {
@@ -56,7 +57,7 @@ pub fn determine_action_menu_buttons_disabled(
             }
             false
         }
-        GameActions::TakeItem => {
+        GameActions::TakeItem | GameActions::DropItem(_) => {
             if !player_owns_character {
                 return true;
             }
@@ -72,12 +73,6 @@ pub fn determine_action_menu_buttons_disabled(
                 }
             }
             if let Some(_) = focused_character_event_queue.animation_queue.front() {
-                return true;
-            }
-            false
-        }
-        GameActions::UseAutoinjector => {
-            if !player_owns_character {
                 return true;
             }
             false

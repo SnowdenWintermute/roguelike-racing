@@ -1,12 +1,10 @@
 use super::CombatantProperties;
-use crate::{
-    app_consts::{OFF_HAND_ACCURACY_MODIFIER, OFF_HAND_DAMAGE_MODIFIER},
-    items::equipment::{
-        trait_effects::get_weapon_percent_damage_increase_trait_damage_modifier::get_weapon_percent_damage_increase_trait_damage_modifier,
-        weapon_properties::WeaponProperties, EquipmentTraits,
-    },
-    primatives::Range,
-};
+use crate::app_consts::OFF_HAND_ACCURACY_MODIFIER;
+use crate::app_consts::OFF_HAND_DAMAGE_MODIFIER;
+use crate::items::equipment::trait_effects::get_weapon_percent_damage_increase_trait_damage_modifier::get_weapon_percent_damage_increase_trait_damage_modifier;
+use crate::items::equipment::weapon_properties::WeaponProperties;
+use crate::items::equipment::EquipmentTraits;
+use crate::primatives::Range;
 
 impl CombatantProperties {
     pub fn get_weapon_damage_and_hit_chance(

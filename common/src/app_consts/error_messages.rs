@@ -27,6 +27,7 @@ pub const INVALID_ITEM_ID: &str = "No valid item with the provided id was found"
 pub const ITEM_REQUIREMENTS_NOT_MET: &str =
     "You do not meet the requirements to equip or use that item";
 pub const CANT_EQUIP_NON_EQUIPMENT: &str = "Only equipment items may be equipped";
+pub const CANT_CONSUME_NON_CONSUMABLE_ITEM: &str = "Only consumable items may be consumed";
 pub const INVALID_EQUIPMENT_EQUIPPED: &str =
     "An invalid item was found in a character's equippment slot";
 pub const ITEM_NOT_YET_AVAILABLE: &str = "That item's data is still being sent to other clients";
@@ -37,6 +38,7 @@ pub const TRIED_TO_DROP_ITEM_FROM_AN_EMPTY_SLOT: &str =
 pub const DROP_EQUIPPED_ITEM_SERVER_PACKET_MISMATCH: &str =
     "Received a packet telling a character to drop an equipped item but the item wasn't found";
 pub const NO_BASE_EQUIPMENT_FOUND: &str = "No base equipment was provided";
+pub const NO_CONSUMABLE_SELECTED: &str = "No consumable is selected";
 // COMBATANTS
 pub const ENEMY_COMBATANTS_NOT_FOUND: &str = "No enemy combatants found";
 pub const ALLY_COMBATANTS_NOT_FOUND: &str = "No allied combatants found";
@@ -47,15 +49,21 @@ pub const NO_ABILITY_SELECTED: &str = "No ability is selected";
 pub const MISSING_ABILITY_REFERENCE: &str = "The character has no ability selected";
 pub const ABILITY_HAS_NO_TARGETING_SCHEME: &str = "The selected ability has no targeting scheme";
 pub const INVALID_ABILITY_CONTEXT: &str = "The selected ability can not be used in this context";
+pub const ALREADY_FULL_HP: &str = "The target is already at full HP";
+// COMBAT ACTIONS
+pub const INVALID_ACTION_TYPE: &str = "Invalid action type";
+pub const MISSING_EXPECTED_ACTION_RESULT_DATA: &str = "An action result missing expected data";
+pub const CANT_BE_USED_ON_DEAD_TARGET: &str =
+    "The selected target is beyond the help of this ability";
 // TARGETING
 pub const NO_POSSIBLE_TARGETS_PROVIDED: &str =
-    "No possible targets were found for the selected ability";
+    "No possible targets were found for the selected action";
 pub const TRIED_TO_CYCLE_TARGETS_WHEN_NO_TARGETS: &str =
     "Client tried to cycle targets but they weren't targeting anything";
-pub const NO_TARGETING_SCHEMES: &str = "The selected ability has no targeting schemes";
+pub const NO_TARGETING_SCHEMES: &str = "The selected action has no targeting schemes";
 pub const INVALID_TARGETING_SCHEME: &str = "An invalid targeting scheme was selected";
-pub const INVALID_TARGETS_SELECTED: &str = "Invalid ability targets provided";
-pub const NO_VALID_TARGETS_FOUND: &str = "No valid targets exist for that ability";
+pub const INVALID_TARGETS_SELECTED: &str = "Invalid targets provided";
+pub const NO_VALID_TARGETS_FOUND: &str = "No valid targets exist for that action";
 // BATTLES
 pub const MISSING_BATTLE_REFERENCE: &str = "Missing a battle reference";
 pub const BATTLE_NOT_FOUND: &str = "No battle was found by the provided ID";
@@ -64,6 +72,7 @@ pub const COMBATANT_BATTLE_MISMATCH: &str =
 pub const TURN_TRACKERS_EMPTY: &str = "The battle has no turn trackers in the turn order list";
 pub const NOT_THIS_COMBATANTS_TURN: &str =
     "A combatant tried to use an ability when it was not their turn";
+pub const NOT_ENOUGH_MOVEMENT: &str = "Tried to end a turn for a combatant without enough movement";
 // EVENT PROCESSING
 pub const COMBANTANT_MESH_MANAGER_NOT_FOUND: &str = "No mesh manager was found by that id";
 pub const COMBANTANT_EVENT_MANAGER_NOT_FOUND: &str = "No event manager was found by that id";

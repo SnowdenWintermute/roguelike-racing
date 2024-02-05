@@ -18,3 +18,36 @@ pub static PLAYER_LAST_NAMES: [&str; 14] = [
     "dixon",
     "peletier",
 ];
+
+pub static RANDOM_GAME_NAMES_FIRST: [&str; 10] = [
+    "strange",
+    "silent",
+    "dark",
+    "eerie",
+    "spooky",
+    "creaky",
+    "rotten",
+    "forgotten",
+    "unsettling",
+    "uncanny",
+];
+
+pub static RANDOM_GAME_NAMES_LAST: [&str; 17] = [
+    "ravine",
+    "cave",
+    "hill",
+    "valley",
+    "tunnel",
+    "sewer",
+    "underground",
+    "descent",
+    "catacomb",
+    "rift",
+    "cellar",
+    "mine",
+    "nest",
+    "tomb",
+    "crypt",
+    "canyon",
+    "forest",
+];

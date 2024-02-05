@@ -6,6 +6,10 @@ use crate::components::common_components::atoms::button_blank::ButtonBlank;
 pub struct Props {
     #[prop_or(Callback::from(|_e: MouseEvent|()))]
     pub onclick: Callback<MouseEvent>,
+    #[prop_or(Callback::from(|_e: FocusEvent|()))]
+    pub onfocus: Callback<FocusEvent>,
+    #[prop_or(Callback::from(|_e: FocusEvent|()))]
+    pub onblur: Callback<FocusEvent>,
     #[prop_or(false)]
     pub disabled: bool,
     #[prop_or_default]
@@ -27,6 +31,8 @@ pub fn button_basic(props: &Props) -> Html {
                 )
             }
             onclick={props.onclick.clone()}
+            onfocus={props.onfocus.clone()}
+            onblur={props.onblur.clone()}
             disabled={props.disabled}
             button_type={props.button_type.clone()}
         >

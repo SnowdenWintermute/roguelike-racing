@@ -17,10 +17,13 @@ pub fn swing_to_hit_animation_finished_handler(
     combatant_id: u32,
 ) -> Result<(), AppError> {
     game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
+        let party = store.get_current_party_mut()?;
+        let battle_id_option = party.battle_id;
         let game = store.get_current_game_mut()?;
         let (attacker_entity_properties, _) = game.get_mut_combatant_by_id(&combatant_id)?;
         let attacker_name = attacker_entity_properties.name.clone();
         let (entity_properties, combatant_properties) = game.get_mut_combatant_by_id(&target_id)?;
+        let entity_id = entity_properties.id;
         let target_name = entity_properties.name.clone();
         let new_hp = if let Some(hp_change) = hp_change_option {
             let new_hp = combatant_properties.change_hp(hp_change);
@@ -36,6 +39,26 @@ pub fn swing_to_hit_animation_finished_handler(
         } else {
             combatant_properties.hit_points
         };
+
+        // REMOVE THEIR TURN TRACKER
+        if new_hp == 0 {
+            let game = store.get_current_game_mut()?;
+            if let Some(battle_id) = battle_id_option {
+                let battle = game.battles.get_mut(&battle_id).ok_or_else(|| AppError {
+                    error_type: common::errors::AppErrorTypes::ClientError,
+                    message: error_messages::BATTLE_NOT_FOUND.to_string(),
+                })?;
+                let mut index_to_remove_option = None;
+                for (i, turn_tracker) in battle.combatant_turn_trackers.iter().enumerate() {
+                    if turn_tracker.entity_id == entity_id {
+                        index_to_remove_option = Some(i)
+                    }
+                }
+                if let Some(index_to_remove) = index_to_remove_option {
+                    let _ = battle.combatant_turn_trackers.remove(index_to_remove);
+                }
+            }
+        }
 
         let target_event_manager = store
             .action_results_manager
@@ -67,8 +90,7 @@ pub fn swing_to_hit_animation_finished_handler(
                     value: hp_change,
                     color: AttrValue::from("rgba(255,255,255,0)"),
                 });
-            // don't animate hit recovery if they hit themselves during an
-            // action of their own doing
+
             if target_event_manager.action_result_queue.front().is_none() {
                 if new_hp == 0 {
                     target_event_manager.animation_queue =
@@ -78,7 +100,9 @@ pub fn swing_to_hit_animation_finished_handler(
                         CombatLogMessageStyle::Basic,
                         0,
                     ));
-                } else {
+                } else if combatant_id != target_id {
+                    // don't hit recovery if attacking self or else return to home animation won't
+                    // play and trigger next
                     target_event_manager.animation_queue =
                         VecDeque::from([CombatantAnimation::HitRecovery(hp_change)])
                 }

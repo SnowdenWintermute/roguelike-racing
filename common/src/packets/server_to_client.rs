@@ -6,9 +6,9 @@ use super::WebsocketChannelNamespace;
 use crate::app_consts::LOBBY_CHANNEL;
 use crate::character::Character;
 use crate::combat::battle::Battle;
+use crate::combat::combat_actions::CombatActionTarget;
 use crate::combat::ActionResult;
 use crate::combat::CombatTurnResult;
-use crate::combatants::abilities::AbilityTarget;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::CombatantClass;
 use crate::dungeon_rooms::DungeonRoom;
@@ -54,8 +54,9 @@ pub enum GameServerUpdatePackets {
     PlayerToggledReadyToDescend(String),
     DungeonRoomUpdate(DungeonRoom),
     CharacterSelectedAbility(CharacterSelectedAbilityPacket),
+    CharacterSelectedConsumable(CharacterSelectedConsumablePacket),
     CharacterChangedTargets(ChangeTargetsPacket),
-    ActionResults(Vec<ActionResult>),
+    ActionResults(ActionResultsPacket),
     CombatTurnResults(CombatTurnResultsPacket),
     BattleFullUpdate(Option<Battle>),
     BattleEndReport(BattleEndReportPacket),
@@ -179,12 +180,25 @@ pub struct CharacterEquippedItemPacket {
 pub struct CharacterSelectedAbilityPacket {
     pub character_id: u32,
     pub ability_name_option: Option<CombatantAbilityNames>,
-    pub targets_option: Option<AbilityTarget>,
+    pub targets_option: Option<CombatActionTarget>,
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+pub struct CharacterSelectedConsumablePacket {
+    pub character_id: u32,
+    pub consumable_id_option: Option<u32>,
+    pub targets_option: Option<CombatActionTarget>,
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct CombatTurnResultsPacket {
     pub turn_results: Vec<CombatTurnResult>,
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+pub struct ActionResultsPacket {
+    pub action_taker_id: u32,
+    pub action_results: Vec<ActionResult>,
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]

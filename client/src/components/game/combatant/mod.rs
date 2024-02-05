@@ -48,7 +48,7 @@ pub fn combatant(props: &Props) -> Html {
 
     let is_ally = combatant_is_ally::combatant_is_ally(game_state.clone(), id);
     let is_selected = combatant_is_selected::combatant_is_selected(game_state.clone(), id);
-    let is_targeted = combatant_is_targeted::combatant_is_targeted(game_state.clone(), &id);
+    let targeted_by = combatant_is_targeted::combatant_targeted_by(game_state.clone(), &id);
     let battle_option = get_current_battle_option(&game_state);
     let is_active_combatant = match battle_option {
         Some(battle) => battle.combatant_is_first_in_turn_order(id),
@@ -58,7 +58,7 @@ pub fn combatant(props: &Props) -> Html {
     let selected_style = if is_selected { "border-yellow-400" } else { "" };
 
     let styles = format!(
-        "flex border border-slate-400 mb-2 last:mb-0 w-40 relative {}",
+        "flex border border-slate-400 mb-2 w-40 relative {}",
         selected_style
     );
 
@@ -74,19 +74,23 @@ pub fn combatant(props: &Props) -> Html {
 
     html!(
         <div class={styles}>
-            if is_targeted{
+            if targeted_by.len() > 0{
                 <div class="absolute top-[-1.5rem] left-1/2 -translate-x-1/2 z-20
-                    " >
-                    <TargetingIndicator />
+                            flex" >
+                            {targeted_by.iter().map(|combatant_id_and_with_what| html!(
+                                        <TargetingIndicator
+                                        ability_name_option={combatant_id_and_with_what.1.clone()}
+                                        consumable_option={combatant_id_and_with_what.2.clone()} />
+                            )).collect::<Html>()}
                     </div>
             }
             if is_active_combatant {
-                <div class={format!("absolute top-1/2 -translate-y-1/2 {}
+                <div class={format!("absolute z-50 top-1/2 -translate-y-1/2 {}
                                     pr-2 pl-2 border border-slate-400 bg-slate-700", turn_indicator_style)} >
                     {"active"}
                 </div>
             }
-            <button class={"flex flex-col
+            <button class={"flex flex-col bg-slate-700
                 text-left p-2 cursor-help w-full overflow-hidden"} onclick={handle_click} id={format!("combatant-{}", id)} >
                 <div class="pointer-events-none" >
                     {name}

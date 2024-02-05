@@ -1,11 +1,7 @@
-use crate::adventuring_party::AdventuringParty;
 use crate::errors::AppError;
-use crate::game::id_generator::IdGenerator;
-use crate::items::Item;
 
-pub fn open_treasure_chest(
-    id_generator: &mut IdGenerator,
-    adventuring_party: &mut AdventuringParty,
+pub fn open_treasure_chest(// id_generator: &mut IdGenerator,
+    // adventuring_party: &mut AdventuringParty,
 ) -> Result<(), AppError> {
     // let current_room = &mut adventuring_party.current_room;
 

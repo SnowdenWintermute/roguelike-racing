@@ -19,7 +19,7 @@ pub fn print_random_equipments(game: &mut RoguelikeRacerGame) {
                     name_equipment(equipment_properties)
                 }
             };
-            println!("{}\n{}", &item_name, &item);
+            println!("{:?}\n{:#?}", &item_name, &item);
         }
     }
 }

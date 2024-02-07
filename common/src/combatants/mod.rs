@@ -3,6 +3,7 @@ pub mod combat_attributes;
 pub mod combatant_traits;
 mod equip_item;
 pub mod get_base_ability_damage_bonus;
+mod get_total_elemental_affinites;
 use self::combatant_traits::CombatantTraits;
 mod get_equipped_item;
 mod get_equipped_weapon_properties;
@@ -14,6 +15,10 @@ use crate::combat::combat_actions::CombatActionTarget;
 use crate::combat::combat_actions::FriendOrFoe;
 use crate::combat::combat_actions::TargetingScheme;
 use crate::combat::magical_elements::MagicalElements;
+use crate::items::equipment::unarmed::FIST;
+use crate::items::equipment::weapon_properties::WeaponProperties;
+use crate::items::equipment::EquipmentProperties;
+use crate::items::equipment::EquipmentTypes;
 pub mod get_weapon_properties_traits_and_base_bonus_damage;
 mod set_new_ability_target_preferences;
 use self::abilities::CombatantAbility;
@@ -27,9 +32,11 @@ use crate::items::Item;
 use crate::status_effects::StatusEffects;
 use crate::utils::add_i16_to_u16_and_clamp_to_max;
 use core::fmt;
+use once_cell::sync::Lazy;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
+use std::collections::HashSet;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub enum CombatantClass {
@@ -87,7 +94,7 @@ pub struct CombatantProperties {
     pub equipment: HashMap<EquipmentSlots, Item>,
     pub inventory: Inventory,
     pub abilities: HashMap<CombatantAbilityNames, CombatantAbility>,
-    pub traits: HashMap<CombatantTraits, u8>,
+    pub traits: Vec<CombatantTraits>,
     pub inherent_elemental_affinities: HashMap<MagicalElements, i16>,
     pub selected_consumable: Option<u32>,
     pub selected_ability_name: Option<CombatantAbilityNames>,
@@ -111,7 +118,7 @@ impl CombatantProperties {
             equipment: HashMap::new(),
             inventory: Inventory::new(),
             abilities,
-            traits: HashMap::new(),
+            traits: Vec::new(),
             inherent_elemental_affinities: HashMap::new(),
             selected_consumable: None,
             selected_ability_name: None,
@@ -191,5 +198,27 @@ impl CombatantProperties {
         let new_mp = add_i16_to_u16_and_clamp_to_max(self.mana, mp_change, *max_mp);
         self.mana = new_mp;
         new_mp
+    }
+
+    pub fn get_weapon_in_slot<'a>(
+        &'a self,
+        slot: EquipmentSlots,
+    ) -> Option<&'a EquipmentProperties> {
+        if let Some(equipment_properties) = self.get_equipped_item(&slot) {
+            match &equipment_properties.equipment_type {
+                EquipmentTypes::OneHandedMeleeWeapon(_, _)
+                | EquipmentTypes::TwoHandedMeleeWeapon(_, _)
+                | EquipmentTypes::TwoHandedRangedWeapon(_, _) => Some(&equipment_properties),
+                _ => return None,
+            }
+        } else {
+            match slot {
+                EquipmentSlots::MainHand | EquipmentSlots::OffHand => match FIST.equipment_type {
+                    EquipmentTypes::OneHandedMeleeWeapon(_, _) => Some(&FIST),
+                    _ => None,
+                },
+                _ => None,
+            }
+        }
     }
 }

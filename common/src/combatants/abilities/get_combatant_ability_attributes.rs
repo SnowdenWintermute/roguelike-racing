@@ -1,7 +1,15 @@
 use super::CombatantAbilityNames;
+use crate::combat::combat_actions::CombatActionHpChangeProperties;
 use crate::combat::combat_actions::CombatActionProperties;
 use crate::combat::combat_actions::ProhibitedTargetCombatantStates;
+use crate::combat::combat_actions::TargetCategories;
 use crate::combat::combat_actions::TargetingScheme;
+use crate::combat::hp_change_source_types::Evadable;
+use crate::combat::hp_change_source_types::HpChangeSource;
+use crate::combat::hp_change_source_types::HpChangeSourceCategories;
+use crate::combat::magical_elements::MagicalElements;
+use crate::combatants::combat_attributes::CombatAttributes;
+use crate::primatives::Range;
 
 pub struct CombatantAbilityAttributes {
     pub combat_action_properties: CombatActionProperties,
@@ -47,6 +55,20 @@ impl CombatantAbilityNames {
             CombatantAbilityNames::Fire => CombatantAbilityAttributes {
                 combat_action_properties: CombatActionProperties {
                     targeting_schemes: vec![TargetingScheme::Area, TargetingScheme::Single],
+                    hp_change_properties: Some(CombatActionHpChangeProperties {
+                        base_values: Range::new(1, 5),
+                        scaling_attribute_and_factor: Some((CombatAttributes::Intelligence, 1)),
+                        source_properties: HpChangeSource::new(
+                            HpChangeSourceCategories::MagicalDamage(Evadable::new(false)),
+                            None,
+                            Some(MagicalElements::Ice),
+                        ),
+                        add_weapon_damage_from: None,
+                        crit_chance_attribute: Some(CombatAttributes::Focus),
+                        crit_multiplier_attribute: Some(CombatAttributes::Focus),
+                    }),
+                    valid_target_categories: TargetCategories::Any,
+
                     ..Default::default()
                 },
                 ..Default::default()

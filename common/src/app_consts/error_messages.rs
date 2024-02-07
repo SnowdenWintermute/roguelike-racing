@@ -39,6 +39,7 @@ pub const DROP_EQUIPPED_ITEM_SERVER_PACKET_MISMATCH: &str =
     "Received a packet telling a character to drop an equipped item but the item wasn't found";
 pub const NO_BASE_EQUIPMENT_FOUND: &str = "No base equipment was provided";
 pub const NO_CONSUMABLE_SELECTED: &str = "No consumable is selected";
+pub const INVALID_EQUIPMENT_SLOT: &str = "An invalid equipment slot was provided";
 // COMBATANTS
 pub const ENEMY_COMBATANTS_NOT_FOUND: &str = "No enemy combatants found";
 pub const ALLY_COMBATANTS_NOT_FOUND: &str = "No allied combatants found";
@@ -55,6 +56,10 @@ pub const INVALID_ACTION_TYPE: &str = "Invalid action type";
 pub const MISSING_EXPECTED_ACTION_RESULT_DATA: &str = "An action result missing expected data";
 pub const CANT_BE_USED_ON_DEAD_TARGET: &str =
     "The selected target is beyond the help of this ability";
+pub const MISSING_ACTION_HP_CHANGE_PROPERTIES: &str =
+    "The provided combat action doesn't specify any Hp change properties";
+pub const MISSING_ACTION_HP_CHANGE_BASE_VALUES: &str =
+    "Tried to get the base Hp change values on an ability that doesn't specify them";
 // TARGETING
 pub const NO_POSSIBLE_TARGETS_PROVIDED: &str =
     "No possible targets were found for the selected action";

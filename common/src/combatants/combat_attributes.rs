@@ -26,8 +26,8 @@ pub enum CombatAttributes {
     Intelligence, // mp, magic ability damage
     Strength,  // damage with melee attacks, melee crit multiplier, melee armor pen
     // defensive
-    Vitality,   // hp and %physical damage reduction after AC damage reduction
-    Resilience, // %magic damage reduction, healing received
+    Vitality,   // hp, and debuff duration
+    Resilience, // %magic damage reduction, healing received, debuff duration
     Agility,    // movement speed, evasion, physical crit chance reduction
 }
 

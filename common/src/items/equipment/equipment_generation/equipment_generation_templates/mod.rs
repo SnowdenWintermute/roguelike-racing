@@ -1,9 +1,9 @@
 use super::equipment_generation_template_properties::EquipmentGenerationTemplateAffixModifiers;
 use super::equipment_generation_template_properties::EquipmentGenerationTemplateProperties;
+use crate::combat::hp_change_source_types::HpChangeSource;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::items::equipment::armor_properties::ArmorCategories;
 use crate::items::equipment::shield_properties::ShieldSizes;
-use crate::items::equipment::weapon_properties::DamageClassifications;
 use crate::items::equipment::EquipmentTraits;
 use crate::primatives::Range;
 use std::collections::HashMap;
@@ -54,7 +54,7 @@ impl ArmorGenerationTemplate {
 }
 
 pub struct WeaponGenerationTemplate {
-    pub possbile_damage_classifications: Vec<DamageClassifications>,
+    pub possbile_damage_classifications: Vec<HpChangeSource>,
     pub num_damage_classifications: u8,
     pub damage: Range<u8>,
     pub template_properties: EquipmentGenerationTemplateProperties,
@@ -65,7 +65,7 @@ impl WeaponGenerationTemplate {
         level_range: Range<u8>,
         damage: Range<u8>,
         max_durability: Option<u8>,
-        possbile_damage_classifications: Vec<DamageClassifications>,
+        possbile_damage_classifications: Vec<HpChangeSource>,
         num_damage_classifications: u8,
         requirements: Option<HashMap<CombatAttributes, u8>>,
         affix_modifiers: Option<EquipmentGenerationTemplateAffixModifiers>,

@@ -1,5 +1,6 @@
 use super::Character;
 use crate::combatants::combat_attributes::CombatAttributes;
+use crate::combatants::combatant_traits::CombatantTraits;
 use crate::game::RoguelikeRacerGame;
 use crate::items::equipment::equipment_generation::create_starting_equipment::create_starting_equipment;
 use crate::items::Item;
@@ -16,6 +17,10 @@ pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Charact
     inherent_attributes.insert(CombatAttributes::Resilience, 2);
     inherent_attributes.insert(CombatAttributes::Accuracy, 75);
     inherent_attributes.insert(CombatAttributes::Speed, 1);
+
+    combatant_properties
+        .traits
+        .push(CombatantTraits::HpBioavailabilityPercent(200));
 
     // ABILITIES
     // combatant_properties.abilities.insert(

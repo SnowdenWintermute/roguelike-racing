@@ -16,6 +16,7 @@ impl ConsumableTypes {
                     ProhibitedTargetCombatantStates::Dead,
                 ]),
                 requires_combat_turn: false,
+                hp_change_properties: None,
             },
             ConsumableTypes::Grenade => CombatActionProperties {
                 targeting_schemes: vec![TargetingScheme::Area],
@@ -23,6 +24,7 @@ impl ConsumableTypes {
                 usability_context: AbilityUsableContext::InCombat,
                 prohibited_target_combatant_states: None,
                 requires_combat_turn: true,
+                hp_change_properties: None,
             },
             ConsumableTypes::SmokeBomb => CombatActionProperties {
                 targeting_schemes: vec![TargetingScheme::Area],
@@ -30,6 +32,7 @@ impl ConsumableTypes {
                 usability_context: AbilityUsableContext::InCombat,
                 prohibited_target_combatant_states: None,
                 requires_combat_turn: false,
+                hp_change_properties: None,
             },
             // _ => CombatActionProperties::default(),
         }

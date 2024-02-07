@@ -5,8 +5,13 @@ use crate::combatants::abilities::CombatantAbilityNames;
 use crate::errors::AppError;
 use crate::game::RoguelikeRacerGame;
 mod ability_resolution_calculators;
+pub mod apply_elemental_affinity_to_hp_change_range;
 pub mod attack;
 pub mod fire;
+pub mod get_ability_base_hp_change_range;
+pub mod get_crit_range;
+pub mod roll_crit;
+pub mod split_combat_action_hp_change_by_number_of_targets;
 
 impl RoguelikeRacerGame {
     pub fn get_ability_results(

@@ -1,12 +1,12 @@
-use crate::items::equipment::weapon_properties::DamageClassifications;
+use crate::combat::hp_change_source_types::HpChangeSource;
 use rand::Rng;
 
 pub fn generate_weapon_damage_classifications(
-    possible_classifications: &Vec<DamageClassifications>,
+    possible_classifications: &Vec<HpChangeSource>,
     num_classifications_to_select: u8,
-) -> Vec<DamageClassifications> {
+) -> Vec<HpChangeSource> {
     let mut remaining_classifications = possible_classifications.clone();
-    let mut classifications_to_return: Vec<DamageClassifications> = Vec::new();
+    let mut classifications_to_return: Vec<HpChangeSource> = Vec::new();
     if num_classifications_to_select as usize > possible_classifications.len() {
         panic!("when generating damage classifications for a weapon, the provided number off classifications to generate was greater than the total number of possible classifications")
     }

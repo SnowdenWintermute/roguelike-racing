@@ -5,10 +5,14 @@ mod get_targets;
 pub mod targets_are_valid;
 pub mod targets_by_saved_preference_or_default;
 pub mod validate_use;
+use super::hp_change_source_types::HpChangeSource;
 use crate::app_consts::error_messages;
 use crate::combatants::abilities::CombatantAbilityNames;
+use crate::combatants::combat_attributes::CombatAttributes;
 use crate::errors::AppError;
 use crate::errors::AppErrorTypes;
+use crate::primatives::Range;
+use crate::primatives::WeaponSlot;
 use serde::Deserialize;
 use serde::Serialize;
 use std::fmt::Display;
@@ -112,6 +116,7 @@ pub struct CombatActionProperties {
     pub usability_context: AbilityUsableContext,
     pub prohibited_target_combatant_states: Option<Vec<ProhibitedTargetCombatantStates>>,
     pub requires_combat_turn: bool,
+    pub hp_change_properties: Option<CombatActionHpChangeProperties>,
 }
 
 impl Default for CombatActionProperties {
@@ -122,6 +127,30 @@ impl Default for CombatActionProperties {
             usability_context: AbilityUsableContext::InCombat,
             prohibited_target_combatant_states: None,
             requires_combat_turn: true,
+            hp_change_properties: None,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct CombatActionHpChangeProperties {
+    pub base_values: Range<u16>,
+    pub add_weapon_damage_from: Option<Vec<WeaponSlot>>,
+    pub scaling_attribute_and_factor: Option<(CombatAttributes, u8)>,
+    pub crit_chance_attribute: Option<CombatAttributes>,
+    pub crit_multiplier_attribute: Option<CombatAttributes>,
+    pub source_properties: HpChangeSource,
+}
+
+impl Default for CombatActionHpChangeProperties {
+    fn default() -> Self {
+        CombatActionHpChangeProperties {
+            base_values: Range::new(0, 0),
+            add_weapon_damage_from: None,
+            scaling_attribute_and_factor: None,
+            crit_chance_attribute: None,
+            crit_multiplier_attribute: None,
+            source_properties: HpChangeSource::default(),
         }
     }
 }

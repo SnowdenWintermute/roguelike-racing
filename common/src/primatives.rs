@@ -25,6 +25,12 @@ pub enum UpOrDown {
     Down,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum WeaponSlot {
+    MainHand,
+    OffHand,
+}
+
 #[derive(PartialEq, Debug, Serialize, Deserialize, Clone)]
 pub enum GainedOrLost {
     Gained,

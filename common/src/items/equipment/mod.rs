@@ -1,7 +1,6 @@
 pub mod affixes;
 pub mod armor_properties;
 pub mod body_armors;
-mod display_equipment;
 pub mod equipment_generation;
 pub mod head_gears;
 pub mod jewelries;
@@ -23,7 +22,9 @@ use self::shields::Shields;
 use self::two_handed_melee_weapons::TwoHandedMeleeWeapons;
 use self::two_handed_ranged_weapons::TwoHandedRangedWeapons;
 use self::weapon_properties::WeaponProperties;
+use crate::app_consts::error_messages;
 use crate::combatants::combat_attributes::CombatAttributes;
+use crate::errors::AppError;
 use crate::primatives::MaxAndCurrent;
 use core::fmt;
 use serde::Deserialize;
@@ -162,6 +163,20 @@ impl EquipmentProperties {
             EquipmentTypes::TwoHandedMeleeWeapon(_, _)
             | EquipmentTypes::TwoHandedRangedWeapon(_, _) => true,
             _ => false,
+        }
+    }
+
+    pub fn get_equipment_weapon_properties(&self) -> Result<&WeaponProperties, AppError> {
+        match &self.equipment_type {
+            EquipmentTypes::OneHandedMeleeWeapon(_, weapon_properties)
+            | EquipmentTypes::TwoHandedMeleeWeapon(_, weapon_properties)
+            | EquipmentTypes::TwoHandedRangedWeapon(_, weapon_properties) => Ok(&weapon_properties),
+            _ => {
+                return Err(AppError {
+                    error_type: crate::errors::AppErrorTypes::Generic,
+                    message: error_messages::INVALID_EQUIPMENT_SLOT.to_string(),
+                })
+            }
         }
     }
 }

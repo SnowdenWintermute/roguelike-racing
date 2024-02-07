@@ -5,6 +5,7 @@ pub mod battle;
 pub mod combat_actions;
 pub mod consumable_use_handlers;
 mod get_combatant_by_id;
+pub mod hp_change_source_types;
 pub mod magical_elements;
 mod turn_order;
 use self::battle::BattleGroup;
@@ -38,7 +39,6 @@ pub struct ActionResult {
     pub hp_changes_by_entity_id: Option<HashMap<u32, i16>>,
     pub mp_changes_by_entity_id: Option<HashMap<u32, i16>>,
     pub misses_by_entity_id: Option<HashSet<u32>>,
-    pub resists_by_entity_id: Option<HashSet<u32>>,
     pub is_crit: bool,
     // used to display floating +- effect icons and add/remove the effects to entities
     pub status_effect_changes_by_entity_id:

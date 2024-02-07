@@ -1,4 +1,5 @@
 pub mod consumables;
+pub mod create_new_item;
 pub mod equipment;
 pub mod items_by_level;
 use self::consumables::ConsumableProperties;

@@ -57,7 +57,11 @@ impl CombatantAbilityNames {
                     targeting_schemes: vec![TargetingScheme::Area, TargetingScheme::Single],
                     hp_change_properties: Some(CombatActionHpChangeProperties {
                         base_values: Range::new(1, 5),
-                        scaling_attribute_and_factor: Some((CombatAttributes::Intelligence, 1)),
+                        base_final_percent_multiplier: 1,
+                        additive_attribute_and_scaling_factor: Some((
+                            CombatAttributes::Intelligence,
+                            1,
+                        )),
                         source_properties: HpChangeSource::new(
                             HpChangeSourceCategories::MagicalDamage(Evadable::new(false)),
                             None,

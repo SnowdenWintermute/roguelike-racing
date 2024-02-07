@@ -135,8 +135,9 @@ impl Default for CombatActionProperties {
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct CombatActionHpChangeProperties {
     pub base_values: Range<u16>,
+    pub base_final_percent_multiplier: u8,
     pub add_weapon_damage_from: Option<Vec<WeaponSlot>>,
-    pub scaling_attribute_and_factor: Option<(CombatAttributes, u8)>,
+    pub additive_attribute_and_scaling_factor: Option<(CombatAttributes, u8)>,
     pub crit_chance_attribute: Option<CombatAttributes>,
     pub crit_multiplier_attribute: Option<CombatAttributes>,
     pub source_properties: HpChangeSource,
@@ -146,8 +147,9 @@ impl Default for CombatActionHpChangeProperties {
     fn default() -> Self {
         CombatActionHpChangeProperties {
             base_values: Range::new(0, 0),
+            base_final_percent_multiplier: 1,
             add_weapon_damage_from: None,
-            scaling_attribute_and_factor: None,
+            additive_attribute_and_scaling_factor: None,
             crit_chance_attribute: None,
             crit_multiplier_attribute: None,
             source_properties: HpChangeSource::default(),

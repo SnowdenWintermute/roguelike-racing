@@ -5,6 +5,7 @@ use crate::combatants::abilities::CombatantAbilityNames;
 use crate::errors::AppError;
 use crate::game::RoguelikeRacerGame;
 mod ability_resolution_calculators;
+mod add_weapon_damage_to_hp_change_range;
 pub mod apply_elemental_affinity_to_hp_change_range;
 pub mod attack;
 pub mod fire;

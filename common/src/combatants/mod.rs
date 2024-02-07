@@ -202,7 +202,7 @@ impl CombatantProperties {
 
     pub fn get_weapon_in_slot<'a>(
         &'a self,
-        slot: EquipmentSlots,
+        slot: &EquipmentSlots,
     ) -> Option<&'a EquipmentProperties> {
         if let Some(equipment_properties) = self.get_equipped_item(&slot) {
             match &equipment_properties.equipment_type {

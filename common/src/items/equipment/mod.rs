@@ -104,6 +104,24 @@ pub struct EquipmentProperties {
     pub traits: Option<Vec<EquipmentTraits>>,
 }
 
+impl EquipmentProperties {
+    pub fn new(
+        equipment_type: EquipmentTypes,
+        durability: Option<MaxAndCurrent<u8>>,
+        attributes: HashMap<CombatAttributes, u16>,
+        affixes: Vec<Affix>,
+        traits: Option<Vec<EquipmentTraits>>,
+    ) -> Self {
+        EquipmentProperties {
+            equipment_type,
+            durability,
+            attributes,
+            affixes,
+            traits,
+        }
+    }
+}
+
 #[derive(PartialEq, Clone, Debug)]
 pub struct EquipableSlots {
     pub main: EquipmentSlots,
@@ -178,5 +196,20 @@ impl EquipmentProperties {
                 })
             }
         }
+    }
+
+    pub fn get_modified_weapon_damage_range(&self) -> Result<(f32, f32), AppError> {
+        let weapon_properties = self.get_equipment_weapon_properties()?;
+        let damage_attribute_bonus = *self
+            .attributes
+            .get(&CombatAttributes::Damage)
+            .unwrap_or_else(|| &0) as f32;
+        let percent_weapon_damage_modifier =
+            self.get_weapon_percent_damage_increase_trait_damage_modifier();
+        let weapon_min = (weapon_properties.damage.min as f32 + damage_attribute_bonus)
+            * percent_weapon_damage_modifier;
+        let weapon_max = (weapon_properties.damage.max as f32 + damage_attribute_bonus)
+            * percent_weapon_damage_modifier;
+        Ok((weapon_min, weapon_max))
     }
 }

@@ -1,7 +1,6 @@
 use super::CombatantProperties;
 use crate::app_consts::OFF_HAND_ACCURACY_MODIFIER;
 use crate::app_consts::OFF_HAND_DAMAGE_MODIFIER;
-use crate::items::equipment::trait_effects::get_weapon_percent_damage_increase_trait_damage_modifier::get_weapon_percent_damage_increase_trait_damage_modifier;
 use crate::items::equipment::weapon_properties::WeaponProperties;
 use crate::items::equipment::EquipmentTraits;
 use crate::primatives::Range;
@@ -14,8 +13,7 @@ impl CombatantProperties {
         accuracy: u16,
         is_off_hand: bool,
     ) -> (Range<u16>, u16) {
-        let percent_damage_increase_from_trait =
-            get_weapon_percent_damage_increase_trait_damage_modifier(traits);
+        let percent_damage_increase_from_trait = 0.0;
         let mut modified_min = weapon_properties.damage.min as f32 + combatant_base_damage as f32;
         let mut modified_max = weapon_properties.damage.max as f32 + combatant_base_damage as f32;
         modified_min *= percent_damage_increase_from_trait;

@@ -1,25 +1,14 @@
-use super::apply_elemental_affinity_to_hp_change_range::apply_elemental_affinity_to_hp_change_range;
-use super::get_ability_base_hp_change_range::get_ability_base_hp_change_range;
-use super::get_crit_range::get_crit_range;
-use super::roll_crit::roll_crit;
-use super::split_combat_action_hp_change_by_number_of_targets::split_combat_action_hp_change_by_number_of_targets;
 use crate::app_consts::error_messages;
-use crate::app_consts::RESILIENCE_TO_PERCENT_EFFECT_ON_MAGICAL_DAMAGE_RATIO;
+use crate::combat::ability_handlers::add_weapon_damage_to_hp_change_range::add_weapon_damage_to_combat_action_hp_change;
+use crate::combat::ability_handlers::split_combat_action_hp_change_by_number_of_targets::split_combat_action_hp_change_by_number_of_targets;
 use crate::combat::battle::Battle;
 use crate::combat::combat_actions::CombatAction;
 use crate::combat::combat_actions::CombatActionTarget;
 use crate::combat::combat_actions::TargetingScheme;
 use crate::combat::ActionResult;
-use crate::combatants::abilities::CombatantAbilityNames;
-use crate::combatants::combat_attributes::CombatAttributes;
 use crate::errors::AppError;
 use crate::game::RoguelikeRacerGame;
-use crate::items::equipment::unarmed::FIST;
-use crate::items::equipment::EquipmentSlots;
 use crate::primatives::Range;
-use crate::primatives::WeaponSlot;
-use rand::Rng;
-use std::collections::HashMap;
 
 impl RoguelikeRacerGame {
     pub fn calculate_combat_action_hp_changes(
@@ -46,11 +35,6 @@ impl RoguelikeRacerGame {
 
         let (_, user_combatant_properties) = self.get_combatant_by_id(&ability_user_id)?;
         let user_combat_attributes = user_combatant_properties.get_total_attributes();
-        let user_focus_attribute = user_combat_attributes
-            .get(&CombatAttributes::Focus)
-            .unwrap_or_else(|| &0);
-        let ability =
-            user_combatant_properties.get_ability_if_owned(&CombatantAbilityNames::Fire)?;
         let combat_action_properties = match combat_action {
             CombatAction::AbilityUsed(ability_name) => {
                 ability_name.get_attributes().combat_action_properties
@@ -66,22 +50,38 @@ impl RoguelikeRacerGame {
                     error_type: crate::errors::AppErrorTypes::Generic,
                     message: error_messages::MISSING_ACTION_HP_CHANGE_PROPERTIES.to_string(),
                 })?;
+        // get base range
+        let Range { min, max } = hp_change_properties.base_values;
+        let mut min = min as f32;
+        let mut max = max as f32;
         // add scaling attribute to range
-        let Range { mut min, mut max } = hp_change_properties.base_values;
+        if let Some((additive_attribute, scaling_factor)) =
+            hp_change_properties.additive_attribute_and_scaling_factor
+        {
+            let attribute_value = user_combat_attributes
+                .get(&additive_attribute)
+                .unwrap_or_else(|| &0);
+            let scaled_attribute_value = attribute_value * scaling_factor as u16;
+            min += scaled_attribute_value as f32;
+            max += scaled_attribute_value as f32;
+        };
         // if weapon damage, determine main/off hand and add appropriate damage to range
         if let Some(weapon_slots) = hp_change_properties.add_weapon_damage_from {
-            for weapon_slot in weapon_slots {
-                match weapon_slot {
-                    WeaponSlot::MainHand => {
-                        let mh_equipment_option = user_combatant_properties
-                            .get_equipped_item(&EquipmentSlots::MainHand)
-                            .unwrap_or(&FIST);
-                    }
-                    WeaponSlot::OffHand => todo!(),
-                }
-            }
+            let (weapon_min, weapon_max) = add_weapon_damage_to_combat_action_hp_change(
+                &weapon_slots,
+                &user_combatant_properties,
+                &min,
+                &max,
+            )?;
+            min += weapon_min;
+            max += weapon_max;
         }
         // calculate damage split over multiple targets
+        (min, max) = split_combat_action_hp_change_by_number_of_targets(
+            min,
+            max,
+            target_entity_ids.len() as f32,
+        );
         // if is healing, on each target
         //  - roll crit chance
         //  - roll crit multiplier
@@ -97,9 +97,12 @@ impl RoguelikeRacerGame {
         //  - reduce or increase damage by elemental affinity if damage type is elemental
         //     - if magical, affinity base
         //     - if physical, affinity effect is halved
+        //  - apply any base final multiplier
+        //  MAYBE DO SEPARATELY:
+        //  - if uses weapon damage, calculate lifesteal
 
         if let Some((scaling_attribute, scaling_attribute_factor)) =
-            hp_change_properties.scaling_attribute_and_factor
+            hp_change_properties.additive_attribute_and_scaling_factor
         {
             //
         };

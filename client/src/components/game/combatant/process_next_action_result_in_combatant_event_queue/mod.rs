@@ -1,9 +1,11 @@
 mod queue_attack_animations;
 mod queue_consumable_use_animations;
+mod queue_fire_animations;
 mod queue_melee_ability_animations;
 mod queue_return_to_home_position_animations;
 use self::queue_attack_animations::queue_attack_animations;
 use self::queue_consumable_use_animations::queue_consumable_use_animations;
+use self::queue_fire_animations::queue_fire_animations;
 use self::queue_melee_ability_animations::queue_melee_ability_animations;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
@@ -53,6 +55,9 @@ pub fn process_next_action_result_in_combatant_event_queue(
                 match ability_name {
                     CombatantAbilityNames::Attack => {
                         queue_attack_animations(game_dispatch, combatant_id, new_action_result)
+                    }
+                    CombatantAbilityNames::Fire => {
+                        queue_fire_animations(game_dispatch, combatant_id, new_action_result)
                     }
                     _ => Ok(()),
                 }

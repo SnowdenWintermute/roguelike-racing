@@ -1,4 +1,3 @@
-use super::equipment::EquipmentProperties;
 use super::Item;
 use super::ItemProperties;
 use crate::combatants::combat_attributes::CombatAttributes;
@@ -21,21 +20,3 @@ impl Item {
         }
     }
 }
-// ItemProperties::Equipment(EquipmentProperties {
-//                 equipment_type: EquipmentTypes::OneHandedMeleeWeapon(
-//                     OneHandedMeleeWeapons::Stick,
-//                     WeaponProperties {
-//                         damage_classifications: vec![HpChangeSource {
-//                             category: HpChangeSourceCategories::PhysicalDamage,
-//                             sub_category: None,
-//                             element: None,
-//                         }],
-//                         damage: Range::new(10, 100),
-//                     },
-//                 ),
-//                 durability: None,
-//                 attributes: HashMap::new(),
-//                 affixes: vec![],
-//                 traits: Some(vec![EquipmentTraits::DamagePercentage(50)]),
-//             }),
-//         }

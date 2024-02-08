@@ -9,7 +9,6 @@ impl CombatActionTarget {
         &self,
         ally_ids: Vec<u32>,
         opponent_ids_option: Option<Vec<u32>>,
-        action_user_id: u32,
         excluded_schemes: Vec<TargetingScheme>,
     ) -> Result<Vec<u32>, AppError> {
         let invalid_targeting_scheme_error = AppError {

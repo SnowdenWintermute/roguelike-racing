@@ -25,6 +25,7 @@ use crate::primatives::Range;
 use std::collections::HashMap;
 
 pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<EquipmentSlots, Item> {
+    #[allow(unused_variables, dead_code, unused)]
     let mut starting_equipment = HashMap::new();
 
     let chest_properties = EquipmentProperties {
@@ -224,7 +225,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
         name: "Plastic Lei".to_string(),
     };
 
-    let amulet = Item {
+    let _amulet = Item {
         entity_properties: amulet_entity_properties,
         item_level: 0,
         requirements: None,

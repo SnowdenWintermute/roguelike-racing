@@ -27,7 +27,6 @@ impl RoguelikeRacerGame {
         let target_entity_id = ability_target.get_targets_if_scheme_valid(
             ally_ids,
             opponent_ids_option,
-            ability_user_id,
             vec![TargetingScheme::All, TargetingScheme::Area],
         )?[0];
 

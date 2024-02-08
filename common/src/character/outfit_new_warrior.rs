@@ -1,4 +1,6 @@
 use super::Character;
+use crate::combatants::abilities::CombatantAbility;
+use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::combatants::combatant_traits::CombatantTraits;
 use crate::game::RoguelikeRacerGame;
@@ -23,10 +25,10 @@ pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Charact
         .push(CombatantTraits::HpBioavailabilityPercent(200));
 
     // ABILITIES
-    // combatant_properties.abilities.insert(
-    //     CombatantAbilityNames::Fire,
-    //     CombatantAbility::new(CombatantAbilityNames::Fire),
-    // );
+    combatant_properties.abilities.insert(
+        CombatantAbilityNames::Fire,
+        CombatantAbility::new(CombatantAbilityNames::Fire),
+    );
     // combatant_properties.abilities.insert(
     //     CombatantAbilityNames::Heal,
     //     CombatantAbility::new(CombatantAbilityNames::Heal),

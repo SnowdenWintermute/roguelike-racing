@@ -28,6 +28,10 @@ pub fn calculate_weapon_swing_result(
             &user_total_attributes,
             &equipment_properties,
         )?;
+    println!(
+        "get_weapon_properties_traits_and_base_bonus_damage: {:#?} {:#?} {:#?}",
+        weapon_properties, weapon_traits, base_bonus_damage
+    );
 
     // determine hit or miss
     let accuracy = user_total_attributes

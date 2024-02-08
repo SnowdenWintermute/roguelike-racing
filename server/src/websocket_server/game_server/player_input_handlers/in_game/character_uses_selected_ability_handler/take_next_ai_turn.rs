@@ -16,7 +16,6 @@ pub fn take_ai_controlled_turns_if_appropriate(
         message: error_messages::BATTLE_NOT_FOUND.to_string(),
     })?;
     let turn_trackers = &battle.combatant_turn_trackers;
-    println!("turn trackers at start of take_ai: {:#?}", turn_trackers);
     let mut active_combatant_id = turn_trackers
         .first()
         .ok_or_else(|| AppError {

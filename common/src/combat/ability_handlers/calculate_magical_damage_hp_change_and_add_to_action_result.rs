@@ -22,6 +22,7 @@ impl RoguelikeRacerGame {
         evadable: bool,
     ) -> Result<(), AppError> {
         let mut hp_change = rolled_hp_change_split_by_num_targets;
+        println!("hp_change initial: {}", hp_change);
         for target_id in target_entity_ids {
             //  - if evadable roll accuracy vs evasion and return evaded
             if evadable {
@@ -50,6 +51,7 @@ impl RoguelikeRacerGame {
                     &user_combat_attributes,
                     hp_change,
                 );
+                println!("hp_change after crit: {}", hp_change);
             }
             //  - reduce or increase damage by elemental affinity if damage type is elemental
             //     - if magical, affinity base
@@ -60,6 +62,7 @@ impl RoguelikeRacerGame {
                 let after_affinity =
                     apply_elemental_affinity_to_hp_change(*target_affinity as i16, hp_change);
                 hp_change = after_affinity;
+                println!("hp_change after affinity bonus: {}", hp_change);
             }
             //  reduce damage via resilience if not getting healed by affinity
             if hp_change > 0.0 {
@@ -75,9 +78,11 @@ impl RoguelikeRacerGame {
                 );
                 let damage_reduction_multiplier = 1.0 - damage_reduction_percentage as f32 / 100.0;
                 hp_change *= damage_reduction_multiplier;
+                println!("hp_change after resilience: {}", hp_change);
             }
             //  - apply any base final multiplier
             hp_change *= hp_change_properties.base_final_percent_multiplier as f32 / 100.0;
+                println!("hp_change after final multiplier: {}", hp_change);
             // as damage
             hp_change *= -1.0;
             action_result

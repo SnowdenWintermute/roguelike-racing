@@ -3,10 +3,8 @@ use crate::app_consts::CHARACTER_INVENTORY_DEFAULT_CAPACITY;
 use crate::errors::AppError;
 use crate::errors::AppErrorTypes;
 use crate::items::consumables::ConsumableProperties;
-use crate::items::equipment::weapon_properties::WeaponProperties;
 use crate::items::Item;
 use crate::items::ItemProperties;
-use crate::primatives::WeaponSlot;
 use serde::Deserialize;
 use serde::Serialize;
 

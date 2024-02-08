@@ -2,7 +2,6 @@ use super::BattleGroup;
 use crate::app_consts::error_messages;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::errors::AppError;
-use crate::game::getters::get_party;
 use crate::game::RoguelikeRacerGame;
 use serde::Deserialize;
 use serde::Serialize;

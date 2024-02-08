@@ -34,7 +34,6 @@ pub fn action_menu(_: &Props) -> Html {
     let action_menu_button_properties = use_state(|| Vec::<ActionMenuButtonProperties>::new());
     let button_props_on_current_page = use_state(|| Vec::<ActionMenuButtonProperties>::new());
     let last_page_number_filtered = use_state(|| 0);
-    let cloned_current_page_number = game_state.action_menu_current_page_number.clone();
 
     let cloned_current_page_number = game_state.action_menu_current_page_number.clone();
     let cloned_action_button_properties = action_menu_button_properties.clone();
@@ -145,4 +144,3 @@ pub fn action_menu(_: &Props) -> Html {
         </section>
     )
 }
-

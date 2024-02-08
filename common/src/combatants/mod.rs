@@ -16,7 +16,6 @@ use crate::combat::combat_actions::FriendOrFoe;
 use crate::combat::combat_actions::TargetingScheme;
 use crate::combat::magical_elements::MagicalElements;
 use crate::items::equipment::unarmed::FIST;
-use crate::items::equipment::weapon_properties::WeaponProperties;
 use crate::items::equipment::EquipmentProperties;
 use crate::items::equipment::EquipmentTypes;
 pub mod get_weapon_properties_traits_and_base_bonus_damage;
@@ -32,11 +31,9 @@ use crate::items::Item;
 use crate::status_effects::StatusEffects;
 use crate::utils::add_i16_to_u16_and_clamp_to_max;
 use core::fmt;
-use once_cell::sync::Lazy;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
-use std::collections::HashSet;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub enum CombatantClass {

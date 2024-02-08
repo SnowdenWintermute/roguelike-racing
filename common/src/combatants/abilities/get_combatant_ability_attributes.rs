@@ -57,7 +57,7 @@ impl CombatantAbilityNames {
                     targeting_schemes: vec![TargetingScheme::Area, TargetingScheme::Single],
                     hp_change_properties: Some(CombatActionHpChangeProperties {
                         base_values: Range::new(1, 5),
-                        base_final_percent_multiplier: 1,
+                        base_final_percent_multiplier: 100,
                         additive_attribute_and_scaling_factor: Some((
                             CombatAttributes::Intelligence,
                             1,

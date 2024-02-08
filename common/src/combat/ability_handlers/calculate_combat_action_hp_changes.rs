@@ -32,7 +32,6 @@ impl RoguelikeRacerGame {
         let target_entity_ids = targets.get_targets_if_scheme_valid(
             ally_ids,
             opponent_ids_option,
-            user_id,
             vec![TargetingScheme::All],
         )?;
 

@@ -5,16 +5,20 @@ use crate::combat::battle::Battle;
 use crate::combat::combat_actions::CombatAction;
 use crate::combat::combat_actions::CombatActionTarget;
 use crate::combat::combat_actions::TargetingScheme;
+use crate::combat::hp_change_source_types::HpChangeSourceCategories;
 use crate::combat::ActionResult;
+use crate::combatants::combat_attributes::CombatAttributes;
 use crate::errors::AppError;
 use crate::game::RoguelikeRacerGame;
 use crate::primatives::Range;
+use rand::Rng;
+use std::collections::HashMap;
 
 impl RoguelikeRacerGame {
     pub fn calculate_combat_action_hp_changes(
         &self,
-        ability_user_id: u32,
-        ability_target: &CombatActionTarget,
+        user_id: u32,
+        targets: &CombatActionTarget,
         battle_option: Option<&Battle>,
         combat_action: CombatAction,
     ) -> Result<ActionResult, AppError> {
@@ -24,18 +28,18 @@ impl RoguelikeRacerGame {
         })?;
 
         let (ally_ids, opponent_ids_option) =
-            battle.get_ally_ids_and_opponent_ids_option(ability_user_id)?;
+            battle.get_ally_ids_and_opponent_ids_option(user_id)?;
 
-        let target_entity_ids = ability_target.get_targets_if_scheme_valid(
+        let target_entity_ids = targets.get_targets_if_scheme_valid(
             ally_ids,
             opponent_ids_option,
-            ability_user_id,
+            user_id,
             vec![TargetingScheme::All],
         )?;
 
-        let (_, user_combatant_properties) = self.get_combatant_by_id(&ability_user_id)?;
+        let (_, user_combatant_properties) = self.get_combatant_by_id(&user_id)?;
         let user_combat_attributes = user_combatant_properties.get_total_attributes();
-        let combat_action_properties = match combat_action {
+        let combat_action_properties = match &combat_action {
             CombatAction::AbilityUsed(ability_name) => {
                 ability_name.get_attributes().combat_action_properties
             }
@@ -66,7 +70,7 @@ impl RoguelikeRacerGame {
             max += scaled_attribute_value as f32;
         };
         // if weapon damage, determine main/off hand and add appropriate damage to range
-        if let Some(weapon_slots) = hp_change_properties.add_weapon_damage_from {
+        if let Some(weapon_slots) = &hp_change_properties.add_weapon_damage_from {
             let (weapon_min, weapon_max) = add_weapon_damage_to_combat_action_hp_change(
                 &weapon_slots,
                 &user_combatant_properties,
@@ -76,17 +80,48 @@ impl RoguelikeRacerGame {
             min += weapon_min;
             max += weapon_max;
         }
+        // roll the hp change
+        let mut rng = rand::thread_rng();
+        let rolled = rng.gen_range(min..=max);
+
         // calculate damage split over multiple targets
-        (min, max) = split_combat_action_hp_change_by_number_of_targets(
-            min,
-            max,
+        let split = split_combat_action_hp_change_by_number_of_targets(
+            rolled,
             target_entity_ids.len() as f32,
         );
-        // if is healing, on each target
-        //  - roll crit chance
-        //  - roll crit multiplier
-        //  - add Resilience multiplier
-        //  - if has undead trait, convert to damage
+
+        let mut action_result = ActionResult::new(user_id, combat_action.clone(), targets.clone());
+        action_result.hp_changes_by_entity_id = Some(HashMap::new());
+
+        match hp_change_properties.source_properties.category {
+            // if is healing, roll crit as whole then split by targets
+            HpChangeSourceCategories::Healing => self
+                .calculate_healing_hp_change_and_add_to_action_result(
+                    &mut action_result,
+                    &user_combat_attributes,
+                    target_entity_ids,
+                    split,
+                )?,
+            HpChangeSourceCategories::PhysicalDamage => self
+                .calculate_physical_damage_hp_change_and_add_to_action_result(
+                    &mut action_result,
+                    &user_combat_attributes,
+                    target_entity_ids,
+                    split,
+                    &hp_change_properties,
+                )?,
+            HpChangeSourceCategories::MagicalDamage(evadable) => {
+                for target_id in target_entity_ids {
+                    if evadable.0 {
+                        let user_accuracy = user_combat_attributes
+                            .get(&CombatAttributes::Accuracy)
+                            .unwrap_or_else(|| &0);
+                        let evaded = self.roll_evaded(*user_accuracy, target_id)?;
+                    }
+                }
+            }
+            HpChangeSourceCategories::Direct => todo!(),
+        }
         // on each target
         //  - if physical or magical evadable
         //    - roll accuracy vs evasion and return evaded
@@ -100,12 +135,6 @@ impl RoguelikeRacerGame {
         //  - apply any base final multiplier
         //  MAYBE DO SEPARATELY:
         //  - if uses weapon damage, calculate lifesteal
-
-        if let Some((scaling_attribute, scaling_attribute_factor)) =
-            hp_change_properties.additive_attribute_and_scaling_factor
-        {
-            //
-        };
 
         // let intelligence = user_combat_attributes
         //     .get(&CombatAttributes::Intelligence)

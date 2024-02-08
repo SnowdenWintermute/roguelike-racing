@@ -6,4 +6,5 @@ use serde::Serialize;
 pub enum CombatantTraits {
     HpBioavailabilityPercent(u8),
     ElementalAffinityPercent(MagicalElements, i16),
+    Undead,
 }

@@ -6,12 +6,17 @@ use crate::errors::AppError;
 use crate::game::RoguelikeRacerGame;
 mod ability_resolution_calculators;
 mod add_weapon_damage_to_hp_change_range;
-pub mod apply_elemental_affinity_to_hp_change_range;
+mod apply_crit_multiplier_to_hp_change;
+pub mod apply_elemental_affinity_to_hp_change;
 pub mod attack;
+mod calculate_healing_hp_change_and_add_to_action_result;
+mod calculate_magical_damage_hp_change_and_add_to_action_result;
+mod calculate_physical_damage_hp_change_and_add_to_action_result;
 pub mod fire;
 pub mod get_ability_base_hp_change_range;
-pub mod get_crit_range;
+mod get_healing_hp_change_on_target_combatant;
 pub mod roll_crit;
+mod roll_evaded;
 pub mod split_combat_action_hp_change_by_number_of_targets;
 
 impl RoguelikeRacerGame {

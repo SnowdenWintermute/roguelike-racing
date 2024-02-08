@@ -54,7 +54,7 @@ pub fn calculate_weapon_swing_result(
             hp_changes_by_entity_id: None,
             mp_changes_by_entity_id: None,
             misses_by_entity_id: Some(HashSet::from([(target_entity_id)])),
-            is_crit: false,
+            crits_by_entity_id: None,
             status_effect_changes_by_entity_id: None,
             ends_turn: should_end_turn,
         })
@@ -85,7 +85,7 @@ pub fn calculate_weapon_swing_result(
             )])),
             mp_changes_by_entity_id: None,
             misses_by_entity_id: None,
-            is_crit: false,
+            crits_by_entity_id: None,
             status_effect_changes_by_entity_id: None,
             ends_turn: should_end_turn,
         })

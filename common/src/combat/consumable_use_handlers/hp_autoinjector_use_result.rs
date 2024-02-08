@@ -70,7 +70,7 @@ pub fn hp_autoinjector_use_result(
         hp_changes_by_entity_id: Some(HashMap::from([(*target_id, final_healing)])),
         mp_changes_by_entity_id: None,
         misses_by_entity_id: None,
-        is_crit: false,
+        crits_by_entity_id: None,
         status_effect_changes_by_entity_id: None,
         ends_turn: false,
     }])

@@ -16,11 +16,10 @@ pub mod player_input_handlers;
 mod remove_user_from_websocket_channel;
 pub mod send_messages;
 pub mod update_packet_creators;
-use crate::utils::generate_random_username;
-
 use super::AppMessage;
 use super::ClientBinaryMessage;
 use super::ClientMessage;
+use crate::utils::generate_random_username;
 
 #[derive(Debug)]
 pub struct UserWebsocketChannels {

@@ -2,8 +2,7 @@ use super::apply_crit_multiplier_to_hp_change::apply_crit_multiplier_to_hp_chang
 use super::apply_elemental_affinity_to_hp_change::apply_elemental_affinity_to_hp_change;
 use super::roll_crit::roll_crit;
 use crate::app_consts::BASE_CRIT_CHANCE;
-use crate::app_consts::BASE_CRIT_MULTIPLIER;
-use crate::app_consts::VIT_TO_PERCENT_PHYSICAL_DAMAGE_REDUCTION_RATION;
+use crate::app_consts::VIT_TO_PERCENT_PHYSICAL_DAMAGE_REDUCTION_RATIO;
 use crate::combat::combat_actions::CombatActionHpChangeProperties;
 use crate::combat::ActionResult;
 use crate::combatants::combat_attributes::CombatAttributes;
@@ -56,7 +55,7 @@ impl RoguelikeRacerGame {
                 .unwrap_or_else(|| &0);
 
             let damage_reduction_percentage = std::cmp::min(
-                (*target_vit as f32 * VIT_TO_PERCENT_PHYSICAL_DAMAGE_REDUCTION_RATION) as u16,
+                (*target_vit as f32 * VIT_TO_PERCENT_PHYSICAL_DAMAGE_REDUCTION_RATIO) as u16,
                 100,
             );
             let damage_reduction_multiplier = 1.0 - damage_reduction_percentage as f32 / 100.0;

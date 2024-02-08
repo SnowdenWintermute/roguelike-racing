@@ -1,4 +1,5 @@
 use super::battle::Battle;
+use super::combat_actions::CombatAction;
 use super::ActionResult;
 use crate::combat::combat_actions::CombatActionTarget;
 use crate::combatants::abilities::CombatantAbilityNames;
@@ -9,10 +10,10 @@ mod add_weapon_damage_to_hp_change_range;
 mod apply_crit_multiplier_to_hp_change;
 pub mod apply_elemental_affinity_to_hp_change;
 pub mod attack;
+pub mod calculate_combat_action_hp_changes;
 mod calculate_healing_hp_change_and_add_to_action_result;
 mod calculate_magical_damage_hp_change_and_add_to_action_result;
 mod calculate_physical_damage_hp_change_and_add_to_action_result;
-pub mod fire;
 pub mod get_ability_base_hp_change_range;
 mod get_healing_hp_change_on_target_combatant;
 pub mod roll_crit;
@@ -24,12 +25,22 @@ impl RoguelikeRacerGame {
         &self,
         ability_user_id: u32,
         ability_name: &CombatantAbilityNames,
-        ability_target: &CombatActionTarget,
+        ability_targets: &CombatActionTarget,
         battle_option: Option<&Battle>,
     ) -> Result<Vec<ActionResult>, AppError> {
         match ability_name {
             CombatantAbilityNames::Attack => {
-                self.attack_handler(ability_user_id, ability_target, battle_option)
+                self.attack_handler(ability_user_id, ability_targets, battle_option)
+            }
+            CombatantAbilityNames::Fire => {
+                let combat_action = CombatAction::AbilityUsed(ability_name.clone());
+                let hp_change_result = self.calculate_combat_action_hp_changes(
+                    ability_user_id,
+                    ability_targets,
+                    battle_option,
+                    combat_action,
+                )?;
+                Ok(vec![hp_change_result])
             }
             _ => Ok(Vec::new()), // CombatantAbilityNames::ArmorBreak => todo!(),
                                  // CombatantAbilityNames::HeatLance => todo!(),

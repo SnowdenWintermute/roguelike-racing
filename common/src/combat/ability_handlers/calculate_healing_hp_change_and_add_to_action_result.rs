@@ -22,13 +22,14 @@ impl RoguelikeRacerGame {
         //  - roll crit chance
         let is_crit = roll_crit(BASE_CRIT_CHANCE + user_focus_attribute);
         //  - add crit multiplier
-        let mut hp_change = rolled_hp_change_split_by_num_targets;
+        let mut hp_change_initial = rolled_hp_change_split_by_num_targets;
         if is_crit {
             let crit_multiplier = *user_focus_attribute as f32 / 100.0 + BASE_CRIT_MULTIPLIER;
-            hp_change *= crit_multiplier;
+            hp_change_initial *= crit_multiplier;
         }
 
         for target_id in target_entity_ids {
+            let hp_change = hp_change_initial;
             let target_hp_change =
                 self.get_healing_hp_change_on_target_combatant(&target_id, hp_change)?;
             action_result

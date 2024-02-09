@@ -1,3 +1,4 @@
+mod animation_causing_hp_change_finished_handler;
 mod approach_combatant_animation_finished_handler;
 mod autoinjector_use_animation_finished_handler;
 mod follow_through_swing_animation_finished_handler;
@@ -19,7 +20,7 @@ pub fn process_next_animation_in_combatant_animation_queue(
 ) {
     if let Some(animation) = animation_queue.front() {
         let cloned_animation = animation.clone();
-        let animation_duration = 100;
+        let animation_duration = 1000;
         timer_state.set(Some(gloo::timers::callback::Timeout::new(
             animation_duration,
             move || {

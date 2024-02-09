@@ -19,10 +19,10 @@ impl RoguelikeRacerGame {
         rolled_hp_change_split_by_num_targets: f32,
         hp_change_properties: &CombatActionHpChangeProperties,
     ) -> Result<(), AppError> {
-        let mut hp_change = rolled_hp_change_split_by_num_targets;
         //  - get crit chance vs crit chance reduction
         //  - roll crit chance vs %chance reduction from AGI if physical
         for target_id in target_entity_ids {
+            let mut hp_change = rolled_hp_change_split_by_num_targets;
             let user_dex = user_combat_attributes
                 .get(&CombatAttributes::Dexterity)
                 .unwrap_or_else(|| &0);

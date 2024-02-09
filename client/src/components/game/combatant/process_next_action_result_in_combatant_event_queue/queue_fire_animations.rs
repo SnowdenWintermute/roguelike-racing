@@ -1,4 +1,7 @@
 use crate::components::mesh_manager::CombatantAnimation;
+use crate::components::mesh_manager::HpChange;
+use crate::components::mesh_manager::HpChangeResult;
+use crate::components::mesh_manager::TargetAndHpChangeResults;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::combat::ActionResult;
@@ -40,30 +43,54 @@ pub fn queue_fire_animations(
             .hp_changes_by_entity_id
             .clone()
             .unwrap_or_else(|| HashMap::new());
+        let crits_by_entity_id = &action_result
+            .crits_by_entity_id
+            .clone()
+            .unwrap_or_else(|| HashSet::new());
         let evades_by_entity_id = &action_result
             .misses_by_entity_id
             .clone()
             .unwrap_or_else(|| HashSet::new());
 
+        let mut hp_change_results = vec![];
+
         for target_id in target_ids {
-            let hp_change_option = hp_changes_by_entity_id.get(&target_id);
             let evaded = evades_by_entity_id.get(&target_id).is_some();
-
-            let event_manager = store
-                .action_results_manager
-                .combantant_event_managers
-                .get_mut(&combatant_id)
-                .expect("none checked");
-
-            event_manager.animation_queue.append(&mut VecDeque::from([
-                CombatantAnimation::SwingMainHandToHit(
-                    target_id,
-                    hp_change_option.copied(),
-                    evaded,
-                ),
-                CombatantAnimation::MainHandFollowThroughSwing,
-            ]));
+            let hp_change_result = if evaded {
+                HpChangeResult::Evaded
+            } else {
+                let hp_change = hp_changes_by_entity_id
+                    .get(&target_id)
+                    .expect("to have an hp_change_option");
+                let is_crit = crits_by_entity_id.contains(&target_id);
+                if hp_change <= &0 {
+                    HpChangeResult::Damaged(HpChange {
+                        value: *hp_change,
+                        is_crit,
+                    })
+                } else {
+                    HpChangeResult::Healed(HpChange {
+                        value: *hp_change,
+                        is_crit,
+                    })
+                }
+            };
+            hp_change_results.push(TargetAndHpChangeResults {
+                target_id,
+                hp_change_result,
+            })
         }
+        let event_manager = store
+            .action_results_manager
+            .combantant_event_managers
+            .get_mut(&combatant_id)
+            .expect("none checked");
+
+        event_manager.animation_queue.append(&mut VecDeque::from([
+            CombatantAnimation::MoveForwardToCastSpell,
+            CombatantAnimation::CastSpellOnTargets(hp_change_results),
+            CombatantAnimation::MainHandFollowThroughSwing,
+        ]));
 
         Ok(())
     })

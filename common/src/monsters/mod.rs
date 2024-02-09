@@ -67,7 +67,7 @@ impl Monster {
         inherent_attributes.insert(CombatAttributes::Strength, 3 * level as u16);
         inherent_attributes.insert(CombatAttributes::Dexterity, 1 * level as u16);
         inherent_attributes.insert(CombatAttributes::Vitality, 1 * level as u16);
-        inherent_attributes.insert(CombatAttributes::Resilience, 1 * level as u16);
+        inherent_attributes.insert(CombatAttributes::Resilience, 1 + 1 * level as u16);
         inherent_attributes.insert(CombatAttributes::ArmorClass, 10 * (level - 1) as u16);
         inherent_attributes.insert(
             CombatAttributes::Agility,

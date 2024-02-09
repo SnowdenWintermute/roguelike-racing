@@ -53,6 +53,8 @@ impl CombatantAbilityNames {
                 ..Default::default()
             },
             CombatantAbilityNames::Fire => CombatantAbilityAttributes {
+                mana_cost: 2,
+                mana_cost_level_multiplier: 1,
                 combat_action_properties: CombatActionProperties {
                     targeting_schemes: vec![TargetingScheme::Area, TargetingScheme::Single],
                     hp_change_properties: Some(CombatActionHpChangeProperties {
@@ -72,7 +74,6 @@ impl CombatantAbilityNames {
                         crit_multiplier_attribute: Some(CombatAttributes::Focus),
                     }),
                     valid_target_categories: TargetCategories::Any,
-
                     ..Default::default()
                 },
                 ..Default::default()

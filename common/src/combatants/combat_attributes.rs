@@ -22,11 +22,13 @@ pub enum CombatAttributes {
     // MAIN
     // offensive
     Focus,     // negates %magic reduction and increases spell crit chance and crit multiplier
-    Dexterity, // ranged damage, accuracy, physical crit chance, armor ranged armor pen
+    Dexterity, // ranged damage, accuracy, physical crit chance, armor ranged armor pen, shield
+    // block chance
     Intelligence, // mp, magic ability damage
-    Strength,  // damage with melee attacks, melee crit multiplier, melee armor pen
+    Strength,     // damage with melee attacks, melee crit multiplier, melee armor pen, shield block
+    // chance
     // defensive
-    Vitality,   // hp, and debuff duration
+    Vitality,   // hp, and debuff duration, shield block damage reduction
     Resilience, // %magic damage reduction, healing received, debuff duration
     Agility,    // movement speed, evasion, physical crit chance reduction
 }

@@ -21,9 +21,9 @@ impl RoguelikeRacerGame {
         hp_change_properties: &CombatActionHpChangeProperties,
         evadable: bool,
     ) -> Result<(), AppError> {
-        let mut hp_change = rolled_hp_change_split_by_num_targets;
-        println!("hp_change initial: {}", hp_change);
         for target_id in target_entity_ids {
+            let mut hp_change = rolled_hp_change_split_by_num_targets;
+            println!("hp_change initial: {}", hp_change);
             //  - if evadable roll accuracy vs evasion and return evaded
             if evadable {
                 let user_accuracy = user_combat_attributes
@@ -70,19 +70,23 @@ impl RoguelikeRacerGame {
                 let target_resilience = target_combat_attributes
                     .get(&CombatAttributes::Resilience)
                     .unwrap_or_else(|| &0);
+                let penetrated_resilience = std::cmp::max(0, target_resilience - user_focus);
+
                 let damage_reduction_percentage = std::cmp::min(
-                    (*target_resilience as f32
+                    (penetrated_resilience as f32
                         * RESILIENCE_TO_PERCENT_MAGICAL_DAMAGE_REDUCTION_RATIO)
                         as u16,
                     100,
                 );
+                println!("resilience DR percentage: {}", damage_reduction_percentage);
                 let damage_reduction_multiplier = 1.0 - damage_reduction_percentage as f32 / 100.0;
+                println!("DR multiplier: {}", damage_reduction_multiplier);
                 hp_change *= damage_reduction_multiplier;
                 println!("hp_change after resilience: {}", hp_change);
             }
             //  - apply any base final multiplier
             hp_change *= hp_change_properties.base_final_percent_multiplier as f32 / 100.0;
-                println!("hp_change after final multiplier: {}", hp_change);
+            println!("hp_change after final multiplier: {}", hp_change);
             // as damage
             hp_change *= -1.0;
             action_result

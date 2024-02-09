@@ -7,6 +7,7 @@ use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::errors::AppError;
 use yewdux::Dispatch;
+use super::animation_causing_hp_change_finished_handler::animation_causing_hp_change_finished_handler;
 use super::autoinjector_use_animation_finished_handler::autoinjector_use_animation_finished_handler;
 
 pub fn handle_animation_finished(
@@ -56,6 +57,14 @@ pub fn handle_animation_finished(
                 target_id,
             )
         }
+        CombatantAnimation::CastSpellOnTargets(targets_and_hp_change_results) => {
+            animation_causing_hp_change_finished_handler(
+                game_dispatch.clone(),
+                targets_and_hp_change_results,
+                combatant_id,
+            )
+        }
+        CombatantAnimation::MoveForwardToCastSpell => Ok(()),
     }?;
 
     game_dispatch.reduce_mut(|store| -> Result<(), AppError> {

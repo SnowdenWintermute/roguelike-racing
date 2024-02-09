@@ -51,7 +51,7 @@ pub enum CombatantAnimation {
     Death(Option<i16>),
     Evasion,
     UseAutoinjector(AutoinjectorTypes, u32, i16),
-    MoveForwardToCastSpell,
+    MoveForwardToCastSpell(u8),
     CastSpellOnTargets(Vec<TargetAndHpChangeResults>),
 }
 
@@ -81,7 +81,7 @@ impl Display for CombatantAnimation {
             CombatantAnimation::CastSpellOnTargets(targets_and_hp_changes) => {
                 format!("casting spell on targets")
             }
-            CombatantAnimation::MoveForwardToCastSpell => {
+            CombatantAnimation::MoveForwardToCastSpell(_) => {
                 "moving forward to cast spell".to_string()
             }
         };

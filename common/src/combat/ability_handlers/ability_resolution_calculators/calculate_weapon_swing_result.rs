@@ -50,18 +50,16 @@ pub fn calculate_weapon_swing_result(
         target_total_attributes,
     );
 
+    let mut action_result = ActionResult::new(
+        ability_user_id,
+        CombatAction::AbilityUsed(CombatantAbilityNames::Attack),
+        ability_target.clone(),
+    );
+    action_result.ends_turn = should_end_turn;
+
     if evaded {
-        Ok(ActionResult {
-            user_id: ability_user_id,
-            action: CombatAction::AbilityUsed(CombatantAbilityNames::Attack),
-            targets: ability_target.clone(),
-            hp_changes_by_entity_id: None,
-            mp_changes_by_entity_id: None,
-            misses_by_entity_id: Some(HashSet::from([(target_entity_id)])),
-            crits_by_entity_id: None,
-            status_effect_changes_by_entity_id: None,
-            ends_turn: should_end_turn,
-        })
+        action_result.misses_by_entity_id = Some(HashSet::from([(target_entity_id)]));
+        Ok(action_result)
     } else {
         let mut rng = rand::thread_rng();
         let rolled_damage = rng.gen_range(damage_range.min..=damage_range.max);
@@ -79,19 +77,10 @@ pub fn calculate_weapon_swing_result(
         println!("final damage: {final_damage} as i16: {fd_i16}");
 
         // add the result
-        Ok(ActionResult {
-            user_id: ability_user_id,
-            action: CombatAction::AbilityUsed(CombatantAbilityNames::Attack),
-            targets: ability_target.clone(),
-            hp_changes_by_entity_id: Some(HashMap::from([(
-                target_entity_id,
-                final_damage as i16 * -1,
-            )])),
-            mp_changes_by_entity_id: None,
-            misses_by_entity_id: None,
-            crits_by_entity_id: None,
-            status_effect_changes_by_entity_id: None,
-            ends_turn: should_end_turn,
-        })
+        action_result.hp_changes_by_entity_id = Some(HashMap::from([(
+            target_entity_id,
+            final_damage as i16 * -1,
+        )]));
+        Ok(action_result)
     }
 }

@@ -37,6 +37,9 @@ pub struct ActionResult {
     pub targets: CombatActionTarget,
     // used to display floating text and reduce/add to the value
     pub hp_changes_by_entity_id: Option<HashMap<u32, i16>>,
+    // prices are a different category because they won't cause floating numbers, only abilities that
+    // cause mp gain/loss should be animated
+    pub mp_combat_action_prices_paid_by_entity_id: Option<HashMap<u32, u8>>,
     pub mp_changes_by_entity_id: Option<HashMap<u32, i16>>,
     pub misses_by_entity_id: Option<HashSet<u32>>,
     pub crits_by_entity_id: Option<HashSet<u32>>,
@@ -53,6 +56,7 @@ impl ActionResult {
             action,
             targets,
             hp_changes_by_entity_id: None,
+            mp_combat_action_prices_paid_by_entity_id: None,
             mp_changes_by_entity_id: None,
             misses_by_entity_id: None,
             crits_by_entity_id: None,

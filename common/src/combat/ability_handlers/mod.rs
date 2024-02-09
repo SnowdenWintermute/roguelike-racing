@@ -11,6 +11,7 @@ mod apply_crit_multiplier_to_hp_change;
 pub mod apply_elemental_affinity_to_hp_change;
 pub mod attack;
 pub mod calculate_combat_action_hp_changes;
+mod calculate_combat_action_mp_changes;
 mod calculate_healing_hp_change_and_add_to_action_result;
 mod calculate_magical_damage_hp_change_and_add_to_action_result;
 mod calculate_physical_damage_hp_change_and_add_to_action_result;
@@ -34,13 +35,28 @@ impl RoguelikeRacerGame {
             }
             CombatantAbilityNames::Fire => {
                 let combat_action = CombatAction::AbilityUsed(ability_name.clone());
-                let hp_change_result = self.calculate_combat_action_hp_changes(
+                let action_result = ActionResult::new(
+                    ability_user_id,
+                    combat_action.clone(),
+                    ability_targets.clone(),
+                );
+
+                let action_result = self.calculate_combat_action_mp_changes(
+                    &action_result,
                     ability_user_id,
                     ability_targets,
                     battle_option,
-                    combat_action,
+                    &combat_action,
                 )?;
-                Ok(vec![hp_change_result])
+
+                let action_result = self.calculate_combat_action_hp_changes(
+                    &action_result,
+                    ability_user_id,
+                    ability_targets,
+                    battle_option,
+                    &combat_action,
+                )?;
+                Ok(vec![action_result])
             }
             _ => Ok(Vec::new()), // CombatantAbilityNames::ArmorBreak => todo!(),
                                  // CombatantAbilityNames::HeatLance => todo!(),

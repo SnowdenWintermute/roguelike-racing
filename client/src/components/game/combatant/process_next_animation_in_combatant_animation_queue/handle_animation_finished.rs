@@ -8,6 +8,7 @@ use common::app_consts::error_messages;
 use common::errors::AppError;
 use yewdux::Dispatch;
 use super::animation_causing_hp_change_finished_handler::animation_causing_hp_change_finished_handler;
+use super::animation_causing_payment_of_mp_price_finished_handler::animation_causing_payment_of_mp_price_finished_handler;
 use super::autoinjector_use_animation_finished_handler::autoinjector_use_animation_finished_handler;
 
 pub fn handle_animation_finished(
@@ -64,7 +65,13 @@ pub fn handle_animation_finished(
                 combatant_id,
             )
         }
-        CombatantAnimation::MoveForwardToCastSpell => Ok(()),
+        CombatantAnimation::MoveForwardToCastSpell(mp_price) => {
+            animation_causing_payment_of_mp_price_finished_handler(
+                game_dispatch.clone(),
+                mp_price,
+                combatant_id,
+            )
+        }
     }?;
 
     game_dispatch.reduce_mut(|store| -> Result<(), AppError> {

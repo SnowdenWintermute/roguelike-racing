@@ -16,11 +16,13 @@ use std::collections::HashMap;
 impl RoguelikeRacerGame {
     pub fn calculate_combat_action_hp_changes(
         &self,
+        action_result: &ActionResult,
         user_id: u32,
         targets: &CombatActionTarget,
         battle_option: Option<&Battle>,
-        combat_action: CombatAction,
+        combat_action: &CombatAction,
     ) -> Result<ActionResult, AppError> {
+        let mut action_result = action_result.clone();
         let battle = battle_option.ok_or_else(|| AppError {
             error_type: crate::errors::AppErrorTypes::Generic,
             message: error_messages::INVALID_ABILITY_CONTEXT.to_string(),
@@ -29,6 +31,7 @@ impl RoguelikeRacerGame {
         let (ally_ids, opponent_ids_option) =
             battle.get_ally_ids_and_opponent_ids_option(user_id)?;
 
+        // MAKE THIS FILTER PROHIBITED STATES
         let target_entity_ids = targets.get_targets_if_scheme_valid(
             ally_ids,
             opponent_ids_option,
@@ -88,7 +91,6 @@ impl RoguelikeRacerGame {
             target_entity_ids.len() as f32,
         );
 
-        let mut action_result = ActionResult::new(user_id, combat_action.clone(), targets.clone());
         action_result.hp_changes_by_entity_id = Some(HashMap::new());
 
         match hp_change_properties.source_properties.category {

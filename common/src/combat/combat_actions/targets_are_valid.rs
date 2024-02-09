@@ -12,6 +12,7 @@ impl CombatActionProperties {
         ally_ids: &Vec<u32>,
         opponent_ids_option: &Option<Vec<u32>>,
     ) -> bool {
+        println!("targets for combat action: {:#?}", targets);
         match targets {
             CombatActionTarget::Single(id) => match self.valid_target_categories {
                 TargetCategories::Opponent => {

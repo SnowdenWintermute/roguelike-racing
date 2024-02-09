@@ -51,6 +51,13 @@ pub fn queue_fire_animations(
             .misses_by_entity_id
             .clone()
             .unwrap_or_else(|| HashSet::new());
+        let mp_combat_action_prices_paid_by_entity_id = &action_result
+            .mp_combat_action_prices_paid_by_entity_id
+            .clone()
+            .unwrap_or_else(|| HashMap::new());
+        let mp_price = mp_combat_action_prices_paid_by_entity_id
+            .get(&combatant_id)
+            .unwrap_or_else(|| &0);
 
         let mut hp_change_results = vec![];
 
@@ -87,7 +94,7 @@ pub fn queue_fire_animations(
             .expect("none checked");
 
         event_manager.animation_queue.append(&mut VecDeque::from([
-            CombatantAnimation::MoveForwardToCastSpell,
+            CombatantAnimation::MoveForwardToCastSpell(*mp_price),
             CombatantAnimation::CastSpellOnTargets(hp_change_results),
             CombatantAnimation::MainHandFollowThroughSwing,
         ]));

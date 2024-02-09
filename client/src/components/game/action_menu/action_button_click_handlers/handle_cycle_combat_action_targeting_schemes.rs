@@ -1,6 +1,7 @@
 use crate::store::game_store::get_cloned_current_battle_option;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
+use common::combat::combat_actions::filter_possible_target_ids_by_prohibited_combatant_states::filter_possible_target_ids_by_prohibited_combatant_states;
 use common::combat::combat_actions::CombatActionProperties;
 use common::combat::combat_actions::CombatActionTarget;
 use common::errors::AppError;
@@ -98,6 +99,14 @@ pub fn handle_cycle_combat_action_targeting_schemes(
         focused_character.entity_properties.id,
     )?;
 
+    let focused_character = party
+        .characters
+        .get_mut(&game_store.focused_character_id)
+        .ok_or_else(|| AppError {
+            error_type: common::errors::AppErrorTypes::ClientError,
+            message: error_messages::CHARACTER_NOT_FOUND.to_string(),
+        })?;
+
     let new_targets = combat_action_properties.targets_by_saved_preference_or_default(
         focused_character.entity_properties.id,
         &focused_character
@@ -116,13 +125,6 @@ pub fn handle_cycle_combat_action_targeting_schemes(
             ally_ids,
             opponent_ids_option,
         );
-    let focused_character = party
-        .characters
-        .get_mut(&game_store.focused_character_id)
-        .ok_or_else(|| AppError {
-            error_type: common::errors::AppErrorTypes::ClientError,
-            message: error_messages::CHARACTER_NOT_FOUND.to_string(),
-        })?;
 
     focused_character
         .combatant_properties

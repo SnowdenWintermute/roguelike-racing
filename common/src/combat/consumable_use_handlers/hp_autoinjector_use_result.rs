@@ -62,16 +62,12 @@ pub fn hp_autoinjector_use_result(
     let mut rng = rand::thread_rng();
     let rolled_healing = rng.gen_range(min_healing..=max_healing);
     let final_healing = rolled_healing.clamp(0.0, i16::MAX as f32) as i16;
-
-    Ok(vec![ActionResult {
+    let mut action_result = ActionResult::new(
         user_id,
-        action: CombatAction::ConsumableUsed(consumable_item_id),
-        targets: target.clone(),
-        hp_changes_by_entity_id: Some(HashMap::from([(*target_id, final_healing)])),
-        mp_changes_by_entity_id: None,
-        misses_by_entity_id: None,
-        crits_by_entity_id: None,
-        status_effect_changes_by_entity_id: None,
-        ends_turn: false,
-    }])
+        CombatAction::ConsumableUsed(consumable_item_id),
+        target.clone(),
+    );
+    action_result.hp_changes_by_entity_id = Some(HashMap::from([(*target_id, final_healing)]));
+
+    Ok(vec![action_result])
 }

@@ -75,5 +75,12 @@ pub fn apply_action_result(
         }
     }
 
+    if let Some(mp_prices) = &action_result.mp_combat_action_prices_paid_by_entity_id {
+        for (entity_id, mp_prices) in mp_prices.iter() {
+            let (_, combatant_properties) = game.get_mut_combatant_by_id(entity_id)?;
+            combatant_properties.change_mp(*mp_prices as i16 * -1);
+        }
+    }
+
     Ok(())
 }

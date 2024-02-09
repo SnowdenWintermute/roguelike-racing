@@ -57,7 +57,7 @@ pub fn animation_causing_hp_change_finished_handler(
                             VecDeque::from([CombatantAnimation::Evasion])
                     }
                 }
-                HpChangeResult::Damaged(HpChange { value, is_crit }) => {
+                HpChangeResult::Damaged(HpChange { value, .. }) => {
                     store.combat_log.push(CombatLogMessage::new(
                         AttrValue::from(format!(
                             "{} ({causer_id}) damaged {} ({target_id}) for {value}",
@@ -117,7 +117,7 @@ pub fn animation_causing_hp_change_finished_handler(
                     //         color: AttrValue::from("rgba(255,255,255,0)"),
                     //     });
                 }
-                HpChangeResult::Healed(HpChange { value, is_crit }) => {}
+                HpChangeResult::Healed(HpChange { .. }) => {}
             }
         }
         Ok(())

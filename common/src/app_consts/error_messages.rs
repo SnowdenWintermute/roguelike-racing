@@ -50,7 +50,7 @@ pub const NO_ABILITY_SELECTED: &str = "No ability is selected";
 pub const MISSING_ABILITY_REFERENCE: &str = "The character has no ability selected";
 pub const ABILITY_HAS_NO_TARGETING_SCHEME: &str = "The selected ability has no targeting scheme";
 pub const INVALID_ABILITY_CONTEXT: &str = "The selected ability can not be used in this context";
-pub const ALREADY_FULL_HP: &str = "The target is already at full HP";
+pub const INSUFFICENT_MP: &str = "Not enough mana";
 // COMBAT ACTIONS
 pub const INVALID_ACTION_TYPE: &str = "Invalid action type";
 pub const MISSING_EXPECTED_ACTION_RESULT_DATA: &str = "An action result missing expected data";
@@ -60,6 +60,7 @@ pub const MISSING_ACTION_HP_CHANGE_PROPERTIES: &str =
     "The provided combat action doesn't specify any Hp change properties";
 pub const MISSING_ACTION_HP_CHANGE_BASE_VALUES: &str =
     "Tried to get the base Hp change values on an ability that doesn't specify them";
+pub const ALREADY_FULL_HP: &str = "The target is already at full HP";
 // TARGETING
 pub const NO_POSSIBLE_TARGETS_PROVIDED: &str =
     "No possible targets were found for the selected action";

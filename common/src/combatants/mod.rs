@@ -177,6 +177,22 @@ impl CombatantProperties {
         })
     }
 
+    pub fn get_ability_cost_if_owned<'a>(
+        &'a self,
+        ability_name: &CombatantAbilityNames,
+    ) -> Result<u8, AppError> {
+        let ability = self.abilities.get(ability_name).ok_or_else(|| AppError {
+            error_type: crate::errors::AppErrorTypes::InvalidInput,
+            message: error_messages::ABILITY_NOT_OWNED.to_string(),
+        })?;
+        let ability_attributes = ability_name.get_attributes();
+        let base_mp_cost = ability_attributes.mana_cost;
+        let mana_cost_level_multiplier = ability_attributes.mana_cost_level_multiplier;
+        let level_adjusted_mp_cost =
+            base_mp_cost + ability.level * (base_mp_cost * mana_cost_level_multiplier);
+        Ok(level_adjusted_mp_cost)
+    }
+
     pub fn change_hp(&mut self, hp_change: i16) -> u16 {
         let combatant_total_attributes = self.get_total_attributes();
         let max_hp = combatant_total_attributes

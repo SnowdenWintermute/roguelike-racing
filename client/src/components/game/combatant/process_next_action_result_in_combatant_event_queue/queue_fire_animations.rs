@@ -4,6 +4,7 @@ use crate::components::mesh_manager::HpChangeResult;
 use crate::components::mesh_manager::TargetAndHpChangeResults;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
+use common::combat::combat_actions::filter_possible_target_ids_by_prohibited_combatant_states::filter_possible_target_ids_by_prohibited_combatant_states;
 use common::combat::ActionResult;
 use common::errors::AppError;
 use std::collections::HashMap;
@@ -34,9 +35,18 @@ pub fn queue_fire_animations(
         let (ally_ids, opponent_ids_option) = battle
             .get_ally_ids_and_opponent_ids_option(action_result.user_id)?
             .clone();
+        let combat_action_properties = action_result.action.get_properties(game, combatant_id)?;
+        let (filtered_ally_ids, filtered_opponent_ids_option) =
+            filter_possible_target_ids_by_prohibited_combatant_states(
+                game,
+                &combat_action_properties.prohibited_target_combatant_states,
+                ally_ids.clone(),
+                opponent_ids_option.clone(),
+            )?;
+
         let target_ids = action_result.targets.get_targets_if_scheme_valid(
-            ally_ids,
-            opponent_ids_option,
+            filtered_ally_ids,
+            filtered_opponent_ids_option,
             vec![],
         )?;
         let hp_changes_by_entity_id = &action_result

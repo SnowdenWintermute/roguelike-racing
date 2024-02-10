@@ -11,6 +11,7 @@ use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::errors::AppError;
 use crate::errors::AppErrorTypes;
+use crate::game::RoguelikeRacerGame;
 use crate::primatives::Range;
 use crate::primatives::WeaponSlot;
 use serde::Deserialize;
@@ -108,6 +109,25 @@ impl Display for AbilityUsableContext {
 pub enum CombatAction {
     AbilityUsed(CombatantAbilityNames),
     ConsumableUsed(u32),
+}
+
+impl CombatAction {
+    pub fn get_properties(
+        &self,
+        game: &RoguelikeRacerGame,
+        user_id: u32,
+    ) -> Result<CombatActionProperties, AppError> {
+        match self {
+            CombatAction::AbilityUsed(ability_name) => {
+                Ok(ability_name.get_attributes().combat_action_properties)
+            }
+            CombatAction::ConsumableUsed(item_id) => {
+                let (_, combatant_properties) = game.get_combatant_by_id(&user_id)?;
+                let consumable = combatant_properties.inventory.get_consumable(&item_id)?;
+                Ok(consumable.consumable_type.get_combat_action_properties())
+            }
+        }
+    }
 }
 
 pub struct CombatActionProperties {

@@ -2,6 +2,7 @@ use crate::app_consts::error_messages;
 use crate::combat::ability_handlers::add_weapon_damage_to_hp_change_range::add_weapon_damage_to_combat_action_hp_change;
 use crate::combat::ability_handlers::split_combat_action_hp_change_by_number_of_targets::split_combat_action_hp_change_by_number_of_targets;
 use crate::combat::battle::Battle;
+use crate::combat::combat_actions::filter_possible_target_ids_by_prohibited_combatant_states::filter_possible_target_ids_by_prohibited_combatant_states;
 use crate::combat::combat_actions::CombatAction;
 use crate::combat::combat_actions::CombatActionTarget;
 use crate::combat::combat_actions::TargetingScheme;
@@ -31,21 +32,24 @@ impl RoguelikeRacerGame {
         let (ally_ids, opponent_ids_option) =
             battle.get_ally_ids_and_opponent_ids_option(user_id)?;
 
-        // MAKE THIS FILTER PROHIBITED STATES
+        let combat_action_properties = combat_action.get_properties(self, user_id)?;
+
+        let (filtered_ally_ids, filtered_opponent_ids_option) =
+            filter_possible_target_ids_by_prohibited_combatant_states(
+                self,
+                &combat_action_properties.prohibited_target_combatant_states,
+                ally_ids.clone(),
+                opponent_ids_option.clone(),
+            )?;
+
         let target_entity_ids = targets.get_targets_if_scheme_valid(
-            ally_ids,
-            opponent_ids_option,
+            filtered_ally_ids,
+            filtered_opponent_ids_option,
             vec![TargetingScheme::All],
         )?;
 
         let (_, user_combatant_properties) = self.get_combatant_by_id(&user_id)?;
         let user_combat_attributes = user_combatant_properties.get_total_attributes();
-        let combat_action_properties = match &combat_action {
-            CombatAction::AbilityUsed(ability_name) => {
-                ability_name.get_attributes().combat_action_properties
-            }
-            CombatAction::ConsumableUsed(_) => todo!(),
-        };
 
         // get hp change properties
         let hp_change_properties =

@@ -4,6 +4,7 @@ use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
 use common::adventuring_party::AdventuringParty;
 use common::combat::combat_actions::AbilityUsableContext;
+use common::combat::combat_actions::CombatAction;
 use common::combatants::abilities::CombatantAbilityNames;
 use common::dungeon_rooms::DungeonRoomTypes;
 use std::rc::Rc;
@@ -20,29 +21,21 @@ pub fn determine_menu_actions(
     let focused_character_option = party.characters.get(&game_state.focused_character_id);
     let player_owns_character =
         party.player_owns_character(&lobby_state.username, game_state.focused_character_id);
-    let focused_character_is_selecting_ability = focused_character_option
-        .map(|character| {
-            character
-                .combatant_properties
-                .selected_ability_name
-                .is_some()
-        })
-        .unwrap_or(false);
-    let focused_character_is_selecting_consumable = focused_character_option
-        .map(|character| character.combatant_properties.selected_consumable.is_some())
-        .unwrap_or(false);
-    if focused_character_is_selecting_consumable && player_owns_character {
-        menu_types.push(MenuTypes::ConsumableSelected);
+    let focused_character_is_selecting_combat_action = match focused_character_option {
+        Some(_) => true,
+        None => false,
+    };
+
+    if focused_character_is_selecting_combat_action && player_owns_character {
+        menu_types.push(MenuTypes::CombatActionSelected);
         new_actions = MenuTypes::get_actions(&menu_types, None, None);
     } else if game_state.viewing_items_on_ground {
         menu_types.push(MenuTypes::ItemsOnGround);
         new_actions = MenuTypes::get_actions(&menu_types, None, None);
-        //
     } else if let Some(selected_item) = &game_state.selected_item {
         let id = selected_item.clone().entity_properties.id;
         menu_types.push(MenuTypes::ItemSelected(id));
         new_actions = MenuTypes::get_actions(&menu_types, None, None);
-        //
     } else if game_state.viewing_equipped_items {
         menu_types.push(MenuTypes::ViewingEquipedItems);
         let focused_character = party.characters.get(&game_state.focused_character_id);
@@ -90,9 +83,6 @@ pub fn determine_menu_actions(
             menu_types.push(MenuTypes::Staircase)
         }
         new_actions = MenuTypes::get_actions(&menu_types, None, Some(ability_names));
-    } else if focused_character_is_selecting_ability && player_owns_character {
-        menu_types.push(MenuTypes::AbilitySelected);
-        new_actions = MenuTypes::get_actions(&menu_types, None, None);
     } else {
         menu_types.push(MenuTypes::InCombat);
         let mut ability_names = get_ability_menu_names(

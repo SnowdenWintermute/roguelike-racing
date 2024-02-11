@@ -48,7 +48,8 @@ impl RoguelikeRacerGame {
 
         let current_targets = current_targets.clone();
 
-        let combat_action_properties = selected_combat_action.get_properties(self, character_id)?;
+        let combat_action_properties =
+            selected_combat_action.get_properties_if_owned(self, character_id)?;
 
         let prohibited_target_combatant_states = combat_action_properties
             .prohibited_target_combatant_states

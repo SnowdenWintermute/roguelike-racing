@@ -23,8 +23,7 @@ pub fn apply_action_result(
 ) -> Result<(), AppError> {
     let user_id = action_result.user_id;
     let (_, user_combatant_properties) = game.get_mut_combatant_by_id(&user_id)?;
-    user_combatant_properties.selected_ability_name = None;
-    user_combatant_properties.selected_consumable = None;
+    user_combatant_properties.selected_combat_action = None;
     user_combatant_properties.combat_action_targets = None;
 
     match action_result.action {

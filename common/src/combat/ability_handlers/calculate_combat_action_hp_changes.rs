@@ -32,7 +32,7 @@ impl RoguelikeRacerGame {
             (ally_ids, None)
         };
 
-        let combat_action_properties = combat_action.get_properties(self, user_id)?;
+        let combat_action_properties = combat_action.get_properties_if_owned(self, user_id)?;
 
         let (filtered_ally_ids, filtered_opponent_ids_option) =
             filter_possible_target_ids_by_prohibited_combatant_states(

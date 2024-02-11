@@ -17,9 +17,8 @@ impl GameServer {
         let ActorIdAssociatedGameData {
             game,
             party_id,
-            current_game_name,
-            username,
             player_character_ids_option,
+            ..
         } = get_mut_game_data_from_actor_id(self, actor_id)?;
         let party = get_party(game, party_id)?;
         let character_positions = party.character_positions.clone();
@@ -28,13 +27,16 @@ impl GameServer {
         let selected_combat_action = character
             .combatant_properties
             .selected_combat_action
+            .clone()
             .ok_or_else(|| AppError {
                 error_type: common::errors::AppErrorTypes::InvalidInput,
                 message: error_messages::NO_ACTION_SELECTED.to_string(),
             })?
             .clone();
 
-        let combat_action_properties = selected_combat_action.get_properties(game, character_id)?;
+        // ENSURE OWNERSHIP OF CONSUMABLE OR ABILITY
+        let combat_action_properties =
+            selected_combat_action.get_properties_if_owned(game, character_id)?;
 
         // ENSURE TARGETING
         let targets = character

@@ -35,7 +35,9 @@ pub fn queue_fire_animations(
         let (ally_ids, opponent_ids_option) = battle
             .get_ally_ids_and_opponent_ids_option(action_result.user_id)?
             .clone();
-        let combat_action_properties = action_result.action.get_properties(game, combatant_id)?;
+        let combat_action_properties = action_result
+            .action
+            .get_properties_if_owned(game, combatant_id)?;
         let (filtered_ally_ids, filtered_opponent_ids_option) =
             filter_possible_target_ids_by_prohibited_combatant_states(
                 game,

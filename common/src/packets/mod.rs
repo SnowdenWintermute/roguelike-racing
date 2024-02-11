@@ -1,4 +1,5 @@
 use crate::items::equipment::EquipmentSlots;
+use crate::primatives::NextOrPrevious;
 use serde::Deserialize;
 use serde::Serialize;
 pub mod client_to_server;
@@ -13,6 +14,8 @@ pub enum WebsocketChannelNamespace {
     Chat,
 }
 
+pub type CharacterId = u32;
+
 #[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
 pub struct CharacterAndItem {
     pub character_id: u32,
@@ -23,6 +26,12 @@ pub struct CharacterAndItem {
 pub struct CharacterAndSlot {
     pub character_id: u32,
     pub slot: EquipmentSlots,
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
+pub struct CharacterAndDirection {
+    pub character_id: u32,
+    pub direction: NextOrPrevious,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

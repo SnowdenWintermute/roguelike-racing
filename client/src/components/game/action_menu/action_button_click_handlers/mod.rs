@@ -6,12 +6,14 @@ pub mod handle_cycle_consumable_targeting_schemes;
 mod handle_cycle_consumable_targets;
 pub mod handle_deselect_consumable;
 pub mod handle_select_ability;
-pub mod handle_select_consumable;
+pub mod handle_select_combat_action;
 mod use_item_handler;
 use self::handle_cycle_ability_targeting_schemes::handle_cycle_ability_targeting_schemes;
 use self::handle_cycle_ability_targets::handle_cycle_ability_targets;
+use self::handle_cycle_combat_action_targets::handle_cycle_combat_action_targets;
 use self::handle_cycle_consumable_targeting_schemes::handle_cycle_consumable_targeting_schemes;
 use self::handle_cycle_consumable_targets::handle_cycle_consumable_targets;
+use self::handle_select_combat_action::handle_select_combat_action;
 use super::enums::GameActions;
 use crate::components::websocket_manager::send_client_input::send_client_input;
 use crate::store::alert_store::AlertStore;
@@ -22,6 +24,7 @@ use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
 use crate::store::ui_store::UIStore;
 use crate::store::websocket_store::WebsocketStore;
+use common::combat::combat_actions::CombatAction;
 use common::packets::client_to_server::PlayerInputs;
 use common::packets::CharacterAndItem;
 use common::packets::CharacterAndSlot;
@@ -88,66 +91,49 @@ pub fn create_action_button_click_handler<'a>(
             let cloned_ui_state = ui_state.clone();
             let cloned_websocket_state = websocket_state.clone();
             let cloned_alert_dispatch = alert_dispatch.clone();
+            let cloned_lobby_state = lobby_state.clone();
             use_item_handler(
                 cloned_game_dispatch,
                 cloned_game_state,
                 cloned_ui_state,
                 cloned_websocket_state,
                 cloned_alert_dispatch,
+                cloned_lobby_state,
                 &id,
             )
         }),
-        GameActions::DeselectConsumable => Box::new(move || {
+        GameActions::DeselectConsumable | GameActions::DeselectAbility => Box::new(move || {
             let cloned_game_dispatch = game_dispatch.clone();
             let cloned_websocket_state = websocket_state.clone();
             let cloned_alert_dispatch = alert_dispatch.clone();
-            handle_deselect_consumable::handle_deselect_consumable(
-                cloned_game_dispatch,
-                cloned_alert_dispatch,
-                &cloned_websocket_state.websocket,
+            let cloned_lobby_state = lobby_state.clone();
+            handle_select_combat_action(
+                game_dispatch,
+                alert_dispatch,
+                lobby_state,
+                &websocket_state.websocket,
+                None,
             );
         }),
         GameActions::SelectAbility(ability_name) => Box::new(move || {
             let cloned_dispatch = game_dispatch.clone();
             let cloned_alert_dispatch = alert_dispatch.clone();
             let cloned_lobby_state = lobby_state.clone();
-            handle_select_ability::handle_select_ability(
-                cloned_dispatch,
-                cloned_lobby_state,
-                cloned_alert_dispatch,
+            handle_select_combat_action(
+                game_dispatch,
+                alert_dispatch,
+                lobby_state,
                 &websocket_state.websocket,
-                Some(ability_name.clone()),
+                Some(CombatAction::AbilityUsed(ability_name)),
             );
         }),
-        GameActions::DeselectAbility => Box::new(move || {
-            game_dispatch.reduce_mut(|game_store| {
-                let cloned_dispatch = game_dispatch.clone();
-                let cloned_alert_dispatch = alert_dispatch.clone();
-                let cloned_lobby_state = lobby_state.clone();
-                handle_select_ability::handle_select_ability(
-                    cloned_dispatch,
-                    cloned_lobby_state,
-                    cloned_alert_dispatch,
-                    &websocket_state.websocket,
-                    None,
-                );
-            });
-        }),
-        GameActions::CycleAbilityTargets(next_or_previous) => Box::new(move || {
+        GameActions::CycleTargets(next_or_previous) => Box::new(move || {
             let cloned_dispatch = game_dispatch.clone();
-            handle_cycle_ability_targets(
+            handle_cycle_combat_action_targets(
                 cloned_dispatch,
                 &websocket_state.websocket,
                 &next_or_previous,
-            )
-        }),
-        GameActions::CycleConsumableTargets(next_or_previous) => Box::new(move || {
-            let cloned_dispatch = game_dispatch.clone();
-            handle_cycle_consumable_targets(
-                cloned_dispatch,
-                &websocket_state.websocket,
-                &next_or_previous,
-            )
+            );
         }),
         GameActions::CycleAbilityTargetingScheme => Box::new(move || {
             let cloned_dispatch = game_dispatch.clone();
@@ -159,28 +145,11 @@ pub fn create_action_button_click_handler<'a>(
             log!("cycling consumable targeting schemes");
             handle_cycle_consumable_targeting_schemes(cloned_dispatch, &websocket_state.websocket)
         }),
-        GameActions::UseSelectedAbility => Box::new(move || {
+        GameActions::UseSelectedCombatAction => Box::new(move || {
             send_client_input(
                 &websocket_state.websocket,
-                PlayerInputs::UseSelectedAbility(game_state.focused_character_id),
+                PlayerInputs::UseSelectedCombatAction(game_state.focused_character_id),
             );
-        }),
-        GameActions::UseSelectedConsumable => Box::new(move || {
-            game_dispatch.reduce_mut(|store| {
-                store.selected_item = None;
-                store.detailed_entity = None;
-                let parent_page_number = store.parent_menu_pages.pop();
-                log!(format!("parent page number: {:?}", parent_page_number));
-                if let Some(page_number) = parent_page_number {
-                    store.action_menu_current_page_number = page_number;
-                } else {
-                    store.action_menu_current_page_number = 0
-                };
-                send_client_input(
-                    &websocket_state.websocket,
-                    PlayerInputs::UseSelectedConsumable(game_state.focused_character_id),
-                );
-            })
         }),
         GameActions::DropItem(item_id) => Box::new(move || {
             game_dispatch.reduce_mut(|store| {

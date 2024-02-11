@@ -37,7 +37,7 @@ pub enum GainedOrLost {
     Lost,
 }
 
-#[derive(PartialEq, Eq, Clone, Hash)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Clone, Hash, Eq)]
 pub enum NextOrPrevious {
     Next,
     Previous,

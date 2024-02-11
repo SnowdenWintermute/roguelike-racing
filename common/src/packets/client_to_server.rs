@@ -1,5 +1,7 @@
+use super::CharacterAndDirection;
 use super::CharacterAndItem;
 use super::CharacterAndSlot;
+use super::CharacterId;
 use crate::combat::combat_actions::CombatAction;
 use crate::combat::combat_actions::CombatActionTarget;
 use crate::combatants::abilities::CombatantAbilityNames;
@@ -20,12 +22,12 @@ pub enum PlayerInputs {
     LeaveAdventuringParty,
     CreateCharacter(CharacterCreation),
     ChangeCharacterClass(CharacterClassSelection),
-    DeleteCharacter(u32),
+    DeleteCharacter(CharacterId),
     ToggleReady,
     // use items and abilities
-    UseSelectedCombatAction(u32), // character_id
+    UseSelectedCombatAction(CharacterId), // character_id
     SelectCombatAction(CharacterAndCombatAction),
-    ChangeActionTargets(ChangeTargetsPacket),
+    CycleCombatActionTargets(CharacterAndDirection),
     // manage equipment and items
     UnequipEquipmentSlot(CharacterAndSlot),
     ShardInventorySlot(u8),
@@ -42,7 +44,6 @@ pub enum PlayerInputs {
     TakeItemOnGround(CharacterAndItem),
     AcknowledgeReceiptOfItemOnGroundUpdate(u32),
     DropItem(CharacterAndItem),
-    EquipItemOnGround(u32),
     DropEquippedItem(CharacterAndSlot),
 }
 

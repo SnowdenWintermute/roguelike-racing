@@ -1,10 +1,13 @@
+use super::handle_select_combat_action::handle_select_combat_action;
 use super::handle_select_consumable::handle_select_consumable;
 use crate::components::websocket_manager::send_client_input::send_client_input;
 use crate::store::alert_store::AlertStore;
 use crate::store::game_store::get_focused_character;
 use crate::store::game_store::GameStore;
+use crate::store::lobby_store::LobbyStore;
 use crate::store::ui_store::UIStore;
 use crate::store::websocket_store::WebsocketStore;
+use common::combat::combat_actions::CombatAction;
 use common::items::Item;
 use common::packets::client_to_server::EquipItemRequest;
 use common::packets::client_to_server::PlayerInputs;
@@ -18,6 +21,7 @@ pub fn use_item_handler(
     ui_state: Rc<UIStore>,
     websocket_state: Rc<WebsocketStore>,
     alert_dispatch: Dispatch<AlertStore>,
+    lobby_state: Rc<LobbyStore>,
     item_id: &u32,
 ) {
     let item_option = &game_state.selected_item;
@@ -25,11 +29,12 @@ pub fn use_item_handler(
     let alt_slot = ui_state.mod_key_held;
     if let Some(item) = item_option {
         match item.item_properties {
-            common::items::ItemProperties::Consumable(_) => handle_select_consumable(
+            common::items::ItemProperties::Consumable(_) => handle_select_combat_action(
                 game_dispatch,
                 alert_dispatch,
+                lobby_state,
                 &websocket_state.websocket,
-                item_id,
+                Some(CombatAction::ConsumableUsed(*item_id)),
             ),
             common::items::ItemProperties::Equipment(_) => {
                 use_equipment_handler(game_dispatch, websocket_state, character_id, item, alt_slot)

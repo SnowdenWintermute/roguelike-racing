@@ -87,8 +87,8 @@ pub fn combatant(props: &Props) -> Html {
                             flex" >
                             {targeted_by.iter().map(|combatant_id_and_with_what| html!(
                                         <TargetingIndicator
-                                        ability_name_option={combatant_id_and_with_what.1.clone()}
-                                        consumable_option={combatant_id_and_with_what.2.clone()} />
+                                            combat_action={combatant_id_and_with_what.1.clone()}
+                                            />
                             )).collect::<Html>()}
                     </div>
             }

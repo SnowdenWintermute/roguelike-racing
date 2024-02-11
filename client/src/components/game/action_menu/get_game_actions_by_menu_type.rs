@@ -1,5 +1,6 @@
 use super::enums::GameActions;
 use super::enums::MenuTypes;
+use common::combat::combat_actions::CombatAction;
 use common::combatants::abilities::CombatantAbilityNames;
 use common::primatives::NextOrPrevious;
 
@@ -25,21 +26,12 @@ impl MenuTypes {
                     add_abilities_to_menu(&abilities, &mut menu_items);
                     menu_items.push(GameActions::ToggleInventoryOpen);
                 }
-                MenuTypes::AbilitySelected => {
-                    menu_items.push(GameActions::DeselectAbility);
-                    menu_items.push(GameActions::CycleAbilityTargets(NextOrPrevious::Next));
-                    menu_items.push(GameActions::CycleAbilityTargets(NextOrPrevious::Previous));
-                    menu_items.push(GameActions::UseSelectedAbility);
-                    menu_items.push(GameActions::CycleAbilityTargetingScheme);
-                }
-                MenuTypes::ConsumableSelected => {
-                    menu_items.push(GameActions::DeselectConsumable);
-                    menu_items.push(GameActions::CycleConsumableTargets(NextOrPrevious::Next));
-                    menu_items.push(GameActions::CycleConsumableTargets(
-                        NextOrPrevious::Previous,
-                    ));
-                    menu_items.push(GameActions::UseSelectedConsumable);
-                    menu_items.push(GameActions::CycleConsumableTargetingScheme);
+                MenuTypes::CombatActionSelected => {
+                    menu_items.push(GameActions::DeselectCombatAction);
+                    menu_items.push(GameActions::CycleTargets(NextOrPrevious::Next));
+                    menu_items.push(GameActions::CycleTargets(NextOrPrevious::Previous));
+                    menu_items.push(GameActions::UseSelectedCombatAction);
+                    menu_items.push(GameActions::CycleTargetingScheme);
                 }
                 MenuTypes::LevelUpAbilities => {
                     menu_items.push(GameActions::SetAssignAttributePointsMenuOpen(true));
@@ -86,7 +78,9 @@ fn add_abilities_to_menu(
 ) {
     if let Some(names) = ability_names.clone() {
         for ability_name in names {
-            menu_items.push(GameActions::SelectAbility(ability_name))
+            menu_items.push(GameActions::SelectCombatAction(CombatAction::AbilityUsed(
+                ability_name,
+            )))
         }
     }
 }

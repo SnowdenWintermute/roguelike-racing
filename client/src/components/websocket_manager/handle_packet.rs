@@ -11,10 +11,12 @@ use super::handle_character_dropped_item::handle_character_dropped_item;
 use super::handle_character_picked_up_item::handle_character_picked_up_item;
 use super::handle_combat_turn_results::handle_combat_turn_results;
 use super::handle_raw_action_results::handle_raw_action_results;
+use super::in_game_party_update_handlers::character_cycled_targets_handler;
 use super::in_game_party_update_handlers::handle_battle_full_update;
 use super::in_game_party_update_handlers::handle_character_ability_selection;
 use super::in_game_party_update_handlers::handle_character_changed_targets;
 use super::in_game_party_update_handlers::handle_character_consumable_selection;
+use super::in_game_party_update_handlers::handle_character_selected_combat_action;
 use super::in_game_party_update_handlers::handle_new_dungeon_room;
 use super::in_game_party_update_handlers::handle_player_toggled_ready_to_descend;
 use super::in_game_party_update_handlers::handle_player_toggled_ready_to_explore;
@@ -122,14 +124,11 @@ pub fn handle_packet(
         GameServerUpdatePackets::DungeonRoomUpdate(new_room) => {
             game_dispatch.reduce_mut(|store| handle_new_dungeon_room(store, new_room))
         }
-        GameServerUpdatePackets::CharacterSelectedAbility(packet) => {
-            game_dispatch.reduce_mut(|store| handle_character_ability_selection(store, packet))
+        GameServerUpdatePackets::CharacterSelectedCombatAction(packet) => {
+            game_dispatch.reduce_mut(|store| handle_character_selected_combat_action(store, packet))
         }
-        GameServerUpdatePackets::CharacterSelectedConsumable(packet) => {
-            handle_character_consumable_selection(game_dispatch, packet)
-        }
-        GameServerUpdatePackets::CharacterChangedTargets(packet) => {
-            game_dispatch.reduce_mut(|store| handle_character_changed_targets(store, packet))
+        GameServerUpdatePackets::CharacterCycledCombatActionTargets(packet) => {
+            game_dispatch.reduce_mut(|store| character_cycled_targets_handler(store, packet))
         }
         GameServerUpdatePackets::ActionResults(packet) => {
             handle_raw_action_results(game_dispatch, packet)

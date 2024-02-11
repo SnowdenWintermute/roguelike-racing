@@ -106,20 +106,28 @@ impl Display for AbilityUsableContext {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq, Hash)]
 pub enum CombatAction {
     AbilityUsed(CombatantAbilityNames),
     ConsumableUsed(u32),
 }
 
 impl CombatAction {
-    pub fn get_properties(
+    pub fn get_properties_if_owned(
         &self,
         game: &RoguelikeRacerGame,
         user_id: u32,
     ) -> Result<CombatActionProperties, AppError> {
         match self {
             CombatAction::AbilityUsed(ability_name) => {
+                let (_, combatant_properties) = game.get_combatant_by_id(&user_id)?;
+                if !combatant_properties.abilities.contains_key(ability_name) {
+                    return Err(AppError {
+                        error_type: AppErrorTypes::InvalidInput,
+                        message: error_messages::ABILITY_NOT_OWNED.to_string(),
+                    });
+                }
+
                 Ok(ability_name.get_attributes().combat_action_properties)
             }
             CombatAction::ConsumableUsed(item_id) => {

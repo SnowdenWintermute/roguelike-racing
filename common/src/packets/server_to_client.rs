@@ -1,4 +1,5 @@
-use super::client_to_server::ChangeTargetsPacket;
+use super::client_to_server::CharacterAndCombatAction;
+use super::CharacterAndDirection;
 use super::CharacterAndItem;
 use super::CharacterAndSlot;
 use super::GameMessages;
@@ -53,9 +54,8 @@ pub enum GameServerUpdatePackets {
     PlayerToggledReadyToExplore(String),
     PlayerToggledReadyToDescend(String),
     DungeonRoomUpdate(DungeonRoom),
-    CharacterSelectedAbility(CharacterSelectedAbilityPacket),
-    CharacterSelectedConsumable(CharacterSelectedConsumablePacket),
-    CharacterChangedTargets(ChangeTargetsPacket),
+    CharacterSelectedCombatAction(CharacterAndCombatAction),
+    CharacterCycledCombatActionTargets(CharacterAndDirection),
     ActionResults(ActionResultsPacket),
     CombatTurnResults(CombatTurnResultsPacket),
     BattleFullUpdate(Option<Battle>),

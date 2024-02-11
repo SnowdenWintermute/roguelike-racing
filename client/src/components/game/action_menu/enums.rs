@@ -1,12 +1,12 @@
 #![allow(unused, dead_code)]
+use common::combat::combat_actions::CombatAction;
 use common::combatants::abilities::CombatantAbilityNames;
 use common::combatants::combat_attributes::CombatAttributes;
 use common::primatives::NextOrPrevious;
 
 pub enum MenuTypes {
     InCombat,
-    AbilitySelected,
-    ConsumableSelected,
+    CombatActionSelected,
     OutOfCombat,
     LevelUpAbilities,
     AttributePointAssignment,
@@ -35,14 +35,11 @@ pub enum GameActions {
     DeselectItem,
     DeselectConsumable,
     // InCombat
-    SelectAbility(CombatantAbilityNames),
-    DeselectAbility,
-    CycleAbilityTargets(NextOrPrevious),
-    CycleConsumableTargets(NextOrPrevious),
-    CycleAbilityTargetingScheme,
-    CycleConsumableTargetingScheme,
-    UseSelectedAbility,
-    UseSelectedConsumable,
+    UseSelectedCombatAction,
+    SelectCombatAction(CombatAction),
+    DeselectCombatAction,
+    CycleTargets(NextOrPrevious),
+    CycleTargetingScheme,
     LevelUpAbility(CombatantAbilityNames),
     SetAssignAttributePointsMenuOpen(bool),
     AssignAttributePoint(CombatAttributes),

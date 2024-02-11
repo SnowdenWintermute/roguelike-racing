@@ -1,5 +1,6 @@
 use crate::components::game::action_menu::enums::GameActions;
 use crate::store::game_store::GameStore;
+use common::combat::combat_actions::CombatAction;
 use common::game::getters::get_party;
 use std::rc::Rc;
 
@@ -42,24 +43,22 @@ pub fn determine_action_button_text(action: GameActions, game_state: Rc<GameStor
         GameActions::DropItem(_) => "Drop".to_string(),
         GameActions::DeselectItem => "Cancel".to_string(),
         GameActions::ShardItem(_) => "Convert to shard".to_string(),
-        GameActions::SelectAbility(name) => format!("{}", name),
+        GameActions::SelectCombatAction(combat_action) => match combat_action {
+            CombatAction::AbilityUsed(ability_name) => ability_name.to_string(),
+            CombatAction::ConsumableUsed(_) => "Use".to_string(),
+        },
         GameActions::LevelUpAbility(_name) => "Level up ability".to_string(),
         GameActions::SetAssignAttributePointsMenuOpen(_open_status) => {
             "Assign attributes".to_string()
         }
         GameActions::AssignAttributePoint(_attribute) => "Increase attribute".to_string(),
-        GameActions::CycleAbilityTargets(direction)
-        | GameActions::CycleConsumableTargets(direction) => match direction {
+        GameActions::CycleTargets(direction) => match direction {
             common::primatives::NextOrPrevious::Next => "Next target".to_string(),
             common::primatives::NextOrPrevious::Previous => "Prev target".to_string(),
         },
-        GameActions::CycleAbilityTargetingScheme | GameActions::CycleConsumableTargetingScheme => {
-            "Targeting scheme".to_string()
-        }
-        GameActions::DeselectAbility | GameActions::DeselectConsumable => "Cancel".to_string(),
-        GameActions::UseSelectedAbility | GameActions::UseSelectedConsumable => {
-            "Execute".to_string()
-        }
+        GameActions::CycleTargetingScheme => "Targeting scheme".to_string(),
+        GameActions::DeselectCombatAction => "Cancel".to_string(),
+        GameActions::UseSelectedCombatAction => "Execute".to_string(),
         GameActions::ToggleReadyToDescend => "Vote to descend".to_string(),
     }
 }

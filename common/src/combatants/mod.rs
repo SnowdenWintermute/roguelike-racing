@@ -82,7 +82,7 @@ pub enum CombatantControlledBy {
     Player(String),
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct CombatantProperties {
     pub combatant_class: CombatantClass,
     pub inherent_attributes: HashMap<CombatAttributes, u16>,

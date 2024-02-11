@@ -63,7 +63,7 @@ pub fn determine_action_menu_buttons_disabled(
             }
             false
         }
-        GameActions::SelectAbility(_) => {
+        GameActions::SelectCombatAction(_) => {
             if !player_owns_character {
                 return true;
             }

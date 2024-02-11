@@ -35,8 +35,7 @@ pub fn process_next_action_result_in_combatant_event_queue(
             let game = store.get_current_game_mut()?;
             let (_, action_user_combatant_properties) =
                 game.get_mut_combatant_by_id(&combatant_id)?;
-            action_user_combatant_properties.selected_consumable = None;
-            action_user_combatant_properties.selected_ability_name = None;
+            action_user_combatant_properties.selected_combat_action = None;
             action_user_combatant_properties.combat_action_targets = None;
 
             Ok(())

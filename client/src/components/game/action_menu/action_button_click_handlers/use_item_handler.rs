@@ -1,5 +1,4 @@
 use super::handle_select_combat_action::handle_select_combat_action;
-use super::handle_select_consumable::handle_select_consumable;
 use crate::components::websocket_manager::send_client_input::send_client_input;
 use crate::store::alert_store::AlertStore;
 use crate::store::game_store::get_focused_character;

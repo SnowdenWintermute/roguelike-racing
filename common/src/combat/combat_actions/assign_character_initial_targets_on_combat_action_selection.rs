@@ -65,9 +65,11 @@ impl RoguelikeRacerGame {
                 opponent_ids_option,
             );
 
+            println!("new preferences: {:#?}", new_target_preferences);
             character
                 .combatant_properties
                 .combat_action_target_preferences = new_target_preferences;
+            println!("new targets: {:#?}", new_targets);
             character.combatant_properties.combat_action_targets = Some(new_targets.clone());
 
             Ok(Some(new_targets))

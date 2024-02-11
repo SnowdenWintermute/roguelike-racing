@@ -27,7 +27,7 @@ pub fn combatant_targeted_by(
     let game = game_state.get_current_game().expect("to be in a game");
 
     for (id, character) in party.characters.iter() {
-        if let Some(combat_action) = character.combatant_properties.selected_combat_action {
+        if let Some(combat_action) = &character.combatant_properties.selected_combat_action {
             // GET THE COMBAT ACTION PROPERTIES SO WE CAN FILTER PROHIBITED TARGET STATES
             let selected_combat_action_properties_option =
                 combat_action.get_properties_if_owned(game, *id).ok();
@@ -62,7 +62,7 @@ pub fn combatant_targeted_by(
                     };
 
                     if is_targeted_by_this_character {
-                        to_return.push((*id, combat_action))
+                        to_return.push((*id, combat_action.clone()))
                     }
                 }
             }

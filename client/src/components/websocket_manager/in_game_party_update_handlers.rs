@@ -6,11 +6,9 @@ use common::dungeon_rooms::DungeonRoom;
 use common::dungeon_rooms::DungeonRoomTypes;
 use common::errors::AppError;
 use common::game::getters::get_mut_party;
-use common::packets::client_to_server::ChangeTargetsPacket;
 use common::packets::client_to_server::CharacterAndCombatAction;
-use common::packets::server_to_client::CharacterSelectedAbilityPacket;
-use common::packets::server_to_client::CharacterSelectedConsumablePacket;
 use common::packets::CharacterAndDirection;
+use common::packets::CharacterId;
 use gloo::console::log;
 use std::collections::HashMap;
 use std::collections::HashSet;
@@ -138,7 +136,7 @@ pub fn handle_character_selected_combat_action(
     let character_positions = party.character_positions.clone();
 
     let game = game_store.get_current_game()?;
-    let combat_action_properties_option = match &packet.combat_action_option {
+    let combat_action_properties_option = match &combat_action_option {
         Some(combat_action) => {
             Some(combat_action.get_properties_if_owned(game, packet.character_id)?)
         }
@@ -159,7 +157,7 @@ pub fn handle_character_selected_combat_action(
     )?;
 
     let character = game_store.get_mut_character(character_id)?;
-    character.combatant_properties.selected_combat_action = packet.combat_action_option;
+    character.combatant_properties.selected_combat_action = combat_action_option;
 
     Ok(())
 }
@@ -171,7 +169,28 @@ pub fn character_cycled_targets_handler(
     let party = game_store.get_current_party()?;
     let party_id = party.id;
     let game = game_store.get_current_game_mut()?;
-    game.cycle_character_targets(party_id, packet.character_id, &packet.direction)?;
+    game.cycle_character_targets(
+        party_id,
+        Some(HashSet::from([packet.character_id])), // trust that server sends valid packets
+        packet.character_id,
+        &packet.direction,
+    )?;
+
+    Ok(())
+}
+
+pub fn character_cycled_targeting_schemes_handler(
+    game_store: &mut GameStore,
+    character_id: CharacterId,
+) -> Result<(), AppError> {
+    let party = game_store.get_current_party()?;
+    let party_id = party.id;
+    let game = game_store.get_current_game_mut()?;
+    game.cycle_targeting_schemes(
+        party_id,
+        Some(HashSet::from([character_id])), // trust that server sends valid packets
+        character_id,
+    )?;
 
     Ok(())
 }

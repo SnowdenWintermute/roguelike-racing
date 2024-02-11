@@ -28,6 +28,7 @@ pub enum PlayerInputs {
     UseSelectedCombatAction(CharacterId), // character_id
     SelectCombatAction(CharacterAndCombatAction),
     CycleCombatActionTargets(CharacterAndDirection),
+    CycleCombatActionTargetingSchemes(CharacterId),
     // manage equipment and items
     UnequipEquipmentSlot(CharacterAndSlot),
     ShardInventorySlot(u8),

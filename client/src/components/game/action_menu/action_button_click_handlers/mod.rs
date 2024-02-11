@@ -1,18 +1,9 @@
-pub mod handle_cycle_ability_targeting_schemes;
-pub mod handle_cycle_ability_targets;
 pub mod handle_cycle_combat_action_targeting_schemes;
 pub mod handle_cycle_combat_action_targets;
-pub mod handle_cycle_consumable_targeting_schemes;
-mod handle_cycle_consumable_targets;
-pub mod handle_deselect_consumable;
-pub mod handle_select_ability;
 pub mod handle_select_combat_action;
 mod use_item_handler;
-use self::handle_cycle_ability_targeting_schemes::handle_cycle_ability_targeting_schemes;
-use self::handle_cycle_ability_targets::handle_cycle_ability_targets;
+use self::handle_cycle_combat_action_targeting_schemes::handle_cycle_combat_action_targeting_schemes;
 use self::handle_cycle_combat_action_targets::handle_cycle_combat_action_targets;
-use self::handle_cycle_consumable_targeting_schemes::handle_cycle_consumable_targeting_schemes;
-use self::handle_cycle_consumable_targets::handle_cycle_consumable_targets;
 use self::handle_select_combat_action::handle_select_combat_action;
 use super::enums::GameActions;
 use crate::components::websocket_manager::send_client_input::send_client_input;
@@ -24,7 +15,6 @@ use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
 use crate::store::ui_store::UIStore;
 use crate::store::websocket_store::WebsocketStore;
-use common::combat::combat_actions::CombatAction;
 use common::packets::client_to_server::PlayerInputs;
 use common::packets::CharacterAndItem;
 use common::packets::CharacterAndSlot;
@@ -102,48 +92,49 @@ pub fn create_action_button_click_handler<'a>(
                 &id,
             )
         }),
-        GameActions::DeselectConsumable | GameActions::DeselectAbility => Box::new(move || {
+        GameActions::DeselectCombatAction => Box::new(move || {
             let cloned_game_dispatch = game_dispatch.clone();
             let cloned_websocket_state = websocket_state.clone();
             let cloned_alert_dispatch = alert_dispatch.clone();
             let cloned_lobby_state = lobby_state.clone();
             handle_select_combat_action(
-                game_dispatch,
-                alert_dispatch,
-                lobby_state,
+                cloned_game_dispatch,
+                cloned_alert_dispatch,
+                cloned_lobby_state,
                 &websocket_state.websocket,
                 None,
             );
         }),
-        GameActions::SelectAbility(ability_name) => Box::new(move || {
-            let cloned_dispatch = game_dispatch.clone();
+        GameActions::SelectCombatAction(combat_action) => Box::new(move || {
+            let cloned_game_dispatch = game_dispatch.clone();
             let cloned_alert_dispatch = alert_dispatch.clone();
             let cloned_lobby_state = lobby_state.clone();
             handle_select_combat_action(
-                game_dispatch,
-                alert_dispatch,
-                lobby_state,
+                cloned_game_dispatch,
+                cloned_alert_dispatch,
+                cloned_lobby_state,
                 &websocket_state.websocket,
-                Some(CombatAction::AbilityUsed(ability_name)),
+                Some(combat_action.clone()),
             );
         }),
         GameActions::CycleTargets(next_or_previous) => Box::new(move || {
             let cloned_dispatch = game_dispatch.clone();
-            handle_cycle_combat_action_targets(
+            let cloned_lobby_state = lobby_state.clone();
+            let _ = handle_cycle_combat_action_targets(
                 cloned_dispatch,
                 &websocket_state.websocket,
+                cloned_lobby_state,
                 &next_or_previous,
             );
         }),
-        GameActions::CycleAbilityTargetingScheme => Box::new(move || {
+        GameActions::CycleTargetingScheme => Box::new(move || {
             let cloned_dispatch = game_dispatch.clone();
-            log!("cycling ability targeting schemes");
-            handle_cycle_ability_targeting_schemes(cloned_dispatch, &websocket_state.websocket)
-        }),
-        GameActions::CycleConsumableTargetingScheme => Box::new(move || {
-            let cloned_dispatch = game_dispatch.clone();
-            log!("cycling consumable targeting schemes");
-            handle_cycle_consumable_targeting_schemes(cloned_dispatch, &websocket_state.websocket)
+            let cloned_lobby_state = lobby_state.clone();
+            let _ = handle_cycle_combat_action_targeting_schemes(
+                cloned_dispatch,
+                &websocket_state.websocket,
+                cloned_lobby_state,
+            );
         }),
         GameActions::UseSelectedCombatAction => Box::new(move || {
             send_client_input(

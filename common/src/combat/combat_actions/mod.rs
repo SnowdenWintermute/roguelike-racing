@@ -1,4 +1,5 @@
 pub mod assign_character_initial_targets_on_combat_action_selection;
+pub mod cycle_targeting_schemes;
 pub mod cycle_targets;
 pub mod filter_possible_target_ids_by_prohibited_combatant_states;
 pub mod get_default_targets;

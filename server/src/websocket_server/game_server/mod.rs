@@ -143,6 +143,8 @@ impl Handler<ClientBinaryMessage> for GameServer {
             Ok(PlayerInputs::CycleCombatActionTargets(packet)) => {
                 self.character_cycles_combat_action_targets_handler(message.actor_id, packet)
             }
+            Ok(PlayerInputs::CycleCombatActionTargetingSchemes(packet)) => self
+                .character_cycles_combat_action_targeting_schemes_handler(message.actor_id, packet),
             Ok(PlayerInputs::TakeItemOnGround(packet)) => {
                 self.character_picks_up_item_from_ground_handler(message.actor_id, packet)
             }

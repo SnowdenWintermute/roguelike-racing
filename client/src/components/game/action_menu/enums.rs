@@ -33,7 +33,6 @@ pub enum GameActions {
     DropItem(u32),
     ShardItem(u32),
     DeselectItem,
-    DeselectConsumable,
     // InCombat
     UseSelectedCombatAction,
     SelectCombatAction(CombatAction),

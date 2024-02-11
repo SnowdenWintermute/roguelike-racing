@@ -4,7 +4,6 @@ use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
 use common::adventuring_party::AdventuringParty;
 use common::combat::combat_actions::AbilityUsableContext;
-use common::combat::combat_actions::CombatAction;
 use common::combatants::abilities::CombatantAbilityNames;
 use common::dungeon_rooms::DungeonRoomTypes;
 use std::rc::Rc;
@@ -22,7 +21,10 @@ pub fn determine_menu_actions(
     let player_owns_character =
         party.player_owns_character(&lobby_state.username, game_state.focused_character_id);
     let focused_character_is_selecting_combat_action = match focused_character_option {
-        Some(_) => true,
+        Some(character) => character
+            .combatant_properties
+            .selected_combat_action
+            .is_some(),
         None => false,
     };
 

@@ -1,4 +1,5 @@
 mod apply_action_results;
+mod character_cycles_combat_action_targeting_schemes_handler;
 mod character_cycles_combat_action_targets_handler;
 mod character_drops_equipped_item;
 mod character_drops_item;

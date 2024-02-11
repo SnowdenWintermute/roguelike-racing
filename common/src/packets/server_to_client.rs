@@ -2,6 +2,7 @@ use super::client_to_server::CharacterAndCombatAction;
 use super::CharacterAndDirection;
 use super::CharacterAndItem;
 use super::CharacterAndSlot;
+use super::CharacterId;
 use super::GameMessages;
 use super::WebsocketChannelNamespace;
 use crate::app_consts::LOBBY_CHANNEL;
@@ -56,6 +57,7 @@ pub enum GameServerUpdatePackets {
     DungeonRoomUpdate(DungeonRoom),
     CharacterSelectedCombatAction(CharacterAndCombatAction),
     CharacterCycledCombatActionTargets(CharacterAndDirection),
+    CharacterCycledCombatActionTargetingSchemes(CharacterId),
     ActionResults(ActionResultsPacket),
     CombatTurnResults(CombatTurnResultsPacket),
     BattleFullUpdate(Option<Battle>),

@@ -4,14 +4,14 @@ use crate::websocket_server::game_server::GameServer;
 use common::errors::AppError;
 use common::game::getters::get_party;
 use common::packets::server_to_client::GameServerUpdatePackets;
-use common::packets::CharacterAndDirection;
+use common::packets::CharacterId;
 use common::packets::WebsocketChannelNamespace;
 
 impl GameServer {
-    pub fn character_cycles_combat_action_targets_handler(
+    pub fn character_cycles_combat_action_targeting_schemes_handler(
         &mut self,
         actor_id: u32,
-        packet: CharacterAndDirection,
+        character_id: CharacterId,
     ) -> Result<(), AppError> {
         let ActorIdAssociatedGameData {
             game,
@@ -22,17 +22,12 @@ impl GameServer {
         let party = get_party(game, party_id)?;
         let party_websocket_channel_name = party.websocket_channel_name.clone();
 
-        game.cycle_character_targets(
-            party_id,
-            player_character_ids_option,
-            packet.character_id,
-            &packet.direction,
-        )?;
+        game.cycle_targeting_schemes(party_id, player_character_ids_option, character_id)?;
 
         self.emit_packet(
             &party_websocket_channel_name,
             &WebsocketChannelNamespace::Party,
-            &GameServerUpdatePackets::CharacterCycledCombatActionTargets(packet),
+            &GameServerUpdatePackets::CharacterCycledCombatActionTargetingSchemes(character_id),
             Some(actor_id),
         )
     }

@@ -66,9 +66,9 @@ pub const NO_POSSIBLE_TARGETS_PROVIDED: &str =
     "No possible targets were found for the selected action";
 pub const TRIED_TO_CYCLE_TARGETS_WHEN_NO_TARGETS: &str =
     "Client tried to cycle targets but they weren't targeting anything";
-pub const TRIED_TO_CYCLE_TARGETS_WHEN_NO_ACTION_SELECTED: &str =
-    "Client tried to cycle targets but they had no action selected";
 pub const NO_TARGETING_SCHEMES: &str = "The selected action has no targeting schemes";
+pub const ONLY_ONE_TARGETING_SCHEME_AVAILABLE: &str =
+    "The selected action has only one targeting scheme";
 pub const INVALID_TARGETING_SCHEME: &str = "An invalid targeting scheme was selected";
 pub const INVALID_TARGETS_SELECTED: &str = "Invalid targets provided";
 pub const NO_VALID_TARGETS_FOUND: &str = "No valid targets exist for that action";

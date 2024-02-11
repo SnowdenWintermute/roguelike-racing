@@ -6,11 +6,13 @@ use crate::game::getters::get_ally_ids_and_opponent_ids_option;
 use crate::game::getters::get_mut_party;
 use crate::game::RoguelikeRacerGame;
 use crate::primatives::NextOrPrevious;
+use std::collections::HashSet;
 
 impl RoguelikeRacerGame {
     pub fn cycle_character_targets(
         &mut self,
         party_id: u32,
+        player_character_ids_option: Option<HashSet<u32>>,
         character_id: u32,
         direction: &NextOrPrevious,
     ) -> Result<(), AppError> {
@@ -21,13 +23,7 @@ impl RoguelikeRacerGame {
         let battle_option = battle_option.clone();
 
         let party = get_mut_party(self, party_id)?;
-        let character = party
-            .characters
-            .get(&character_id)
-            .ok_or_else(|| AppError {
-                error_type: AppErrorTypes::ClientError,
-                message: error_messages::CHARACTER_NOT_FOUND.to_string(),
-            })?;
+        let character = party.get_character_if_owned(player_character_ids_option, character_id)?;
 
         let selected_combat_action = character
             .combatant_properties
@@ -35,7 +31,7 @@ impl RoguelikeRacerGame {
             .clone()
             .ok_or_else(|| AppError {
                 error_type: AppErrorTypes::InvalidInput,
-                message: error_messages::TRIED_TO_CYCLE_TARGETS_WHEN_NO_ACTION_SELECTED.to_string(),
+                message: error_messages::NO_ACTION_SELECTED.to_string(),
             })?;
         let current_targets = character
             .combatant_properties
@@ -98,6 +94,7 @@ impl RoguelikeRacerGame {
         character
             .combatant_properties
             .combat_action_target_preferences = new_preferences;
+        character.combatant_properties.combat_action_targets = Some(new_targets);
 
         Ok(())
     }

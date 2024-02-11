@@ -11,17 +11,17 @@ impl RoguelikeRacerGame {
     pub fn get_consumable_use_results(
         &self,
         user_id: u32,
-        consumable_item_id: u32,
+        item_id: u32,
         target: &CombatActionTarget,
         _battle_option: Option<&Battle>,
     ) -> Result<Vec<ActionResult>, AppError> {
         let (_, user_combatant_properties) = self.get_combatant_by_id(&user_id)?;
         let consumable_properties = user_combatant_properties
             .inventory
-            .get_consumable(&consumable_item_id)?;
+            .get_consumable(&item_id)?;
         let results = match consumable_properties.consumable_type {
             ConsumableTypes::HpAutoinjector => {
-                hp_autoinjector_use_result(self, user_id, consumable_item_id, target)?
+                hp_autoinjector_use_result(self, user_id, item_id, target)?
             }
             ConsumableTypes::Grenade => todo!(),
             ConsumableTypes::SmokeBomb => todo!(),

@@ -37,7 +37,6 @@ impl GameServer {
         party.battle_id = None;
         party.current_room.monsters = None;
         party.current_room.items.append(&mut loot.clone());
-        println!("new party items on floor: {:#?}", party.current_room.items);
         game.battles.remove(&battle_id);
 
         self.emit_packet(

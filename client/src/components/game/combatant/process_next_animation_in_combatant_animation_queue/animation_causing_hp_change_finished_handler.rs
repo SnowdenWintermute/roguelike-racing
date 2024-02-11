@@ -60,8 +60,10 @@ pub fn animation_causing_hp_change_finished_handler(
                 HpChangeResult::Damaged(HpChange { value, .. }) => {
                     store.combat_log.push(CombatLogMessage::new(
                         AttrValue::from(format!(
-                            "{} ({causer_id}) damaged {} ({target_id}) for {value}",
-                            causer_name, target_name
+                            "{} ({causer_id}) damaged {} ({target_id}) for {}",
+                            causer_name,
+                            target_name,
+                            value * -1
                         )),
                         CombatLogMessageStyle::Basic,
                         0,

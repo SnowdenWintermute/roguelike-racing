@@ -73,6 +73,11 @@ impl GameServer {
                 party_id,
             )?;
 
+        println!(
+            "new targets in ability target change handler: {:#?}, prefs: {:#?}",
+            new_targets, new_target_preferences
+        );
+
         let party = get_mut_party(game, party_id)?;
         let character =
             party.get_mut_character_if_owned(player_character_ids_option, character_id)?;

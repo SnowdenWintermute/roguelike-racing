@@ -36,6 +36,7 @@ pub fn handle_cycle_combat_action_targeting_schemes(
             error_type: common::errors::AppErrorTypes::ClientError,
             message: error_messages::CHARACTER_NOT_FOUND.to_string(),
         })?;
+    let focused_character_id = focused_character.entity_properties.id;
 
     let last_used_targeting_scheme = &focused_character
         .combatant_properties
@@ -72,6 +73,26 @@ pub fn handle_cycle_combat_action_targeting_schemes(
             .expect("a valid index")
     };
 
+    log!(format!(
+        "setting new targeting scheme: {:#?}",
+        new_targeting_scheme
+    ));
+
+    let (ally_ids, opponent_ids_option) = get_ally_ids_and_opponent_ids_option(
+        &cloned_character_positions,
+        battle_option.as_ref(),
+        focused_character_id,
+    )?;
+
+    let (ally_ids, opponent_ids_option) =
+        filter_possible_target_ids_by_prohibited_combatant_states(
+            game,
+            &combat_action_properties.prohibited_target_combatant_states,
+            ally_ids,
+            opponent_ids_option,
+        )?;
+
+    let party = get_mut_party(game, party_id)?;
     let focused_character = party
         .characters
         .get_mut(&game_store.focused_character_id)
@@ -85,35 +106,13 @@ pub fn handle_cycle_combat_action_targeting_schemes(
         .combat_action_target_preferences
         .targeting_scheme_preference = new_targeting_scheme.clone();
 
-    let focused_character = party
-        .characters
-        .get(&game_store.focused_character_id)
-        .ok_or_else(|| AppError {
-            error_type: common::errors::AppErrorTypes::ClientError,
-            message: error_messages::CHARACTER_NOT_FOUND.to_string(),
-        })?;
-
-    let (ally_ids, opponent_ids_option) = get_ally_ids_and_opponent_ids_option(
-        &cloned_character_positions,
-        battle_option.as_ref(),
-        focused_character.entity_properties.id,
-    )?;
-
-    let focused_character = party
-        .characters
-        .get_mut(&game_store.focused_character_id)
-        .ok_or_else(|| AppError {
-            error_type: common::errors::AppErrorTypes::ClientError,
-            message: error_messages::CHARACTER_NOT_FOUND.to_string(),
-        })?;
-
     let new_targets = combat_action_properties.targets_by_saved_preference_or_default(
         focused_character.entity_properties.id,
         &focused_character
             .combatant_properties
             .combat_action_target_preferences,
-        ally_ids.clone(),
-        opponent_ids_option.clone(),
+        &ally_ids,
+        &opponent_ids_option,
     )?;
 
     let new_preferences = focused_character
@@ -125,6 +124,11 @@ pub fn handle_cycle_combat_action_targeting_schemes(
             ally_ids,
             opponent_ids_option,
         );
+
+    log!(format!(
+        "setting new target preferences: {:#?}",
+        new_preferences
+    ));
 
     focused_character
         .combatant_properties

@@ -50,7 +50,10 @@ pub fn handle_select_consumable(
             focused_character_id,
         )?;
 
-        let consumable_properties = focused_character.combatant_properties.inventory.get_consumable(&item_id)?;
+        let consumable_properties = focused_character
+            .combatant_properties
+            .inventory
+            .get_consumable(&item_id)?;
         let combat_action_properties = consumable_properties
             .consumable_type
             .get_combat_action_properties();
@@ -70,8 +73,8 @@ pub fn handle_select_consumable(
         let targets = combat_action_properties.targets_by_saved_preference_or_default(
             focused_character_id,
             &target_preferences,
-            ally_ids.clone(),
-            opponent_ids_option.clone(),
+            &ally_ids,
+            &opponent_ids_option,
         )?;
 
         let new_target_preferences = target_preferences.get_updated_preferences(

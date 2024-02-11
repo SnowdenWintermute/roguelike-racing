@@ -11,6 +11,7 @@ use common::packets::server_to_client::CharacterSelectedAbilityPacket;
 use common::packets::server_to_client::CharacterSelectedConsumablePacket;
 use gloo::console::log;
 use std::collections::HashMap;
+use std::collections::HashSet;
 use std::collections::VecDeque;
 use yewdux::Dispatch;
 
@@ -130,9 +131,32 @@ pub fn handle_character_ability_selection(
         targets_option,
     } = packet;
 
+    let party = game_store.get_current_party()?;
+    let party_id = party.id;
+    let battle_id_option = party.battle_id;
+    let character_positions = party.character_positions.clone();
+    let combat_action_properties_option = if let Some(ability_name) = &ability_name_option {
+        Some(ability_name.get_attributes().combat_action_properties)
+    } else {
+        None
+    };
+
+    // instead of fetching it just trust the server to only send correct packets
+    let player_character_ids_option = Some(HashSet::from([character_id]));
+
+    let game = game_store.get_current_game_mut()?;
+    let new_targets_option = game.assign_character_initial_targets_on_combat_action_selection(
+        packet.character_id,
+        &player_character_ids_option,
+        party_id,
+        battle_id_option,
+        &character_positions,
+        &combat_action_properties_option,
+    )?;
+
     let character = game_store.get_mut_character(character_id)?;
     character.combatant_properties.selected_ability_name = ability_name_option;
-    character.combatant_properties.combat_action_targets = targets_option;
+
     Ok(())
 }
 

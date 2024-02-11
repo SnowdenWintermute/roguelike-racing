@@ -64,7 +64,6 @@ impl Item {
                     requirements,
                 } = generate_equipment_properties_from_base_item(item_level);
                 let item_name = name_equipment(&equipment_properties);
-                println!("generated item: {item_name}");
 
                 Item {
                     entity_properties: EntityProperties {

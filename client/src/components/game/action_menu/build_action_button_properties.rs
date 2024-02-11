@@ -45,6 +45,7 @@ pub fn build_action_button_properties(
         let cloned_game_state = game_state.clone();
         let cloned_game_dispatch = game_dispatch.clone();
         let cloned_ui_state = ui_state.clone();
+        let cloned_lobby_state = lobby_state.clone();
         let cloned_alert_dispatch = alert_dispatch.clone();
         let click_handler = Callback::from(move |_| {
             create_action_button_click_handler(
@@ -52,6 +53,7 @@ pub fn build_action_button_properties(
                 cloned_game_dispatch.clone(),
                 cloned_game_state.clone(),
                 cloned_ui_state.clone(),
+                cloned_lobby_state.clone(),
                 cloned_websocket_state.clone(),
                 cloned_alert_dispatch.clone(),
             )()

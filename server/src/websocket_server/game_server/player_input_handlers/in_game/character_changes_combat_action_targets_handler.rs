@@ -40,7 +40,7 @@ pub fn character_changes_combat_action_targets_handler(
             opponent_ids_option,
         )?;
 
-    format!("after filtered: {:#?}", (&ally_ids, &opponent_ids_option));
+    println!("after filtered: {:#?}", (&ally_ids, &opponent_ids_option));
 
     let new_targets = if combat_action_properties.targets_are_valid(
         character_id,
@@ -50,6 +50,7 @@ pub fn character_changes_combat_action_targets_handler(
     ) {
         new_targets
     } else {
+        println!("invalid targets provided, getting default targets");
         combat_action_properties.get_default_targets(
             character_id,
             &ally_ids,

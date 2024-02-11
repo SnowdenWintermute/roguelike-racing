@@ -134,16 +134,17 @@ impl Handler<ClientBinaryMessage> for GameServer {
             Ok(PlayerInputs::ToggleReadyToGoDownStairs) => {
                 self.toggle_ready_to_descend_handler(message.actor_id)
             }
-            Ok(PlayerInputs::SelectAbility(packet)) => {
+            Ok(PlayerInputs::SelectCombatAction(packet)) => {
                 self.character_selects_ability_handler(message.actor_id, packet)
             }
             Ok(PlayerInputs::SelectConsumable(packet)) => {
                 self.character_selects_consumable_handler(message.actor_id, packet)
             }
-            Ok(PlayerInputs::UseSelectedConsumable(character_id)) => {
+            Ok(PlayerInputs::UseSelectedCombatAction(packet)) => {
                 self.character_uses_selected_consumable_handler(message.actor_id, character_id)
             }
-            Ok(PlayerInputs::ChangeAbilityTargets(packet)) => {
+            Ok(PlayerInputs::ChangeActionTargets(packet)) => {
+                println!("changed ability targets : {:?}", packet);
                 self.character_changes_ability_targets_handler(message.actor_id, packet)
             }
             Ok(PlayerInputs::ChangeConsumableTargets(packet)) => {

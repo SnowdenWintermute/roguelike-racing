@@ -28,6 +28,7 @@ impl RoguelikeRacerGame {
         ability_name: &CombatantAbilityNames,
         ability_targets: &CombatActionTarget,
         battle_option: Option<&Battle>,
+        ally_ids: Vec<u32>,
     ) -> Result<Vec<ActionResult>, AppError> {
         match ability_name {
             CombatantAbilityNames::Attack => {
@@ -54,6 +55,7 @@ impl RoguelikeRacerGame {
                     ability_user_id,
                     ability_targets,
                     battle_option,
+                    ally_ids,
                     &combat_action,
                 )?;
                 Ok(vec![action_result])

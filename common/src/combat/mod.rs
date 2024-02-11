@@ -46,6 +46,7 @@ pub struct ActionResult {
     // used to display floating +- effect icons and add/remove the effects to entities
     pub status_effect_changes_by_entity_id:
         Option<HashMap<u32, Vec<(StatusEffects, GainedOrLost)>>>,
+    pub items_consumed_in_entity_id_inventories: Option<HashMap<u32, Vec<u32>>>,
     pub ends_turn: bool,
 }
 
@@ -61,6 +62,7 @@ impl ActionResult {
             misses_by_entity_id: None,
             crits_by_entity_id: None,
             status_effect_changes_by_entity_id: None,
+            items_consumed_in_entity_id_inventories: None,
             ends_turn: true,
         }
     }

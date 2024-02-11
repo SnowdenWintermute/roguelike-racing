@@ -46,13 +46,13 @@ pub const ALLY_COMBATANTS_NOT_FOUND: &str = "No allied combatants found";
 pub const COMBATANT_NOT_FOUND: &str = "No combatant was found by the provided ID";
 // ABILITIES
 pub const ABILITY_NOT_OWNED: &str = "That character doesn't have that ability";
-pub const NO_ABILITY_SELECTED: &str = "No ability is selected";
 pub const MISSING_ABILITY_REFERENCE: &str = "The character has no ability selected";
 pub const ABILITY_HAS_NO_TARGETING_SCHEME: &str = "The selected ability has no targeting scheme";
-pub const INVALID_ABILITY_CONTEXT: &str = "The selected ability can not be used in this context";
 pub const INSUFFICENT_MP: &str = "Not enough mana";
 // COMBAT ACTIONS
+pub const NO_ACTION_SELECTED: &str = "No combat action is selected";
 pub const INVALID_ACTION_TYPE: &str = "Invalid action type";
+pub const INVALID_USABILITY_CONTEXT: &str = "The selected action can not be used in this context";
 pub const MISSING_EXPECTED_ACTION_RESULT_DATA: &str = "An action result missing expected data";
 pub const CANT_BE_USED_ON_DEAD_TARGET: &str =
     "The selected target is beyond the help of this ability";
@@ -66,6 +66,8 @@ pub const NO_POSSIBLE_TARGETS_PROVIDED: &str =
     "No possible targets were found for the selected action";
 pub const TRIED_TO_CYCLE_TARGETS_WHEN_NO_TARGETS: &str =
     "Client tried to cycle targets but they weren't targeting anything";
+pub const TRIED_TO_CYCLE_TARGETS_WHEN_NO_ACTION_SELECTED: &str =
+    "Client tried to cycle targets but they had no action selected";
 pub const NO_TARGETING_SCHEMES: &str = "The selected action has no targeting schemes";
 pub const INVALID_TARGETING_SCHEME: &str = "An invalid targeting scheme was selected";
 pub const INVALID_TARGETS_SELECTED: &str = "Invalid targets provided";

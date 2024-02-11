@@ -39,6 +39,7 @@ pub fn take_ai_controlled_turns_if_appropriate(
         let (ally_battle_group, enemy_battle_group) =
             battle.get_ally_and_enemy_battle_groups(&active_combatant_id)?;
         let enemy_ids = enemy_battle_group.combatant_ids.clone();
+        let ally_ids = ally_battle_group.combatant_ids.clone();
         let (ability_name, targets) = game.ai_select_ability_and_targets(
             active_combatant_id,
             ally_battle_group,
@@ -54,6 +55,7 @@ pub fn take_ai_controlled_turns_if_appropriate(
             &ability_name,
             &targets,
             Some(&battle.clone()),
+            ally_ids,
         )?;
         // process result
         apply_action_results(game, &action_results, Some(battle.id))?;

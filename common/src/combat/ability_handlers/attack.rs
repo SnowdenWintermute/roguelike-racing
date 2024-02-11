@@ -18,7 +18,7 @@ impl RoguelikeRacerGame {
         let mut action_results = vec![];
         let battle = battle_option.ok_or_else(|| AppError {
             error_type: crate::errors::AppErrorTypes::Generic,
-            message: error_messages::INVALID_ABILITY_CONTEXT.to_string(),
+            message: error_messages::INVALID_USABILITY_CONTEXT.to_string(),
         })?;
 
         let (ally_ids, opponent_ids_option) =

@@ -39,7 +39,10 @@ impl GameServer {
                 .combat_action_target_preferences
                 .clone();
 
-            let consumable_properties = character.combatant_properties.inventory.get_consumable(&item_id)?;
+            let consumable_properties = character
+                .combatant_properties
+                .inventory
+                .get_consumable(&item_id)?;
 
             let combat_action_properties = consumable_properties
                 .consumable_type
@@ -77,8 +80,8 @@ impl GameServer {
             let new_targets = combat_action_properties.targets_by_saved_preference_or_default(
                 character.entity_properties.id,
                 &target_preferences,
-                ally_ids.clone(),
-                opponent_ids_option.clone(),
+                &ally_ids,
+                &opponent_ids_option,
             )?;
 
             let new_target_preferences = target_preferences.get_updated_preferences(

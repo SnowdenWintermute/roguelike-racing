@@ -12,8 +12,8 @@ impl CombatActionProperties {
         &self,
         character_id: u32,
         target_preferences: &CombatActionTargetPreferences,
-        ally_ids: Vec<u32>,
-        opponent_ids_option: Option<Vec<u32>>,
+        ally_ids: &Vec<u32>,
+        opponent_ids_option: &Option<Vec<u32>>,
     ) -> Result<CombatActionTarget, AppError> {
         if self
             .targeting_schemes
@@ -24,8 +24,8 @@ impl CombatActionProperties {
                 &self.valid_target_categories,
                 target_preferences,
                 character_id,
-                ally_ids,
-                opponent_ids_option,
+                &ally_ids,
+                &opponent_ids_option,
             )
         } else {
             let default_targeting_scheme =
@@ -38,8 +38,8 @@ impl CombatActionProperties {
                 &self.valid_target_categories,
                 target_preferences,
                 character_id,
-                ally_ids,
-                opponent_ids_option,
+                &ally_ids,
+                &opponent_ids_option,
             )
         }
     }
@@ -50,8 +50,8 @@ fn targeting_scheme_targets_or_defaults(
     valid_target_categories: &TargetCategories,
     target_preferences: &CombatActionTargetPreferences,
     character_id: u32,
-    ally_ids: Vec<u32>,
-    opponent_ids_option: Option<Vec<u32>>,
+    ally_ids: &Vec<u32>,
+    opponent_ids_option: &Option<Vec<u32>>,
 ) -> Result<CombatActionTarget, AppError> {
     match targeting_scheme {
         TargetingScheme::Single => match valid_target_categories {
@@ -59,16 +59,16 @@ fn targeting_scheme_targets_or_defaults(
                 FriendOrFoe::Hostile,
                 &target_preferences,
                 character_id,
-                ally_ids,
-                opponent_ids_option,
+                &ally_ids,
+                &opponent_ids_option,
             ),
             TargetCategories::User => Ok(CombatActionTarget::Single(character_id)),
             TargetCategories::Friendly => preferred_single_target_or_default(
                 FriendOrFoe::Friendly,
                 &target_preferences,
                 character_id,
-                ally_ids,
-                opponent_ids_option,
+                &ally_ids,
+                &opponent_ids_option,
             ),
             TargetCategories::Any => match &target_preferences.category_of_last_target {
                 Some(category) => match category {
@@ -76,15 +76,15 @@ fn targeting_scheme_targets_or_defaults(
                         FriendOrFoe::Friendly,
                         &target_preferences,
                         character_id,
-                        ally_ids,
-                        opponent_ids_option,
+                        &ally_ids,
+                        &opponent_ids_option,
                     ),
                     FriendOrFoe::Hostile => preferred_single_target_or_default(
                         FriendOrFoe::Hostile,
                         &target_preferences,
                         character_id,
-                        ally_ids,
-                        opponent_ids_option,
+                        &ally_ids,
+                        &opponent_ids_option,
                     ),
                 },
                 None => {
@@ -116,8 +116,8 @@ fn preferred_single_target_or_default(
     category: FriendOrFoe,
     target_preferences: &CombatActionTargetPreferences,
     character_id: u32,
-    ally_ids: Vec<u32>,
-    opponent_ids_option: Option<Vec<u32>>,
+    ally_ids: &Vec<u32>,
+    opponent_ids_option: &Option<Vec<u32>>,
 ) -> Result<CombatActionTarget, AppError> {
     match category {
         FriendOrFoe::Friendly => {
@@ -133,7 +133,7 @@ fn preferred_single_target_or_default(
             }
         }
         FriendOrFoe::Hostile => {
-            let opponent_ids = opponent_ids_option.ok_or_else(|| AppError {
+            let opponent_ids = opponent_ids_option.as_ref().ok_or_else(|| AppError {
                 error_type: crate::errors::AppErrorTypes::Generic,
                 message: error_messages::ENEMY_COMBATANTS_NOT_FOUND.to_string(),
             })?;

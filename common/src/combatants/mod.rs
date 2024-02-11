@@ -5,6 +5,7 @@ mod equip_item;
 pub mod get_base_ability_damage_bonus;
 mod get_total_elemental_affinites;
 use self::combatant_traits::CombatantTraits;
+use crate::combat::combat_actions::CombatAction;
 mod get_equipped_item;
 mod get_equipped_weapon_properties;
 mod get_total_attributes;
@@ -81,7 +82,7 @@ pub enum CombatantControlledBy {
     Player(String),
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct CombatantProperties {
     pub combatant_class: CombatantClass,
     pub inherent_attributes: HashMap<CombatAttributes, u16>,
@@ -93,8 +94,7 @@ pub struct CombatantProperties {
     pub abilities: HashMap<CombatantAbilityNames, CombatantAbility>,
     pub traits: Vec<CombatantTraits>,
     pub inherent_elemental_affinities: HashMap<MagicalElements, i16>,
-    pub selected_consumable: Option<u32>,
-    pub selected_ability_name: Option<CombatantAbilityNames>,
+    pub selected_combat_action: Option<CombatAction>,
     pub combat_action_targets: Option<CombatActionTarget>,
     pub combat_action_target_preferences: CombatActionTargetPreferences,
     pub controlled_by: CombatantControlledBy,
@@ -117,8 +117,7 @@ impl CombatantProperties {
             abilities,
             traits: Vec::new(),
             inherent_elemental_affinities: HashMap::new(),
-            selected_consumable: None,
-            selected_ability_name: None,
+            selected_combat_action: None,
             combat_action_targets: None,
             combat_action_target_preferences: CombatActionTargetPreferences::default(),
             controlled_by,

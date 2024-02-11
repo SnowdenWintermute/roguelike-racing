@@ -24,7 +24,7 @@ pub fn generate_equipment_traits(affixes: &Vec<Affix>) -> Option<Vec<EquipmentTr
                 PrefixTypes::Evasion => (),
                 PrefixTypes::ArmorPenetration => (),
                 PrefixTypes::Agility => (),
-                PrefixTypes::Focus => todo!(),
+                PrefixTypes::Focus => (),
             },
             Affix::Suffix(suffix, tier) => match suffix {
                 SuffixTypes::Strength => (),

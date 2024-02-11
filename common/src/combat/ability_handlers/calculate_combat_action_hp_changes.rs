@@ -21,16 +21,16 @@ impl RoguelikeRacerGame {
         user_id: u32,
         targets: &CombatActionTarget,
         battle_option: Option<&Battle>,
+        ally_ids: Vec<u32>,
         combat_action: &CombatAction,
     ) -> Result<ActionResult, AppError> {
         let mut action_result = action_result.clone();
-        let battle = battle_option.ok_or_else(|| AppError {
-            error_type: crate::errors::AppErrorTypes::Generic,
-            message: error_messages::INVALID_ABILITY_CONTEXT.to_string(),
-        })?;
 
-        let (ally_ids, opponent_ids_option) =
-            battle.get_ally_ids_and_opponent_ids_option(user_id)?;
+        let (ally_ids, opponent_ids_option) = if let Some(battle) = battle_option {
+            battle.get_ally_ids_and_opponent_ids_option(user_id)?
+        } else {
+            (ally_ids, None)
+        };
 
         let combat_action_properties = combat_action.get_properties(self, user_id)?;
 
@@ -88,6 +88,8 @@ impl RoguelikeRacerGame {
         // roll the hp change
         let mut rng = rand::thread_rng();
         let rolled = rng.gen_range(min..=max);
+
+        println!("num targets: {}", target_entity_ids.len());
 
         // calculate damage split over multiple targets
         let split = split_combat_action_hp_change_by_number_of_targets(

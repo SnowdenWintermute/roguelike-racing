@@ -11,7 +11,7 @@ use serde::Serialize;
 use std::collections::HashMap;
 pub mod outfit_new_warrior;
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Character {
     pub name_of_controlling_user: String,
     pub entity_properties: EntityProperties,

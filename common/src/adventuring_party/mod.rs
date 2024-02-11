@@ -20,7 +20,7 @@ pub struct RoomsExplored {
     pub on_current_floor: u16,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct AdventuringParty {
     pub id: u32,
     pub name: String,

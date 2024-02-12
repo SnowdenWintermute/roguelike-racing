@@ -1,6 +1,7 @@
 use super::enums::GameActions;
 use super::enums::MenuTypes;
 use common::combat::combat_actions::CombatAction;
+use common::combat::combat_actions::CombatActionProperties;
 use common::combatants::abilities::CombatantAbilityNames;
 use common::items::consumables::ConsumableTypes;
 use common::primatives::NextOrPrevious;
@@ -11,6 +12,7 @@ impl MenuTypes {
         menu_types: &Vec<MenuTypes>,
         item_ids: Option<(HashMap<ConsumableTypes, Vec<u32>>, Vec<u32>)>,
         abilities: Option<Vec<CombatantAbilityNames>>,
+        selected_combat_action_properties_option: Option<CombatActionProperties>,
     ) -> Vec<GameActions> {
         let mut menu_items: Vec<GameActions> = Vec::new();
 
@@ -33,7 +35,14 @@ impl MenuTypes {
                     menu_items.push(GameActions::CycleTargets(NextOrPrevious::Next));
                     menu_items.push(GameActions::CycleTargets(NextOrPrevious::Previous));
                     menu_items.push(GameActions::UseSelectedCombatAction);
-                    menu_items.push(GameActions::CycleTargetingScheme);
+                    match &selected_combat_action_properties_option {
+                        Some(properties) => {
+                            if properties.targeting_schemes.len() > 1 {
+                                menu_items.push(GameActions::CycleTargetingScheme)
+                            }
+                        }
+                        None => (),
+                    }
                 }
                 MenuTypes::LevelUpAbilities => {
                     menu_items.push(GameActions::SetAssignAttributePointsMenuOpen(true));

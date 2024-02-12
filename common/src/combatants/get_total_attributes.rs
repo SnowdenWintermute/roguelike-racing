@@ -4,6 +4,7 @@ use crate::app_consts::AGI_TO_EVASION_RATIO;
 use crate::app_consts::AGI_TO_SPEED_RATIO;
 use crate::app_consts::DEX_TO_ACCURACY_RATIO;
 use crate::app_consts::INT_TO_FOCUS_RATIO;
+use crate::app_consts::INT_TO_MP_RATIO;
 use crate::app_consts::VIT_TO_HP_RATIO;
 use std::collections::HashMap;
 use strum::IntoEnumIterator;
@@ -65,6 +66,13 @@ impl CombatantProperties {
             &CombatAttributes::Intelligence,
             CombatAttributes::Focus,
             INT_TO_FOCUS_RATIO,
+        );
+
+        calculate_and_add_derived_attribute(
+            &mut total_attributes,
+            &CombatAttributes::Intelligence,
+            CombatAttributes::Mp,
+            INT_TO_MP_RATIO,
         );
 
         calculate_and_add_derived_attribute(

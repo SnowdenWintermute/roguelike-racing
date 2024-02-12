@@ -14,20 +14,20 @@ fn tier_if_prefix_allowed(prefix_type: &PrefixTypes) -> Option<u8> {
         PrefixTypes::LifeSteal => Some(5),
         PrefixTypes::Resilience => None,
         PrefixTypes::Evasion => None,
-        PrefixTypes::Focus => Some(3),
+        PrefixTypes::Focus => Some(5),
         PrefixTypes::ArmorPenetration => Some(5),
         PrefixTypes::Agility => Some(5),
     }
 }
 fn tier_if_suffix_allowed(suffix_type: &SuffixTypes) -> Option<u8> {
     match suffix_type {
-        SuffixTypes::Strength => Some(4),
-        SuffixTypes::Intelligence => Some(4),
-        SuffixTypes::Dexterity => Some(4),
+        SuffixTypes::Strength => Some(5),
+        SuffixTypes::Intelligence => Some(5),
+        SuffixTypes::Dexterity => Some(5),
         SuffixTypes::Vitality => None,
         SuffixTypes::AllBase => Some(3),
         SuffixTypes::Hp => None,
-        SuffixTypes::Damage => Some(4),
+        SuffixTypes::Damage => Some(5),
         SuffixTypes::Durability => Some(5),
     }
 }

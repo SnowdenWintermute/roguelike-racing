@@ -23,6 +23,7 @@ impl RoguelikeRacerGame {
         battle_option: Option<&Battle>,
         ally_ids: Vec<u32>,
         combat_action: &CombatAction,
+        ability_level_and_base_value_scaling_factor_option: Option<(u8, f32)>, // ability_level_and_base_value_scaling_factor_option: Option<(u8, f32)>
     ) -> Result<ActionResult, AppError> {
         let mut action_result = action_result.clone();
 
@@ -63,6 +64,15 @@ impl RoguelikeRacerGame {
         let Range { min, max } = hp_change_properties.base_values;
         let mut min = min as f32;
         let mut max = max as f32;
+        // add to base values if level greater than 1
+        if let Some((level, level_scaling_factor)) =
+            ability_level_and_base_value_scaling_factor_option
+        {
+            if level > 1 {
+                min += min * level as f32 * level_scaling_factor;
+                max += max * level as f32 * level_scaling_factor;
+            }
+        }
         // add scaling attribute to range
         if let Some((additive_attribute, scaling_factor)) =
             hp_change_properties.additive_attribute_and_scaling_factor

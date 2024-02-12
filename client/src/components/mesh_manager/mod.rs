@@ -9,12 +9,14 @@ use yew::AttrValue;
 #[derive(PartialEq, Clone, Debug)]
 pub enum AutoinjectorTypes {
     Hp,
+    Mp,
 }
 
 impl Display for AutoinjectorTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
         match self {
             AutoinjectorTypes::Hp => write!(f, "HP"),
+            AutoinjectorTypes::Mp => write!(f, "MP"),
         }
     }
 }

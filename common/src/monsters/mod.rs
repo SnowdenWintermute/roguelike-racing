@@ -64,7 +64,7 @@ impl Monster {
         let inherent_attributes = &mut monster.combatant_properties.inherent_attributes;
         inherent_attributes.insert(CombatAttributes::Hp, hp);
         inherent_attributes.insert(CombatAttributes::Damage, 1);
-        inherent_attributes.insert(CombatAttributes::Strength, 3 * level as u16);
+        inherent_attributes.insert(CombatAttributes::Strength, 2 * level as u16);
         inherent_attributes.insert(CombatAttributes::Dexterity, 1 * level as u16);
         inherent_attributes.insert(CombatAttributes::Vitality, 1 * level as u16);
         inherent_attributes.insert(CombatAttributes::Resilience, 1 + 1 * level as u16);

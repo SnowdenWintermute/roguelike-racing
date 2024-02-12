@@ -7,9 +7,13 @@ pub const MAX_PARTY_SIZE: u8 = 3;
 pub const MAIN_CHAT_CHANNEL: &str = "chat-main";
 pub const LOBBY_CHANNEL: &str = "lobby";
 
+// EQUIPMENT
+pub const TWO_HANDED_WEAPON_ATTRIBUTE_MULTIPLIER: f32 = 1.75;
+
 // ATTRIBUTES
 pub const DEX_TO_ACCURACY_RATIO: u16 = 2;
 pub const INT_TO_FOCUS_RATIO: u16 = 2;
+pub const INT_TO_MP_RATIO: u16 = 2;
 pub const FOCUS_TO_CRIT_CHANCE_RATIO: f32 = 0.5;
 pub const AGI_TO_EVASION_RATIO: u16 = 2;
 pub const AGI_TO_SPEED_RATIO: u16 = 1;

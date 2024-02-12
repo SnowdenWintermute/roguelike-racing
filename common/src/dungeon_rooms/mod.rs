@@ -68,7 +68,7 @@ impl DungeonRoom {
         if room_type == DungeonRoomTypes::MonsterLair {
             let mut new_monsters = HashMap::new();
             for _ in 0..3 {
-                let new_monster = Monster::generate(id_generator, floor, 10 * floor as u16);
+                let new_monster = Monster::generate(id_generator, floor, 5 * floor as u16);
                 new_monsters.insert(new_monster.entity_properties.id, new_monster);
             }
             monsters = Some(new_monsters);

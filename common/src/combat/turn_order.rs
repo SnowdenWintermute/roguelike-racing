@@ -40,13 +40,19 @@ impl RoguelikeRacerGame {
         let mut combatant_turn_trackers = vec![];
 
         for entity_id in &group_a.combatant_ids {
-            let turn_tracker = get_turn_tracker_from_combatant(*entity_id);
-            combatant_turn_trackers.push(turn_tracker);
+            let (_, combatant_properties) = self.get_combatant_by_id(&entity_id)?;
+            if combatant_properties.hit_points > 0 {
+                let turn_tracker = get_turn_tracker_from_combatant(*entity_id);
+                combatant_turn_trackers.push(turn_tracker);
+            }
         }
 
         for entity_id in &group_b.combatant_ids {
-            let turn_tracker = get_turn_tracker_from_combatant(*entity_id);
-            combatant_turn_trackers.push(turn_tracker);
+            let (_, combatant_properties) = self.get_combatant_by_id(&entity_id)?;
+            if combatant_properties.hit_points > 0 {
+                let turn_tracker = get_turn_tracker_from_combatant(*entity_id);
+                combatant_turn_trackers.push(turn_tracker);
+            }
         }
 
         Ok(combatant_turn_trackers)

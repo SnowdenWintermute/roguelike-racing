@@ -5,6 +5,7 @@ use serde::Serialize;
 #[derive(Eq, PartialEq, Clone, Debug, Serialize, Deserialize)]
 pub enum CombatantTraits {
     HpBioavailabilityPercent(u8),
+    MpBioavailabilityPercent(u8),
     ElementalAffinityPercent(MagicalElements, i16),
     Undead,
 }

@@ -1,5 +1,7 @@
 mod hp_autoinjector_use_result;
+mod mp_autoinjector_use_result;
 use self::hp_autoinjector_use_result::hp_autoinjector_use_result;
+use self::mp_autoinjector_use_result::mp_autoinjector_use_result;
 use super::battle::Battle;
 use super::combat_actions::CombatActionTarget;
 use super::ActionResult;
@@ -22,6 +24,9 @@ impl RoguelikeRacerGame {
         let results = match consumable_properties.consumable_type {
             ConsumableTypes::HpAutoinjector => {
                 hp_autoinjector_use_result(self, user_id, item_id, target)?
+            }
+            ConsumableTypes::MpAutoinjector => {
+                mp_autoinjector_use_result(self, user_id, item_id, target)?
             }
             ConsumableTypes::Grenade => todo!(),
             ConsumableTypes::SmokeBomb => todo!(),

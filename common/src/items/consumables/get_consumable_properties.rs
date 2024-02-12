@@ -18,6 +18,16 @@ impl ConsumableTypes {
                 requires_combat_turn: false,
                 hp_change_properties: None,
             },
+            ConsumableTypes::MpAutoinjector => CombatActionProperties {
+                targeting_schemes: vec![TargetingScheme::Single],
+                valid_target_categories: TargetCategories::Friendly,
+                usability_context: AbilityUsableContext::All,
+                prohibited_target_combatant_states: Some(vec![
+                    ProhibitedTargetCombatantStates::Dead,
+                ]),
+                requires_combat_turn: false,
+                hp_change_properties: None,
+            },
             ConsumableTypes::Grenade => CombatActionProperties {
                 targeting_schemes: vec![TargetingScheme::Area],
                 valid_target_categories: TargetCategories::Opponent,

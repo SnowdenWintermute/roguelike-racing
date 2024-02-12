@@ -8,7 +8,7 @@ use super::vec_of_possible_affixes_and_tiers_from_filter::vec_of_possible_affixe
 fn tier_if_prefix_allowed(prefix_type: &PrefixTypes) -> Option<u8> {
     match prefix_type {
         PrefixTypes::Mp => Some(5),
-        PrefixTypes::ArmorClass => Some(5),
+        PrefixTypes::ArmorClass => None,
         PrefixTypes::Accuracy => Some(5),
         PrefixTypes::PercentDamage => None,
         PrefixTypes::LifeSteal => None,

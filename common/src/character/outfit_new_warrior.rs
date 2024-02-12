@@ -40,7 +40,7 @@ pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Charact
     // );
 
     // TEST INVENTORY ITEMS
-    for _ in 0..2 {
+    for _ in 0..10 {
         let random_consumable =
             Item::generate(&mut game.id_generator, 5, Some(ItemCategories::Consumable));
         combatant_properties.inventory.items.push(random_consumable);
@@ -72,6 +72,6 @@ pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Charact
     }
     let max_mana_option = total_attributes.get(&CombatAttributes::Mp);
     if let Some(max_mana) = max_mana_option {
-        combatant_properties.mana = *max_mana
+        combatant_properties.mana = *max_mana / 4
     }
 }

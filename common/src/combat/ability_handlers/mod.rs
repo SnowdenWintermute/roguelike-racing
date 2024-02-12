@@ -30,6 +30,10 @@ impl RoguelikeRacerGame {
         battle_option: Option<&Battle>,
         ally_ids: Vec<u32>,
     ) -> Result<Vec<ActionResult>, AppError> {
+        let (_, combatant_properties) = self.get_combatant_by_id(&ability_user_id)?;
+        let ability = combatant_properties.get_ability_if_owned(ability_name)?;
+        let ability_attributes = ability_name.get_attributes();
+
         match ability_name {
             CombatantAbilityNames::Attack => {
                 self.attack_handler(ability_user_id, ability_targets, battle_option)
@@ -57,6 +61,10 @@ impl RoguelikeRacerGame {
                     battle_option,
                     ally_ids,
                     &combat_action,
+                    Some((
+                        ability.level,
+                        ability_attributes.base_hp_change_values_level_multiplier,
+                    )),
                 )?;
                 Ok(vec![action_result])
             }

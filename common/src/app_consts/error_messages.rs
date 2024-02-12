@@ -61,6 +61,7 @@ pub const MISSING_ACTION_HP_CHANGE_PROPERTIES: &str =
 pub const MISSING_ACTION_HP_CHANGE_BASE_VALUES: &str =
     "Tried to get the base Hp change values on an ability that doesn't specify them";
 pub const ALREADY_FULL_HP: &str = "The target is already at full HP";
+pub const ALREADY_FULL_MP: &str = "The target already has full mana";
 // TARGETING
 pub const NO_POSSIBLE_TARGETS_PROVIDED: &str =
     "No possible targets were found for the selected action";

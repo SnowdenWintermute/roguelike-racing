@@ -38,6 +38,22 @@ pub fn autoinjector_use_animation_finished_handler(
                     0,
                 ));
             }
+            AutoinjectorTypes::Mp => {
+                let _ = target_combatant_properties.change_mp(value_change);
+                let target_text = if user_id == target_id {
+                    "themselves".to_string()
+                } else {
+                    format!("{} ({target_id})", target_name)
+                };
+                store.combat_log.push(CombatLogMessage::new(
+                    AttrValue::from(format!(
+                        "{} ({user_id}) injected {} for {value_change} MP",
+                        user_name, target_text
+                    )),
+                    CombatLogMessageStyle::Basic,
+                    0,
+                ));
+            }
         }
 
         let event_manager = store

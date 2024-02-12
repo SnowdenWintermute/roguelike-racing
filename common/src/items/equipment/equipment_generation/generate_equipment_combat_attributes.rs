@@ -1,8 +1,10 @@
+use crate::app_consts::TWO_HANDED_WEAPON_ATTRIBUTE_MULTIPLIER;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::combatants::combat_attributes::CORE_ATTRIBUTES;
 use crate::items::equipment::affixes::Affix;
 use crate::items::equipment::affixes::PrefixTypes;
 use crate::items::equipment::affixes::SuffixTypes;
+use crate::items::equipment::EquipmentTypes;
 use rand::Rng;
 use std::collections::HashMap;
 
@@ -24,8 +26,14 @@ impl AttributeValueCreationTemplate {
 
 pub fn generate_equipment_combat_attributes(
     affixes: &Vec<Affix>,
+    equipment_type: &EquipmentTypes,
 ) -> HashMap<CombatAttributes, u16> {
     let mut attributes: HashMap<CombatAttributes, u16> = HashMap::new();
+    let attribute_multiplier = match equipment_type {
+        EquipmentTypes::TwoHandedMeleeWeapon(_, _)
+        | EquipmentTypes::TwoHandedRangedWeapon(_, _) => TWO_HANDED_WEAPON_ATTRIBUTE_MULTIPLIER,
+        _ => 1.0,
+    };
 
     for affix in affixes {
         let mut attribute_templates = vec![];
@@ -37,7 +45,7 @@ pub fn generate_equipment_combat_attributes(
                         attribute_templates.push(AttributeValueCreationTemplate::new(
                             CombatAttributes::Mp,
                             tier,
-                            tier * 2.0,
+                            tier * 5.0,
                         ));
                     }
                     PrefixTypes::ArmorClass => {
@@ -51,7 +59,7 @@ pub fn generate_equipment_combat_attributes(
                         attribute_templates.push(AttributeValueCreationTemplate::new(
                             CombatAttributes::Accuracy,
                             tier,
-                            tier * 2.0,
+                            tier * 5.0,
                         ));
                     }
                     PrefixTypes::PercentDamage => (),
@@ -67,7 +75,7 @@ pub fn generate_equipment_combat_attributes(
                         attribute_templates.push(AttributeValueCreationTemplate::new(
                             CombatAttributes::Evasion,
                             tier,
-                            tier * 2.0,
+                            tier * 5.0,
                         ));
                     }
                     PrefixTypes::ArmorPenetration => {
@@ -146,7 +154,7 @@ pub fn generate_equipment_combat_attributes(
                         attribute_templates.push(AttributeValueCreationTemplate::new(
                             CombatAttributes::Hp,
                             tier,
-                            tier * 2.0,
+                            tier * 5.0,
                         ));
                     }
                     SuffixTypes::Damage => {
@@ -162,8 +170,10 @@ pub fn generate_equipment_combat_attributes(
         }
 
         for template in attribute_templates {
-            let attribute_value = rand::thread_rng()
-                .gen_range(template.min.round() as u16..=template.max.round() as u16);
+            let attribute_value = rand::thread_rng().gen_range(
+                (template.min.round() * attribute_multiplier) as u16
+                    ..=(template.max.round() * attribute_multiplier) as u16,
+            );
             let mut existing_attribute = 0;
 
             // in case we already added some stats

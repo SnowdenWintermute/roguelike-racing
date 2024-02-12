@@ -16,6 +16,7 @@ pub struct CombatantAbilityAttributes {
     pub is_melee: bool,
     pub mana_cost: u8,
     pub mana_cost_level_multiplier: u8,
+    pub base_hp_change_values_level_multiplier: f32,
     pub shard_cost: u8,
 }
 
@@ -26,6 +27,7 @@ impl Default for CombatantAbilityAttributes {
             is_melee: false,
             mana_cost: 1,
             mana_cost_level_multiplier: 1,
+            base_hp_change_values_level_multiplier: 1.0,
             shard_cost: 0,
         }
     }

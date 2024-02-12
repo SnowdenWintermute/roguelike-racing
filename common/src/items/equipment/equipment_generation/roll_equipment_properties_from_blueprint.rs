@@ -39,7 +39,7 @@ pub fn roll_equipment_properties_from_blueprint(
     let affixes = generate_affixes(prefix_types_and_tiers, suffix_types_and_tiers, level);
     make_indestructable_if_max_tier_durability(&affixes, &mut durability);
     let traits = generate_equipment_traits(&affixes);
-    let attributes = generate_equipment_combat_attributes(&affixes);
+    let attributes = generate_equipment_combat_attributes(&affixes, &equipment_type);
 
     EquipmentPropertiesAndRequirements {
         equipment_properties: EquipmentProperties {

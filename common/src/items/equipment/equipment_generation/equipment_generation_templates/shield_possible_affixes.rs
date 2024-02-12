@@ -21,9 +21,9 @@ fn tier_if_prefix_allowed(prefix_type: &PrefixTypes) -> Option<u8> {
 }
 fn tier_if_suffix_allowed(suffix_type: &SuffixTypes) -> Option<u8> {
     match suffix_type {
-        SuffixTypes::Strength => Some(4),
-        SuffixTypes::Intelligence => Some(4),
-        SuffixTypes::Dexterity => Some(4),
+        SuffixTypes::Strength => Some(5),
+        SuffixTypes::Intelligence => Some(5),
+        SuffixTypes::Dexterity => Some(5),
         SuffixTypes::Vitality => Some(5),
         SuffixTypes::AllBase => Some(4),
         SuffixTypes::Hp => Some(5),

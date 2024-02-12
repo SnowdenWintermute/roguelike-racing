@@ -11,6 +11,7 @@ use strum_macros::EnumIter;
 #[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq, Hash)]
 pub enum ConsumableTypes {
     HpAutoinjector,
+    MpAutoinjector,
     Grenade,
     SmokeBomb,
     // RoomFinder,
@@ -28,6 +29,7 @@ impl Display for ConsumableTypes {
             ConsumableTypes::HpAutoinjector => "HP Autoinjector",
             ConsumableTypes::Grenade => "Grenade",
             ConsumableTypes::SmokeBomb => "Smoke Bomb",
+            ConsumableTypes::MpAutoinjector => "MP Autoinjector",
         };
         write!(f, "{}", to_write)
     }
@@ -42,6 +44,7 @@ impl ConsumableTypes {
     pub fn get_description(&self) -> &str {
         match self {
             ConsumableTypes::HpAutoinjector => "Heal a friendly target.",
+            ConsumableTypes::MpAutoinjector => "Restore mana to a friendly target",
             ConsumableTypes::Grenade => "Damage a group of hostile targets.",
             ConsumableTypes::SmokeBomb => {
                 "Apply a temporary Evasion bonus to a group of friendly targets."

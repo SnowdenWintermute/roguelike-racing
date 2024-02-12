@@ -67,6 +67,40 @@ pub fn queue_consumable_use_animations(
                 ]));
                 Ok(())
             }
+            ConsumableTypes::MpAutoinjector => {
+                let mp_changes =
+                    &action_result
+                        .mp_changes_by_entity_id
+                        .as_ref()
+                        .ok_or_else(|| AppError {
+                            error_type: common::errors::AppErrorTypes::Generic,
+                            message: error_messages::MISSING_EXPECTED_ACTION_RESULT_DATA
+                                .to_string(),
+                        })?;
+                let mp_change = mp_changes.get(&target_id).ok_or_else(|| AppError {
+                    error_type: common::errors::AppErrorTypes::Generic,
+                    message: error_messages::MISSING_EXPECTED_ACTION_RESULT_DATA.to_string(),
+                })?;
+                let mp_change = *mp_change;
+
+                let event_manager = game_store
+                    .action_results_manager
+                    .combantant_event_managers
+                    .get_mut(&combatant_id)
+                    .ok_or_else(|| AppError {
+                        error_type: common::errors::AppErrorTypes::ClientError,
+                        message: error_messages::COMBANTANT_EVENT_MANAGER_NOT_FOUND.to_string(),
+                    })?;
+
+                event_manager.animation_queue.append(&mut VecDeque::from([
+                    CombatantAnimation::UseAutoinjector(
+                        AutoinjectorTypes::Mp,
+                        target_id,
+                        mp_change,
+                    ),
+                ]));
+                Ok(())
+            }
             ConsumableTypes::Grenade => todo!(),
             ConsumableTypes::SmokeBomb => todo!(),
         }

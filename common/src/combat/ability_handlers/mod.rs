@@ -38,7 +38,7 @@ impl RoguelikeRacerGame {
             CombatantAbilityNames::Attack => {
                 self.attack_handler(ability_user_id, ability_targets, battle_option)
             }
-            CombatantAbilityNames::Fire => {
+            CombatantAbilityNames::Fire | CombatantAbilityNames::Healing => {
                 let combat_action = CombatAction::AbilityUsed(ability_name.clone());
                 let action_result = ActionResult::new(
                     ability_user_id,

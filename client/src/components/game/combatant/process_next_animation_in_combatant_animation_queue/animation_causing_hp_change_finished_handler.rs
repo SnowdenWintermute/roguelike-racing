@@ -119,7 +119,29 @@ pub fn animation_causing_hp_change_finished_handler(
                     //         color: AttrValue::from("rgba(255,255,255,0)"),
                     //     });
                 }
-                HpChangeResult::Healed(HpChange { .. }) => {}
+                HpChangeResult::Healed(HpChange { value, is_crit: _ }) => {
+                    store.combat_log.push(CombatLogMessage::new(
+                        AttrValue::from(format!(
+                            "{} ({causer_id}) healed {} ({target_id}) for {}",
+                            causer_name,
+                            target_name,
+                            value * -1
+                        )),
+                        CombatLogMessageStyle::Basic,
+                        0,
+                    ));
+
+                    let game = store.get_current_game_mut()?;
+                    let (_, combatant_properties) = game.get_mut_combatant_by_id(&target_id)?;
+                    let new_hp = combatant_properties.change_hp(value);
+
+                    // target_event_manager
+                    //     .floating_numbers_queue
+                    //     .push_back(FloatingNumber {
+                    //         value: hp_change,
+                    //         color: AttrValue::from("rgba(255,255,255,0)"),
+                    //     });
+                }
             }
         }
         Ok(())

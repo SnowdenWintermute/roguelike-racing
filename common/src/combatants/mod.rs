@@ -205,7 +205,7 @@ impl CombatantProperties {
     pub fn change_mp(&mut self, mp_change: i16) -> u16 {
         let combatant_total_attributes = self.get_total_attributes();
         let max_mp = combatant_total_attributes
-            .get(&CombatAttributes::Hp)
+            .get(&CombatAttributes::Mp)
             .unwrap_or_else(|| &0);
         let new_mp = add_i16_to_u16_and_clamp_to_max(self.mana, mp_change, *max_mp);
         self.mana = new_mp;

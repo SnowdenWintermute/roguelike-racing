@@ -83,7 +83,33 @@ impl CombatantAbilityNames {
                 },
                 ..Default::default()
             },
-            CombatantAbilityNames::Heal => CombatantAbilityAttributes {
+            CombatantAbilityNames::Healing => CombatantAbilityAttributes {
+                mana_cost: 2,
+                mana_cost_level_multiplier: 1,
+                combat_action_properties: CombatActionProperties {
+                    targeting_schemes: vec![TargetingScheme::Single, TargetingScheme::Area],
+                    hp_change_properties: Some(CombatActionHpChangeProperties {
+                        base_values: Range::new(6, 12),
+                        base_final_percent_multiplier: 100,
+                        additive_attribute_and_scaling_factor: Some((
+                            CombatAttributes::Intelligence,
+                            1,
+                        )),
+                        source_properties: HpChangeSource::new(
+                            HpChangeSourceCategories::Healing,
+                            None,
+                            Some(MagicalElements::Light),
+                        ),
+                        add_weapon_damage_from: None,
+                        crit_chance_attribute: Some(CombatAttributes::Focus),
+                        crit_multiplier_attribute: Some(CombatAttributes::Focus),
+                    }),
+                    valid_target_categories: TargetCategories::Any,
+                    prohibited_target_combatant_states: Some(vec![
+                        ProhibitedTargetCombatantStates::Dead,
+                    ]),
+                    ..Default::default()
+                },
                 ..Default::default()
             },
             CombatantAbilityNames::RainStorm => CombatantAbilityAttributes {

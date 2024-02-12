@@ -68,10 +68,11 @@ impl RoguelikeRacerGame {
         if let Some((level, level_scaling_factor)) =
             ability_level_and_base_value_scaling_factor_option
         {
-            if level > 1 {
-                min += min * level as f32 * level_scaling_factor;
-                max += max * level as f32 * level_scaling_factor;
-            }
+            println!("level: {level} scaling: {:?}", level_scaling_factor);
+            println!("min: {min} max: {max}");
+            min = min * level as f32 * level_scaling_factor;
+            max = max * level as f32 * level_scaling_factor;
+            println!("min: {min} max: {max}");
         }
         // add scaling attribute to range
         if let Some((additive_attribute, scaling_factor)) =
@@ -137,6 +138,7 @@ impl RoguelikeRacerGame {
                 )?,
             HpChangeSourceCategories::Direct => todo!(),
         }
+        println!("hp changes: {:#?}", &action_result.hp_changes_by_entity_id);
         Ok(action_result)
     }
 }

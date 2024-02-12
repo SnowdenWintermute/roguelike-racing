@@ -70,7 +70,8 @@ impl RoguelikeRacerGame {
                 let target_resilience = target_combat_attributes
                     .get(&CombatAttributes::Resilience)
                     .unwrap_or_else(|| &0);
-                let penetrated_resilience = std::cmp::max(0, target_resilience - user_focus);
+                let penetrated_resilience =
+                    std::cmp::max(0, target_resilience.saturating_sub(*user_focus));
 
                 let damage_reduction_percentage = std::cmp::min(
                     (penetrated_resilience as f32

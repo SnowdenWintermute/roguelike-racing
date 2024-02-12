@@ -52,7 +52,15 @@ impl MenuTypes {
                     menu_items.push(GameActions::ToggleInventoryOpen);
                     menu_items.push(GameActions::ToggleViewingEquipedItems);
                     if let Some(item_ids) = &item_ids {
-                        for (consumable_type, ids) in &item_ids.0 {
+                        let mut consumables_as_vec = item_ids
+                            .0
+                            .clone()
+                            .into_iter()
+                            .map(|(consumable_type, ids_vec)| (consumable_type, ids_vec))
+                            .collect::<Vec<(ConsumableTypes, Vec<u32>)>>();
+                        consumables_as_vec.sort_by_key(|item| item.0);
+
+                        for (consumable_type, ids) in &consumables_as_vec {
                             menu_items.push(GameActions::SelectItem(ids[0], ids.len() as u16))
                         }
                         for id in &item_ids.1 {

@@ -6,6 +6,9 @@ use common::adventuring_party::AdventuringParty;
 use common::combat::combat_actions::AbilityUsableContext;
 use common::combatants::abilities::CombatantAbilityNames;
 use common::dungeon_rooms::DungeonRoomTypes;
+use common::items::consumables::ConsumableTypes;
+use common::items::ItemProperties;
+use std::collections::HashMap;
 use std::rc::Rc;
 
 // determine menu actions
@@ -46,16 +49,29 @@ pub fn determine_menu_actions(
             for (_slot, item) in &character.combatant_properties.equipment {
                 ids.push(item.entity_properties.id);
             }
-            new_actions = MenuTypes::get_actions(&menu_types, Some(ids), None)
+            new_actions = MenuTypes::get_actions(&menu_types, Some((HashMap::new(), ids)), None)
         }
     } else if game_state.viewing_inventory {
         menu_types.push(MenuTypes::InventoryOpen);
         if let Some(character) = focused_character_option {
-            let mut ids = Vec::new();
+            let mut equipment_ids = Vec::new();
+            let mut consumables_by_type: HashMap<ConsumableTypes, Vec<u32>> = HashMap::new();
             for item in &character.combatant_properties.inventory.items {
-                ids.push(item.entity_properties.id);
+                match &item.item_properties {
+                    ItemProperties::Consumable(consumable_properties) => {
+                        let consumables_of_this_type = consumables_by_type
+                            .entry(consumable_properties.consumable_type)
+                            .or_insert(Vec::new());
+                        consumables_of_this_type.push(item.entity_properties.id)
+                    }
+                    ItemProperties::Equipment(_) => equipment_ids.push(item.entity_properties.id),
+                }
             }
-            new_actions = MenuTypes::get_actions(&menu_types, Some(ids), None);
+            new_actions = MenuTypes::get_actions(
+                &menu_types,
+                Some((consumables_by_type, equipment_ids)),
+                None,
+            );
         }
         //
     } else if game_state.viewing_skill_level_up_menu

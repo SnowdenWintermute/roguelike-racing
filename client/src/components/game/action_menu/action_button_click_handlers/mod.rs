@@ -1,10 +1,12 @@
 pub mod handle_cycle_combat_action_targeting_schemes;
 pub mod handle_cycle_combat_action_targets;
 pub mod handle_select_combat_action;
+mod handle_use_selected_combat_action;
 mod use_item_handler;
 use self::handle_cycle_combat_action_targeting_schemes::handle_cycle_combat_action_targeting_schemes;
 use self::handle_cycle_combat_action_targets::handle_cycle_combat_action_targets;
 use self::handle_select_combat_action::handle_select_combat_action;
+use self::handle_use_selected_combat_action::handle_use_selected_combat_action;
 use super::enums::GameActions;
 use crate::components::websocket_manager::send_client_input::send_client_input;
 use crate::store::alert_store::AlertStore;
@@ -69,7 +71,7 @@ pub fn create_action_button_click_handler<'a>(
                 store.detailed_entity = None;
             });
         }),
-        GameActions::SelectItem(id) => Box::new(move || {
+        GameActions::SelectItem(id, _) => Box::new(move || {
             let item = get_item_owned_by_focused_character(&id, game_state.clone())
                 .expect("a character should only be able to select their own items");
             let cloned_dispatch = game_dispatch.clone();
@@ -137,9 +139,12 @@ pub fn create_action_button_click_handler<'a>(
             );
         }),
         GameActions::UseSelectedCombatAction => Box::new(move || {
-            send_client_input(
+            let cloned_dispatch = game_dispatch.clone();
+            let cloned_alert_dispatch = alert_dispatch.clone();
+            handle_use_selected_combat_action(
+                cloned_dispatch,
+                cloned_alert_dispatch,
                 &websocket_state.websocket,
-                PlayerInputs::UseSelectedCombatAction(game_state.focused_character_id),
             );
         }),
         GameActions::DropItem(item_id) => Box::new(move || {

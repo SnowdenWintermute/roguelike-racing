@@ -8,7 +8,7 @@ use serde::Serialize;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
-#[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq)]
+#[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq, Hash)]
 pub enum ConsumableTypes {
     HpAutoinjector,
     Grenade,

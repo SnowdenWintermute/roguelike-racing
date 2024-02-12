@@ -2,12 +2,14 @@ use super::enums::GameActions;
 use super::enums::MenuTypes;
 use common::combat::combat_actions::CombatAction;
 use common::combatants::abilities::CombatantAbilityNames;
+use common::items::consumables::ConsumableTypes;
 use common::primatives::NextOrPrevious;
+use std::collections::HashMap;
 
 impl MenuTypes {
     pub fn get_actions(
         menu_types: &Vec<MenuTypes>,
-        item_ids: Option<Vec<u32>>,
+        item_ids: Option<(HashMap<ConsumableTypes, Vec<u32>>, Vec<u32>)>,
         abilities: Option<Vec<CombatantAbilityNames>>,
     ) -> Vec<GameActions> {
         let mut menu_items: Vec<GameActions> = Vec::new();
@@ -41,8 +43,11 @@ impl MenuTypes {
                     menu_items.push(GameActions::ToggleInventoryOpen);
                     menu_items.push(GameActions::ToggleViewingEquipedItems);
                     if let Some(item_ids) = &item_ids {
-                        for id in item_ids {
-                            menu_items.push(GameActions::SelectItem(*id))
+                        for (consumable_type, ids) in &item_ids.0 {
+                            menu_items.push(GameActions::SelectItem(ids[0], ids.len() as u16))
+                        }
+                        for id in &item_ids.1 {
+                            menu_items.push(GameActions::SelectItem(*id, 1))
                         }
                     }
                 }
@@ -50,8 +55,8 @@ impl MenuTypes {
                     menu_items.push(GameActions::ToggleInventoryOpen);
                     menu_items.push(GameActions::ToggleViewingEquipedItems);
                     if let Some(item_ids) = &item_ids {
-                        for id in item_ids {
-                            menu_items.push(GameActions::SelectItem(*id))
+                        for id in &item_ids.1 {
+                            menu_items.push(GameActions::SelectItem(*id, 1))
                         }
                     }
                 }

@@ -12,7 +12,7 @@ pub fn create_action_mouse_enter_handler(
     game_state: Rc<GameStore>,
 ) -> Box<dyn Fn()> {
     match action {
-        GameActions::SelectItem(id) => Box::new(move || {
+        GameActions::SelectItem(id, _) => Box::new(move || {
             let item_result = get_item_owned_by_focused_character(&id, game_state.clone());
             if let Ok(item) = item_result {
                 game_dispatch.reduce_mut(|store| {
@@ -36,7 +36,7 @@ pub fn create_action_mouse_leave_handler(
     game_dispatch: Dispatch<GameStore>,
 ) -> Box<dyn Fn()> {
     match action {
-        GameActions::SelectItem(_id) => Box::new(move || {
+        GameActions::SelectItem(_, _) => Box::new(move || {
             game_dispatch.reduce_mut(|store| store.hovered_entity = None);
         }),
         _ => Box::new(|| ()),

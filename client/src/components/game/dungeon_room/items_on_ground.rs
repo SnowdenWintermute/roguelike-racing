@@ -71,7 +71,7 @@ pub fn item_on_ground(props: &ItemOnGroundProps) -> Html {
     let cloned_game_dispatch = game_dispatch.clone();
     let mouse_enter_handler = Callback::from(move |_| {
         create_action_mouse_enter_handler(
-            GameActions::SelectItem(item_id),
+            GameActions::SelectItem(item_id, 1),
             cloned_game_dispatch.clone(),
             cloned_game_state.clone(),
         )()
@@ -79,7 +79,7 @@ pub fn item_on_ground(props: &ItemOnGroundProps) -> Html {
     let cloned_game_dispatch = game_dispatch.clone();
     let mouse_leave_handler = Callback::from(move |_| {
         create_action_mouse_leave_handler(
-            GameActions::SelectItem(item_id),
+            GameActions::SelectItem(item_id, 1),
             cloned_game_dispatch.clone(),
         )()
     });
@@ -87,7 +87,7 @@ pub fn item_on_ground(props: &ItemOnGroundProps) -> Html {
     let cloned_game_dispatch = game_dispatch.clone();
     let focus_handler = Callback::from(move |_| {
         create_action_mouse_enter_handler(
-            GameActions::SelectItem(item_id),
+            GameActions::SelectItem(item_id, 1),
             cloned_game_dispatch.clone(),
             cloned_game_state.clone(),
         )()
@@ -95,7 +95,7 @@ pub fn item_on_ground(props: &ItemOnGroundProps) -> Html {
     let cloned_game_dispatch = game_dispatch.clone();
     let blur_handler = Callback::from(move |_| {
         create_action_mouse_leave_handler(
-            GameActions::SelectItem(item_id),
+            GameActions::SelectItem(item_id, 1),
             cloned_game_dispatch.clone(),
         )()
     });

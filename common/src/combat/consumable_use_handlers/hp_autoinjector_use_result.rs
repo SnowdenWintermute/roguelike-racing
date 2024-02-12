@@ -67,6 +67,7 @@ pub fn hp_autoinjector_use_result(
         CombatAction::ConsumableUsed(consumable_item_id),
         target.clone(),
     );
+    action_result.ends_turn = false;
     action_result.hp_changes_by_entity_id = Some(HashMap::from([(*target_id, final_healing)]));
 
     Ok(vec![action_result])

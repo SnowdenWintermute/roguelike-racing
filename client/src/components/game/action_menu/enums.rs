@@ -25,7 +25,7 @@ pub enum GameActions {
     SetInventoryOpen(bool),
     ToggleInventoryOpen,
     ToggleViewingEquipedItems,
-    SelectItem(u32),
+    SelectItem(u32, u16), // item_id, number of this item if consumable
     OpenTreasureChest,
     TakeItem,
     // Item Selected

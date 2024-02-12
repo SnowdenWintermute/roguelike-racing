@@ -36,7 +36,9 @@ pub fn determine_action_button_text(action: GameActions, game_state: Rc<GameStor
                 "View Equipment".to_string()
             }
         }
-        GameActions::SelectItem(id) => determine_select_item_text(&id, game_state),
+        GameActions::SelectItem(id, number_of_this_item_in_inventory) => {
+            determine_select_item_text(&id, number_of_this_item_in_inventory, game_state)
+        }
         GameActions::OpenTreasureChest => "Open treasure chest".to_string(),
         GameActions::TakeItem => "Pick up item".to_string(),
         GameActions::UseItem(id) => determine_use_item_text(&id, game_state).to_string(),
@@ -91,7 +93,11 @@ fn determine_use_item_text<'a>(id: &u32, game_state: Rc<GameStore>) -> &'a str {
     "No item found"
 }
 
-fn determine_select_item_text(id: &u32, game_state: Rc<GameStore>) -> String {
+fn determine_select_item_text(
+    id: &u32,
+    number_of_this_item_in_inventory: u16,
+    game_state: Rc<GameStore>,
+) -> String {
     let party_id = game_state
         .current_party_id
         .expect("only call this fn if char is in a party");
@@ -102,16 +108,26 @@ fn determine_select_item_text(id: &u32, game_state: Rc<GameStore>) -> String {
         .get(&game_state.focused_character_id)
         .expect("");
 
-    for (_, item) in &character.combatant_properties.equipment {
-        if item.entity_properties.id == *id {
-            return item.entity_properties.name.clone();
+    let item_name_option = {
+        let mut to_return = None;
+        for (_, item) in &character.combatant_properties.equipment {
+            if item.entity_properties.id == *id {
+                to_return = Some(item.entity_properties.name.clone());
+            }
         }
-    }
+        for item in &character.combatant_properties.inventory.items {
+            if item.entity_properties.id == *id {
+                to_return = Some(item.entity_properties.name.clone());
+            }
+        }
+        to_return
+    };
 
-    for item in &character.combatant_properties.inventory.items {
-        if item.entity_properties.id == *id {
-            return item.entity_properties.name.clone();
-        }
+    match item_name_option {
+        Some(item_name) => match number_of_this_item_in_inventory {
+            1 => item_name,
+            _ => format!("{item_name} ({number_of_this_item_in_inventory})"),
+        },
+        None => "No item found".to_string(),
     }
-    "No item found".to_string()
 }

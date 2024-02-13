@@ -8,11 +8,9 @@ pub struct Props {
 
 #[function_component(TargetingIndicator)]
 pub fn targeting_indicator(props: &Props) -> Html {
-    let mut color = "yellow-700";
-
     let color = match props.combat_action {
         CombatAction::AbilityUsed(_) => "yellow-700",
-        CombatAction::ConsumableUsed(_) => "gray-700",
+        CombatAction::ConsumableUsed(_) => "green-600",
     };
     html!(
         <div class={format!("w-0 h-0 border-t-[1.5rem] border-t-{color}

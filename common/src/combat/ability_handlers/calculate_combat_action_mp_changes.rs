@@ -30,7 +30,7 @@ impl RoguelikeRacerGame {
         if user_combatant_properties.mana < level_adjusted_mp_cost as u16 {
             return Err(AppError {
                 error_type: crate::errors::AppErrorTypes::InvalidInput,
-                message: error_messages::INSUFFICENT_MP.to_string(),
+                message: error_messages::INSUFFICIENT_MP.to_string(),
             });
         }
 

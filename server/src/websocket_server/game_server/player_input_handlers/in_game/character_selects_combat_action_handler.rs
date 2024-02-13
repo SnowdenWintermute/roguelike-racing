@@ -17,6 +17,7 @@ impl GameServer {
             game,
             party_id,
             player_character_ids_option,
+            username,
             ..
         } = get_mut_game_data_from_actor_id(self, actor_id)?;
         let party = get_mut_party(game, party_id)?;
@@ -31,9 +32,10 @@ impl GameServer {
             None => None,
         };
 
-        let _ = game.assign_character_initial_targets_on_combat_action_selection(
+        let _ = game.assign_character_action_targets(
             packet.character_id,
             &player_character_ids_option,
+            &username,
             party_id,
             battle_id_option,
             &character_positions,

@@ -12,13 +12,10 @@ impl CombatActionProperties {
         ally_ids: &Vec<u32>,
         opponent_ids_option: &Option<Vec<u32>>,
     ) -> bool {
-        println!("targets for combat action: {:#?}", targets);
-        println!("opponent_ids_option: {:#?}", opponent_ids_option);
         match targets {
             CombatActionTarget::Single(id) => match self.valid_target_categories {
                 TargetCategories::Opponent => {
                     if let Some(opponent_ids) = opponent_ids_option {
-                        println!("opponent_ids: {:?}", opponent_ids);
                         opponent_ids.contains(id)
                     } else {
                         false

@@ -23,7 +23,7 @@ impl GameServer {
         let party = get_party(game, party_id)?;
         let character_positions = party.character_positions.clone();
         let battle_id_option = party.battle_id.clone();
-        let character = party.get_character_if_owned(player_character_ids_option, character_id)?;
+        let character = party.get_character_if_owned(&player_character_ids_option, character_id)?;
         let selected_combat_action = character
             .combatant_properties
             .selected_combat_action

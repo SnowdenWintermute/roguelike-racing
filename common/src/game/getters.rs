@@ -22,9 +22,9 @@ pub fn get_mut_player<'a>(
 
 pub fn get_player<'a>(
     game: &'a RoguelikeRacerGame,
-    username: String,
+    username: &String,
 ) -> Result<&'a RoguelikeRacerPlayer, AppError> {
-    let player = game.players.get(&username).ok_or_else(|| AppError {
+    let player = game.players.get(username).ok_or_else(|| AppError {
         error_type: AppErrorTypes::ServerError,
         message: error_messages::PLAYER_NOT_FOUND.to_string(),
     })?;

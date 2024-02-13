@@ -13,19 +13,16 @@ impl RoguelikeRacerGame {
         &mut self,
         username: &String,
         combat_action_properties: &CombatActionProperties,
-        character_id: u32,
         // ids should come filtered by prohibited combatant states and valid combat action categories
         ally_ids_option: &Option<Vec<u32>>,
         opponent_ids_option: &Option<Vec<u32>>,
     ) -> Result<CombatActionTarget, AppError> {
         let mut new_targets: Option<CombatActionTarget> = None;
-        let mut new_preferred_scheme: Option<TargetingScheme> = None;
-        let mut new_preferred_category: Option<TargetingScheme> = None;
 
         let player = get_mut_player(self, username)?;
-        let target_preferences = player.target_preferences;
-        let targeting_scheme_preference = target_preferences.targeting_scheme_preference;
-        let preferred_category_option = target_preferences.category;
+        let target_preferences = &player.target_preferences;
+        let targeting_scheme_preference = &target_preferences.targeting_scheme_preference;
+        let preferred_category_option = &target_preferences.category;
         let preferred_friendly_single_option = target_preferences.friendly_single;
         let preferred_hostile_single_option = target_preferences.hostile_single;
 
@@ -72,20 +69,20 @@ impl RoguelikeRacerGame {
                 TargetingScheme::Area => {
                     if let Some(category) = preferred_category_option {
                         // IF PREFERENCE EXISTS SELECT IT IF VALID
-                        let new_targets = get_group_targets_option(
+                        new_targets = get_group_targets_option(
                             ally_ids_option,
                             opponent_ids_option,
-                            category,
+                            &category,
                         );
                     }
                     // IF NO VALID PREFERRED AREA, GET ANY VALID AREA
                     if new_targets.is_none() {
                         for category in FriendOrFoe::iter().collect::<Vec<FriendOrFoe>>() {
                             if new_targets.is_none() {
-                                let new_targets = get_group_targets_option(
+                                new_targets = get_group_targets_option(
                                     ally_ids_option,
                                     opponent_ids_option,
-                                    category,
+                                    &category,
                                 );
                             }
                         }
@@ -127,10 +124,10 @@ impl RoguelikeRacerGame {
                             if new_targets.is_none() {
                                 for category in FriendOrFoe::iter().collect::<Vec<FriendOrFoe>>() {
                                     if new_targets.is_none() {
-                                        let new_targets = get_group_targets_option(
+                                        new_targets = get_group_targets_option(
                                             ally_ids_option,
                                             opponent_ids_option,
-                                            category,
+                                            &category,
                                         );
                                     }
                                 }
@@ -182,7 +179,7 @@ fn get_group_target_if_targets_exist(
 fn get_group_targets_option(
     ally_ids_option: &Option<Vec<u32>>,
     opponent_ids_option: &Option<Vec<u32>>,
-    category: FriendOrFoe,
+    category: &FriendOrFoe,
 ) -> Option<CombatActionTarget> {
     match category {
         FriendOrFoe::Friendly => {

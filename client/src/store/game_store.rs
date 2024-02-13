@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use crate::components::game::combat_log::combat_log_message::CombatLogMessage;
 use crate::components::mesh_manager::ActionResultsManager;
 use crate::components::mesh_manager::CombatantEventManager;

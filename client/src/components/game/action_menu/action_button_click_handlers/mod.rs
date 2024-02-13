@@ -96,7 +96,6 @@ pub fn create_action_button_click_handler<'a>(
         }),
         GameActions::DeselectCombatAction => Box::new(move || {
             let cloned_game_dispatch = game_dispatch.clone();
-            let cloned_websocket_state = websocket_state.clone();
             let cloned_alert_dispatch = alert_dispatch.clone();
             let cloned_lobby_state = lobby_state.clone();
             handle_select_combat_action(

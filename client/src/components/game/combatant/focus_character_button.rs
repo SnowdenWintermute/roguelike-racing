@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 use crate::components::alerts::set_alert;
 use crate::components::websocket_manager::send_client_input::send_client_input;
 use crate::store::alert_store::AlertStore;
@@ -8,12 +6,10 @@ use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
 use crate::store::websocket_store::WebsocketStore;
 use common::errors::AppError;
-use common::game::getters::get_mut_party;
-use common::game::getters::get_party;
 use common::game::getters::get_player;
 use common::packets::client_to_server::CharacterAndCombatAction;
 use common::packets::client_to_server::PlayerInputs;
-use gloo::console::log;
+use std::collections::HashSet;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
@@ -45,24 +41,20 @@ pub fn focus_character_button(props: &Props) -> Html {
     let handle_click = Callback::from(move |_| {
         let cloned_alert_dispatch = alert_dispatch.clone();
         let result = game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
-            let party_id = store.current_party_id.expect("to be in a party");
             let character_switching_focus_away_from_id = store.focused_character_id;
             store.selected_item = None;
             store.focused_character_id = id;
-            let username = &lobby_state.username;
             let game = store.get_current_game_mut()?;
             let username = lobby_state.username.clone();
-            let player = get_player(game, username.to_string())?;
+            let player = get_player(game, &username)?;
             let player_character_ids_option = player.character_ids.clone();
-            log!(format!("player ids: {:?}", &player.character_ids));
-            log!(format!("character id: {:?}", &id));
+
             if player_character_ids_option
                 .clone()
                 .unwrap_or_else(|| HashSet::new())
                 .get(&character_switching_focus_away_from_id)
                 .is_some()
             {
-                log!("changing focus and deselecting combat action");
                 send_client_input(
                     &websocket_state.websocket,
                     PlayerInputs::SelectCombatAction(CharacterAndCombatAction {

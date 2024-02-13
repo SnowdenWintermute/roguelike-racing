@@ -60,7 +60,7 @@ impl MenuTypes {
                             .collect::<Vec<(ConsumableTypes, Vec<u32>)>>();
                         consumables_as_vec.sort_by_key(|item| item.0);
 
-                        for (consumable_type, ids) in &consumables_as_vec {
+                        for (_, ids) in &consumables_as_vec {
                             menu_items.push(GameActions::SelectItem(ids[0], ids.len() as u16))
                         }
                         for id in &item_ids.1 {

@@ -3,6 +3,7 @@ use super::adventuring_party_update_handlers::handle_adventuring_party_created;
 use super::adventuring_party_update_handlers::handle_character_creation;
 use super::adventuring_party_update_handlers::handle_character_deletion;
 use super::adventuring_party_update_handlers::handle_player_changed_adventuring_party;
+use super::character_selected_combat_action_handler::character_selected_combat_action_handler;
 use super::dungeon_floor_number_changed_handler::dungeon_floor_number_changed_handler;
 use super::game_full_update_handler::game_full_update_handler;
 use super::handle_battle_victory_report::handle_battle_end_report;
@@ -14,7 +15,6 @@ use super::handle_raw_action_results::handle_raw_action_results;
 use super::in_game_party_update_handlers::character_cycled_targeting_schemes_handler;
 use super::in_game_party_update_handlers::character_cycled_targets_handler;
 use super::in_game_party_update_handlers::handle_battle_full_update;
-use super::in_game_party_update_handlers::handle_character_selected_combat_action;
 use super::in_game_party_update_handlers::handle_new_dungeon_room;
 use super::in_game_party_update_handlers::handle_player_toggled_ready_to_descend;
 use super::in_game_party_update_handlers::handle_player_toggled_ready_to_explore;
@@ -123,14 +123,13 @@ pub fn handle_packet(
             game_dispatch.reduce_mut(|store| handle_new_dungeon_room(store, new_room))
         }
         GameServerUpdatePackets::CharacterSelectedCombatAction(packet) => {
-            game_dispatch.reduce_mut(|store| handle_character_selected_combat_action(store, packet))
+            character_selected_combat_action_handler(game_dispatch, lobby_dispatch, packet)
         }
         GameServerUpdatePackets::CharacterCycledCombatActionTargets(packet) => {
-            game_dispatch.reduce_mut(|store| character_cycled_targets_handler(store, packet))
+            character_cycled_targets_handler(game_dispatch, lobby_dispatch, packet)
         }
         GameServerUpdatePackets::CharacterCycledCombatActionTargetingSchemes(character_id) => {
-            game_dispatch
-                .reduce_mut(|store| character_cycled_targeting_schemes_handler(store, character_id))
+            character_cycled_targeting_schemes_handler(game_dispatch, lobby_dispatch, character_id)
         }
         GameServerUpdatePackets::ActionResults(packet) => {
             handle_raw_action_results(game_dispatch, packet)

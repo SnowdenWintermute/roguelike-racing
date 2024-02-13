@@ -133,7 +133,7 @@ pub fn animation_causing_hp_change_finished_handler(
 
                     let game = store.get_current_game_mut()?;
                     let (_, combatant_properties) = game.get_mut_combatant_by_id(&target_id)?;
-                    let new_hp = combatant_properties.change_hp(value);
+                    let _ = combatant_properties.change_hp(value);
 
                     // target_event_manager
                     //     .floating_numbers_queue

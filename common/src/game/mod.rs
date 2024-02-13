@@ -1,11 +1,11 @@
 use self::getters::get_mut_party;
 use self::getters::get_mut_player;
-use self::player::RoguelikeRacerPlayer;
 use crate::adventuring_party::AdventuringParty;
 use crate::character::Character;
 use crate::combat::battle::Battle;
 use crate::errors::AppError;
 use crate::game::id_generator::IdGenerator;
+use crate::game::player::RoguelikeRacerPlayer;
 use crate::items::Item;
 use serde::Deserialize;
 use serde::Serialize;

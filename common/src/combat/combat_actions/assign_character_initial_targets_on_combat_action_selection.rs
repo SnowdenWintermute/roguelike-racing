@@ -2,17 +2,21 @@ use super::filter_possible_target_ids_by_prohibited_combatant_states::filter_pos
 use super::CombatActionProperties;
 use super::CombatActionTarget;
 use crate::app_consts::error_messages;
+use crate::combat::combat_actions::filter_possible_target_ids_by_action_target_categories::filter_possible_target_ids_by_action_target_categories;
 use crate::errors::AppError;
 use crate::errors::AppErrorTypes;
 use crate::game::getters::get_mut_party;
+use crate::game::getters::get_mut_player;
+use crate::game::getters::get_player;
 use crate::game::RoguelikeRacerGame;
 use std::collections::HashSet;
 
 impl RoguelikeRacerGame {
-    pub fn assign_character_initial_targets_on_combat_action_selection(
+    pub fn assign_character_action_targets(
         &mut self,
         character_id: u32,
         player_character_ids_option: &Option<HashSet<u32>>,
+        player_username: &String,
         party_id: u32,
         battle_id_option: Option<u32>,
         character_positions: &Vec<u32>,
@@ -42,19 +46,21 @@ impl RoguelikeRacerGame {
                     opponent_ids_option,
                 )?;
 
-            let party = get_mut_party(self, party_id)?;
-            let character = party
-                .get_mut_character_if_owned(player_character_ids_option.clone(), character_id)?;
+            let (ally_ids_option, opponent_ids_option) =
+                filter_possible_target_ids_by_action_target_categories(
+                    &combat_action_properties.valid_target_categories,
+                    character_id,
+                    ally_ids.clone(),
+                    opponent_ids_option.clone(),
+                );
 
-            let target_preferences = character
-                .combatant_properties
-                .combat_action_target_preferences
-                .clone();
+            let player = get_player(self, player_username)?;
+            let target_preferences = player.target_preferences.clone();
 
-            let new_targets = combat_action_properties.targets_by_saved_preference_or_default(
-                character.entity_properties.id,
-                &target_preferences,
-                &ally_ids,
+            let new_targets = self.get_action_targets_by_saved_preference_or_default(
+                player_username,
+                &combat_action_properties,
+                &ally_ids_option,
                 &opponent_ids_option,
             )?;
 
@@ -65,11 +71,13 @@ impl RoguelikeRacerGame {
                 opponent_ids_option,
             );
 
-            println!("new preferences: {:#?}", new_target_preferences);
-            character
-                .combatant_properties
-                .combat_action_target_preferences = new_target_preferences;
-            println!("new targets: {:#?}", new_targets);
+            let player = get_mut_player(self, player_username)?;
+            player.target_preferences = new_target_preferences;
+
+            let party = get_mut_party(self, party_id)?;
+            let character = party
+                .get_mut_character_if_owned(player_character_ids_option.clone(), character_id)?;
+
             character.combatant_properties.combat_action_targets = Some(new_targets.clone());
 
             Ok(Some(new_targets))

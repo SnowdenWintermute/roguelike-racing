@@ -17,6 +17,7 @@ impl GameServer {
             game,
             party_id,
             player_character_ids_option,
+            username,
             ..
         } = get_mut_game_data_from_actor_id(self, actor_id)?;
         let party = get_party(game, party_id)?;
@@ -25,6 +26,7 @@ impl GameServer {
         game.cycle_character_targets(
             party_id,
             player_character_ids_option,
+            &username,
             packet.character_id,
             &packet.direction,
         )?;

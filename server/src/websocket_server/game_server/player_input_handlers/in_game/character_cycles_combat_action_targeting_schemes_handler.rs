@@ -17,12 +17,18 @@ impl GameServer {
             game,
             party_id,
             player_character_ids_option,
+            username,
             ..
         } = get_mut_game_data_from_actor_id(self, actor_id)?;
         let party = get_party(game, party_id)?;
         let party_websocket_channel_name = party.websocket_channel_name.clone();
 
-        game.cycle_targeting_schemes(party_id, player_character_ids_option, character_id)?;
+        game.cycle_targeting_schemes(
+            party_id,
+            player_character_ids_option,
+            &username,
+            character_id,
+        )?;
 
         self.emit_packet(
             &party_websocket_channel_name,

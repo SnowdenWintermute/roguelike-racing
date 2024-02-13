@@ -48,7 +48,7 @@ pub const COMBATANT_NOT_FOUND: &str = "No combatant was found by the provided ID
 pub const ABILITY_NOT_OWNED: &str = "That character doesn't have that ability";
 pub const MISSING_ABILITY_REFERENCE: &str = "The character has no ability selected";
 pub const ABILITY_HAS_NO_TARGETING_SCHEME: &str = "The selected ability has no targeting scheme";
-pub const INSUFFICENT_MP: &str = "Not enough mana";
+pub const INSUFFICIENT_MP: &str = "Not enough mana";
 // COMBAT ACTIONS
 pub const NO_ACTION_SELECTED: &str = "No combat action is selected";
 pub const INVALID_ACTION_TYPE: &str = "Invalid action type";

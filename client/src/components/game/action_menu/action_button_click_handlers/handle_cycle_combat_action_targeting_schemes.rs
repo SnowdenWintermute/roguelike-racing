@@ -1,5 +1,4 @@
 use crate::components::websocket_manager::send_client_input::send_client_input;
-use crate::store::game_store::get_cloned_current_battle_option;
 use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
 use common::app_consts::error_messages;
@@ -17,7 +16,6 @@ pub fn handle_cycle_combat_action_targeting_schemes(
 ) -> Result<(), AppError> {
     game_dispatch.reduce_mut(|game_store| -> Result<(), AppError> {
         let character_id = game_store.focused_character_id;
-        let battle_option = get_cloned_current_battle_option(&game_store);
         let game = game_store.game.as_mut().ok_or_else(|| AppError {
             error_type: common::errors::AppErrorTypes::ClientError,
             message: error_messages::MISSING_GAME_REFERENCE.to_string(),
@@ -29,9 +27,14 @@ pub fn handle_cycle_combat_action_targeting_schemes(
 
         // CLIENT PREDICTION
         let username = &lobby_state.username;
-        let player = get_player(game, username.to_string())?;
+        let player = get_player(game, &username)?;
         let player_character_ids_option = player.character_ids.clone();
-        game.cycle_targeting_schemes(party_id, player_character_ids_option, character_id)?;
+        game.cycle_targeting_schemes(
+            party_id,
+            player_character_ids_option,
+            &username,
+            character_id,
+        )?;
 
         send_client_input(
             websocket_option,

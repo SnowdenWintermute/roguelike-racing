@@ -3,7 +3,7 @@ use crate::websocket_server::game_server::getters::get_mut_user;
 use crate::websocket_server::game_server::GameServer;
 use common::app_consts::error_messages;
 use common::errors::AppError;
-use common::game::RoguelikeRacerPlayer;
+use common::game::player::RoguelikeRacerPlayer;
 use common::packets::server_to_client::GameServerUpdatePackets;
 use common::packets::WebsocketChannelNamespace;
 

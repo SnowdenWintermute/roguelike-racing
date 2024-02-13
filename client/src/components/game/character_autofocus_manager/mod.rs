@@ -66,7 +66,7 @@ pub fn character_autofocus_manager() -> Html {
                 {
                     let username = &lobby_state.username;
                     let game = game_state.get_current_game()?;
-                    let player = get_player(game, username.to_string())?;
+                    let player = get_player(game, &username)?;
                     for character_id in character_positions {
                         let player_owned_ids =
                             player.character_ids.clone().ok_or_else(|| AppError {

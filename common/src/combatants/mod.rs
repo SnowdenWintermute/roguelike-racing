@@ -13,8 +13,6 @@ mod get_weapon_damage_and_hit_chance;
 pub mod inventory;
 mod unequip_item;
 use crate::combat::combat_actions::CombatActionTarget;
-use crate::combat::combat_actions::FriendOrFoe;
-use crate::combat::combat_actions::TargetingScheme;
 use crate::combat::magical_elements::MagicalElements;
 use crate::items::equipment::unarmed::FIST;
 use crate::items::equipment::EquipmentProperties;
@@ -164,8 +162,7 @@ impl CombatantProperties {
         let ability_attributes = ability_name.get_attributes();
         let base_mp_cost = ability_attributes.mana_cost;
         let mana_cost_level_multiplier = ability_attributes.mana_cost_level_multiplier;
-        let level_adjusted_mp_cost =
-            base_mp_cost + ability.level * (base_mp_cost * mana_cost_level_multiplier);
+        let level_adjusted_mp_cost = ability.level * (base_mp_cost * mana_cost_level_multiplier);
         Ok(level_adjusted_mp_cost)
     }
 

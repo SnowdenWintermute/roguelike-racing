@@ -1,10 +1,6 @@
-use std::collections::HashSet;
-use std::rc::Rc;
-
 use crate::components::alerts::set_alert;
 use crate::components::websocket_manager::send_client_input::send_client_input;
 use crate::store::alert_store::AlertStore;
-use crate::store::game_store::get_cloned_current_battle_option;
 use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
 use common::app_consts::error_messages;
@@ -14,6 +10,7 @@ use common::game::getters::get_mut_party;
 use common::game::getters::get_player;
 use common::packets::client_to_server::CharacterAndCombatAction;
 use common::packets::client_to_server::PlayerInputs;
+use std::rc::Rc;
 use web_sys::WebSocket;
 use yewdux::prelude::Dispatch;
 
@@ -25,7 +22,6 @@ pub fn handle_select_combat_action(
     combat_action_option: Option<CombatAction>,
 ) {
     let result = game_dispatch.reduce_mut(|game_store| -> Result<(), AppError> {
-        let battle_option = get_cloned_current_battle_option(&game_store);
         let game = game_store.game.as_mut().ok_or_else(|| AppError {
             error_type: common::errors::AppErrorTypes::ClientError,
             message: error_messages::MISSING_GAME_REFERENCE.to_string(),
@@ -52,12 +48,13 @@ pub fn handle_select_combat_action(
         };
 
         let username = &lobby_state.username;
-        let player = get_player(game, username.to_string())?;
+        let player = get_player(game, &username)?;
         let player_character_ids_option = player.character_ids.clone();
 
-        let _ = game.assign_character_initial_targets_on_combat_action_selection(
+        let _ = game.assign_character_action_targets(
             character_id,
             &player_character_ids_option,
+            &username,
             party_id,
             battle_id_option,
             &character_positions,

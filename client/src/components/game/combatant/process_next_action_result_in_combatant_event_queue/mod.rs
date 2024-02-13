@@ -13,6 +13,7 @@ use common::combat::combat_actions::CombatAction;
 use common::combat::ActionResult;
 use common::combatants::abilities::CombatantAbilityNames;
 use common::errors::AppError;
+use gloo::console::log;
 use yewdux::Dispatch;
 
 pub fn process_next_action_result_in_combatant_event_queue(
@@ -21,6 +22,7 @@ pub fn process_next_action_result_in_combatant_event_queue(
     combatant_id: u32,
 ) -> Result<(), AppError> {
     if let Some(new_action_result) = &current_action_processing {
+        log!("processing next action result");
         game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
             let event_manager = store
                 .action_results_manager

@@ -3,7 +3,6 @@ use crate::components::mesh_manager::HpChange;
 use crate::components::mesh_manager::HpChangeResult;
 use crate::components::mesh_manager::TargetAndHpChangeResults;
 use crate::store::game_store::GameStore;
-use common::app_consts::error_messages;
 use common::combat::combat_actions::filter_possible_target_ids_by_prohibited_combatant_states::filter_possible_target_ids_by_prohibited_combatant_states;
 use common::combat::ActionResult;
 use common::errors::AppError;
@@ -20,21 +19,20 @@ pub fn queue_fire_animations(
     game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
         let game = store.get_current_game()?;
         let party = store.get_current_party()?;
+        let character_positions = party.character_positions.clone();
         let battle_id_option = party.battle_id;
-        let current_battle_id = battle_id_option.ok_or_else(|| AppError {
-            error_type: common::errors::AppErrorTypes::ClientError,
-            message: error_messages::MISSING_BATTLE_REFERENCE.to_string(),
-        })?;
-        let battle = game
-            .battles
-            .get(&current_battle_id)
-            .ok_or_else(|| AppError {
-                error_type: common::errors::AppErrorTypes::ClientError,
-                message: error_messages::BATTLE_NOT_FOUND.to_string(),
-            })?;
-        let (ally_ids, opponent_ids_option) = battle
-            .get_ally_ids_and_opponent_ids_option(action_result.user_id)?
-            .clone();
+        let battle_option = if let Some(battle_id) = battle_id_option {
+            game.battles.get(&battle_id)
+        } else {
+            None
+        };
+        let (ally_ids, opponent_ids_option) = if let Some(battle) = battle_option {
+            battle
+                .get_ally_ids_and_opponent_ids_option(action_result.user_id)?
+                .clone()
+        } else {
+            (character_positions, None)
+        };
         let combat_action_properties = action_result
             .action
             .get_properties_if_owned(game, combatant_id)?;

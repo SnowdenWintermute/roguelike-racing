@@ -1,4 +1,5 @@
 use super::build_action_button_properties::ActionMenuButtonProperties;
+use gloo::console::log;
 use gloo::events::EventListener;
 use gloo_utils::window;
 use wasm_bindgen::JsCast;
@@ -6,19 +7,43 @@ use wasm_bindgen::UnwrapThrowExt;
 use web_sys::MouseEvent;
 use yew::UseStateHandle;
 
+#[derive(Debug, Clone, PartialEq)]
+pub enum GameKeys {
+    Cancel,
+    Confirm,
+    Next,
+    Previous,
+}
+
 pub fn set_keyup_listeners(
     button_properties_state: UseStateHandle<Vec<ActionMenuButtonProperties>>,
     keyup_listener_state: UseStateHandle<Option<EventListener>>,
 ) {
-    let listener = EventListener::new(&window(), "keypress", move |event| {
+    let listener = EventListener::new(&window(), "keyup", move |event| {
         let event = event.dyn_ref::<web_sys::KeyboardEvent>().unwrap_throw();
-        for (i, properties) in button_properties_state.iter().enumerate() {
+        let mut next_number_to_assign = 1;
+        let key_pressed = event.code();
+        log!(format!("key pressed: {key_pressed}"));
+
+        for (_, properties) in button_properties_state.iter().enumerate() {
             if properties.should_be_disabled {
                 continue;
             }
-            let key = (i + 1).to_string();
-            let event_key_as_number = shifted_number_key_to_number_key(event.key());
-            if event_key_as_number == key {
+
+            let assigned_keys =
+                if let Some(dedicated_key_for_action) = &properties.dedicated_key_option {
+                    match dedicated_key_for_action {
+                        GameKeys::Cancel => vec!["Escape".to_string()],
+                        GameKeys::Confirm => vec!["KeyR".to_string(), "Enter".to_string()],
+                        GameKeys::Next => vec!["KeyE".to_string()],
+                        GameKeys::Previous => vec!["KeyW".to_string()],
+                    }
+                } else {
+                    let number_to_assign_as_string = next_number_to_assign.to_string();
+                    next_number_to_assign += 1;
+                    vec![format!("Digit{number_to_assign_as_string}")]
+                };
+            if assigned_keys.contains(&key_pressed) {
                 properties
                     .click_handler
                     .emit(MouseEvent::new("mouseup").unwrap_throw());
@@ -26,18 +51,4 @@ pub fn set_keyup_listeners(
         }
     });
     keyup_listener_state.set(Some(listener));
-}
-
-fn shifted_number_key_to_number_key(key: String) -> String {
-    let key_str = key.as_str();
-    let key_as_number = match key_str {
-        "!" => "1",
-        "@" => "2",
-        "#" => "3",
-        "$" => "4",
-        "%" => "5",
-        "^" => "6",
-        _ => key.as_str(),
-    };
-    key_as_number.to_string()
 }

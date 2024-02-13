@@ -2,6 +2,7 @@ use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::errors::AppError;
 use common::packets::server_to_client::ActionResultsPacket;
+use gloo::console::log;
 use yewdux::Dispatch;
 
 pub fn handle_raw_action_results(
@@ -9,6 +10,7 @@ pub fn handle_raw_action_results(
     packet: ActionResultsPacket,
 ) -> Result<(), AppError> {
     game_dispatch.reduce_mut(|store| {
+        log!("got raw action results");
         for action_result in packet.action_results {
             store
                 .action_results_manager

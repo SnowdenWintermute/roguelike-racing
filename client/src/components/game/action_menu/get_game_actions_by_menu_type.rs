@@ -13,13 +13,14 @@ impl MenuTypes {
         item_ids: Option<(HashMap<ConsumableTypes, Vec<u32>>, Vec<u32>)>,
         abilities: Option<Vec<CombatantAbilityNames>>,
         selected_combat_action_properties_option: Option<CombatActionProperties>,
+        inventory_is_open: bool,
     ) -> Vec<GameActions> {
         let mut menu_items: Vec<GameActions> = Vec::new();
 
         for menu_type in menu_types {
             match menu_type {
                 MenuTypes::OutOfCombat => {
-                    menu_items.push(GameActions::ToggleInventoryOpen);
+                    menu_items.push(GameActions::SetInventoryOpen(!inventory_is_open));
                     menu_items.push(GameActions::ToggleReadyToExplore);
                     add_abilities_to_menu(&abilities, &mut menu_items);
                     menu_items.push(GameActions::SetAssignAttributePointsMenuOpen(true))
@@ -28,7 +29,7 @@ impl MenuTypes {
                 MenuTypes::ItemsOnGround => menu_items.push(GameActions::TakeItem),
                 MenuTypes::InCombat => {
                     add_abilities_to_menu(&abilities, &mut menu_items);
-                    menu_items.push(GameActions::ToggleInventoryOpen);
+                    menu_items.push(GameActions::SetInventoryOpen(!inventory_is_open));
                 }
                 MenuTypes::CombatActionSelected => {
                     menu_items.push(GameActions::DeselectCombatAction);
@@ -49,7 +50,7 @@ impl MenuTypes {
                     add_abilities_to_menu(&abilities, &mut menu_items);
                 }
                 MenuTypes::InventoryOpen => {
-                    menu_items.push(GameActions::ToggleInventoryOpen);
+                    menu_items.push(GameActions::SetInventoryOpen(!inventory_is_open));
                     menu_items.push(GameActions::ToggleViewingEquipedItems);
                     if let Some(item_ids) = &item_ids {
                         let mut consumables_as_vec = item_ids
@@ -69,7 +70,7 @@ impl MenuTypes {
                     }
                 }
                 MenuTypes::ViewingEquipedItems => {
-                    menu_items.push(GameActions::ToggleInventoryOpen);
+                    menu_items.push(GameActions::SetInventoryOpen(!inventory_is_open));
                     menu_items.push(GameActions::ToggleViewingEquipedItems);
                     if let Some(item_ids) = &item_ids {
                         for id in &item_ids.1 {

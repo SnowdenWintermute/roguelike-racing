@@ -22,13 +22,6 @@ pub fn determine_action_button_text(action: GameActions, game_state: Rc<GameStor
                 "Close inventory".to_string()
             }
         }
-        GameActions::ToggleInventoryOpen => {
-            if game_state.viewing_inventory {
-                "Close Inventory".to_string()
-            } else {
-                "Open Inventory".to_string()
-            }
-        }
         GameActions::ToggleViewingEquipedItems => {
             if game_state.viewing_equipped_items {
                 "View Unequipped Items".to_string()

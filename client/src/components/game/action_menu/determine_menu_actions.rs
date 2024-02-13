@@ -20,6 +20,7 @@ pub fn determine_menu_actions(
     let mut menu_types: Vec<MenuTypes> = Vec::new();
     let mut new_actions: Vec<GameActions> = Vec::new();
 
+    let inventory_is_open = game_state.viewing_inventory;
     let focused_character_option = party.characters.get(&game_state.focused_character_id);
     let player_owns_character =
         party.player_owns_character(&lobby_state.username, game_state.focused_character_id);
@@ -49,16 +50,21 @@ pub fn determine_menu_actions(
     {
         if player_owns_character {
             menu_types.push(MenuTypes::CombatActionSelected);
-            new_actions =
-                MenuTypes::get_actions(&menu_types, None, None, Some(combat_action_properties));
+            new_actions = MenuTypes::get_actions(
+                &menu_types,
+                None,
+                None,
+                Some(combat_action_properties),
+                inventory_is_open,
+            );
         }
     } else if game_state.viewing_items_on_ground {
         menu_types.push(MenuTypes::ItemsOnGround);
-        new_actions = MenuTypes::get_actions(&menu_types, None, None, None);
+        new_actions = MenuTypes::get_actions(&menu_types, None, None, None, inventory_is_open);
     } else if let Some(selected_item) = &game_state.selected_item {
         let id = selected_item.clone().entity_properties.id;
         menu_types.push(MenuTypes::ItemSelected(id));
-        new_actions = MenuTypes::get_actions(&menu_types, None, None, None);
+        new_actions = MenuTypes::get_actions(&menu_types, None, None, None, inventory_is_open);
     } else if game_state.viewing_equipped_items {
         menu_types.push(MenuTypes::ViewingEquipedItems);
         let focused_character = party.characters.get(&game_state.focused_character_id);
@@ -67,8 +73,13 @@ pub fn determine_menu_actions(
             for (_slot, item) in &character.combatant_properties.equipment {
                 ids.push(item.entity_properties.id);
             }
-            new_actions =
-                MenuTypes::get_actions(&menu_types, Some((HashMap::new(), ids)), None, None)
+            new_actions = MenuTypes::get_actions(
+                &menu_types,
+                Some((HashMap::new(), ids)),
+                None,
+                None,
+                inventory_is_open,
+            )
         }
     } else if game_state.viewing_inventory {
         menu_types.push(MenuTypes::InventoryOpen);
@@ -91,6 +102,7 @@ pub fn determine_menu_actions(
                 Some((consumables_by_type, equipment_ids)),
                 None,
                 None,
+                inventory_is_open,
             );
         }
         //
@@ -101,7 +113,13 @@ pub fn determine_menu_actions(
         let mut ability_names =
             get_ability_menu_names(&party, game_state.focused_character_id, None);
         ability_names.sort_by(|a, b| a.partial_cmp(&b).unwrap());
-        new_actions = MenuTypes::get_actions(&menu_types, None, Some(ability_names), None);
+        new_actions = MenuTypes::get_actions(
+            &menu_types,
+            None,
+            Some(ability_names),
+            None,
+            inventory_is_open,
+        );
         //
     } else if party.battle_id.is_none() {
         menu_types.push(MenuTypes::OutOfCombat);
@@ -120,7 +138,13 @@ pub fn determine_menu_actions(
         if party.current_room.room_type == DungeonRoomTypes::Stairs {
             menu_types.push(MenuTypes::Staircase)
         }
-        new_actions = MenuTypes::get_actions(&menu_types, None, Some(ability_names), None);
+        new_actions = MenuTypes::get_actions(
+            &menu_types,
+            None,
+            Some(ability_names),
+            None,
+            inventory_is_open,
+        );
     } else {
         menu_types.push(MenuTypes::InCombat);
         let mut ability_names = get_ability_menu_names(
@@ -129,7 +153,13 @@ pub fn determine_menu_actions(
             Some(AbilityUsableContext::OutOfCombat),
         );
         ability_names.sort_by(|a, b| a.partial_cmp(&b).unwrap());
-        new_actions = MenuTypes::get_actions(&menu_types, None, Some(ability_names), None);
+        new_actions = MenuTypes::get_actions(
+            &menu_types,
+            None,
+            Some(ability_names),
+            None,
+            inventory_is_open,
+        );
     }
     new_actions
 }

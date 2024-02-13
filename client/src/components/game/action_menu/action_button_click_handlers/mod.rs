@@ -43,11 +43,6 @@ pub fn create_action_button_click_handler<'a>(
         }),
         GameActions::SetInventoryOpen(status) => Box::new(move || {
             game_dispatch.reduce_mut(|game_state| game_state.viewing_inventory = status.clone());
-        }),
-        GameActions::ToggleInventoryOpen => Box::new(move || {
-            game_dispatch.reduce_mut(|game_state| {
-                game_state.viewing_inventory = !game_state.viewing_inventory
-            });
             game_dispatch.reduce_mut(|game_state| game_state.viewing_equipped_items = false);
         }),
         GameActions::ToggleViewingEquipedItems => Box::new(move || {

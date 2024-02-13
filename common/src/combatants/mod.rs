@@ -56,27 +56,6 @@ impl fmt::Display for CombatantClass {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub struct CombatActionTargetPreferences {
-    pub friendly_single: Option<u32>,
-    pub hostile_single: Option<u32>,
-    pub category_of_last_target: Option<FriendOrFoe>,
-    pub category_of_last_area: Option<FriendOrFoe>,
-    pub targeting_scheme_preference: TargetingScheme,
-}
-
-impl Default for CombatActionTargetPreferences {
-    fn default() -> Self {
-        CombatActionTargetPreferences {
-            friendly_single: None,
-            hostile_single: None,
-            category_of_last_target: None,
-            category_of_last_area: None,
-            targeting_scheme_preference: TargetingScheme::Single,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum CombatantControlledBy {
     AI,
     Player(String),
@@ -96,7 +75,6 @@ pub struct CombatantProperties {
     pub inherent_elemental_affinities: HashMap<MagicalElements, i16>,
     pub selected_combat_action: Option<CombatAction>,
     pub combat_action_targets: Option<CombatActionTarget>,
-    pub combat_action_target_preferences: CombatActionTargetPreferences,
     pub controlled_by: CombatantControlledBy,
 }
 
@@ -119,7 +97,6 @@ impl CombatantProperties {
             inherent_elemental_affinities: HashMap::new(),
             selected_combat_action: None,
             combat_action_targets: None,
-            combat_action_target_preferences: CombatActionTargetPreferences::default(),
             controlled_by,
         }
     }

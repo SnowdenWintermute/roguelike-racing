@@ -16,6 +16,7 @@ impl RoguelikeRacerGame {
         target_entity_ids: Vec<u32>,
         rolled_hp_change_split_by_num_targets: f32,
     ) -> Result<(), AppError> {
+        println!("calculating healing");
         let user_focus_attribute = user_combat_attributes
             .get(&CombatAttributes::Focus)
             .unwrap_or_else(|| &0);

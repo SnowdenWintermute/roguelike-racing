@@ -1,6 +1,7 @@
 pub mod assign_character_initial_targets_on_combat_action_selection;
 pub mod cycle_targeting_schemes;
 pub mod cycle_targets;
+pub mod filter_possible_target_ids_by_action_target_categories;
 pub mod filter_possible_target_ids_by_prohibited_combatant_states;
 pub mod get_default_targets;
 pub mod get_next_or_previous_targets;
@@ -19,8 +20,9 @@ use crate::primatives::WeaponSlot;
 use serde::Deserialize;
 use serde::Serialize;
 use std::fmt::Display;
+use strum_macros::EnumIter;
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, EnumIter)]
 pub enum FriendOrFoe {
     Friendly,
     Hostile,

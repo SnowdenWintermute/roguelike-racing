@@ -7,6 +7,54 @@ use crate::app_consts::error_messages;
 use crate::combatants::CombatActionTargetPreferences;
 use crate::errors::AppError;
 
+// PREFS
+// pub friendly_single: Option<u32>,
+// pub hostile_single: Option<u32>,
+// pub category_of_last_target: Option<FriendOrFoe>,
+// pub category_of_last_area: Option<FriendOrFoe>,
+// pub targeting_scheme_preference: TargetingScheme,
+
+// CATEGORIES
+// Friendly,
+// Hostile,
+
+// SCHEMES
+// Single,
+// Area,
+// All,
+
+// TARGETS
+// Single(u32),
+// Group(FriendOrFoe),
+// All,
+
+// ON SELECT ABILITY
+// IF SchemePreference available on SelectedAbility
+//  - IF Scheme == Single
+//    - if single target preference in that category is valid, select them
+//    - ELSE check for other valid Single ids in the preferred Category and
+//  select the first
+//  - ELSE if valid targets exist for Scheme in preferred category, select them
+//  - ELSE IF ability allows another category
+//  FOR EACH other Category
+//  - IF Scheme == Single
+//    - if single target preference in that category is valid, select them
+//    - ELSE check for other valid Single ids in the preferred Category and
+//  select the first
+//  - ELSE if valid targets exist for Scheme in this category, select them
+
+//  ELSE IF another scheme is available on the SelectedAbility
+//  - IF Scheme == Single
+//    - if single target preference in that category is valid, select them
+//    - ELSE check for other valid Single ids in the preferred Category and
+//  select the first
+//   - ELSE IF valid targets exist for that scheme in the preferred category, select them
+//   - ELSE IF another category exists
+//      - IF Scheme == Single
+//        - IF single target preference in that category is valid, select them
+//        - ELSE check for other valid Single ids in the preferred Category and
+//   - ELSE if valid targets exist in that category, select them
+
 impl CombatActionProperties {
     pub fn targets_by_saved_preference_or_default(
         &self,

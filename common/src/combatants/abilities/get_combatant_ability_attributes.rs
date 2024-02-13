@@ -1,4 +1,5 @@
 use super::CombatantAbilityNames;
+use crate::combat::combat_actions::AbilityUsableContext;
 use crate::combat::combat_actions::CombatActionHpChangeProperties;
 use crate::combat::combat_actions::CombatActionProperties;
 use crate::combat::combat_actions::ProhibitedTargetCombatantStates;
@@ -108,6 +109,7 @@ impl CombatantAbilityNames {
                     prohibited_target_combatant_states: Some(vec![
                         ProhibitedTargetCombatantStates::Dead,
                     ]),
+                    usability_context: AbilityUsableContext::All,
                     ..Default::default()
                 },
                 ..Default::default()

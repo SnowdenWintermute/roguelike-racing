@@ -32,7 +32,7 @@ impl GameServer {
             None => None,
         };
 
-        let _ = game.assign_character_action_targets(
+        game.assign_character_action_targets(
             packet.character_id,
             &player_character_ids_option,
             &username,

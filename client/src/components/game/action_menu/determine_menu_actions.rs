@@ -45,10 +45,11 @@ pub fn determine_menu_actions(
         None => None,
     };
 
-    if let Some(combat_action_properties) =
-        focused_character_selected_combat_action_properties_option
+    if focused_character_selected_combat_action_properties_option.is_some() && player_owns_character
     {
-        if player_owns_character {
+        if let Some(combat_action_properties) =
+            focused_character_selected_combat_action_properties_option
+        {
             menu_types.push(MenuTypes::CombatActionSelected);
             new_actions = MenuTypes::get_actions(
                 &menu_types,

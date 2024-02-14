@@ -12,7 +12,7 @@ impl CombatActionProperties {
         current_targets: &CombatActionTarget,
         direction: &NextOrPrevious,
         ability_user_id: &u32,
-        ally_ids: &Vec<u32>,
+        ally_ids_option: &Option<Vec<u32>>,
         opponent_ids_option: &Option<Vec<u32>>,
     ) -> Result<CombatActionTarget, AppError> {
         match current_targets {
@@ -32,6 +32,10 @@ impl CombatActionProperties {
                 }
                 TargetCategories::User => Ok(CombatActionTarget::Single(*ability_user_id)),
                 TargetCategories::Friendly => {
+                    let ally_ids = ally_ids_option.as_ref().ok_or_else(|| AppError {
+                        error_type: crate::errors::AppErrorTypes::Generic,
+                        message: error_messages::ALLY_COMBATANTS_NOT_FOUND.to_string(),
+                    })?;
                     let new_target_id =
                         get_next_or_prev_id_from_ordered_id_list(&ally_ids, *id, &direction)?;
                     Ok(CombatActionTarget::Single(new_target_id))
@@ -41,6 +45,10 @@ impl CombatActionProperties {
                     if let Some(opponent_ids) = opponent_ids_option {
                         possible_target_ids.extend(opponent_ids);
                     }
+                    let ally_ids = ally_ids_option.as_ref().ok_or_else(|| AppError {
+                        error_type: crate::errors::AppErrorTypes::Generic,
+                        message: error_messages::ALLY_COMBATANTS_NOT_FOUND.to_string(),
+                    })?;
                     possible_target_ids.extend(ally_ids.clone());
                     let new_target_id = get_next_or_prev_id_from_ordered_id_list(
                         &possible_target_ids,

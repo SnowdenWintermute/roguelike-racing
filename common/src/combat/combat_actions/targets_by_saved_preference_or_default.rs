@@ -18,6 +18,7 @@ impl RoguelikeRacerGame {
         opponent_ids_option: &Option<Vec<u32>>,
     ) -> Result<CombatActionTarget, AppError> {
         let mut new_targets: Option<CombatActionTarget> = None;
+        println!("getting targets by username: {username}");
 
         let player = get_mut_player(self, username)?;
         let target_preferences = &player.target_preferences;

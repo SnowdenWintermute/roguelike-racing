@@ -10,6 +10,7 @@ use common::game::getters::get_mut_party;
 use common::game::getters::get_player;
 use common::packets::client_to_server::CharacterAndCombatAction;
 use common::packets::client_to_server::PlayerInputs;
+use gloo::console::log;
 use std::rc::Rc;
 use web_sys::WebSocket;
 use yewdux::prelude::Dispatch;
@@ -48,6 +49,7 @@ pub fn handle_select_combat_action(
         };
 
         let username = &lobby_state.username;
+        log!(format!("selecting ability - player username :{username}"));
         let player = get_player(game, &username)?;
         let player_character_ids_option = player.character_ids.clone();
 

@@ -1,11 +1,11 @@
 use crate::components::mesh_manager::CombatantEventManager;
 use crate::store::game_store::GameStore;
-use crate::store::lobby_store::LobbyStore;
 use common::app_consts::error_messages;
 use common::combat::battle::Battle;
 use common::dungeon_rooms::DungeonRoom;
 use common::dungeon_rooms::DungeonRoomTypes;
 use common::errors::AppError;
+use common::game::getters::get_character;
 use common::game::getters::get_mut_party;
 use common::packets::CharacterAndDirection;
 use common::packets::CharacterId;
@@ -123,13 +123,14 @@ pub fn handle_battle_full_update(
 
 pub fn character_cycled_targets_handler(
     game_dispatch: Dispatch<GameStore>,
-    lobby_dispatch: Dispatch<LobbyStore>,
     packet: CharacterAndDirection,
 ) -> Result<(), AppError> {
-    let username = lobby_dispatch.reduce_mut(|store| store.username.clone());
     game_dispatch.reduce_mut(|game_store| -> Result<(), AppError> {
         let party = game_store.get_current_party()?;
         let party_id = party.id;
+        let game = game_store.get_current_game()?;
+        let character = get_character(game, party_id, packet.character_id)?;
+        let username = character.name_of_controlling_user.clone();
         let game = game_store.get_current_game_mut()?;
         game.cycle_character_targets(
             party_id,
@@ -145,13 +146,14 @@ pub fn character_cycled_targets_handler(
 
 pub fn character_cycled_targeting_schemes_handler(
     game_dispatch: Dispatch<GameStore>,
-    lobby_dispatch: Dispatch<LobbyStore>,
     character_id: CharacterId,
 ) -> Result<(), AppError> {
-    let username = lobby_dispatch.reduce_mut(|store| store.username.clone());
     game_dispatch.reduce_mut(|game_store| -> Result<(), AppError> {
         let party = game_store.get_current_party()?;
         let party_id = party.id;
+        let game = game_store.get_current_game()?;
+        let character = get_character(game, party_id, character_id)?;
+        let username = character.name_of_controlling_user.clone();
         let game = game_store.get_current_game_mut()?;
         game.cycle_targeting_schemes(
             party_id,

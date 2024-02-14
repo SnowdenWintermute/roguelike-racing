@@ -35,8 +35,8 @@ pub fn set_keyup_listeners(
                     match dedicated_key_for_action {
                         GameKeys::Cancel => vec!["Escape".to_string()],
                         GameKeys::Confirm => vec!["KeyR".to_string(), "Enter".to_string()],
-                        GameKeys::Next => vec!["KeyE".to_string()],
-                        GameKeys::Previous => vec!["KeyW".to_string()],
+                        GameKeys::Next => vec!["KeyE".to_string(), "ArrowRight".to_string()],
+                        GameKeys::Previous => vec!["KeyW".to_string(), "ArrowLeft".to_string()],
                     }
                 } else {
                     let number_to_assign_as_string = next_number_to_assign.to_string();

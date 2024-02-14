@@ -1,5 +1,6 @@
 use super::filter_possible_target_ids_by_prohibited_combatant_states::filter_possible_target_ids_by_prohibited_combatant_states;
 use crate::app_consts::error_messages;
+use crate::combat::combat_actions::filter_possible_target_ids_by_action_target_categories::filter_possible_target_ids_by_action_target_categories;
 use crate::errors::AppError;
 use crate::errors::AppErrorTypes;
 use crate::game::getters::get_ally_ids_and_opponent_ids_option;
@@ -66,15 +67,24 @@ impl RoguelikeRacerGame {
                 opponent_ids_option,
             )?;
 
+        let (ally_ids_option, opponent_ids_option) =
+            filter_possible_target_ids_by_action_target_categories(
+                &combat_action_properties.valid_target_categories,
+                character_id,
+                ally_ids.clone(),
+                opponent_ids_option,
+            );
+
         let new_targets = combat_action_properties.get_next_or_previous_targets(
             &current_targets,
             direction,
             &character_id,
-            &ally_ids,
+            &ally_ids_option,
             &opponent_ids_option,
         )?;
 
         let player = get_mut_player(self, player_username)?;
+        println!("cycle targets player: {:#?}", player);
 
         player.target_preferences = player.target_preferences.get_updated_preferences(
             &combat_action_properties,

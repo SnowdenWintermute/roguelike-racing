@@ -1,6 +1,6 @@
 use crate::store::game_store::GameStore;
-use crate::store::lobby_store::LobbyStore;
 use common::errors::AppError;
+use common::game::getters::get_character;
 use common::game::getters::get_mut_party;
 use common::packets::client_to_server::CharacterAndCombatAction;
 use std::collections::HashSet;
@@ -8,11 +8,8 @@ use yewdux::Dispatch;
 
 pub fn character_selected_combat_action_handler(
     game_dispatch: Dispatch<GameStore>,
-    lobby_dispatch: Dispatch<LobbyStore>,
     packet: CharacterAndCombatAction,
 ) -> Result<(), AppError> {
-    let username = lobby_dispatch.reduce_mut(|store| store.username.clone());
-
     game_dispatch.reduce_mut(|game_store| -> Result<(), AppError> {
         let CharacterAndCombatAction {
             character_id,
@@ -21,6 +18,8 @@ pub fn character_selected_combat_action_handler(
         let party = game_store.get_current_party()?;
         let party_id = party.id;
         let game = game_store.get_current_game()?;
+        let character = get_character(game, party_id, character_id)?;
+        let username = character.name_of_controlling_user.clone();
         let battle_id_option = party.battle_id;
         let character_positions = party.character_positions.clone();
         let player_character_ids_option = &Some(HashSet::from([character_id])); // trust the server is sending valid packets

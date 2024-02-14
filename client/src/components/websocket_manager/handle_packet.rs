@@ -123,13 +123,13 @@ pub fn handle_packet(
             game_dispatch.reduce_mut(|store| handle_new_dungeon_room(store, new_room))
         }
         GameServerUpdatePackets::CharacterSelectedCombatAction(packet) => {
-            character_selected_combat_action_handler(game_dispatch, lobby_dispatch, packet)
+            character_selected_combat_action_handler(game_dispatch, packet)
         }
         GameServerUpdatePackets::CharacterCycledCombatActionTargets(packet) => {
-            character_cycled_targets_handler(game_dispatch, lobby_dispatch, packet)
+            character_cycled_targets_handler(game_dispatch, packet)
         }
         GameServerUpdatePackets::CharacterCycledCombatActionTargetingSchemes(character_id) => {
-            character_cycled_targeting_schemes_handler(game_dispatch, lobby_dispatch, character_id)
+            character_cycled_targeting_schemes_handler(game_dispatch, character_id)
         }
         GameServerUpdatePackets::ActionResults(packet) => {
             handle_raw_action_results(game_dispatch, packet)

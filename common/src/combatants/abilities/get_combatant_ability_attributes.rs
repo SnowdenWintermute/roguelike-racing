@@ -70,7 +70,7 @@ impl CombatantAbilityNames {
                         source_properties: HpChangeSource::new(
                             HpChangeSourceCategories::MagicalDamage(Evadable::new(false)),
                             None,
-                            Some(MagicalElements::Ice),
+                            Some(MagicalElements::Fire),
                         ),
                         add_weapon_damage_from: None,
                         crit_chance_attribute: Some(CombatAttributes::Focus),

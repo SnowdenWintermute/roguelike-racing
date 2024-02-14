@@ -27,12 +27,11 @@ pub fn set_keyup_listeners(
         let key_pressed = event.code();
         log!(format!("keypress code: {key_pressed}"));
         for (_, properties) in cloned_button_properties_state.iter().enumerate() {
-            if properties.should_be_disabled {
-                continue;
-            }
-
             let assigned_keys =
                 if let Some(dedicated_key_for_action) = &properties.dedicated_key_option {
+                    if properties.should_be_disabled {
+                        continue;
+                    }
                     match dedicated_key_for_action {
                         GameKeys::Cancel => vec![], // escape key must be set as a keyup, not
                         // keypress
@@ -41,6 +40,10 @@ pub fn set_keyup_listeners(
                         GameKeys::Previous => vec!["KeyW".to_string()],
                     }
                 } else {
+                    if properties.should_be_disabled {
+                        next_number_to_assign += 1;
+                        continue;
+                    }
                     let number_to_assign_as_string = next_number_to_assign.to_string();
                     next_number_to_assign += 1;
                     vec![format!("Digit{number_to_assign_as_string}")]

@@ -146,9 +146,7 @@ pub fn animation_causing_hp_change_finished_handler(
                     store.combat_log.push(CombatLogMessage::new(
                         AttrValue::from(format!(
                             "{} healed {} for {} HP.",
-                            causer_name,
-                            target_name,
-                            value * -1
+                            causer_name, target_name, value
                         )),
                         CombatLogMessageStyle::Basic,
                         0,

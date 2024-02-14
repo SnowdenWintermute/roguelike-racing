@@ -1,6 +1,7 @@
 mod prefix_names;
 pub mod suffix_names;
-use self::{prefix_names::get_prefix_name, suffix_names::get_suffix_name};
+use self::prefix_names::get_prefix_name;
+use self::suffix_names::get_suffix_name;
 use crate::items::equipment::EquipmentProperties;
 
 pub fn name_equipment(equipment_properties: &EquipmentProperties) -> String {
@@ -37,11 +38,15 @@ pub fn name_equipment(equipment_properties: &EquipmentProperties) -> String {
         }
     }
 
-    output.push_str(prefix_name);
-    output.push_str(" ");
+    if prefix_name.len() > 0 {
+        output.push_str(prefix_name);
+        output.push_str(" ");
+    }
     output.push_str(&base_item_name);
-    output.push_str(" of ");
-    output.push_str(suffix_name);
+    if suffix_name.len() > 0 {
+        output.push_str(" of ");
+        output.push_str(suffix_name);
+    }
 
     output
 }

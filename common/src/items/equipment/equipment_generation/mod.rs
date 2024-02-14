@@ -13,6 +13,8 @@ pub mod name_equipment;
 pub mod print_random_equipments;
 mod roll_equipment_properties_from_blueprint;
 mod select_random_affix_types;
+use rand::Rng;
+
 use self::equipment_blueprints::body_armor_blueprints::body_armor_blueprint_from_base_item;
 use self::equipment_blueprints::head_gear_blueprints::head_gear_blueprint_from_base_item;
 use self::equipment_blueprints::jewelry_blueprints::jewelry_blueprint_from_base_item;
@@ -40,8 +42,16 @@ pub fn generate_equipment_properties_from_base_item(
     let base_item = generate_base_equipment(level);
     // let base_item = BaseEquipment::OneHandedMeleeWeapon(OneHandedMeleeWeapons::RuneSword);
     // determine num prefixes and suffixes
-    let num_prefixes = 1;
-    let num_suffixes = 1;
+    let mut rng = rand::thread_rng();
+    let affix_randomizer_number = rng.gen_range(1..=100);
+    let (num_prefixes, num_suffixes) =
+        if affix_randomizer_number > 0 && affix_randomizer_number < 22 {
+            (1, 0)
+        } else if affix_randomizer_number >= 22 && affix_randomizer_number < 84 {
+            (0, 1)
+        } else {
+            (1, 1)
+        };
 
     let blueprint = match base_item {
         BaseEquipment::BodyArmor(base_item) => body_armor_blueprint_from_base_item(base_item),

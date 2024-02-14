@@ -23,11 +23,20 @@ pub fn roll_equipment_properties_from_blueprint(
     let requirements = template_properties.requirements.clone();
     let mut durability = generate_durability(template_properties.max_durability);
     let affix_modifiers = template_properties.get_affix_modifers();
+    // @TODO - reinstate lifesteal
+    let prefix_exclusions = match affix_modifiers.prefix_exclusions {
+        Some(exclusions) => {
+            let mut new_exclusions = exclusions.clone();
+            new_exclusions.append(&mut vec![PrefixTypes::LifeSteal]);
+            Some(new_exclusions)
+        }
+        None => Some(vec![PrefixTypes::LifeSteal]),
+    };
     let prefix_types_and_tiers = select_random_affix_types(
         &possible_prefixes,
         num_prefixes,
         affix_modifiers.prefix_tier_overrides,
-        &affix_modifiers.prefix_exclusions,
+        &prefix_exclusions,
     );
     let suffix_types_and_tiers = select_random_affix_types(
         &possible_suffixes,

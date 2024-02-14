@@ -76,7 +76,7 @@ impl CombatantAbilityNames {
                         crit_chance_attribute: Some(CombatAttributes::Focus),
                         crit_multiplier_attribute: Some(CombatAttributes::Focus),
                     }),
-                    valid_target_categories: TargetCategories::Any,
+                    valid_target_categories: TargetCategories::Opponent,
                     prohibited_target_combatant_states: Some(vec![
                         ProhibitedTargetCombatantStates::Dead,
                     ]),

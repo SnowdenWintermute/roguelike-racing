@@ -37,18 +37,38 @@ pub fn action_page_buttons(props: &Props) -> Html {
         )
     });
 
+    let keypress_listener_state = use_state(|| None::<EventListener>);
     let keyup_listener_state = use_state(|| None::<EventListener>);
+    let cloned_game_dispatch = game_dispatch.clone();
     use_effect_with(game_state.action_menu_current_page_number, move |_| {
-        let listener = EventListener::new(&window(), "keypress", move |event| {
+        let keypress_listener = EventListener::new(&window(), "keypress", move |event| {
             let event = event.dyn_ref::<web_sys::KeyboardEvent>().unwrap_throw();
             if event.code() == "KeyW" {
+                prev_page(
+                    cloned_game_dispatch.clone(),
+                    cloned_current_page_number,
+                    cloned_number_of_pages,
+                )
+            }
+            if event.code() == "KeyE" {
+                next_page(
+                    cloned_game_dispatch.clone(),
+                    cloned_current_page_number,
+                    cloned_number_of_pages,
+                )
+            }
+        });
+        keypress_listener_state.set(Some(keypress_listener));
+        let keyup_listener = EventListener::new(&window(), "keyup", move |event| {
+            let event = event.dyn_ref::<web_sys::KeyboardEvent>().unwrap_throw();
+            if event.code() == "ArrowLeft" {
                 prev_page(
                     game_dispatch.clone(),
                     cloned_current_page_number,
                     cloned_number_of_pages,
                 )
             }
-            if event.code() == "KeyE" {
+            if event.code() == "ArrowRight" {
                 next_page(
                     game_dispatch.clone(),
                     cloned_current_page_number,
@@ -56,7 +76,7 @@ pub fn action_page_buttons(props: &Props) -> Html {
                 )
             }
         });
-        keyup_listener_state.set(Some(listener));
+        keyup_listener_state.set(Some(keyup_listener));
     });
 
     html!(

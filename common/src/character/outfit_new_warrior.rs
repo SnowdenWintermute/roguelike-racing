@@ -1,9 +1,11 @@
+#![allow(unused, unused_imports)]
 use super::Character;
 use crate::combatants::abilities::CombatantAbility;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::combatants::combatant_traits::CombatantTraits;
 use crate::game::RoguelikeRacerGame;
+use crate::items::consumables::ConsumableTypes;
 use crate::items::equipment::equipment_generation::create_starting_equipment::create_starting_equipment;
 use crate::items::Item;
 use crate::items::ItemCategories;
@@ -11,8 +13,8 @@ use crate::items::ItemCategories;
 pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Character) {
     let combatant_properties = &mut character.combatant_properties;
     let inherent_attributes = &mut combatant_properties.inherent_attributes;
-    inherent_attributes.insert(CombatAttributes::Hp, 30);
-    inherent_attributes.insert(CombatAttributes::Mp, 30);
+    inherent_attributes.insert(CombatAttributes::Hp, 20);
+    inherent_attributes.insert(CombatAttributes::Mp, 4);
     inherent_attributes.insert(CombatAttributes::Damage, 1);
     inherent_attributes.insert(CombatAttributes::Strength, 2);
     inherent_attributes.insert(CombatAttributes::Dexterity, 1);
@@ -38,14 +40,23 @@ pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Charact
     //     CombatantAbilityNames::RainStorm,
     //     CombatantAbility::new(CombatantAbilityNames::RainStorm),
     // );
-
+    let hp_injector = Item::create_consumable_by_type(
+        game.id_generator.get_next_entity_id(),
+        ConsumableTypes::HpAutoinjector,
+    );
+    let mp_injector = Item::create_consumable_by_type(
+        game.id_generator.get_next_entity_id(),
+        ConsumableTypes::MpAutoinjector,
+    );
+    combatant_properties.inventory.items.push(hp_injector);
+    combatant_properties.inventory.items.push(mp_injector);
     // TEST INVENTORY ITEMS
-    for _ in 0..10 {
-        let random_consumable =
-            Item::generate(&mut game.id_generator, 5, Some(ItemCategories::Consumable));
-        combatant_properties.inventory.items.push(random_consumable);
-    }
-    // for _ in 0..6 {
+    // for _ in 0..=1 {
+    //     let random_consumable =
+    //         Item::generate(&mut game.id_generator, 5, Some(ItemCategories::Consumable));
+    //     combatant_properties.inventory.items.push(random_consumable);
+    // }
+    // for _ in 0..18 {
     //     let random_equipment =
     //         Item::generate(&mut game.id_generator, 1, Some(ItemCategories::Equipment));
     //     combatant_properties.inventory.items.push(random_equipment);
@@ -68,10 +79,10 @@ pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Charact
     let total_attributes = combatant_properties.get_total_attributes();
     let max_hp_option = total_attributes.get(&CombatAttributes::Hp);
     if let Some(max_hp) = max_hp_option {
-        combatant_properties.hit_points = *max_hp / 3;
+        combatant_properties.hit_points = *max_hp;
     }
     let max_mana_option = total_attributes.get(&CombatAttributes::Mp);
     if let Some(max_mana) = max_mana_option {
-        combatant_properties.mana = *max_mana / 4
+        combatant_properties.mana = *max_mana
     }
 }

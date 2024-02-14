@@ -1,5 +1,6 @@
 use super::enums::GameActions;
 use super::enums::MenuTypes;
+use super::PAGE_SIZE;
 use common::combat::combat_actions::CombatAction;
 use common::combat::combat_actions::CombatActionProperties;
 use common::combatants::abilities::CombatantAbilityNames;
@@ -60,12 +61,23 @@ impl MenuTypes {
                             .map(|(consumable_type, ids_vec)| (consumable_type, ids_vec))
                             .collect::<Vec<(ConsumableTypes, Vec<u32>)>>();
                         consumables_as_vec.sort_by_key(|item| item.0);
+                        let mut num_menu_buttons = 2;
 
                         for (_, ids) in &consumables_as_vec {
-                            menu_items.push(GameActions::SelectItem(ids[0], ids.len() as u16))
+                            menu_items.push(GameActions::SelectItem(ids[0], ids.len() as u16));
+                            num_menu_buttons += 1;
+                            if num_menu_buttons % PAGE_SIZE == 0 {
+                                menu_items.push(GameActions::SetInventoryOpen(!inventory_is_open));
+                                num_menu_buttons += 1;
+                            }
                         }
                         for id in &item_ids.1 {
-                            menu_items.push(GameActions::SelectItem(*id, 1))
+                            menu_items.push(GameActions::SelectItem(*id, 1));
+                            num_menu_buttons += 1;
+                            if num_menu_buttons % PAGE_SIZE == 0 {
+                                menu_items.push(GameActions::SetInventoryOpen(!inventory_is_open));
+                                num_menu_buttons += 1;
+                            }
                         }
                     }
                 }

@@ -57,7 +57,8 @@ pub fn determine_action_menu_buttons_disabled(
             }
             false
         }
-        GameActions::TakeItem | GameActions::DropItem(_) => {
+        GameActions::TakeItem => true,
+        GameActions::DropItem(_) => {
             if !player_owns_character {
                 return true;
             }
@@ -77,7 +78,10 @@ pub fn determine_action_menu_buttons_disabled(
             }
             false
         }
-        GameActions::ShardItem(_) => !player_owns_character,
+        GameActions::UseSelectedCombatAction => {
+            focused_character.combatant_properties.hit_points == 0
+        }
+        GameActions::ShardItem(_) => !player_owns_character || true,
 
         _ => false,
     }

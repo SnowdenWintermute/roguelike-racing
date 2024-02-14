@@ -58,7 +58,11 @@ pub fn item_on_ground(props: &ItemOnGroundProps) -> Html {
     let cloned_websocket_state = websocket_state.clone();
     let item_id = props.id;
     let focused_character_id = game_state.focused_character_id;
+    let cloned_game_dispatch = game_dispatch.clone();
     let take_item = Callback::from(move |_| {
+        cloned_game_dispatch.reduce_mut(|store| {
+            store.hovered_entity = None;
+        });
         send_client_input(
             &cloned_websocket_state.websocket,
             PlayerInputs::TakeItemOnGround(CharacterAndItem {

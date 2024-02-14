@@ -40,11 +40,14 @@ impl RoguelikeRacerGame {
             }
             CombatantAbilityNames::Fire | CombatantAbilityNames::Healing => {
                 let combat_action = CombatAction::AbilityUsed(ability_name.clone());
-                let action_result = ActionResult::new(
+                let mut action_result = ActionResult::new(
                     ability_user_id,
                     combat_action.clone(),
                     ability_targets.clone(),
                 );
+                action_result.ends_turn = combat_action
+                    .get_properties_if_owned(&self, ability_user_id)?
+                    .requires_combat_turn;
 
                 let action_result = self.calculate_combat_action_mp_changes(
                     &action_result,

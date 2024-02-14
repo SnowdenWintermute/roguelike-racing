@@ -24,6 +24,12 @@ impl GameServer {
         let character_positions = party.character_positions.clone();
         let battle_id_option = party.battle_id.clone();
         let character = party.get_character_if_owned(&player_character_ids_option, character_id)?;
+        if character.combatant_properties.hit_points == 0 {
+            return Err(AppError {
+                error_type: AppErrorTypes::InvalidInput,
+                message: error_messages::CANT_USE_ACTION_WHEN_DEAD.to_string(),
+            });
+        }
         let selected_combat_action = character
             .combatant_properties
             .selected_combat_action

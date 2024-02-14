@@ -56,6 +56,8 @@ pub const INVALID_USABILITY_CONTEXT: &str = "The selected action can not be used
 pub const MISSING_EXPECTED_ACTION_RESULT_DATA: &str = "An action result missing expected data";
 pub const CANT_BE_USED_ON_DEAD_TARGET: &str =
     "The selected target is beyond the help of this ability";
+pub const CANT_USE_ACTION_WHEN_DEAD: &str =
+    "The selected combatant is unable to take actions due to being dead";
 pub const MISSING_ACTION_HP_CHANGE_PROPERTIES: &str =
     "The provided combat action doesn't specify any Hp change properties";
 pub const MISSING_ACTION_HP_CHANGE_BASE_VALUES: &str =

@@ -46,8 +46,8 @@ pub fn animation_causing_hp_change_finished_handler(
                 HpChangeResult::Evaded => {
                     store.combat_log.push(CombatLogMessage::new(
                         AttrValue::from(format!(
-                            "{} ({target_id}) evaded an attack from {} ({causer_id})",
-                            target_name, causer_name,
+                            "{} missed their attack on {}",
+                            causer_name, target_name
                         )),
                         CombatLogMessageStyle::Basic,
                         0,
@@ -57,17 +57,37 @@ pub fn animation_causing_hp_change_finished_handler(
                             VecDeque::from([CombatantAnimation::Evasion])
                     }
                 }
-                HpChangeResult::Damaged(HpChange { value, .. }) => {
-                    store.combat_log.push(CombatLogMessage::new(
-                        AttrValue::from(format!(
-                            "{} ({causer_id}) damaged {} ({target_id}) for {}",
-                            causer_name,
-                            target_name,
-                            value * -1
-                        )),
-                        CombatLogMessageStyle::Basic,
-                        0,
-                    ));
+                HpChangeResult::Damaged(HpChange { value, is_crit }) => {
+                    match is_crit {
+                        true => {
+                            store.combat_log.push(CombatLogMessage::new(
+                                AttrValue::from(format!("{} scores a critical hit!", causer_name,)),
+                                CombatLogMessageStyle::Basic,
+                                0,
+                            ));
+                            store.combat_log.push(CombatLogMessage::new(
+                                AttrValue::from(format!(
+                                    "{} takes {} points of damage.",
+                                    target_name,
+                                    value * -1
+                                )),
+                                CombatLogMessageStyle::Basic,
+                                0,
+                            ));
+                        }
+                        false => {
+                            store.combat_log.push(CombatLogMessage::new(
+                                AttrValue::from(format!(
+                                    "{} hits {} for {} points of damage.",
+                                    causer_name,
+                                    target_name,
+                                    value * -1
+                                )),
+                                CombatLogMessageStyle::Basic,
+                                0,
+                            ));
+                        }
+                    }
 
                     let game = store.get_current_game_mut()?;
                     let (_, combatant_properties) = game.get_mut_combatant_by_id(&target_id)?;
@@ -89,7 +109,10 @@ pub fn animation_causing_hp_change_finished_handler(
                             .animation_queue
                             .push_back(CombatantAnimation::Death(Some(value)));
                         store.combat_log.push(CombatLogMessage::new(
-                            AttrValue::from(format!("{} ({target_id}) died", target_name)),
+                            AttrValue::from(format!(
+                                "{} reduced {}'s HP to zero.",
+                                causer_name, target_name
+                            )),
                             CombatLogMessageStyle::Basic,
                             0,
                         ));
@@ -122,7 +145,7 @@ pub fn animation_causing_hp_change_finished_handler(
                 HpChangeResult::Healed(HpChange { value, is_crit: _ }) => {
                     store.combat_log.push(CombatLogMessage::new(
                         AttrValue::from(format!(
-                            "{} ({causer_id}) healed {} ({target_id}) for {}",
+                            "{} healed {} for {} HP.",
                             causer_name,
                             target_name,
                             value * -1

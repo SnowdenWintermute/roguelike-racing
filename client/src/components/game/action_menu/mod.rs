@@ -72,6 +72,7 @@ pub fn action_menu(_: &Props) -> Html {
     );
 
     let keyup_listener_state = use_state(|| None::<EventListener>);
+    let keypress_listener_state = use_state(|| None::<EventListener>);
     let cloned_button_props_on_current_page = button_props_on_current_page.clone();
     let cloned_button_props_on_current_page_for_effect_change =
         button_props_on_current_page.clone();
@@ -81,6 +82,7 @@ pub fn action_menu(_: &Props) -> Html {
             set_keyup_listeners::set_keyup_listeners(
                 cloned_button_props_on_current_page,
                 keyup_listener_state,
+                keypress_listener_state
             )
         },
     );

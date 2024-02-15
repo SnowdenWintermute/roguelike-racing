@@ -10,6 +10,7 @@ pub const GAME_HAS_STARTED: &str = "That game has already started";
 pub const WEBSOCKET_CHANNEL_NOT_FOUND: &str = "No websocket channel found by that name";
 pub const WEBSOCKET_NAMESPACE_NOT_FOUND: &str = "No websocket channel namespace found by that name";
 // PARTIES
+pub const PARTY_ALREADY_EXISTS: &str = "A party by that name already exists";
 pub const PARTY_NOT_FOUND: &str = "No party found by that name";
 pub const PARTY_FULL: &str = "The selected party is currently full";
 pub const ALREADY_IN_PARTY: &str = "Leave your current party if you wish to create a new one";

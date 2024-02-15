@@ -37,6 +37,14 @@ impl GameServer {
         party.battle_id = None;
         party.current_room.monsters = None;
         party.current_room.items.append(&mut loot.clone());
+
+        // @TODO - remove once revives are in the game
+        for (_, character) in party.characters.iter_mut() {
+            if character.combatant_properties.hit_points == 0 {
+                character.combatant_properties.hit_points = 1;
+            }
+        }
+
         game.battles.remove(&battle_id);
 
         self.emit_packet(

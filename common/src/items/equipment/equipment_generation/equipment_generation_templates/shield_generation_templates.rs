@@ -28,7 +28,7 @@ fn shield_template_from_base_item(
             requirements.insert(CombatAttributes::Strength, 3);
             ShieldGenerationTemplate::new(
                 Range::new(2, 4),
-                Range::new(2, 6),
+                Range::new(10, 18),
                 ShieldSizes::Medium,
                 Some(6),
                 Some(requirements),
@@ -38,7 +38,7 @@ fn shield_template_from_base_item(
         }
         Shields::Buckler => ShieldGenerationTemplate::new(
             Range::new(3, 5),
-            Range::new(2, 6),
+            Range::new(20, 32),
             ShieldSizes::Small,
             Some(6),
             Some(requirements),
@@ -47,7 +47,7 @@ fn shield_template_from_base_item(
         ),
         Shields::Pavise => ShieldGenerationTemplate::new(
             Range::new(4, 6),
-            Range::new(2, 6),
+            Range::new(45, 60),
             ShieldSizes::Large,
             Some(6),
             Some(requirements),
@@ -56,7 +56,7 @@ fn shield_template_from_base_item(
         ),
         Shields::Aspis => ShieldGenerationTemplate::new(
             Range::new(5, 7),
-            Range::new(2, 6),
+            Range::new(60, 80),
             ShieldSizes::Medium,
             Some(6),
             Some(requirements),
@@ -65,7 +65,7 @@ fn shield_template_from_base_item(
         ),
         Shields::LanternShield => ShieldGenerationTemplate::new(
             Range::new(5, 6),
-            Range::new(2, 6),
+            Range::new(75, 95),
             ShieldSizes::Small,
             Some(6),
             Some(requirements),
@@ -79,7 +79,7 @@ fn shield_template_from_base_item(
         ),
         Shields::KiteShield => ShieldGenerationTemplate::new(
             Range::new(6, 8),
-            Range::new(2, 6),
+            Range::new(110, 140),
             ShieldSizes::Medium,
             Some(6),
             Some(requirements),
@@ -88,7 +88,7 @@ fn shield_template_from_base_item(
         ),
         Shields::TowerShield => ShieldGenerationTemplate::new(
             Range::new(7, 10),
-            Range::new(2, 6),
+            Range::new(140, 180),
             ShieldSizes::Large,
             Some(6),
             Some(requirements),
@@ -97,7 +97,7 @@ fn shield_template_from_base_item(
         ),
         Shields::AncientBuckler => ShieldGenerationTemplate::new(
             Range::new(8, 10),
-            Range::new(2, 6),
+            Range::new(180, 200),
             ShieldSizes::Small,
             Some(6),
             Some(requirements),
@@ -106,7 +106,7 @@ fn shield_template_from_base_item(
         ),
         Shields::GothicShield => ShieldGenerationTemplate::new(
             Range::new(8, 10),
-            Range::new(2, 6),
+            Range::new(185, 210),
             ShieldSizes::Medium,
             Some(6),
             Some(requirements),

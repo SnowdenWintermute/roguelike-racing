@@ -15,6 +15,7 @@ use crate::primatives::EntityProperties;
 use rand::seq::SliceRandom;
 use rand::Rng;
 use rand_distr::Distribution;
+use rand_distr::Normal;
 use rand_distr::StandardNormal;
 use serde::Deserialize;
 use serde::Serialize;
@@ -69,15 +70,9 @@ impl Monster {
         let inherent_attributes = &mut monster.combatant_properties.inherent_attributes;
         let mut rng = rand::thread_rng();
         let modified_hp = {
-            let half_of_base_hp = base_hp as f32 * 0.5;
-            // CHAT GPT HOW TO GET RANDOM NORMALLY DISTRIBUTED VALUE IN RANGE
-            let normal = StandardNormal;
-            let min = base_hp as f32 - half_of_base_hp;
-            let max = base_hp as f32 + half_of_base_hp;
-            let mut value: f32 = normal.sample(&mut rng);
-            value *= (min - max) / 2.0;
-            value += (min + max) / 2.0;
-            value
+            let normal = Normal::new(base_hp as f32, 3.0).expect("");
+            let v = normal.sample(&mut rng);
+            v
         };
         inherent_attributes.insert(CombatAttributes::Hp, modified_hp as u16);
         inherent_attributes.insert(CombatAttributes::Damage, 1);
@@ -94,14 +89,21 @@ impl Monster {
         );
         inherent_attributes.insert(CombatAttributes::Accuracy, 75);
 
-        let trait_randomizer_number = rng.gen_range(0.0..1.0);
-        if trait_randomizer_number <= 0.25 {
+        let trait_randomizer_number = rng.gen_range(1..=100);
+        if trait_randomizer_number <= 25 {
             monster
                 .combatant_properties
                 .traits
                 .push(CombatantTraits::Undead);
+            monster
+                .combatant_properties
+                .traits
+                .push(CombatantTraits::ElementalAffinityPercent(
+                    MagicalElements::Light,
+                    -100,
+                ));
             monster.entity_properties.name = format!("undead {}", monster.entity_properties.name);
-        } else if trait_randomizer_number >= 0.25 && trait_randomizer_number < 0.35 {
+        } else if trait_randomizer_number >= 25 && trait_randomizer_number < 35 {
             monster
                 .combatant_properties
                 .traits
@@ -110,7 +112,7 @@ impl Monster {
                     200,
                 ));
             monster.entity_properties.name = format!("fire {}", monster.entity_properties.name);
-        } else if trait_randomizer_number >= 0.35 && trait_randomizer_number < 0.55 {
+        } else if trait_randomizer_number >= 35 && trait_randomizer_number < 55 {
             monster
                 .combatant_properties
                 .traits
@@ -121,20 +123,23 @@ impl Monster {
             monster.entity_properties.name = format!("ice {}", monster.entity_properties.name);
         }
 
-        let monster_randomizer_number = rng.gen_range(0.0..1.0);
-        if monster_randomizer_number < 0.33 {
+        let monster_randomizer_number = rng.gen_range(1..=100);
+        if monster_randomizer_number < 33 {
             inherent_attributes.insert(CombatAttributes::Agility, cmp::max(1, 1 * level as u16));
-            inherent_attributes.insert(CombatAttributes::Dexterity, 2 * level as u16);
+            inherent_attributes.insert(CombatAttributes::Dexterity, (1.5 * level as f32) as u16);
             monster.entity_properties.name = format!("agile {}", monster.entity_properties.name);
-        } else if monster_randomizer_number > 0.33 && monster_randomizer_number < 0.66 {
-            inherent_attributes.insert(CombatAttributes::Strength, 3 * level as u16);
-            inherent_attributes.insert(CombatAttributes::Vitality, 2 * level as u16);
+        } else if monster_randomizer_number >= 33 && monster_randomizer_number < 66 {
+            inherent_attributes.insert(CombatAttributes::Strength, (1.5 * level as f32) as u16);
+            inherent_attributes.insert(CombatAttributes::Vitality, (1.5 * level as f32) as u16);
             inherent_attributes.insert(CombatAttributes::ArmorClass, 20 * (level - 1) as u16);
             monster.entity_properties.name = format!("strong {}", monster.entity_properties.name);
-        } else if monster_randomizer_number > 0.66 {
+        } else if monster_randomizer_number >= 66 {
             inherent_attributes.insert(CombatAttributes::Intelligence, 2 * level as u16);
             inherent_attributes.insert(CombatAttributes::Focus, 2 * level as u16);
-            inherent_attributes.insert(CombatAttributes::Resilience, 1 + 2 * level as u16);
+            inherent_attributes.insert(
+                CombatAttributes::Resilience,
+                1 + (1.5 * level as f32) as u16,
+            );
             monster.entity_properties.name = format!("magical {}", monster.entity_properties.name);
         }
 

@@ -125,7 +125,7 @@ pub fn item_on_ground(props: &ItemOnGroundProps) -> Html {
         <div class="flex items-center h-full w-full "
         >
             <div class="pl-2 overflow-hidden whitespace-nowrap text-ellipsis ">
-                {&props.name}{" "}{&props.id}
+                {&props.name}{" "}
             </div>
         </div>
     </li>

@@ -1,3 +1,4 @@
+use crate::utils::generate_random_party_name;
 use crate::websocket_server::game_server::getters::get_mut_game;
 use crate::websocket_server::game_server::getters::get_mut_user;
 use crate::websocket_server::game_server::GameServer;
@@ -36,6 +37,19 @@ impl GameServer {
         }
 
         let party_id = game.id_generator.get_next_entity_id();
+        let mut party_name = party_name;
+        if party_name == "" {
+            party_name = generate_random_party_name();
+        }
+        for (_, party_name_already_in_game) in game.adventuring_parties.iter() {
+            if party_name == party_name_already_in_game.name {
+                return Err(AppError {
+                    error_type: common::errors::AppErrorTypes::InvalidInput,
+                    message: error_messages::PARTY_ALREADY_EXISTS.to_string(),
+                });
+            }
+        }
+
         game.add_adventuring_party(party_name.clone(), party_id);
 
         self.emit_packet(

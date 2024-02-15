@@ -26,6 +26,9 @@ pub fn outfit_new_warrior(game: &mut RoguelikeRacerGame, character: &mut Charact
     combatant_properties
         .traits
         .push(CombatantTraits::HpBioavailabilityPercent(200));
+    combatant_properties
+        .traits
+        .push(CombatantTraits::MpBioavailabilityPercent(200));
 
     // ABILITIES
     combatant_properties.abilities.insert(

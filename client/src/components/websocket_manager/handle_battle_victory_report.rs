@@ -30,6 +30,12 @@ pub fn handle_battle_end_report(
             party.current_room.items.append(&mut loot)
         }
 
+        for (_, character) in party.characters.iter_mut() {
+            if character.combatant_properties.hit_points == 0 {
+                character.combatant_properties.hit_points = 1;
+            }
+        }
+
         Ok(())
     })
 }

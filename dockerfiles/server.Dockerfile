@@ -1,4 +1,4 @@
-FROM rust:1.70.0 as builder
+FROM rust:1.72.0 as builder
 
 WORKDIR /app
 RUN mkdir /app/common

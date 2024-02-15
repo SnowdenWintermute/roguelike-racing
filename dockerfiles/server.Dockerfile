@@ -26,9 +26,7 @@ RUN cargo build --release
 RUN echo LISTING FILES
 RUN ls
 
-FROM debian:bullseye-slim 
-RUN sudo apt-get update
-RUN sudo apt-get install libc6
+FROM 1.76.0-slim-bullseye 
 WORKDIR /app
 COPY --from=builder /app/server/target .
 RUN ls -a

@@ -26,7 +26,7 @@ RUN cargo build --release
 RUN echo LISTING FILES
 RUN ls
 
-FROM 1.76.0-slim-bullseye 
+FROM rust:1.76.0 
 WORKDIR /app
 COPY --from=builder /app/server/target .
 RUN ls -a

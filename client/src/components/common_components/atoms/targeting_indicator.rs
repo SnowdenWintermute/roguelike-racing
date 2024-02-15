@@ -13,8 +13,10 @@ pub fn targeting_indicator(props: &Props) -> Html {
         CombatAction::ConsumableUsed(_) => "green-600",
     };
     html!(
+        <>
         <div class={format!("w-0 h-0 border-t-[1.5rem] border-t-{color}
                             border-r-[1.5rem] border-r-transparent border-l-[1.5rem] border-l-transparent
         ")} />
+        </>
     )
 }

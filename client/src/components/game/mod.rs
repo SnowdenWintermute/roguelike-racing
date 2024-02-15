@@ -73,6 +73,11 @@ pub fn game() -> Html {
 
     html!(
         <main class="h-screen w-screen bg-slate-800 flex justify-center relative overflow-y-auto">
+        <div id="tailwind-color-loader" class="bg-blue-700" />
+        <div id="tailwind-color-loader" class="border-t-yellow-700" />
+        <div id="tailwind-color-loader" class="border-blue-700" />
+        <div id="tailwind-color-loader" class="border-t-green-600" />
+        <div id="tailwind-color-loader" class="border-green-600" />
             <div class="w-full h-full max-w-[80rem] max-h-[67.5rem] pr-4 pl-4 text-zinc-300 flex flex-col" >
                 // <GameDebug />
                 <CharacterAutofocusManager />

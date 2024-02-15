@@ -27,6 +27,8 @@ RUN echo LISTING FILES
 RUN ls
 
 FROM debian:bullseye-slim 
+RUN sudo apt-get update
+RUN sudo apt-get install libc6
 WORKDIR /app
 COPY --from=builder /app/server/target .
 RUN ls -a

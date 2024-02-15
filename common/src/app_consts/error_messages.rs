@@ -10,6 +10,7 @@ pub const GAME_HAS_STARTED: &str = "That game has already started";
 pub const WEBSOCKET_CHANNEL_NOT_FOUND: &str = "No websocket channel found by that name";
 pub const WEBSOCKET_NAMESPACE_NOT_FOUND: &str = "No websocket channel namespace found by that name";
 // PARTIES
+pub const PARTY_ALREADY_EXISTS: &str = "A party by that name already exists";
 pub const PARTY_NOT_FOUND: &str = "No party found by that name";
 pub const PARTY_FULL: &str = "The selected party is currently full";
 pub const ALREADY_IN_PARTY: &str = "Leave your current party if you wish to create a new one";
@@ -39,28 +40,39 @@ pub const DROP_EQUIPPED_ITEM_SERVER_PACKET_MISMATCH: &str =
     "Received a packet telling a character to drop an equipped item but the item wasn't found";
 pub const NO_BASE_EQUIPMENT_FOUND: &str = "No base equipment was provided";
 pub const NO_CONSUMABLE_SELECTED: &str = "No consumable is selected";
+pub const INVALID_EQUIPMENT_SLOT: &str = "An invalid equipment slot was provided";
 // COMBATANTS
 pub const ENEMY_COMBATANTS_NOT_FOUND: &str = "No enemy combatants found";
 pub const ALLY_COMBATANTS_NOT_FOUND: &str = "No allied combatants found";
 pub const COMBATANT_NOT_FOUND: &str = "No combatant was found by the provided ID";
 // ABILITIES
 pub const ABILITY_NOT_OWNED: &str = "That character doesn't have that ability";
-pub const NO_ABILITY_SELECTED: &str = "No ability is selected";
 pub const MISSING_ABILITY_REFERENCE: &str = "The character has no ability selected";
 pub const ABILITY_HAS_NO_TARGETING_SCHEME: &str = "The selected ability has no targeting scheme";
-pub const INVALID_ABILITY_CONTEXT: &str = "The selected ability can not be used in this context";
-pub const ALREADY_FULL_HP: &str = "The target is already at full HP";
+pub const INSUFFICIENT_MP: &str = "Not enough mana";
 // COMBAT ACTIONS
+pub const NO_ACTION_SELECTED: &str = "No combat action is selected";
 pub const INVALID_ACTION_TYPE: &str = "Invalid action type";
+pub const INVALID_USABILITY_CONTEXT: &str = "The selected action can not be used in this context";
 pub const MISSING_EXPECTED_ACTION_RESULT_DATA: &str = "An action result missing expected data";
 pub const CANT_BE_USED_ON_DEAD_TARGET: &str =
     "The selected target is beyond the help of this ability";
+pub const CANT_USE_ACTION_WHEN_DEAD: &str =
+    "The selected combatant is unable to take actions due to being dead";
+pub const MISSING_ACTION_HP_CHANGE_PROPERTIES: &str =
+    "The provided combat action doesn't specify any Hp change properties";
+pub const MISSING_ACTION_HP_CHANGE_BASE_VALUES: &str =
+    "Tried to get the base Hp change values on an ability that doesn't specify them";
+pub const ALREADY_FULL_HP: &str = "The target is already at full HP";
+pub const ALREADY_FULL_MP: &str = "The target already has full mana";
 // TARGETING
 pub const NO_POSSIBLE_TARGETS_PROVIDED: &str =
     "No possible targets were found for the selected action";
 pub const TRIED_TO_CYCLE_TARGETS_WHEN_NO_TARGETS: &str =
     "Client tried to cycle targets but they weren't targeting anything";
 pub const NO_TARGETING_SCHEMES: &str = "The selected action has no targeting schemes";
+pub const ONLY_ONE_TARGETING_SCHEME_AVAILABLE: &str =
+    "The selected action has only one targeting scheme";
 pub const INVALID_TARGETING_SCHEME: &str = "An invalid targeting scheme was selected";
 pub const INVALID_TARGETS_SELECTED: &str = "Invalid targets provided";
 pub const NO_VALID_TARGETS_FOUND: &str = "No valid targets exist for that action";

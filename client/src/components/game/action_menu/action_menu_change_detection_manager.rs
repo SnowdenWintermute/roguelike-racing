@@ -67,10 +67,10 @@ pub fn action_menu_change_detection_manager(props: &Props) -> Html {
 
         None => None,
     };
-    let focused_character_selected_ability_option = match focused_character_option {
+    let focused_character_selected_combat_action_option = match focused_character_option {
         Some(focused_character) => focused_character
             .combatant_properties
-            .selected_ability_name
+            .selected_combat_action
             .clone(),
         None => None,
     };
@@ -109,7 +109,7 @@ pub fn action_menu_change_detection_manager(props: &Props) -> Html {
                 num_items_in_focused_character_inventory,
                 num_items_on_ground,
                 selected_item_id,
-                focused_character_selected_ability_option,
+                focused_character_selected_combat_action_option,
                 cloned_focused_character_current_animation_processing_option,
             ),
             cloned_game_state.viewing_items_on_ground,

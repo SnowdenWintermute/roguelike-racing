@@ -23,8 +23,7 @@ pub fn apply_action_result(
 ) -> Result<(), AppError> {
     let user_id = action_result.user_id;
     let (_, user_combatant_properties) = game.get_mut_combatant_by_id(&user_id)?;
-    user_combatant_properties.selected_ability_name = None;
-    user_combatant_properties.selected_consumable = None;
+    user_combatant_properties.selected_combat_action = None;
     user_combatant_properties.combat_action_targets = None;
 
     match action_result.action {
@@ -72,6 +71,13 @@ pub fn apply_action_result(
         for (entity_id, mp_change) in mp_changes.iter() {
             let (_, combatant_properties) = game.get_mut_combatant_by_id(entity_id)?;
             combatant_properties.change_mp(*mp_change);
+        }
+    }
+
+    if let Some(mp_prices) = &action_result.mp_combat_action_prices_paid_by_entity_id {
+        for (entity_id, mp_prices) in mp_prices.iter() {
+            let (_, combatant_properties) = game.get_mut_combatant_by_id(entity_id)?;
+            combatant_properties.change_mp(*mp_prices as i16 * -1);
         }
     }
 

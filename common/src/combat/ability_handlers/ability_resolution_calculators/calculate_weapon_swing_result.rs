@@ -28,6 +28,10 @@ pub fn calculate_weapon_swing_result(
             &user_total_attributes,
             &equipment_properties,
         )?;
+    println!(
+        "get_weapon_properties_traits_and_base_bonus_damage: {:#?} {:#?} {:#?}",
+        weapon_properties, weapon_traits, base_bonus_damage
+    );
 
     // determine hit or miss
     let accuracy = user_total_attributes
@@ -46,19 +50,16 @@ pub fn calculate_weapon_swing_result(
         target_total_attributes,
     );
 
+    let mut action_result = ActionResult::new(
+        ability_user_id,
+        CombatAction::AbilityUsed(CombatantAbilityNames::Attack),
+        ability_target.clone(),
+    );
+    action_result.ends_turn = should_end_turn;
+
     if evaded {
-        Ok(ActionResult {
-            user_id: ability_user_id,
-            action: CombatAction::AbilityUsed(CombatantAbilityNames::Attack),
-            targets: ability_target.clone(),
-            hp_changes_by_entity_id: None,
-            mp_changes_by_entity_id: None,
-            misses_by_entity_id: Some(HashSet::from([(target_entity_id)])),
-            resists_by_entity_id: None,
-            is_crit: false,
-            status_effect_changes_by_entity_id: None,
-            ends_turn: should_end_turn,
-        })
+        action_result.misses_by_entity_id = Some(HashSet::from([(target_entity_id)]));
+        Ok(action_result)
     } else {
         let mut rng = rand::thread_rng();
         let rolled_damage = rng.gen_range(damage_range.min..=damage_range.max);
@@ -76,20 +77,10 @@ pub fn calculate_weapon_swing_result(
         println!("final damage: {final_damage} as i16: {fd_i16}");
 
         // add the result
-        Ok(ActionResult {
-            user_id: ability_user_id,
-            action: CombatAction::AbilityUsed(CombatantAbilityNames::Attack),
-            targets: ability_target.clone(),
-            hp_changes_by_entity_id: Some(HashMap::from([(
-                target_entity_id,
-                final_damage as i16 * -1,
-            )])),
-            mp_changes_by_entity_id: None,
-            misses_by_entity_id: None,
-            resists_by_entity_id: None,
-            is_crit: false,
-            status_effect_changes_by_entity_id: None,
-            ends_turn: should_end_turn,
-        })
+        action_result.hp_changes_by_entity_id = Some(HashMap::from([(
+            target_entity_id,
+            final_damage as i16 * -1,
+        )]));
+        Ok(action_result)
     }
 }

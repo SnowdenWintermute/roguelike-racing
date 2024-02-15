@@ -17,6 +17,7 @@ use crate::store::game_store::{self};
 use common::combatants::combat_attributes::CombatAttributes;
 use common::combatants::CombatantProperties;
 use common::primatives::EntityProperties;
+use gloo::console::log;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
@@ -32,6 +33,13 @@ pub fn combatant(props: &Props) -> Html {
     let id = props.entity_properties.id;
     let name = props.entity_properties.name.clone();
     let combatant_properties = props.combatant_properties.clone();
+
+    if id == 2 {
+        log!(format!(
+            "target: {:?}",
+            combatant_properties.combat_action_targets,
+        ));
+    }
 
     let cloned_entity_properties = props.entity_properties.clone();
     let cloned_combatant_properties = combatant_properties.clone();
@@ -79,8 +87,8 @@ pub fn combatant(props: &Props) -> Html {
                             flex" >
                             {targeted_by.iter().map(|combatant_id_and_with_what| html!(
                                         <TargetingIndicator
-                                        ability_name_option={combatant_id_and_with_what.1.clone()}
-                                        consumable_option={combatant_id_and_with_what.2.clone()} />
+                                            combat_action={combatant_id_and_with_what.1.clone()}
+                                            />
                             )).collect::<Html>()}
                     </div>
             }

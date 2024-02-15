@@ -44,7 +44,7 @@ impl Character {
 
         character.combatant_properties.abilities.insert(
             CombatantAbilityNames::Attack,
-            CombatantAbility::new(CombatantAbilityNames::Attack),
+            CombatantAbility::create_by_name(&CombatantAbilityNames::Attack),
         );
 
         match combatant_class {

@@ -1,7 +1,11 @@
+use crate::combat::magical_elements::MagicalElements;
 use serde::Deserialize;
 use serde::Serialize;
 
-#[derive(Eq, Hash, PartialEq, Clone, Debug, Serialize, Deserialize)]
+#[derive(Eq, PartialEq, Clone, Debug, Serialize, Deserialize)]
 pub enum CombatantTraits {
-    HpBioavailability,
+    HpBioavailabilityPercent(u8),
+    MpBioavailabilityPercent(u8),
+    ElementalAffinityPercent(MagicalElements, i16),
+    Undead,
 }

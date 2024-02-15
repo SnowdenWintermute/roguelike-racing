@@ -58,7 +58,11 @@ pub fn item_on_ground(props: &ItemOnGroundProps) -> Html {
     let cloned_websocket_state = websocket_state.clone();
     let item_id = props.id;
     let focused_character_id = game_state.focused_character_id;
+    let cloned_game_dispatch = game_dispatch.clone();
     let take_item = Callback::from(move |_| {
+        cloned_game_dispatch.reduce_mut(|store| {
+            store.hovered_entity = None;
+        });
         send_client_input(
             &cloned_websocket_state.websocket,
             PlayerInputs::TakeItemOnGround(CharacterAndItem {
@@ -71,7 +75,7 @@ pub fn item_on_ground(props: &ItemOnGroundProps) -> Html {
     let cloned_game_dispatch = game_dispatch.clone();
     let mouse_enter_handler = Callback::from(move |_| {
         create_action_mouse_enter_handler(
-            GameActions::SelectItem(item_id),
+            GameActions::SelectItem(item_id, 1),
             cloned_game_dispatch.clone(),
             cloned_game_state.clone(),
         )()
@@ -79,7 +83,7 @@ pub fn item_on_ground(props: &ItemOnGroundProps) -> Html {
     let cloned_game_dispatch = game_dispatch.clone();
     let mouse_leave_handler = Callback::from(move |_| {
         create_action_mouse_leave_handler(
-            GameActions::SelectItem(item_id),
+            GameActions::SelectItem(item_id, 1),
             cloned_game_dispatch.clone(),
         )()
     });
@@ -87,7 +91,7 @@ pub fn item_on_ground(props: &ItemOnGroundProps) -> Html {
     let cloned_game_dispatch = game_dispatch.clone();
     let focus_handler = Callback::from(move |_| {
         create_action_mouse_enter_handler(
-            GameActions::SelectItem(item_id),
+            GameActions::SelectItem(item_id, 1),
             cloned_game_dispatch.clone(),
             cloned_game_state.clone(),
         )()
@@ -95,7 +99,7 @@ pub fn item_on_ground(props: &ItemOnGroundProps) -> Html {
     let cloned_game_dispatch = game_dispatch.clone();
     let blur_handler = Callback::from(move |_| {
         create_action_mouse_leave_handler(
-            GameActions::SelectItem(item_id),
+            GameActions::SelectItem(item_id, 1),
             cloned_game_dispatch.clone(),
         )()
     });
@@ -121,7 +125,7 @@ pub fn item_on_ground(props: &ItemOnGroundProps) -> Html {
         <div class="flex items-center h-full w-full "
         >
             <div class="pl-2 overflow-hidden whitespace-nowrap text-ellipsis ">
-                {&props.name}{" "}{&props.id}
+                {&props.name}{" "}
             </div>
         </div>
     </li>

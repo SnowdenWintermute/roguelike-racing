@@ -7,6 +7,8 @@ use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::errors::AppError;
 use yewdux::Dispatch;
+use super::animation_causing_hp_change_finished_handler::animation_causing_hp_change_finished_handler;
+use super::animation_causing_payment_of_mp_price_finished_handler::animation_causing_payment_of_mp_price_finished_handler;
 use super::autoinjector_use_animation_finished_handler::autoinjector_use_animation_finished_handler;
 
 pub fn handle_animation_finished(
@@ -54,6 +56,20 @@ pub fn handle_animation_finished(
                 value_change,
                 combatant_id,
                 target_id,
+            )
+        }
+        CombatantAnimation::CastSpellOnTargets(targets_and_hp_change_results) => {
+            animation_causing_hp_change_finished_handler(
+                game_dispatch.clone(),
+                targets_and_hp_change_results,
+                combatant_id,
+            )
+        }
+        CombatantAnimation::MoveForwardToCastSpell(mp_price) => {
+            animation_causing_payment_of_mp_price_finished_handler(
+                game_dispatch.clone(),
+                mp_price,
+                combatant_id,
             )
         }
     }?;

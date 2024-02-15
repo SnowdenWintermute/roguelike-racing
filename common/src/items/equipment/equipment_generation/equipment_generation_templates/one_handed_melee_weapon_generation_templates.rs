@@ -1,9 +1,12 @@
 use super::generate_templates::generate_templates;
 use super::WeaponGenerationTemplate;
+use crate::combat::hp_change_source_types::Evadable;
+use crate::combat::hp_change_source_types::HpChangeSource;
+use crate::combat::hp_change_source_types::HpChangeSourceCategories;
+use crate::combat::hp_change_source_types::HpChangeSourceSubCategories;
+use crate::combat::magical_elements::MagicalElements;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::items::equipment::one_handed_melee_weapons::OneHandedMeleeWeapons;
-use crate::items::equipment::weapon_properties::DamageClassifications;
-use crate::items::equipment::weapon_properties::DamageTypes;
 use crate::items::items_by_level::items_by_level;
 use crate::primatives::Range;
 use once_cell::sync::Lazy;
@@ -18,7 +21,11 @@ pub fn one_handed_melee_weapon_template_from_base_item(
             Range::new(1, 3),
             Range::new(1, 3),
             Some(1),
-            vec![DamageClassifications::Physical(DamageTypes::Blunt)],
+            vec![HpChangeSource::new(
+                HpChangeSourceCategories::PhysicalDamage,
+                Some(HpChangeSourceSubCategories::Blunt),
+                None,
+            )],
             1,
             Some(requirements),
             None,
@@ -28,7 +35,11 @@ pub fn one_handed_melee_weapon_template_from_base_item(
             Range::new(2, 6),
             Range::new(1, 8),
             Some(1),
-            vec![DamageClassifications::Physical(DamageTypes::Blunt)],
+            vec![HpChangeSource::new(
+                HpChangeSourceCategories::PhysicalDamage,
+                Some(HpChangeSourceSubCategories::Blunt),
+                None,
+            )],
             1,
             Some(requirements),
             None,
@@ -38,7 +49,11 @@ pub fn one_handed_melee_weapon_template_from_base_item(
             Range::new(4, 8),
             Range::new(2, 12),
             Some(1),
-            vec![DamageClassifications::Physical(DamageTypes::Blunt)],
+            vec![HpChangeSource::new(
+                HpChangeSourceCategories::PhysicalDamage,
+                Some(HpChangeSourceSubCategories::Blunt),
+                None,
+            )],
             1,
             Some(requirements),
             None,
@@ -50,7 +65,11 @@ pub fn one_handed_melee_weapon_template_from_base_item(
                 Range::new(8, 10),
                 Range::new(4, 16),
                 Some(1),
-                vec![DamageClassifications::Physical(DamageTypes::Blunt)],
+                vec![HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage,
+                    Some(HpChangeSourceSubCategories::Blunt),
+                    None,
+                )],
                 1,
                 Some(requirements),
                 None,
@@ -61,7 +80,11 @@ pub fn one_handed_melee_weapon_template_from_base_item(
             Range::new(2, 4),
             Range::new(2, 6),
             Some(1),
-            vec![DamageClassifications::Physical(DamageTypes::Slashing)],
+            vec![HpChangeSource::new(
+                HpChangeSourceCategories::PhysicalDamage,
+                Some(HpChangeSourceSubCategories::Slashing),
+                None,
+            )],
             1,
             Some(requirements),
             None,
@@ -71,7 +94,11 @@ pub fn one_handed_melee_weapon_template_from_base_item(
             Range::new(3, 5),
             Range::new(4, 8),
             Some(1),
-            vec![DamageClassifications::Physical(DamageTypes::Slashing)],
+            vec![HpChangeSource::new(
+                HpChangeSourceCategories::PhysicalDamage,
+                Some(HpChangeSourceSubCategories::Slashing),
+                None,
+            )],
             1,
             Some(requirements),
             None,
@@ -81,7 +108,11 @@ pub fn one_handed_melee_weapon_template_from_base_item(
             Range::new(5, 8),
             Range::new(4, 12),
             Some(1),
-            vec![DamageClassifications::Physical(DamageTypes::Slashing)],
+            vec![HpChangeSource::new(
+                HpChangeSourceCategories::PhysicalDamage,
+                Some(HpChangeSourceSubCategories::Slashing),
+                None,
+            )],
             1,
             Some(requirements),
             None,
@@ -92,8 +123,16 @@ pub fn one_handed_melee_weapon_template_from_base_item(
             Range::new(6, 15),
             Some(1),
             vec![
-                DamageClassifications::Physical(DamageTypes::Slashing),
-                DamageClassifications::Physical(DamageTypes::Piercing),
+                HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage,
+                    Some(HpChangeSourceSubCategories::Slashing),
+                    None,
+                ),
+                HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage,
+                    Some(HpChangeSourceSubCategories::Piercing),
+                    None,
+                ),
             ],
             2,
             Some(requirements),
@@ -104,7 +143,11 @@ pub fn one_handed_melee_weapon_template_from_base_item(
             Range::new(1, 3),
             Range::new(1, 4),
             Some(1),
-            vec![DamageClassifications::Physical(DamageTypes::Piercing)],
+            vec![HpChangeSource::new(
+                HpChangeSourceCategories::PhysicalDamage,
+                Some(HpChangeSourceSubCategories::Piercing),
+                None,
+            )],
             1,
             Some(requirements),
             None,
@@ -114,7 +157,11 @@ pub fn one_handed_melee_weapon_template_from_base_item(
             Range::new(3, 7),
             Range::new(1, 11),
             Some(1),
-            vec![DamageClassifications::Physical(DamageTypes::Piercing)],
+            vec![HpChangeSource::new(
+                HpChangeSourceCategories::PhysicalDamage,
+                Some(HpChangeSourceSubCategories::Piercing),
+                None,
+            )],
             1,
             Some(requirements),
             None,
@@ -124,7 +171,11 @@ pub fn one_handed_melee_weapon_template_from_base_item(
             Range::new(6, 9),
             Range::new(4, 13),
             Some(1),
-            vec![DamageClassifications::Physical(DamageTypes::Piercing)],
+            vec![HpChangeSource::new(
+                HpChangeSourceCategories::PhysicalDamage,
+                Some(HpChangeSourceSubCategories::Piercing),
+                None,
+            )],
             1,
             Some(requirements),
             None,
@@ -135,12 +186,36 @@ pub fn one_handed_melee_weapon_template_from_base_item(
             Range::new(2, 12),
             Some(1),
             vec![
-                DamageClassifications::Physical(DamageTypes::Fire),
-                DamageClassifications::Physical(DamageTypes::Ice),
-                DamageClassifications::Physical(DamageTypes::Water),
-                DamageClassifications::Physical(DamageTypes::Lightning),
-                DamageClassifications::Physical(DamageTypes::Earth),
-                DamageClassifications::Physical(DamageTypes::Wind),
+                HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage,
+                    Some(HpChangeSourceSubCategories::Slashing),
+                    Some(MagicalElements::Fire),
+                ),
+                HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage,
+                    Some(HpChangeSourceSubCategories::Slashing),
+                    Some(MagicalElements::Ice),
+                ),
+                HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage,
+                    Some(HpChangeSourceSubCategories::Slashing),
+                    Some(MagicalElements::Lightning),
+                ),
+                HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage,
+                    Some(HpChangeSourceSubCategories::Slashing),
+                    Some(MagicalElements::Water),
+                ),
+                HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage,
+                    Some(HpChangeSourceSubCategories::Slashing),
+                    Some(MagicalElements::Wind),
+                ),
+                HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage,
+                    Some(HpChangeSourceSubCategories::Slashing),
+                    Some(MagicalElements::Earth),
+                ),
             ],
             1,
             Some(requirements),
@@ -151,7 +226,11 @@ pub fn one_handed_melee_weapon_template_from_base_item(
             Range::new(5, 8),
             Range::new(6, 10),
             Some(1),
-            vec![DamageClassifications::Magical(DamageTypes::Slashing)],
+            vec![HpChangeSource::new(
+                HpChangeSourceCategories::MagicalDamage(Evadable::new(true)),
+                Some(HpChangeSourceSubCategories::Slashing),
+                None,
+            )],
             1,
             Some(requirements),
             None,

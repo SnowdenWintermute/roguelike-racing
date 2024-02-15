@@ -1,20 +1,27 @@
 use super::enums::GameActions;
 use super::enums::MenuTypes;
+use super::PAGE_SIZE;
+use common::combat::combat_actions::CombatAction;
+use common::combat::combat_actions::CombatActionProperties;
 use common::combatants::abilities::CombatantAbilityNames;
+use common::items::consumables::ConsumableTypes;
 use common::primatives::NextOrPrevious;
+use std::collections::HashMap;
 
 impl MenuTypes {
     pub fn get_actions(
         menu_types: &Vec<MenuTypes>,
-        item_ids: Option<Vec<u32>>,
+        item_ids: Option<(HashMap<ConsumableTypes, Vec<u32>>, Vec<u32>)>,
         abilities: Option<Vec<CombatantAbilityNames>>,
+        selected_combat_action_properties_option: Option<CombatActionProperties>,
+        inventory_is_open: bool,
     ) -> Vec<GameActions> {
         let mut menu_items: Vec<GameActions> = Vec::new();
 
         for menu_type in menu_types {
             match menu_type {
                 MenuTypes::OutOfCombat => {
-                    menu_items.push(GameActions::ToggleInventoryOpen);
+                    menu_items.push(GameActions::SetInventoryOpen(!inventory_is_open));
                     menu_items.push(GameActions::ToggleReadyToExplore);
                     add_abilities_to_menu(&abilities, &mut menu_items);
                     menu_items.push(GameActions::SetAssignAttributePointsMenuOpen(true))
@@ -23,43 +30,63 @@ impl MenuTypes {
                 MenuTypes::ItemsOnGround => menu_items.push(GameActions::TakeItem),
                 MenuTypes::InCombat => {
                     add_abilities_to_menu(&abilities, &mut menu_items);
-                    menu_items.push(GameActions::ToggleInventoryOpen);
+                    menu_items.push(GameActions::SetInventoryOpen(!inventory_is_open));
                 }
-                MenuTypes::AbilitySelected => {
-                    menu_items.push(GameActions::DeselectAbility);
-                    menu_items.push(GameActions::CycleAbilityTargets(NextOrPrevious::Next));
-                    menu_items.push(GameActions::CycleAbilityTargets(NextOrPrevious::Previous));
-                    menu_items.push(GameActions::UseSelectedAbility);
-                    menu_items.push(GameActions::CycleAbilityTargetingScheme);
-                }
-                MenuTypes::ConsumableSelected => {
-                    menu_items.push(GameActions::DeselectConsumable);
-                    menu_items.push(GameActions::CycleConsumableTargets(NextOrPrevious::Next));
-                    menu_items.push(GameActions::CycleConsumableTargets(
-                        NextOrPrevious::Previous,
-                    ));
-                    menu_items.push(GameActions::UseSelectedConsumable);
-                    menu_items.push(GameActions::CycleConsumableTargetingScheme);
+                MenuTypes::CombatActionSelected => {
+                    menu_items.push(GameActions::DeselectCombatAction);
+                    menu_items.push(GameActions::CycleTargets(NextOrPrevious::Next));
+                    menu_items.push(GameActions::CycleTargets(NextOrPrevious::Previous));
+                    menu_items.push(GameActions::UseSelectedCombatAction);
+                    match &selected_combat_action_properties_option {
+                        Some(properties) => {
+                            if properties.targeting_schemes.len() > 1 {
+                                menu_items.push(GameActions::CycleTargetingScheme)
+                            }
+                        }
+                        None => (),
+                    }
                 }
                 MenuTypes::LevelUpAbilities => {
                     menu_items.push(GameActions::SetAssignAttributePointsMenuOpen(true));
                     add_abilities_to_menu(&abilities, &mut menu_items);
                 }
                 MenuTypes::InventoryOpen => {
-                    menu_items.push(GameActions::ToggleInventoryOpen);
+                    menu_items.push(GameActions::SetInventoryOpen(!inventory_is_open));
                     menu_items.push(GameActions::ToggleViewingEquipedItems);
                     if let Some(item_ids) = &item_ids {
-                        for id in item_ids {
-                            menu_items.push(GameActions::SelectItem(*id))
+                        let mut consumables_as_vec = item_ids
+                            .0
+                            .clone()
+                            .into_iter()
+                            .map(|(consumable_type, ids_vec)| (consumable_type, ids_vec))
+                            .collect::<Vec<(ConsumableTypes, Vec<u32>)>>();
+                        consumables_as_vec.sort_by_key(|item| item.0);
+                        let mut num_menu_buttons = 2;
+
+                        for (_, ids) in &consumables_as_vec {
+                            menu_items.push(GameActions::SelectItem(ids[0], ids.len() as u16));
+                            num_menu_buttons += 1;
+                            if num_menu_buttons % PAGE_SIZE == 0 {
+                                menu_items.push(GameActions::SetInventoryOpen(!inventory_is_open));
+                                num_menu_buttons += 1;
+                            }
+                        }
+                        for id in &item_ids.1 {
+                            menu_items.push(GameActions::SelectItem(*id, 1));
+                            num_menu_buttons += 1;
+                            if num_menu_buttons % PAGE_SIZE == 0 {
+                                menu_items.push(GameActions::SetInventoryOpen(!inventory_is_open));
+                                num_menu_buttons += 1;
+                            }
                         }
                     }
                 }
                 MenuTypes::ViewingEquipedItems => {
-                    menu_items.push(GameActions::ToggleInventoryOpen);
+                    menu_items.push(GameActions::SetInventoryOpen(!inventory_is_open));
                     menu_items.push(GameActions::ToggleViewingEquipedItems);
                     if let Some(item_ids) = &item_ids {
-                        for id in item_ids {
-                            menu_items.push(GameActions::SelectItem(*id))
+                        for id in &item_ids.1 {
+                            menu_items.push(GameActions::SelectItem(*id, 1))
                         }
                     }
                 }
@@ -86,7 +113,9 @@ fn add_abilities_to_menu(
 ) {
     if let Some(names) = ability_names.clone() {
         for ability_name in names {
-            menu_items.push(GameActions::SelectAbility(ability_name))
+            menu_items.push(GameActions::SelectCombatAction(CombatAction::AbilityUsed(
+                ability_name,
+            )))
         }
     }
 }

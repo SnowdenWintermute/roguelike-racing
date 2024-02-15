@@ -20,7 +20,7 @@ pub struct RoomsExplored {
     pub on_current_floor: u16,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct AdventuringParty {
     pub id: u32,
     pub name: String,
@@ -163,13 +163,16 @@ impl AdventuringParty {
 
     pub fn get_character_if_owned<'a>(
         &'a self,
-        player_character_ids_option: Option<HashSet<u32>>,
+        player_character_ids_option: &Option<HashSet<u32>>,
         character_id: u32,
     ) -> Result<&'a Character, AppError> {
-        let player_character_ids = player_character_ids_option.ok_or_else(|| AppError {
-            error_type: crate::errors::AppErrorTypes::ServerError,
-            message: error_messages::PLAYER_HAS_NO_CHARACTERS.to_string(),
-        })?;
+        let player_character_ids =
+            player_character_ids_option
+                .as_ref()
+                .ok_or_else(|| AppError {
+                    error_type: crate::errors::AppErrorTypes::ServerError,
+                    message: error_messages::PLAYER_HAS_NO_CHARACTERS.to_string(),
+                })?;
         match player_character_ids.contains(&character_id) {
             true => self.characters.get(&character_id).ok_or_else(|| AppError {
                 error_type: AppErrorTypes::ServerError,

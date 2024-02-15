@@ -1,8 +1,8 @@
-pub static MONSTER_FIRST_NAMES: [&str; 9] = [
+pub static MONSTER_FIRST_NAMES: [&str; 6] = [
     "rock",
-    "ghost",
-    "spirit",
-    "zombie",
+    // "ghost",
+    // "spirit",
+    // "zombie",
     "fire",
     "water",
     "ice",

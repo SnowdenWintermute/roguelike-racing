@@ -34,7 +34,7 @@ pub enum CombatantAbilityNames {
     HeatLance,
     Fire,
     RainStorm,
-    Heal,
+    Healing,
 }
 
 impl Display for CombatantAbilityNames {
@@ -43,7 +43,7 @@ impl Display for CombatantAbilityNames {
             CombatantAbilityNames::Attack => write!(f, "Attack"),
             CombatantAbilityNames::HeatLance => write!(f, "Heat Lance"),
             CombatantAbilityNames::ArmorBreak => write!(f, "Armor Break"),
-            CombatantAbilityNames::Heal => write!(f, "Heal"),
+            CombatantAbilityNames::Healing => write!(f, "Healing"),
             CombatantAbilityNames::Fire => write!(f, "Fire"),
             CombatantAbilityNames::RainStorm => write!(f, "Rain Storm"),
         }
@@ -56,6 +56,16 @@ impl CombatantAbility {
         match name {
             CombatantAbilityNames::Attack => {
                 let mut ability = CombatantAbility::new(CombatantAbilityNames::Attack);
+                ability.level = 1;
+                ability
+            }
+            CombatantAbilityNames::Healing => {
+                let mut ability = CombatantAbility::new(CombatantAbilityNames::Healing);
+                ability.level = 1;
+                ability
+            }
+            CombatantAbilityNames::Fire => {
+                let mut ability = CombatantAbility::new(CombatantAbilityNames::Fire);
                 ability.level = 1;
                 ability
             }

@@ -1,5 +1,7 @@
+#![allow(dead_code)]
 use crate::components::game::combat_log::combat_log_message::CombatLogMessage;
 use crate::components::mesh_manager::ActionResultsManager;
+use crate::components::mesh_manager::CombatantEventManager;
 use common::adventuring_party::AdventuringParty;
 use common::app_consts::error_messages::{self};
 use common::character::Character;
@@ -328,4 +330,18 @@ pub fn get_item_on_ground(id: &u32, game_state: Rc<GameStore>) -> Result<Item, A
         error_type: common::errors::AppErrorTypes::ClientError,
         message: error_messages::INVALID_ITEM_ID.to_string(),
     });
+}
+
+pub fn get_combatant_event_manager_mut<'a>(
+    store: &'a mut GameStore,
+    entity_id: u32,
+) -> Result<&'a mut CombatantEventManager, AppError> {
+    store
+        .action_results_manager
+        .combantant_event_managers
+        .get_mut(&entity_id)
+        .ok_or_else(|| AppError {
+            error_type: common::errors::AppErrorTypes::ClientError,
+            message: error_messages::COMBANTANT_EVENT_MANAGER_NOT_FOUND.to_string(),
+        })
 }

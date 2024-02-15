@@ -5,6 +5,8 @@ pub mod battle;
 pub mod combat_actions;
 pub mod consumable_use_handlers;
 mod get_combatant_by_id;
+pub mod hp_change_source_types;
+pub mod magical_elements;
 mod turn_order;
 use self::battle::BattleGroup;
 use self::combat_actions::CombatAction;
@@ -35,14 +37,35 @@ pub struct ActionResult {
     pub targets: CombatActionTarget,
     // used to display floating text and reduce/add to the value
     pub hp_changes_by_entity_id: Option<HashMap<u32, i16>>,
+    // prices are a different category because they won't cause floating numbers, only abilities that
+    // cause mp gain/loss should be animated
+    pub mp_combat_action_prices_paid_by_entity_id: Option<HashMap<u32, u8>>,
     pub mp_changes_by_entity_id: Option<HashMap<u32, i16>>,
     pub misses_by_entity_id: Option<HashSet<u32>>,
-    pub resists_by_entity_id: Option<HashSet<u32>>,
-    pub is_crit: bool,
+    pub crits_by_entity_id: Option<HashSet<u32>>,
     // used to display floating +- effect icons and add/remove the effects to entities
     pub status_effect_changes_by_entity_id:
         Option<HashMap<u32, Vec<(StatusEffects, GainedOrLost)>>>,
+    pub items_consumed_in_entity_id_inventories: Option<HashMap<u32, Vec<u32>>>,
     pub ends_turn: bool,
+}
+
+impl ActionResult {
+    pub fn new(user_id: u32, action: CombatAction, targets: CombatActionTarget) -> Self {
+        ActionResult {
+            user_id,
+            action,
+            targets,
+            hp_changes_by_entity_id: None,
+            mp_combat_action_prices_paid_by_entity_id: None,
+            mp_changes_by_entity_id: None,
+            misses_by_entity_id: None,
+            crits_by_entity_id: None,
+            status_effect_changes_by_entity_id: None,
+            items_consumed_in_entity_id_inventories: None,
+            ends_turn: true,
+        }
+    }
 }
 
 #[derive(Debug)]

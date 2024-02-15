@@ -40,16 +40,15 @@ impl GameServer {
             message: error_messages::PLAYER_HAS_NO_CHARACTERS.to_string(),
         })?;
 
-        let mut should_unready_player = false;
         if player_character_ids.contains(&character_id) {
             party.remove_character(character_id);
             player_character_ids.remove(&character_id);
 
             let player = get_mut_player(game, &username)?;
+
             if player_character_ids.len() >= 1 {
                 player.character_ids = Some(player_character_ids);
             } else {
-                should_unready_player = true;
                 player.character_ids = None
             }
         } else {
@@ -59,16 +58,20 @@ impl GameServer {
             });
         }
 
-        if should_unready_player {
-            let was_ready = game.players_readied.remove(&username);
-            if was_ready {
-                self.emit_packet(
-                    &game_name,
-                    &WebsocketChannelNamespace::Game,
-                    &GameServerUpdatePackets::PlayerToggledReady(username.clone()),
-                    None,
-                )?;
-            }
+        let player = get_mut_player(game, &username)?;
+        println!(
+            "character ids after deleting character id {character_id}: {:#?}",
+            player.character_ids
+        );
+
+        let was_ready = game.players_readied.remove(&username);
+        if was_ready {
+            self.emit_packet(
+                &game_name,
+                &WebsocketChannelNamespace::Game,
+                &GameServerUpdatePackets::PlayerToggledReady(username.clone()),
+                None,
+            )?;
         }
 
         self.emit_packet(

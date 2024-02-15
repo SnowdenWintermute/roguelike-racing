@@ -8,13 +8,13 @@ use super::vec_of_possible_affixes_and_tiers_from_filter::vec_of_possible_affixe
 fn tier_if_prefix_allowed(prefix_type: &PrefixTypes) -> Option<u8> {
     match prefix_type {
         PrefixTypes::Mp => Some(5),
-        PrefixTypes::ArmorClass => Some(5),
+        PrefixTypes::ArmorClass => None,
         PrefixTypes::Accuracy => Some(5),
         PrefixTypes::PercentDamage => None,
         PrefixTypes::LifeSteal => None,
         PrefixTypes::Resilience => Some(5),
         PrefixTypes::Evasion => Some(5),
-        PrefixTypes::Obscurity => Some(5),
+        PrefixTypes::Focus => Some(5),
         PrefixTypes::ArmorPenetration => None,
         PrefixTypes::Agility => Some(5),
     }
@@ -27,7 +27,6 @@ fn tier_if_suffix_allowed(suffix_type: &SuffixTypes) -> Option<u8> {
         SuffixTypes::Vitality => Some(5),
         SuffixTypes::AllBase => Some(5),
         SuffixTypes::Hp => Some(5),
-        SuffixTypes::Focus => Some(5),
         SuffixTypes::Damage => None,
         SuffixTypes::Durability => None,
     }

@@ -13,9 +13,9 @@ fn tier_if_prefix_allowed(prefix_type: &PrefixTypes) -> Option<u8> {
         PrefixTypes::LifeSteal => None,
         PrefixTypes::Resilience => Some(5),
         PrefixTypes::Evasion => Some(5),
-        PrefixTypes::Obscurity => Some(5),
         PrefixTypes::ArmorPenetration => None,
         PrefixTypes::Agility => Some(5),
+        PrefixTypes::Focus => Some(5),
     }
 }
 fn tier_if_suffix_allowed(suffix_type: &SuffixTypes) -> Option<u8> {
@@ -26,7 +26,6 @@ fn tier_if_suffix_allowed(suffix_type: &SuffixTypes) -> Option<u8> {
         SuffixTypes::Vitality => Some(5),
         SuffixTypes::AllBase => Some(3),
         SuffixTypes::Hp => Some(5),
-        SuffixTypes::Focus => None,
         SuffixTypes::Damage => None,
         SuffixTypes::Durability => Some(5),
     }

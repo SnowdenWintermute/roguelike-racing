@@ -10,6 +10,7 @@ use common::packets::server_to_client::AdventuringPartyCreation;
 use common::packets::server_to_client::NewCharacterInParty;
 use common::packets::server_to_client::PlayerAdventuringPartyChange;
 use common::packets::server_to_client::PlayerCharacterDeletion;
+use gloo::console::log;
 use std::collections::HashSet;
 use yewdux::Dispatch;
 
@@ -115,7 +116,8 @@ pub fn handle_character_deletion(
         message: error_messages::GAME_NOT_FOUND.to_string(),
     })?;
     let party = get_mut_party(game, character_deletion.party_id)?;
-    party.remove_character(character_deletion.character_id);
+    let character_id = character_deletion.character_id;
+    party.remove_character(character_id);
 
     let player = get_mut_player(game, &character_deletion.username)?;
     let player_character_ids_option = player.character_ids.clone();
@@ -132,7 +134,7 @@ pub fn handle_character_deletion(
         .remove(&character_deletion.character_id);
 
     let player = get_mut_player(game, &character_deletion.username)?;
-    if player_character_ids.len() > 1 {
+    if player_character_ids.len() >= 1 {
         player.character_ids = Some(player_character_ids);
     } else {
         player.character_ids = None

@@ -16,11 +16,10 @@ pub mod player_input_handlers;
 mod remove_user_from_websocket_channel;
 pub mod send_messages;
 pub mod update_packet_creators;
-use crate::utils::generate_random_username;
-
 use super::AppMessage;
 use super::ClientBinaryMessage;
 use super::ClientMessage;
+use crate::utils::generate_random_username;
 
 #[derive(Debug)]
 pub struct UserWebsocketChannels {
@@ -135,24 +134,17 @@ impl Handler<ClientBinaryMessage> for GameServer {
             Ok(PlayerInputs::ToggleReadyToGoDownStairs) => {
                 self.toggle_ready_to_descend_handler(message.actor_id)
             }
-            Ok(PlayerInputs::SelectAbility(packet)) => {
-                self.character_selects_ability_handler(message.actor_id, packet)
+            Ok(PlayerInputs::SelectCombatAction(packet)) => {
+                self.character_selects_combat_action_handler(message.actor_id, packet)
             }
-            Ok(PlayerInputs::SelectConsumable(packet)) => {
-                self.character_selects_consumable_handler(message.actor_id, packet)
+            Ok(PlayerInputs::UseSelectedCombatAction(packet)) => {
+                self.character_uses_selected_combat_action_handler(message.actor_id, packet)
             }
-            Ok(PlayerInputs::UseSelectedConsumable(character_id)) => {
-                self.character_uses_selected_consumable_handler(message.actor_id, character_id)
+            Ok(PlayerInputs::CycleCombatActionTargets(packet)) => {
+                self.character_cycles_combat_action_targets_handler(message.actor_id, packet)
             }
-            Ok(PlayerInputs::ChangeAbilityTargets(packet)) => {
-                self.character_changes_ability_targets_handler(message.actor_id, packet)
-            }
-            Ok(PlayerInputs::ChangeConsumableTargets(packet)) => {
-                self.character_changes_consumable_targets_handler(message.actor_id, packet)
-            }
-            Ok(PlayerInputs::UseSelectedAbility(character_id)) => {
-                self.character_uses_selected_ability_handler(message.actor_id, character_id)
-            }
+            Ok(PlayerInputs::CycleCombatActionTargetingSchemes(packet)) => self
+                .character_cycles_combat_action_targeting_schemes_handler(message.actor_id, packet),
             Ok(PlayerInputs::TakeItemOnGround(packet)) => {
                 self.character_picks_up_item_from_ground_handler(message.actor_id, packet)
             }

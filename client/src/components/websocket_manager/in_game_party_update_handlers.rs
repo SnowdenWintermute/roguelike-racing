@@ -5,12 +5,13 @@ use common::combat::battle::Battle;
 use common::dungeon_rooms::DungeonRoom;
 use common::dungeon_rooms::DungeonRoomTypes;
 use common::errors::AppError;
+use common::game::getters::get_character;
 use common::game::getters::get_mut_party;
-use common::packets::client_to_server::ChangeTargetsPacket;
-use common::packets::server_to_client::CharacterSelectedAbilityPacket;
-use common::packets::server_to_client::CharacterSelectedConsumablePacket;
+use common::packets::CharacterAndDirection;
+use common::packets::CharacterId;
 use gloo::console::log;
 use std::collections::HashMap;
+use std::collections::HashSet;
 use std::collections::VecDeque;
 use yewdux::Dispatch;
 
@@ -120,54 +121,47 @@ pub fn handle_battle_full_update(
     Ok(())
 }
 
-pub fn handle_character_ability_selection(
-    game_store: &mut GameStore,
-    packet: CharacterSelectedAbilityPacket,
-) -> Result<(), AppError> {
-    let CharacterSelectedAbilityPacket {
-        character_id,
-        ability_name_option,
-        targets_option,
-    } = packet;
-
-    let character = game_store.get_mut_character(character_id)?;
-    character.combatant_properties.selected_ability_name = ability_name_option;
-    character.combatant_properties.combat_action_targets = targets_option;
-    Ok(())
-}
-
-pub fn handle_character_consumable_selection(
+pub fn character_cycled_targets_handler(
     game_dispatch: Dispatch<GameStore>,
-    packet: CharacterSelectedConsumablePacket,
+    packet: CharacterAndDirection,
 ) -> Result<(), AppError> {
-    log!(format!(
-        "selected consumable packet received {:#?}",
-        &packet
-    ));
-    let CharacterSelectedConsumablePacket {
-        character_id,
-        targets_option,
-        consumable_id_option,
-    } = packet;
+    game_dispatch.reduce_mut(|game_store| -> Result<(), AppError> {
+        let party = game_store.get_current_party()?;
+        let party_id = party.id;
+        let game = game_store.get_current_game()?;
+        let character = get_character(game, party_id, packet.character_id)?;
+        let username = character.name_of_controlling_user.clone();
+        let game = game_store.get_current_game_mut()?;
+        game.cycle_character_targets(
+            party_id,
+            Some(HashSet::from([packet.character_id])), // trust that server sends valid packets
+            &username,
+            packet.character_id,
+            &packet.direction,
+        )?;
 
-    game_dispatch.reduce_mut(|store| {
-        let character = store.get_mut_character(character_id)?;
-        character.combatant_properties.selected_consumable = consumable_id_option;
-        character.combatant_properties.combat_action_targets = targets_option;
         Ok(())
     })
 }
 
-pub fn handle_character_changed_targets(
-    game_store: &mut GameStore,
-    packet: ChangeTargetsPacket,
+pub fn character_cycled_targeting_schemes_handler(
+    game_dispatch: Dispatch<GameStore>,
+    character_id: CharacterId,
 ) -> Result<(), AppError> {
-    let ChangeTargetsPacket {
-        character_id,
-        new_targets,
-    } = packet;
-    let character = game_store.get_mut_character(character_id)?;
-    character.combatant_properties.combat_action_targets = Some(new_targets.clone());
+    game_dispatch.reduce_mut(|game_store| -> Result<(), AppError> {
+        let party = game_store.get_current_party()?;
+        let party_id = party.id;
+        let game = game_store.get_current_game()?;
+        let character = get_character(game, party_id, character_id)?;
+        let username = character.name_of_controlling_user.clone();
+        let game = game_store.get_current_game_mut()?;
+        game.cycle_targeting_schemes(
+            party_id,
+            Some(HashSet::from([character_id])), // trust that server sends valid packets
+            &username,
+            character_id,
+        )?;
 
-    Ok(())
+        Ok(())
+    })
 }

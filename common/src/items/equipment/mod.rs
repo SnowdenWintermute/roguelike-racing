@@ -1,7 +1,6 @@
 pub mod affixes;
 pub mod armor_properties;
 pub mod body_armors;
-mod display_equipment;
 pub mod equipment_generation;
 pub mod head_gears;
 pub mod jewelries;
@@ -23,7 +22,9 @@ use self::shields::Shields;
 use self::two_handed_melee_weapons::TwoHandedMeleeWeapons;
 use self::two_handed_ranged_weapons::TwoHandedRangedWeapons;
 use self::weapon_properties::WeaponProperties;
+use crate::app_consts::error_messages;
 use crate::combatants::combat_attributes::CombatAttributes;
+use crate::errors::AppError;
 use crate::primatives::MaxAndCurrent;
 use core::fmt;
 use serde::Deserialize;
@@ -103,6 +104,24 @@ pub struct EquipmentProperties {
     pub traits: Option<Vec<EquipmentTraits>>,
 }
 
+impl EquipmentProperties {
+    pub fn new(
+        equipment_type: EquipmentTypes,
+        durability: Option<MaxAndCurrent<u8>>,
+        attributes: HashMap<CombatAttributes, u16>,
+        affixes: Vec<Affix>,
+        traits: Option<Vec<EquipmentTraits>>,
+    ) -> Self {
+        EquipmentProperties {
+            equipment_type,
+            durability,
+            attributes,
+            affixes,
+            traits,
+        }
+    }
+}
+
 #[derive(PartialEq, Clone, Debug)]
 pub struct EquipableSlots {
     pub main: EquipmentSlots,
@@ -163,5 +182,34 @@ impl EquipmentProperties {
             | EquipmentTypes::TwoHandedRangedWeapon(_, _) => true,
             _ => false,
         }
+    }
+
+    pub fn get_equipment_weapon_properties(&self) -> Result<&WeaponProperties, AppError> {
+        match &self.equipment_type {
+            EquipmentTypes::OneHandedMeleeWeapon(_, weapon_properties)
+            | EquipmentTypes::TwoHandedMeleeWeapon(_, weapon_properties)
+            | EquipmentTypes::TwoHandedRangedWeapon(_, weapon_properties) => Ok(&weapon_properties),
+            _ => {
+                return Err(AppError {
+                    error_type: crate::errors::AppErrorTypes::Generic,
+                    message: error_messages::INVALID_EQUIPMENT_SLOT.to_string(),
+                })
+            }
+        }
+    }
+
+    pub fn get_modified_weapon_damage_range(&self) -> Result<(f32, f32), AppError> {
+        let weapon_properties = self.get_equipment_weapon_properties()?;
+        let damage_attribute_bonus = *self
+            .attributes
+            .get(&CombatAttributes::Damage)
+            .unwrap_or_else(|| &0) as f32;
+        let percent_weapon_damage_modifier =
+            self.get_weapon_percent_damage_increase_trait_damage_modifier();
+        let weapon_min = (weapon_properties.damage.min as f32 + damage_attribute_bonus)
+            * percent_weapon_damage_modifier;
+        let weapon_max = (weapon_properties.damage.max as f32 + damage_attribute_bonus)
+            * percent_weapon_damage_modifier;
+        Ok((weapon_min, weapon_max))
     }
 }

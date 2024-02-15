@@ -1,10 +1,10 @@
-use super::{getters::get_mut_party, RoguelikeRacerGame};
-use crate::{
-    app_consts::{error_messages, MAX_PARTY_SIZE},
-    character::Character,
-    combatants::CombatantClass,
-    errors::AppError,
-};
+use super::getters::get_mut_party;
+use super::RoguelikeRacerGame;
+use crate::app_consts::error_messages;
+use crate::app_consts::MAX_PARTY_SIZE;
+use crate::character::Character;
+use crate::combatants::CombatantClass;
+use crate::errors::AppError;
 
 impl RoguelikeRacerGame {
     pub fn add_character_to_adventuring_party(

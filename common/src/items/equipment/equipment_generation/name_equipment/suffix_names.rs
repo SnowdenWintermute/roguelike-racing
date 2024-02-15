@@ -50,14 +50,6 @@ pub fn get_suffix_name(suffix_type: &SuffixTypes, tier: &u8) -> &'static str {
             5 => "the Whale",
             _ => "hacked",
         },
-        SuffixTypes::Focus => match tier {
-            1 => "Attention",
-            2 => "Concentration",
-            3 => "Unveiling",
-            4 => "Discovery",
-            5 => "Revelation",
-            _ => "hacked",
-        },
         SuffixTypes::Damage => match tier {
             1 => "Harm",
             2 => "Ruin",

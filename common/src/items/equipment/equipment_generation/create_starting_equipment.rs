@@ -1,3 +1,6 @@
+#![allow(unused)]
+use crate::combat::hp_change_source_types::HpChangeSource;
+use crate::combat::hp_change_source_types::HpChangeSourceCategories;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::game::id_generator::IdGenerator;
 use crate::items::equipment::affixes::Affix;
@@ -11,8 +14,6 @@ use crate::items::equipment::one_handed_melee_weapons::OneHandedMeleeWeapons;
 use crate::items::equipment::shield_properties::ShieldProperties;
 use crate::items::equipment::shield_properties::ShieldSizes;
 use crate::items::equipment::shields::Shields;
-use crate::items::equipment::weapon_properties::DamageClassifications;
-use crate::items::equipment::weapon_properties::DamageTypes;
 use crate::items::equipment::weapon_properties::WeaponProperties;
 use crate::items::equipment::EquipmentProperties;
 use crate::items::equipment::EquipmentSlots;
@@ -25,6 +26,7 @@ use crate::primatives::Range;
 use std::collections::HashMap;
 
 pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<EquipmentSlots, Item> {
+    #[allow(unused_variables, dead_code, unused)]
     let mut starting_equipment = HashMap::new();
 
     let chest_properties = EquipmentProperties {
@@ -90,7 +92,11 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
         equipment_type: EquipmentTypes::OneHandedMeleeWeapon(
             OneHandedMeleeWeapons::Stick,
             WeaponProperties {
-                damage_classifications: vec![DamageClassifications::Physical(DamageTypes::Earth)],
+                damage_classifications: vec![HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage,
+                    None,
+                    None,
+                )],
                 damage: Range::new(1, 4),
             },
         ),
@@ -116,7 +122,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
     //     equipment_type: EquipmentTypes::OneHandedMeleeWeapon(
     //         OneHandedMeleeWeapons::Stick,
     //         WeaponProperties {
-    //             damage_classifications: vec![DamageClassifications::Physical(DamageTypes::Blunt)],
+    //             damage_classifications: vec![HpChangeSource::new(HpChangeSourceCategories::PhysicalDamage, Some(HpChangeSourceSubCategories::Blunt)],
     //             damage: Range::new(1, 4),
     //         },
     //     ),
@@ -220,7 +226,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
         name: "Plastic Lei".to_string(),
     };
 
-    let amulet = Item {
+    let _amulet = Item {
         entity_properties: amulet_entity_properties,
         item_level: 0,
         requirements: None,
@@ -228,7 +234,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
     };
 
     // starting_equipment.insert(EquipmentSlots::Body, chest);
-    starting_equipment.insert(EquipmentSlots::Head, head);
+    // starting_equipment.insert(EquipmentSlots::Head, head);
     starting_equipment.insert(EquipmentSlots::MainHand, main_hand);
     starting_equipment.insert(EquipmentSlots::OffHand, off_hand);
     // starting_equipment.insert(EquipmentSlots::RightRing, right_ring);

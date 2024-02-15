@@ -34,7 +34,6 @@ pub fn action_menu(_: &Props) -> Html {
     let action_menu_button_properties = use_state(|| Vec::<ActionMenuButtonProperties>::new());
     let button_props_on_current_page = use_state(|| Vec::<ActionMenuButtonProperties>::new());
     let last_page_number_filtered = use_state(|| 0);
-    let cloned_current_page_number = game_state.action_menu_current_page_number.clone();
 
     let cloned_current_page_number = game_state.action_menu_current_page_number.clone();
     let cloned_action_button_properties = action_menu_button_properties.clone();
@@ -73,6 +72,7 @@ pub fn action_menu(_: &Props) -> Html {
     );
 
     let keyup_listener_state = use_state(|| None::<EventListener>);
+    let keypress_listener_state = use_state(|| None::<EventListener>);
     let cloned_button_props_on_current_page = button_props_on_current_page.clone();
     let cloned_button_props_on_current_page_for_effect_change =
         button_props_on_current_page.clone();
@@ -82,6 +82,7 @@ pub fn action_menu(_: &Props) -> Html {
             set_keyup_listeners::set_keyup_listeners(
                 cloned_button_props_on_current_page,
                 keyup_listener_state,
+                keypress_listener_state
             )
         },
     );
@@ -117,6 +118,27 @@ pub fn action_menu(_: &Props) -> Html {
         }
     });
 
+    let action_buttons = {
+        let mut last_assigned_button_number = 0;
+        let mut buttons = vec![];
+        for button_properties in cloned_button_props_on_current_page.iter() {
+            let number_option = match button_properties.dedicated_key_option {
+                None => {
+                    last_assigned_button_number += 1;
+                    Some(last_assigned_button_number)
+                }
+                Some(..) => None,
+            };
+            buttons.push(html!(
+            <ActionMenuButton
+                properties={button_properties.clone()}
+                number_option={number_option}
+            />
+            ))
+        }
+        buttons
+    };
+
     html!(
         <section class="w-[22rem] border border-slate-400 bg-slate-700 mr-4 overflow-y-auto
         flex flex-col justify-between"
@@ -126,14 +148,7 @@ pub fn action_menu(_: &Props) -> Html {
                 ref={action_menu_node_ref}
                 onwheel={handle_wheel}
             >
-                {cloned_button_props_on_current_page.deref().iter().enumerate().map(|(i, action)| {
-                      html!(
-                          <ActionMenuButton
-                            properties={action.clone()}
-                            number={i+1}
-                          />
-                          )
-                      }).collect::<Html>() }
+                {action_buttons}
             </div>
             {html!(
                 if cloned_action_button_properties.deref().len() as u8 > PAGE_SIZE {
@@ -145,4 +160,3 @@ pub fn action_menu(_: &Props) -> Html {
         </section>
     )
 }
-

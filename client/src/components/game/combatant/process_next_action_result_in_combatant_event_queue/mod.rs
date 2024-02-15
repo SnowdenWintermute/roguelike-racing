@@ -1,9 +1,11 @@
 mod queue_attack_animations;
 mod queue_consumable_use_animations;
+mod queue_fire_animations;
 mod queue_melee_ability_animations;
 mod queue_return_to_home_position_animations;
 use self::queue_attack_animations::queue_attack_animations;
 use self::queue_consumable_use_animations::queue_consumable_use_animations;
+use self::queue_fire_animations::queue_fire_animations;
 use self::queue_melee_ability_animations::queue_melee_ability_animations;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
@@ -11,6 +13,7 @@ use common::combat::combat_actions::CombatAction;
 use common::combat::ActionResult;
 use common::combatants::abilities::CombatantAbilityNames;
 use common::errors::AppError;
+use gloo::console::log;
 use yewdux::Dispatch;
 
 pub fn process_next_action_result_in_combatant_event_queue(
@@ -19,6 +22,7 @@ pub fn process_next_action_result_in_combatant_event_queue(
     combatant_id: u32,
 ) -> Result<(), AppError> {
     if let Some(new_action_result) = &current_action_processing {
+        log!("processing next action result");
         game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
             let event_manager = store
                 .action_results_manager
@@ -33,8 +37,7 @@ pub fn process_next_action_result_in_combatant_event_queue(
             let game = store.get_current_game_mut()?;
             let (_, action_user_combatant_properties) =
                 game.get_mut_combatant_by_id(&combatant_id)?;
-            action_user_combatant_properties.selected_consumable = None;
-            action_user_combatant_properties.selected_ability_name = None;
+            action_user_combatant_properties.selected_combat_action = None;
             action_user_combatant_properties.combat_action_targets = None;
 
             Ok(())
@@ -53,6 +56,12 @@ pub fn process_next_action_result_in_combatant_event_queue(
                 match ability_name {
                     CombatantAbilityNames::Attack => {
                         queue_attack_animations(game_dispatch, combatant_id, new_action_result)
+                    }
+                    CombatantAbilityNames::Fire => {
+                        queue_fire_animations(game_dispatch, combatant_id, new_action_result)
+                    }
+                    CombatantAbilityNames::Healing => {
+                        queue_fire_animations(game_dispatch, combatant_id, new_action_result)
                     }
                     _ => Ok(()),
                 }

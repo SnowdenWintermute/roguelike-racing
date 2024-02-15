@@ -1,12 +1,12 @@
 #![allow(unused, dead_code)]
+use common::combat::combat_actions::CombatAction;
 use common::combatants::abilities::CombatantAbilityNames;
 use common::combatants::combat_attributes::CombatAttributes;
 use common::primatives::NextOrPrevious;
 
 pub enum MenuTypes {
     InCombat,
-    AbilitySelected,
-    ConsumableSelected,
+    CombatActionSelected,
     OutOfCombat,
     LevelUpAbilities,
     AttributePointAssignment,
@@ -23,9 +23,8 @@ pub enum GameActions {
     ToggleReadyToExplore,
     ToggleReadyToDescend,
     SetInventoryOpen(bool),
-    ToggleInventoryOpen,
     ToggleViewingEquipedItems,
-    SelectItem(u32),
+    SelectItem(u32, u16), // item_id, number of this item if consumable
     OpenTreasureChest,
     TakeItem,
     // Item Selected
@@ -33,16 +32,12 @@ pub enum GameActions {
     DropItem(u32),
     ShardItem(u32),
     DeselectItem,
-    DeselectConsumable,
     // InCombat
-    SelectAbility(CombatantAbilityNames),
-    DeselectAbility,
-    CycleAbilityTargets(NextOrPrevious),
-    CycleConsumableTargets(NextOrPrevious),
-    CycleAbilityTargetingScheme,
-    CycleConsumableTargetingScheme,
-    UseSelectedAbility,
-    UseSelectedConsumable,
+    UseSelectedCombatAction,
+    SelectCombatAction(CombatAction),
+    DeselectCombatAction,
+    CycleTargets(NextOrPrevious),
+    CycleTargetingScheme,
     LevelUpAbility(CombatantAbilityNames),
     SetAssignAttributePointsMenuOpen(bool),
     AssignAttributePoint(CombatAttributes),

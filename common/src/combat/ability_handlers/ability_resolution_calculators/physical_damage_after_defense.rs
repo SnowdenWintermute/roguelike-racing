@@ -14,10 +14,11 @@ pub fn physical_damage_after_defense(
         .get(&CombatAttributes::ArmorPenetration)
         .unwrap_or_else(|| &0);
     let penetrated_ac = target_ac.saturating_sub(*user_armor_pen) as u32;
-    // println!("rolled damage: {rolled_damage}, penetrated_ac: {penetrated_ac}");
+    println!("rolled damage: {rolled_damage}, penetrated_ac: {penetrated_ac}");
     let rolled_damage_squared = rolled_damage.pow(2);
-    // println!("rolled damage squared: {rolled_damage_squared}");
-    let damage_after_ac = (5 * rolled_damage_squared) / (penetrated_ac + 5 * rolled_damage);
+    println!("rolled damage squared: {rolled_damage_squared}");
+    let damage_after_ac =
+        (5 * rolled_damage_squared) / std::cmp::max(penetrated_ac + 5 * rolled_damage, 1);
     // println!("damage_after_ac: {rolled_damage_squared}");
 
     let physical_damage_reduction = cmp::min(

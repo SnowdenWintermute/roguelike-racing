@@ -11,7 +11,7 @@ use std::collections::hash_map::HashMap;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
-#[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize, Eq)]
+#[derive(Debug, EnumIter, Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub enum DungeonRoomTypes {
     MonsterLair,
     Treasure,
@@ -30,7 +30,7 @@ impl fmt::Display for DungeonRoomTypes {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct DungeonRoom {
     pub room_type: DungeonRoomTypes,
     pub treasure_chest: Option<TreasureChest>,
@@ -68,7 +68,7 @@ impl DungeonRoom {
         if room_type == DungeonRoomTypes::MonsterLair {
             let mut new_monsters = HashMap::new();
             for _ in 0..3 {
-                let new_monster = Monster::generate(id_generator, floor, 10 * floor as u16);
+                let new_monster = Monster::generate(id_generator, floor, 5 + 3 * floor as u16);
                 new_monsters.insert(new_monster.entity_properties.id, new_monster);
             }
             monsters = Some(new_monsters);

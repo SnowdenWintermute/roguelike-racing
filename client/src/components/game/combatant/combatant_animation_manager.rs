@@ -35,11 +35,6 @@ pub fn combatant_animation_manager(props: &Props) -> Html {
     let cloned_first_render_completed = first_render_completed.clone();
     use_effect_with((), move |_| cloned_first_render_completed.set(true));
 
-    // if current_action_processing changed and is Some
-    //  -- queue the animations for that action
-    // if current_action_processing changed and is None
-    //  -- queue the animations to return to home position if needed
-    //  -- when return_to_home finishes, if in battle, query the turn_results_queue
     let cloned_game_dispatch = game_dispatch.clone();
     let combatant_id = combatant_id.clone();
     let cloned_first_render_completed = first_render_completed.clone();
@@ -57,12 +52,6 @@ pub fn combatant_animation_manager(props: &Props) -> Html {
         },
     );
 
-    // if current_animation_processing changed and is Some
-    //  -- run the animation (set a timeout) and remove it and apply effects when completed
-    // if current_animation_processing changed and is None
-    //  -- if current action_processing is Some and in battle
-    //    - if current_action_processing action ended turn end current turn
-    //    - pop the current_action_processing and get the next one
     let cloned_animation_queue = event_manager.animation_queue.clone();
     let cloned_game_dispatch = game_dispatch.clone();
     let cloned_first_render_completed = first_render_completed.clone();

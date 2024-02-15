@@ -1,9 +1,12 @@
 use super::generate_templates::generate_templates;
 use super::WeaponGenerationTemplate;
+use crate::combat::hp_change_source_types::Evadable;
+use crate::combat::hp_change_source_types::HpChangeSource;
+use crate::combat::hp_change_source_types::HpChangeSourceCategories;
+use crate::combat::hp_change_source_types::HpChangeSourceSubCategories;
+use crate::combat::magical_elements::MagicalElements;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::items::equipment::two_handed_melee_weapons::TwoHandedMeleeWeapons;
-use crate::items::equipment::weapon_properties::DamageClassifications;
-use crate::items::equipment::weapon_properties::DamageTypes;
 use crate::items::items_by_level::items_by_level;
 use crate::primatives::Range;
 use once_cell::sync::Lazy;
@@ -18,7 +21,11 @@ fn two_handed_melee_weapon_template_from_base_item(
             Range::new(1, 4),
             Range::new(2, 8),
             Some(1),
-            vec![DamageClassifications::Physical(DamageTypes::Blunt)],
+            vec![HpChangeSource::new(
+                HpChangeSourceCategories::PhysicalDamage,
+                Some(HpChangeSourceSubCategories::Blunt),
+                None,
+            )],
             1,
             Some(requirements),
             None,
@@ -31,7 +38,11 @@ fn two_handed_melee_weapon_template_from_base_item(
                 Range::new(2, 5),
                 Range::new(3, 9),
                 Some(1),
-                vec![DamageClassifications::Physical(DamageTypes::Piercing)],
+                vec![HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage,
+                    Some(HpChangeSourceSubCategories::Piercing),
+                    None,
+                )],
                 1,
                 Some(requirements),
                 None,
@@ -42,7 +53,11 @@ fn two_handed_melee_weapon_template_from_base_item(
             Range::new(2, 5),
             Range::new(5, 11),
             Some(1),
-            vec![DamageClassifications::Physical(DamageTypes::Slashing)],
+            vec![HpChangeSource::new(
+                HpChangeSourceCategories::PhysicalDamage,
+                Some(HpChangeSourceSubCategories::Slashing),
+                None,
+            )],
             1,
             Some(requirements),
             None,
@@ -53,8 +68,16 @@ fn two_handed_melee_weapon_template_from_base_item(
             Range::new(6, 12),
             Some(1),
             vec![
-                DamageClassifications::Physical(DamageTypes::Blunt),
-                DamageClassifications::Physical(DamageTypes::Piercing),
+                HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage,
+                    Some(HpChangeSourceSubCategories::Blunt),
+                    None,
+                ),
+                HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage,
+                    Some(HpChangeSourceSubCategories::Piercing),
+                    None,
+                ),
             ],
             2,
             Some(requirements),
@@ -65,7 +88,11 @@ fn two_handed_melee_weapon_template_from_base_item(
             Range::new(5, 7),
             Range::new(9, 14),
             Some(1),
-            vec![DamageClassifications::Physical(DamageTypes::Blunt)],
+            vec![HpChangeSource::new(
+                HpChangeSourceCategories::PhysicalDamage,
+                Some(HpChangeSourceSubCategories::Blunt),
+                None,
+            )],
             1,
             Some(requirements),
             None,
@@ -75,7 +102,11 @@ fn two_handed_melee_weapon_template_from_base_item(
             Range::new(5, 7),
             Range::new(6, 17),
             Some(1),
-            vec![DamageClassifications::Physical(DamageTypes::Slashing)],
+            vec![HpChangeSource::new(
+                HpChangeSourceCategories::PhysicalDamage,
+                Some(HpChangeSourceSubCategories::Slashing),
+                None,
+            )],
             1,
             Some(requirements),
             None,
@@ -86,8 +117,16 @@ fn two_handed_melee_weapon_template_from_base_item(
             Range::new(8, 16),
             Some(1),
             vec![
-                DamageClassifications::Physical(DamageTypes::Slashing),
-                DamageClassifications::Physical(DamageTypes::Piercing),
+                HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage,
+                    Some(HpChangeSourceSubCategories::Slashing),
+                    None,
+                ),
+                HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage,
+                    Some(HpChangeSourceSubCategories::Piercing),
+                    None,
+                ),
             ],
             2,
             Some(requirements),
@@ -99,12 +138,36 @@ fn two_handed_melee_weapon_template_from_base_item(
             Range::new(10, 18),
             Some(1),
             vec![
-                DamageClassifications::Physical(DamageTypes::Fire),
-                DamageClassifications::Physical(DamageTypes::Ice),
-                DamageClassifications::Physical(DamageTypes::Water),
-                DamageClassifications::Physical(DamageTypes::Lightning),
-                DamageClassifications::Physical(DamageTypes::Wind),
-                DamageClassifications::Physical(DamageTypes::Earth),
+                HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage,
+                    Some(HpChangeSourceSubCategories::Slashing),
+                    Some(MagicalElements::Fire),
+                ),
+                HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage,
+                    Some(HpChangeSourceSubCategories::Slashing),
+                    Some(MagicalElements::Ice),
+                ),
+                HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage,
+                    Some(HpChangeSourceSubCategories::Slashing),
+                    Some(MagicalElements::Lightning),
+                ),
+                HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage,
+                    Some(HpChangeSourceSubCategories::Slashing),
+                    Some(MagicalElements::Water),
+                ),
+                HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage,
+                    Some(HpChangeSourceSubCategories::Slashing),
+                    Some(MagicalElements::Wind),
+                ),
+                HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage,
+                    Some(HpChangeSourceSubCategories::Slashing),
+                    Some(MagicalElements::Earth),
+                ),
             ],
             2,
             Some(requirements),
@@ -116,8 +179,16 @@ fn two_handed_melee_weapon_template_from_base_item(
             Range::new(14, 26),
             Some(1),
             vec![
-                DamageClassifications::Magical(DamageTypes::Water),
-                DamageClassifications::Physical(DamageTypes::Piercing),
+                HpChangeSource::new(
+                    HpChangeSourceCategories::MagicalDamage(Evadable::new(false)),
+                    None,
+                    Some(MagicalElements::Water),
+                ),
+                HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage,
+                    Some(HpChangeSourceSubCategories::Piercing),
+                    None,
+                ),
             ],
             2,
             Some(requirements),
@@ -129,8 +200,16 @@ fn two_handed_melee_weapon_template_from_base_item(
             Range::new(12, 25),
             Some(1),
             vec![
-                DamageClassifications::Physical(DamageTypes::Piercing),
-                DamageClassifications::Physical(DamageTypes::Slashing),
+                HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage,
+                    Some(HpChangeSourceSubCategories::Piercing),
+                    None,
+                ),
+                HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage,
+                    Some(HpChangeSourceSubCategories::Slashing),
+                    None,
+                ),
             ],
             2,
             Some(requirements),
@@ -141,7 +220,11 @@ fn two_handed_melee_weapon_template_from_base_item(
             Range::new(9, 10),
             Range::new(15, 35),
             Some(1),
-            vec![DamageClassifications::Physical(DamageTypes::Slashing)],
+            vec![HpChangeSource::new(
+                HpChangeSourceCategories::PhysicalDamage,
+                Some(HpChangeSourceSubCategories::Slashing),
+                None,
+            )],
             1,
             Some(requirements),
             None,
@@ -151,7 +234,11 @@ fn two_handed_melee_weapon_template_from_base_item(
             Range::new(9, 10),
             Range::new(20, 30),
             Some(1),
-            vec![DamageClassifications::Physical(DamageTypes::Blunt)],
+            vec![HpChangeSource::new(
+                HpChangeSourceCategories::PhysicalDamage,
+                Some(HpChangeSourceSubCategories::Blunt),
+                None,
+            )],
             1,
             Some(requirements),
             None,

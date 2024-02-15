@@ -1,3 +1,5 @@
+use crate::websocket_server::game_server::GameServer;
+use crate::websocket_server::game_server::player_input_handlers::in_game::take_ai_controlled_turns_if_appropriate::take_ai_controlled_turns_if_appropriate;
 use common::app_consts::error_messages;
 use common::combat::ActionResult;
 use common::combat::CombatTurnResult;
@@ -5,8 +7,6 @@ use common::errors::AppError;
 use common::packets::server_to_client::CombatTurnResultsPacket;
 use common::packets::server_to_client::GameServerUpdatePackets;
 use common::packets::WebsocketChannelNamespace;
-use crate::websocket_server::game_server::GameServer;
-use crate::websocket_server::game_server::player_input_handlers::in_game::character_uses_selected_ability_handler::take_next_ai_turn::take_ai_controlled_turns_if_appropriate;
 
 impl GameServer {
     pub fn handle_end_of_player_character_turn(
@@ -31,7 +31,12 @@ impl GameServer {
         turns.push(player_turn);
 
         if !all_opponents_are_dead && !all_allies_are_dead {
-            let _ = game.end_active_combatant_turn(battle_id)?;
+            let (_, combatant_properties) = game.get_combatant_by_id(&action_taker_character_id)?;
+            // only end turn if still alive; dead combatants already have their turn trackers
+            // removed
+            if combatant_properties.hit_points > 0 {
+                let _ = game.end_active_combatant_turn(battle_id)?;
+            }
 
             let mut ai_controlled_turn_results =
                 take_ai_controlled_turns_if_appropriate(game, battle_id)?;

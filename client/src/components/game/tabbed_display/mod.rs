@@ -1,11 +1,9 @@
 mod item_details_tab;
-use crate::{
-    components::game::{
-        combat_log::CombatLog, combatant_detail_tab::CombatantDetailTab,
-        tabbed_display::item_details_tab::ItemDetailsTab,
-    },
-    store::game_store::{DetailableEntities, GameStore},
-};
+use crate::components::game::combat_log::CombatLog;
+use crate::components::game::combatant_detail_tab::CombatantDetailTab;
+use crate::components::game::tabbed_display::item_details_tab::ItemDetailsTab;
+use crate::store::game_store::DetailableEntities;
+use crate::store::game_store::GameStore;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 

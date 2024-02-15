@@ -5,6 +5,7 @@ use crate::character::Character;
 use crate::combat::battle::Battle;
 use crate::errors::AppError;
 use crate::game::id_generator::IdGenerator;
+use crate::game::player::RoguelikeRacerPlayer;
 use crate::items::Item;
 use serde::Deserialize;
 use serde::Serialize;
@@ -15,26 +16,8 @@ use std::time::UNIX_EPOCH;
 pub mod add_character_to_adventuring_party;
 pub mod getters;
 pub mod id_generator;
+pub mod player;
 pub mod player_input_handlers;
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct RoguelikeRacerPlayer {
-    pub actor_id: Option<u32>,
-    pub party_id: Option<u32>,
-    pub username: String,
-    pub character_ids: Option<HashSet<u32>>,
-}
-
-impl RoguelikeRacerPlayer {
-    pub fn new(actor_id: Option<u32>, username: String) -> Self {
-        RoguelikeRacerPlayer {
-            actor_id,
-            party_id: None,
-            username,
-            character_ids: None,
-        }
-    }
-}
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct RoguelikeRacerGame {

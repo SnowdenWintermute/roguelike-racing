@@ -37,15 +37,13 @@ pub fn combat_attributes_and_traits(equipment_properties: &EquipmentProperties) 
                 PrefixTypes::Evasion => {
                     format_bonus(equipment_properties, &CombatAttributes::Evasion)
                 }
-                PrefixTypes::Obscurity => {
-                    format_bonus(equipment_properties, &CombatAttributes::Obscurity)
-                }
                 PrefixTypes::ArmorPenetration => {
                     format_bonus(equipment_properties, &CombatAttributes::ArmorPenetration)
                 }
                 PrefixTypes::Agility => {
                     format_bonus(equipment_properties, &CombatAttributes::Agility)
                 }
+                PrefixTypes::Focus => format_bonus(equipment_properties, &CombatAttributes::Focus),
             },
             Affix::Suffix(_, _) => "".to_string(),
         };
@@ -86,7 +84,6 @@ pub fn combat_attributes_and_traits(equipment_properties: &EquipmentProperties) 
                     lowest_core_attribute_value_option.expect("to have core attribute bonuses")
                 ),
                 SuffixTypes::Hp => format_bonus(equipment_properties, &CombatAttributes::Hp),
-                SuffixTypes::Focus => format_bonus(equipment_properties, &CombatAttributes::Focus),
                 SuffixTypes::Damage => {
                     format_bonus(equipment_properties, &CombatAttributes::Damage)
                 }

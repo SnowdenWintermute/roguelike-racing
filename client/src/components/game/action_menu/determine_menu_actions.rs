@@ -6,6 +6,9 @@ use common::adventuring_party::AdventuringParty;
 use common::combat::combat_actions::AbilityUsableContext;
 use common::combatants::abilities::CombatantAbilityNames;
 use common::dungeon_rooms::DungeonRoomTypes;
+use common::items::consumables::ConsumableTypes;
+use common::items::ItemProperties;
+use std::collections::HashMap;
 use std::rc::Rc;
 
 // determine menu actions
@@ -17,32 +20,52 @@ pub fn determine_menu_actions(
     let mut menu_types: Vec<MenuTypes> = Vec::new();
     let mut new_actions: Vec<GameActions> = Vec::new();
 
+    let inventory_is_open = game_state.viewing_inventory;
     let focused_character_option = party.characters.get(&game_state.focused_character_id);
     let player_owns_character =
         party.player_owns_character(&lobby_state.username, game_state.focused_character_id);
-    let focused_character_is_selecting_ability = focused_character_option
-        .map(|character| {
-            character
+    let focused_character_selected_combat_action_properties_option = match focused_character_option
+    {
+        Some(character) => {
+            let combat_action_option = character
                 .combatant_properties
-                .selected_ability_name
-                .is_some()
-        })
-        .unwrap_or(false);
-    let focused_character_is_selecting_consumable = focused_character_option
-        .map(|character| character.combatant_properties.selected_consumable.is_some())
-        .unwrap_or(false);
-    if focused_character_is_selecting_consumable && player_owns_character {
-        menu_types.push(MenuTypes::ConsumableSelected);
-        new_actions = MenuTypes::get_actions(&menu_types, None, None);
+                .selected_combat_action
+                .clone();
+            match combat_action_option {
+                Some(combat_action) => match combat_action.get_properties_if_owned(
+                    &game_state.game.as_ref().expect("to be in game"),
+                    character.entity_properties.id,
+                ) {
+                    Ok(properties) => Some(properties),
+                    Err(_) => None,
+                },
+                None => None,
+            }
+        }
+        None => None,
+    };
+
+    if focused_character_selected_combat_action_properties_option.is_some() && player_owns_character
+    {
+        if let Some(combat_action_properties) =
+            focused_character_selected_combat_action_properties_option
+        {
+            menu_types.push(MenuTypes::CombatActionSelected);
+            new_actions = MenuTypes::get_actions(
+                &menu_types,
+                None,
+                None,
+                Some(combat_action_properties),
+                inventory_is_open,
+            );
+        }
     } else if game_state.viewing_items_on_ground {
         menu_types.push(MenuTypes::ItemsOnGround);
-        new_actions = MenuTypes::get_actions(&menu_types, None, None);
-        //
+        new_actions = MenuTypes::get_actions(&menu_types, None, None, None, inventory_is_open);
     } else if let Some(selected_item) = &game_state.selected_item {
         let id = selected_item.clone().entity_properties.id;
         menu_types.push(MenuTypes::ItemSelected(id));
-        new_actions = MenuTypes::get_actions(&menu_types, None, None);
-        //
+        new_actions = MenuTypes::get_actions(&menu_types, None, None, None, inventory_is_open);
     } else if game_state.viewing_equipped_items {
         menu_types.push(MenuTypes::ViewingEquipedItems);
         let focused_character = party.characters.get(&game_state.focused_character_id);
@@ -51,16 +74,37 @@ pub fn determine_menu_actions(
             for (_slot, item) in &character.combatant_properties.equipment {
                 ids.push(item.entity_properties.id);
             }
-            new_actions = MenuTypes::get_actions(&menu_types, Some(ids), None)
+            new_actions = MenuTypes::get_actions(
+                &menu_types,
+                Some((HashMap::new(), ids)),
+                None,
+                None,
+                inventory_is_open,
+            )
         }
     } else if game_state.viewing_inventory {
         menu_types.push(MenuTypes::InventoryOpen);
         if let Some(character) = focused_character_option {
-            let mut ids = Vec::new();
+            let mut equipment_ids = Vec::new();
+            let mut consumables_by_type: HashMap<ConsumableTypes, Vec<u32>> = HashMap::new();
             for item in &character.combatant_properties.inventory.items {
-                ids.push(item.entity_properties.id);
+                match &item.item_properties {
+                    ItemProperties::Consumable(consumable_properties) => {
+                        let consumables_of_this_type = consumables_by_type
+                            .entry(consumable_properties.consumable_type)
+                            .or_insert(Vec::new());
+                        consumables_of_this_type.push(item.entity_properties.id)
+                    }
+                    ItemProperties::Equipment(_) => equipment_ids.push(item.entity_properties.id),
+                }
             }
-            new_actions = MenuTypes::get_actions(&menu_types, Some(ids), None);
+            new_actions = MenuTypes::get_actions(
+                &menu_types,
+                Some((consumables_by_type, equipment_ids)),
+                None,
+                None,
+                inventory_is_open,
+            );
         }
         //
     } else if game_state.viewing_skill_level_up_menu
@@ -70,7 +114,13 @@ pub fn determine_menu_actions(
         let mut ability_names =
             get_ability_menu_names(&party, game_state.focused_character_id, None);
         ability_names.sort_by(|a, b| a.partial_cmp(&b).unwrap());
-        new_actions = MenuTypes::get_actions(&menu_types, None, Some(ability_names));
+        new_actions = MenuTypes::get_actions(
+            &menu_types,
+            None,
+            Some(ability_names),
+            None,
+            inventory_is_open,
+        );
         //
     } else if party.battle_id.is_none() {
         menu_types.push(MenuTypes::OutOfCombat);
@@ -89,10 +139,13 @@ pub fn determine_menu_actions(
         if party.current_room.room_type == DungeonRoomTypes::Stairs {
             menu_types.push(MenuTypes::Staircase)
         }
-        new_actions = MenuTypes::get_actions(&menu_types, None, Some(ability_names));
-    } else if focused_character_is_selecting_ability && player_owns_character {
-        menu_types.push(MenuTypes::AbilitySelected);
-        new_actions = MenuTypes::get_actions(&menu_types, None, None);
+        new_actions = MenuTypes::get_actions(
+            &menu_types,
+            None,
+            Some(ability_names),
+            None,
+            inventory_is_open,
+        );
     } else {
         menu_types.push(MenuTypes::InCombat);
         let mut ability_names = get_ability_menu_names(
@@ -101,7 +154,13 @@ pub fn determine_menu_actions(
             Some(AbilityUsableContext::OutOfCombat),
         );
         ability_names.sort_by(|a, b| a.partial_cmp(&b).unwrap());
-        new_actions = MenuTypes::get_actions(&menu_types, None, Some(ability_names));
+        new_actions = MenuTypes::get_actions(
+            &menu_types,
+            None,
+            Some(ability_names),
+            None,
+            inventory_is_open,
+        );
     }
     new_actions
 }

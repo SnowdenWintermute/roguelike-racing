@@ -4,6 +4,8 @@ use crate::app_consts::AGI_TO_EVASION_RATIO;
 use crate::app_consts::AGI_TO_SPEED_RATIO;
 use crate::app_consts::DEX_TO_ACCURACY_RATIO;
 use crate::app_consts::INT_TO_FOCUS_RATIO;
+use crate::app_consts::INT_TO_MP_RATIO;
+use crate::app_consts::VIT_TO_HP_RATIO;
 use std::collections::HashMap;
 use strum::IntoEnumIterator;
 
@@ -52,47 +54,64 @@ impl CombatantProperties {
             }
         }
 
-        // derive accuracy from +acc, inherant, and all Dex
-        let total_dex_option = total_attributes.get(&CombatAttributes::Dexterity);
-        let total_acc = total_attributes
-            .get(&CombatAttributes::Accuracy)
-            .unwrap_or_else(|| &0);
-        if let Some(dex) = total_dex_option {
-            let accuracy_from_dex = DEX_TO_ACCURACY_RATIO * dex;
-            total_attributes.insert(CombatAttributes::Accuracy, total_acc + accuracy_from_dex);
-        }
+        calculate_and_add_derived_attribute(
+            &mut total_attributes,
+            &CombatAttributes::Dexterity,
+            CombatAttributes::Accuracy,
+            DEX_TO_ACCURACY_RATIO,
+        );
 
-        // derive focus from +focus, inherant, and all Int
-        let total_int_option = total_attributes.get(&CombatAttributes::Intelligence);
-        let total_focus = total_attributes
-            .get(&CombatAttributes::Focus)
-            .unwrap_or_else(|| &0);
-        if let Some(int) = total_int_option {
-            let focus_from_int = INT_TO_FOCUS_RATIO * int;
-            total_attributes.insert(CombatAttributes::Focus, total_focus + focus_from_int);
-        }
+        calculate_and_add_derived_attribute(
+            &mut total_attributes,
+            &CombatAttributes::Intelligence,
+            CombatAttributes::Focus,
+            INT_TO_FOCUS_RATIO,
+        );
 
-        // derive evasion from +evasion, inherant, and all Agility
-        let total_agi_option = total_attributes.get(&CombatAttributes::Agility);
-        let total_evasion = total_attributes
-            .get(&CombatAttributes::Evasion)
-            .unwrap_or_else(|| &0);
-        if let Some(agi) = total_agi_option {
-            let evasion_from_agi = AGI_TO_EVASION_RATIO * agi;
-            total_attributes.insert(CombatAttributes::Evasion, total_evasion + evasion_from_agi);
-        }
+        calculate_and_add_derived_attribute(
+            &mut total_attributes,
+            &CombatAttributes::Intelligence,
+            CombatAttributes::Mp,
+            INT_TO_MP_RATIO,
+        );
 
-        // derive speed from agility and +speed
-        let total_agility_option = total_attributes.get(&CombatAttributes::Agility);
-        let total_speed = total_attributes
-            .get(&CombatAttributes::Speed)
-            .unwrap_or_else(|| &0);
-        if let Some(agility) = total_agility_option {
-            let speed_from_agility = AGI_TO_SPEED_RATIO * agility;
-            total_attributes.insert(CombatAttributes::Speed, total_speed + speed_from_agility);
-        }
+        calculate_and_add_derived_attribute(
+            &mut total_attributes,
+            &CombatAttributes::Agility,
+            CombatAttributes::Evasion,
+            AGI_TO_EVASION_RATIO,
+        );
+
+        calculate_and_add_derived_attribute(
+            &mut total_attributes,
+            &CombatAttributes::Agility,
+            CombatAttributes::Speed,
+            AGI_TO_SPEED_RATIO,
+        );
+
+        calculate_and_add_derived_attribute(
+            &mut total_attributes,
+            &CombatAttributes::Vitality,
+            CombatAttributes::Hp,
+            VIT_TO_HP_RATIO,
+        );
 
         total_attributes
+    }
+}
+
+fn calculate_and_add_derived_attribute(
+    total_attributes: &mut HashMap<CombatAttributes, u16>,
+    main: &CombatAttributes,
+    derived: CombatAttributes,
+    ratio: u16,
+) {
+    let total_main_option = total_attributes.get(main);
+    let total_secondary = total_attributes.get(&derived).unwrap_or_else(|| &0);
+    if let Some(main) = total_main_option {
+        let derived_secondary_bonus = ratio * main;
+        let total = total_secondary + derived_secondary_bonus;
+        total_attributes.insert(derived, total);
     }
 }
 

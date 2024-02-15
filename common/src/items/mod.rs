@@ -1,4 +1,5 @@
 pub mod consumables;
+pub mod create_new_item;
 pub mod equipment;
 pub mod items_by_level;
 use self::consumables::ConsumableProperties;
@@ -49,7 +50,7 @@ impl Item {
             None => {
                 let mut rng = rand::thread_rng();
                 let category_roll = rng.gen_range(0..=4);
-                if category_roll > 0 {
+                if category_roll > 1 {
                     ItemCategories::Equipment
                 } else {
                     ItemCategories::Consumable
@@ -63,7 +64,6 @@ impl Item {
                     requirements,
                 } = generate_equipment_properties_from_base_item(item_level);
                 let item_name = name_equipment(&equipment_properties);
-                println!("generated item: {item_name}");
 
                 Item {
                     entity_properties: EntityProperties {
@@ -77,7 +77,13 @@ impl Item {
             }
             ItemCategories::Consumable => {
                 // let consumable_type = ConsumableTypes::random();
-                let consumable_type = ConsumableTypes::HpAutoinjector;
+                let mut rng = rand::thread_rng();
+                let roll = rng.gen_range(0.0..=1.0);
+                let consumable_type = if roll > 0.33 {
+                    ConsumableTypes::HpAutoinjector
+                } else {
+                    ConsumableTypes::MpAutoinjector
+                };
                 let item_name = format!("{}", consumable_type);
                 Item {
                     entity_properties: EntityProperties {

@@ -33,10 +33,18 @@ pub fn hp_autoinjector_use_result(
         });
     }
 
-    let bonus_multiplier = *target_combatant_properties
-        .traits
-        .get(&CombatantTraits::HpBioavailability)
-        .unwrap_or_else(|| &1) as f32;
+    let bonus_multiplier = {
+        let mut to_return: f32 = 1.0;
+        for combatant_trait in &target_combatant_properties.traits {
+            match combatant_trait {
+                CombatantTraits::HpBioavailabilityPercent(value) => {
+                    to_return = *value as f32 / 100.0
+                }
+                _ => (),
+            }
+        }
+        to_return
+    };
     let max_hp = *target_combatant_properties
         .get_total_attributes()
         .get(&CombatAttributes::Hp)
@@ -54,17 +62,13 @@ pub fn hp_autoinjector_use_result(
     let mut rng = rand::thread_rng();
     let rolled_healing = rng.gen_range(min_healing..=max_healing);
     let final_healing = rolled_healing.clamp(0.0, i16::MAX as f32) as i16;
-
-    Ok(vec![ActionResult {
+    let mut action_result = ActionResult::new(
         user_id,
-        action: CombatAction::ConsumableUsed(consumable_item_id),
-        targets: target.clone(),
-        hp_changes_by_entity_id: Some(HashMap::from([(*target_id, final_healing)])),
-        mp_changes_by_entity_id: None,
-        misses_by_entity_id: None,
-        resists_by_entity_id: None,
-        is_crit: false,
-        status_effect_changes_by_entity_id: None,
-        ends_turn: false,
-    }])
+        CombatAction::ConsumableUsed(consumable_item_id),
+        target.clone(),
+    );
+    action_result.ends_turn = false;
+    action_result.hp_changes_by_entity_id = Some(HashMap::from([(*target_id, final_healing)]));
+
+    Ok(vec![action_result])
 }

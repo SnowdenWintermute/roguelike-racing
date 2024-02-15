@@ -58,14 +58,6 @@ pub fn get_prefix_name(prefix_type: &PrefixTypes, tier: &u8) -> &'static str {
             5 => "Field Mouse's",
             _ => "hacked",
         },
-        PrefixTypes::Obscurity => match tier {
-            1 => "Cloudy",
-            2 => "Mysterious",
-            3 => "Esoteric",
-            4 => "Cryptic",
-            5 => "Arcane",
-            _ => "hacked",
-        },
         PrefixTypes::ArmorPenetration => match tier {
             1 => "Heavy",
             2 => "Dense",
@@ -80,6 +72,14 @@ pub fn get_prefix_name(prefix_type: &PrefixTypes, tier: &u8) -> &'static str {
             3 => "Ultralight",
             4 => "Featherlight",
             5 => "Weightless",
+            _ => "hacked",
+        },
+        PrefixTypes::Focus => match tier {
+            1 => "Observant",
+            2 => "Attentive",
+            3 => "Intent",
+            4 => "Concentrated",
+            5 => "Singular",
             _ => "hacked",
         },
     }

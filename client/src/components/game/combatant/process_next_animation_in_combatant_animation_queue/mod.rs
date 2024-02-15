@@ -1,3 +1,5 @@
+mod animation_causing_hp_change_finished_handler;
+mod animation_causing_payment_of_mp_price_finished_handler;
 mod approach_combatant_animation_finished_handler;
 mod autoinjector_use_animation_finished_handler;
 mod follow_through_swing_animation_finished_handler;

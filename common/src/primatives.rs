@@ -25,13 +25,19 @@ pub enum UpOrDown {
     Down,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum WeaponSlot {
+    MainHand,
+    OffHand,
+}
+
 #[derive(PartialEq, Debug, Serialize, Deserialize, Clone)]
 pub enum GainedOrLost {
     Gained,
     Lost,
 }
 
-#[derive(PartialEq, Eq, Clone, Hash)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Clone, Hash, Eq)]
 pub enum NextOrPrevious {
     Next,
     Previous,

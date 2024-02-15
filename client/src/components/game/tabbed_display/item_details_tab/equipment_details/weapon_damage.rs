@@ -1,8 +1,8 @@
-use common::items::equipment::{
-    weapon_properties::{DamageClassifications, DamageTypes},
-    EquipmentTypes,
-};
-use yew::{html, Html};
+use common::combat::hp_change_source_types::HpChangeSourceCategories;
+use common::combat::magical_elements::MagicalElements;
+use common::items::equipment::EquipmentTypes;
+use yew::html;
+use yew::Html;
 
 pub fn weapon_damage(equipment_type: &EquipmentTypes) -> Html {
     let damage = match equipment_type {
@@ -28,37 +28,33 @@ pub fn weapon_damage(equipment_type: &EquipmentTypes) -> Html {
     match damage_types {
         Some(classifications) => {
             for classification in classifications {
-                let classification_text = match classification {
-                    DamageClassifications::Direct(_) => "Direct",
-                    DamageClassifications::Physical(_) => "Physical",
-                    DamageClassifications::Magical(_) => "Magical",
+                let classification_text = match classification.category {
+                    HpChangeSourceCategories::PhysicalDamage => "Physical",
+                    HpChangeSourceCategories::MagicalDamage(_) => "Magical",
+                    HpChangeSourceCategories::Healing => "Healing",
+                    HpChangeSourceCategories::Direct => "Direct",
                 };
-                let damage_classification_border_color = match classification {
-                    DamageClassifications::Direct(_) => "border-black-300",
-                    DamageClassifications::Physical(_) => "border-zinc-300",
-                    DamageClassifications::Magical(_) => "border-sky-300 ",
+                let damage_classification_border_color = match classification.category {
+                    HpChangeSourceCategories::PhysicalDamage => "border-zinc-300",
+                    HpChangeSourceCategories::MagicalDamage(_) => "border-sky-300",
+                    HpChangeSourceCategories::Healing => "border-green-600",
+                    HpChangeSourceCategories::Direct => "border-black-300",
                 };
 
-                let damage_type = match classification {
-                    DamageClassifications::Direct(damage_type)
-                    | DamageClassifications::Physical(damage_type)
-                    | DamageClassifications::Magical(damage_type) => damage_type,
-                };
-                let damage_type_text = format!("{}", damage_type);
-                let damage_type_color_style = match damage_type {
-                    DamageTypes::Pure => "bg-zinc-300 text-slate-700",
-                    DamageTypes::Slashing => "bg-zinc-300 text-slate-700",
-                    DamageTypes::Blunt => "bg-zinc-300 text-slate-700",
-                    DamageTypes::Piercing => "bg-zinc-300 text-slate-700",
-                    DamageTypes::Fire => "bg-firered",
-                    DamageTypes::Ice => "bg-iceblue",
-                    DamageTypes::Lightning => "bg-lightningpurple",
-                    DamageTypes::Water => "bg-waterblue",
-                    DamageTypes::Earth => "bg-earthyellow text-slate-700",
-                    DamageTypes::Wind => "bg-windgreen text-slate-700",
-                    DamageTypes::Dark => "bg-darknessblack",
-                    DamageTypes::Light => "bg-lightwhite text-slate-700",
-                };
+                let damage_type_text = format!("{}", classification_text);
+                let mut damage_type_color_style = "bg-zinc-300 text-slate-700";
+                if let Some(element) = &classification.element {
+                    damage_type_color_style = match element {
+                        MagicalElements::Fire => "bg-firered",
+                        MagicalElements::Ice => "bg-iceblue",
+                        MagicalElements::Lightning => "bg-lightningpurple",
+                        MagicalElements::Water => "bg-waterblue",
+                        MagicalElements::Earth => "bg-earthyellow text-slate-700",
+                        MagicalElements::Wind => "bg-windgreen text-slate-700",
+                        MagicalElements::Dark => "bg-darknessblack",
+                        MagicalElements::Light => "bg-lightwhite text-slate-700",
+                    }
+                }
                 let damage_type_style = format!("pr-1 pl-1 {}", damage_type_color_style);
                 classification_displays.push(html!(
                 <li class={format!("border pl-1 max-w-fit mb-1 {}", damage_classification_border_color)}>

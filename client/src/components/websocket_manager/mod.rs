@@ -1,4 +1,5 @@
 mod adventuring_party_update_handlers;
+mod character_selected_combat_action_handler;
 mod dungeon_floor_number_changed_handler;
 mod game_full_update_handler;
 mod handle_battle_victory_report;

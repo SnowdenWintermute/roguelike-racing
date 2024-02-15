@@ -29,8 +29,10 @@ pub fn swing_to_hit_animation_finished_handler(
             let new_hp = combatant_properties.change_hp(hp_change);
             store.combat_log.push(CombatLogMessage::new(
                 AttrValue::from(format!(
-                    "{} ({combatant_id}) hit {} ({target_id}) for {hp_change}",
-                    attacker_name, target_name
+                    "{} hits {} for {} points of damage.",
+                    attacker_name,
+                    target_name,
+                    hp_change * -1
                 )),
                 CombatLogMessageStyle::Basic,
                 0,
@@ -72,8 +74,8 @@ pub fn swing_to_hit_animation_finished_handler(
         if evaded {
             store.combat_log.push(CombatLogMessage::new(
                 AttrValue::from(format!(
-                    "{} ({target_id}) evaded an attack from {} ({combatant_id})",
-                    target_name, attacker_name,
+                    "{} missed their attack on {}",
+                    attacker_name, target_name
                 )),
                 CombatLogMessageStyle::Basic,
                 0,
@@ -96,7 +98,10 @@ pub fn swing_to_hit_animation_finished_handler(
                     target_event_manager.animation_queue =
                         VecDeque::from([CombatantAnimation::Death(Some(hp_change))]);
                     store.combat_log.push(CombatLogMessage::new(
-                        AttrValue::from(format!("{} ({target_id}) died", target_name)),
+                        AttrValue::from(format!(
+                            "{} reduced {}'s HP to zero.",
+                            attacker_name, target_name
+                        )),
                         CombatLogMessageStyle::Basic,
                         0,
                     ));

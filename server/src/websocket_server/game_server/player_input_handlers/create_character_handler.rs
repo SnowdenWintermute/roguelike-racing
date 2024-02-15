@@ -1,3 +1,4 @@
+use crate::utils::generate_random_character_name;
 use crate::websocket_server::game_server::getters::get_mut_game;
 use crate::websocket_server::game_server::getters::get_user;
 use crate::websocket_server::game_server::GameServer;
@@ -30,10 +31,15 @@ impl GameServer {
             message: common::app_consts::error_messages::MISSING_PARTY_REFERENCE.to_string(),
         })?;
 
+        let mut character_name = character_creation.character_name;
+        if character_name == "" {
+            character_name = generate_random_character_name();
+        }
+
         let new_character_id = game.add_character_to_adventuring_party(
             party_id,
             character_creation.combatant_class.clone(),
-            &character_creation.character_name,
+            &character_name,
             username.clone(),
         )?;
 

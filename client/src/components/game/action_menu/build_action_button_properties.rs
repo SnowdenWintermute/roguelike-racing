@@ -4,12 +4,15 @@ use super::action_button_hover_handlers::create_action_mouse_leave_handler;
 use super::action_menu_button::determine_action_button_text::determine_action_button_text;
 use super::determine_action_menu_buttons_disabled::determine_action_menu_buttons_disabled;
 use super::determine_menu_actions::determine_menu_actions;
+use super::enums::GameActions;
+use super::set_keyup_listeners::GameKeys;
 use crate::store::alert_store::AlertStore;
 use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
 use crate::store::ui_store::UIStore;
 use crate::store::websocket_store::WebsocketStore;
 use common::adventuring_party::AdventuringParty;
+use common::primatives::NextOrPrevious;
 use std::rc::Rc;
 use web_sys::FocusEvent;
 use web_sys::MouseEvent;
@@ -25,6 +28,7 @@ pub struct ActionMenuButtonProperties {
     pub mouse_enter_handler: Callback<MouseEvent>,
     pub mouse_leave_handler: Callback<MouseEvent>,
     pub should_be_disabled: bool,
+    pub dedicated_key_option: Option<GameKeys>,
 }
 
 pub fn build_action_button_properties(
@@ -45,6 +49,7 @@ pub fn build_action_button_properties(
         let cloned_game_state = game_state.clone();
         let cloned_game_dispatch = game_dispatch.clone();
         let cloned_ui_state = ui_state.clone();
+        let cloned_lobby_state = lobby_state.clone();
         let cloned_alert_dispatch = alert_dispatch.clone();
         let click_handler = Callback::from(move |_| {
             create_action_button_click_handler(
@@ -52,6 +57,7 @@ pub fn build_action_button_properties(
                 cloned_game_dispatch.clone(),
                 cloned_game_state.clone(),
                 cloned_ui_state.clone(),
+                cloned_lobby_state.clone(),
                 cloned_websocket_state.clone(),
                 cloned_alert_dispatch.clone(),
             )()
@@ -92,6 +98,22 @@ pub fn build_action_button_properties(
         let should_be_disabled =
             determine_action_menu_buttons_disabled(&action, &game_state, &lobby_state);
 
+        let dedicated_key_option = match action {
+            GameActions::SetInventoryOpen(to_set) => match to_set {
+                true => None,
+                false => Some(GameKeys::Cancel),
+            },
+            GameActions::UseItem(_) => Some(GameKeys::Confirm),
+            GameActions::DeselectItem => Some(GameKeys::Cancel),
+            GameActions::UseSelectedCombatAction => Some(GameKeys::Confirm),
+            GameActions::DeselectCombatAction => Some(GameKeys::Cancel),
+            GameActions::CycleTargets(direction) => match direction {
+                NextOrPrevious::Next => Some(GameKeys::Next),
+                NextOrPrevious::Previous => Some(GameKeys::Previous),
+            },
+            _ => None,
+        };
+
         button_properties.push(ActionMenuButtonProperties {
             text,
             click_handler,
@@ -100,6 +122,7 @@ pub fn build_action_button_properties(
             focus_handler,
             blur_handler,
             should_be_disabled,
+            dedicated_key_option,
         })
     }
 

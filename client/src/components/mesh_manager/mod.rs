@@ -9,14 +9,35 @@ use yew::AttrValue;
 #[derive(PartialEq, Clone, Debug)]
 pub enum AutoinjectorTypes {
     Hp,
+    Mp,
 }
 
 impl Display for AutoinjectorTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
         match self {
             AutoinjectorTypes::Hp => write!(f, "HP"),
+            AutoinjectorTypes::Mp => write!(f, "MP"),
         }
     }
+}
+
+#[derive(PartialEq, Clone, Debug)]
+pub struct HpChange {
+    pub value: i16,
+    pub is_crit: bool,
+}
+
+#[derive(PartialEq, Clone, Debug)]
+pub enum HpChangeResult {
+    Damaged(HpChange),
+    Healed(HpChange),
+    Evaded,
+}
+
+#[derive(PartialEq, Clone, Debug)]
+pub struct TargetAndHpChangeResults {
+    pub target_id: u32,
+    pub hp_change_result: HpChangeResult,
 }
 
 #[derive(PartialEq, Clone, Debug)]
@@ -32,6 +53,8 @@ pub enum CombatantAnimation {
     Death(Option<i16>),
     Evasion,
     UseAutoinjector(AutoinjectorTypes, u32, i16),
+    MoveForwardToCastSpell(u8),
+    CastSpellOnTargets(Vec<TargetAndHpChangeResults>),
 }
 
 impl Display for CombatantAnimation {
@@ -56,6 +79,12 @@ impl Display for CombatantAnimation {
             CombatantAnimation::Evasion => format!("evaded"),
             CombatantAnimation::UseAutoinjector(autoinjector_type, _user_id, hp_change) => {
                 format!("using autoinjector ({autoinjector_type}, {hp_change})")
+            }
+            CombatantAnimation::CastSpellOnTargets(targets_and_hp_changes) => {
+                format!("casting spell on targets")
+            }
+            CombatantAnimation::MoveForwardToCastSpell(_) => {
+                "moving forward to cast spell".to_string()
             }
         };
         write!(f, "{:?}", to_write)

@@ -32,7 +32,12 @@ pub fn return_to_ready_position_animation_finished_handler(
                     error_type: common::errors::AppErrorTypes::ClientError,
                     message: error_messages::GAME_NOT_FOUND.to_string(),
                 })?;
-                game.end_active_combatant_turn(battle_id)?;
+
+                let (_, combatant_properties) = game.get_combatant_by_id(&combatant_id)?;
+                // if they are dead, their turn tracker should already be removed
+                if combatant_properties.hit_points > 0 {
+                    game.end_active_combatant_turn(battle_id)?;
+                }
                 Ok(())
             })?;
             send_next_turn_result_to_combatant_event_manager(game_dispatch)?

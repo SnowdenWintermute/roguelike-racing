@@ -7,6 +7,7 @@ use crate::combat::combat_actions::CombatAction;
 use crate::combat::combat_actions::CombatActionTarget;
 use crate::combat::combat_actions::TargetingScheme;
 use crate::combat::hp_change_source_types::HpChangeSourceCategories;
+use crate::combat::hp_change_source_types::MeleeOrRanged;
 use crate::combat::ActionResult;
 use crate::errors::AppError;
 use crate::game::RoguelikeRacerGame;
@@ -124,9 +125,10 @@ impl RoguelikeRacerGame {
                     target_entity_ids,
                     split,
                 )?,
-            HpChangeSourceCategories::PhysicalDamage => self
+            HpChangeSourceCategories::PhysicalDamage(melee_or_ranged) => self
                 .calculate_physical_damage_hp_change_and_add_to_action_result(
                     &mut action_result,
+                    melee_or_ranged,
                     &user_combat_attributes,
                     target_entity_ids,
                     split,

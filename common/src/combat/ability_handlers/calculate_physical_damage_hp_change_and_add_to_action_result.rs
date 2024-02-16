@@ -2,8 +2,11 @@ use super::apply_crit_multiplier_to_hp_change::apply_crit_multiplier_to_hp_chang
 use super::apply_elemental_affinity_to_hp_change::apply_elemental_affinity_to_hp_change;
 use super::roll_crit::roll_crit;
 use crate::app_consts::BASE_CRIT_CHANCE;
+use crate::app_consts::DEX_TO_RANGED_ARMOR_PEN_RATIO;
+use crate::app_consts::STR_TO_MELEE_ARMOR_PEN_RATIO;
 use crate::app_consts::VIT_TO_PERCENT_PHYSICAL_DAMAGE_REDUCTION_RATIO;
 use crate::combat::combat_actions::CombatActionHpChangeProperties;
+use crate::combat::hp_change_source_types::MeleeOrRanged;
 use crate::combat::ActionResult;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::errors::AppError;
@@ -15,6 +18,7 @@ impl RoguelikeRacerGame {
     pub fn calculate_physical_damage_hp_change_and_add_to_action_result(
         &self,
         action_result: &mut ActionResult,
+        melee_or_ranged: MeleeOrRanged,
         user_combat_attributes: &HashMap<CombatAttributes, u16>,
         target_entity_ids: Vec<u32>,
         rolled_hp_change_split_by_num_targets: f32,
@@ -64,10 +68,25 @@ impl RoguelikeRacerGame {
             let target_ac = target_combat_attributes
                 .get(&CombatAttributes::ArmorClass)
                 .unwrap_or_else(|| &0);
-            let user_armor_pen = user_combat_attributes
+            let mut user_armor_pen = *user_combat_attributes
                 .get(&CombatAttributes::ArmorPenetration)
                 .unwrap_or_else(|| &0);
-            let final_ac = target_ac.saturating_sub(*user_armor_pen) as u32;
+            let armor_pen_attribute_bonus_based_on_weapon_type = match melee_or_ranged {
+                MeleeOrRanged::Melee => {
+                    user_combat_attributes
+                        .get(&CombatAttributes::Strength)
+                        .unwrap_or_else(|| &0)
+                        * STR_TO_MELEE_ARMOR_PEN_RATIO
+                }
+                MeleeOrRanged::Ranged => {
+                    user_combat_attributes
+                        .get(&CombatAttributes::Dexterity)
+                        .unwrap_or_else(|| &0)
+                        * DEX_TO_RANGED_ARMOR_PEN_RATIO
+                }
+            };
+            user_armor_pen += armor_pen_attribute_bonus_based_on_weapon_type;
+            let final_ac = target_ac.saturating_sub(user_armor_pen) as u32;
             let damage_after_ac = hp_change.powf(2.0) / (final_ac as f32 + hp_change);
             //  reduce damage via vit
             let target_vit = target_combat_attributes

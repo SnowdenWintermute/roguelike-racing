@@ -10,6 +10,7 @@ use crate::combat::combat_actions::TargetingScheme;
 use crate::combat::hp_change_source_types::Evadable;
 use crate::combat::hp_change_source_types::HpChangeSource;
 use crate::combat::hp_change_source_types::HpChangeSourceCategories;
+use crate::combat::hp_change_source_types::MeleeOrRanged;
 use crate::combat::magical_elements::MagicalElements;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::primatives::Range;
@@ -66,7 +67,9 @@ impl CombatantAbilityNames {
                         crit_chance_attribute: Some(CombatAttributes::Dexterity),
                         crit_multiplier_attribute: Some(CombatAttributes::Strength),
                         source_properties: HpChangeSource {
-                            category: HpChangeSourceCategories::PhysicalDamage,
+                            category: HpChangeSourceCategories::PhysicalDamage(
+                                MeleeOrRanged::Melee,
+                            ),
                             sub_category: None,
                             element: None,
                         },
@@ -95,7 +98,9 @@ impl CombatantAbilityNames {
                         crit_chance_attribute: Some(CombatAttributes::Dexterity),
                         crit_multiplier_attribute: Some(CombatAttributes::Strength),
                         source_properties: HpChangeSource {
-                            category: HpChangeSourceCategories::PhysicalDamage,
+                            category: HpChangeSourceCategories::PhysicalDamage(
+                                MeleeOrRanged::Melee,
+                            ),
                             sub_category: None,
                             element: None,
                         },
@@ -121,7 +126,9 @@ impl CombatantAbilityNames {
                         crit_chance_attribute: Some(CombatAttributes::Dexterity),
                         crit_multiplier_attribute: Some(CombatAttributes::Dexterity),
                         source_properties: HpChangeSource {
-                            category: HpChangeSourceCategories::PhysicalDamage,
+                            category: HpChangeSourceCategories::PhysicalDamage(
+                                MeleeOrRanged::Ranged,
+                            ),
                             sub_category: None,
                             element: None,
                         },

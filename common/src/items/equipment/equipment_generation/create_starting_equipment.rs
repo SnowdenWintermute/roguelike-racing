@@ -1,6 +1,7 @@
 #![allow(unused)]
 use crate::combat::hp_change_source_types::HpChangeSource;
 use crate::combat::hp_change_source_types::HpChangeSourceCategories;
+use crate::combat::hp_change_source_types::MeleeOrRanged;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::game::id_generator::IdGenerator;
 use crate::items::equipment::affixes::Affix;
@@ -93,7 +94,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
             OneHandedMeleeWeapons::Stick,
             WeaponProperties {
                 damage_classifications: vec![HpChangeSource::new(
-                    HpChangeSourceCategories::PhysicalDamage,
+                    HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
                     None,
                     None,
                 )],
@@ -122,7 +123,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
     //     equipment_type: EquipmentTypes::OneHandedMeleeWeapon(
     //         OneHandedMeleeWeapons::Stick,
     //         WeaponProperties {
-    //             damage_classifications: vec![HpChangeSource::new(HpChangeSourceCategories::PhysicalDamage, Some(HpChangeSourceSubCategories::Blunt)],
+    //             damage_classifications: vec![HpChangeSource::new(HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee), Some(HpChangeSourceSubCategories::Blunt)],
     //             damage: Range::new(1, 4),
     //         },
     //     ),
@@ -235,7 +236,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
 
     // starting_equipment.insert(EquipmentSlots::Body, chest);
     // starting_equipment.insert(EquipmentSlots::Head, head);
-    // starting_equipment.insert(EquipmentSlots::MainHand, main_hand);
+    starting_equipment.insert(EquipmentSlots::MainHand, main_hand);
     // starting_equipment.insert(EquipmentSlots::OffHand, off_hand);
     // starting_equipment.insert(EquipmentSlots::RightRing, right_ring);
     // starting_equipment.insert(EquipmentSlots::LeftRing, left_ring);

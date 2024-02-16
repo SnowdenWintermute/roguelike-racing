@@ -35,11 +35,18 @@ impl Evadable {
 
 #[derive(Serialize, Deserialize, EnumIter, Hash, Eq, PartialEq, Copy, Clone, Debug, Default)]
 pub enum HpChangeSourceCategories {
-    #[default]
-    PhysicalDamage,
+    PhysicalDamage(MeleeOrRanged),
     MagicalDamage(Evadable),
     Healing,
+    #[default]
     Direct,
+}
+
+#[derive(Serialize, Deserialize, EnumIter, Hash, Eq, PartialEq, Copy, Clone, Debug, Default)]
+pub enum MeleeOrRanged {
+    #[default]
+    Melee,
+    Ranged,
 }
 
 #[derive(Serialize, Deserialize, Eq, PartialEq, Clone, Debug, Default)]
@@ -66,7 +73,11 @@ impl fmt::Display for HpChangeSourceCategories {
             f,
             "{}",
             match self {
-                HpChangeSourceCategories::PhysicalDamage => "Physical Damage",
+                HpChangeSourceCategories::PhysicalDamage(melee_or_ranged) =>
+                    match melee_or_ranged {
+                        MeleeOrRanged::Melee => "Melee Physical Damage",
+                        MeleeOrRanged::Ranged => "Ranged Physical Damage",
+                    },
                 HpChangeSourceCategories::MagicalDamage(Evadable(evadable)) => match evadable {
                     true => "Evadable Magical Damage",
                     false => "Magical Damage",

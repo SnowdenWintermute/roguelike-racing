@@ -44,7 +44,7 @@ pub fn generate_equipment_combat_attributes(
                     PrefixTypes::Mp => {
                         attribute_templates.push(AttributeValueCreationTemplate::new(
                             CombatAttributes::Mp,
-                            tier,
+                            tier * 2.0,
                             tier * 5.0,
                         ));
                     }
@@ -58,7 +58,7 @@ pub fn generate_equipment_combat_attributes(
                     PrefixTypes::Accuracy => {
                         attribute_templates.push(AttributeValueCreationTemplate::new(
                             CombatAttributes::Accuracy,
-                            tier,
+                            tier * 2.0,
                             tier * 5.0,
                         ));
                     }
@@ -74,15 +74,15 @@ pub fn generate_equipment_combat_attributes(
                     PrefixTypes::Evasion => {
                         attribute_templates.push(AttributeValueCreationTemplate::new(
                             CombatAttributes::Evasion,
-                            tier,
+                            tier * 2.0,
                             tier * 5.0,
                         ));
                     }
                     PrefixTypes::ArmorPenetration => {
                         attribute_templates.push(AttributeValueCreationTemplate::new(
                             CombatAttributes::ArmorPenetration,
-                            tier,
                             tier * 2.0,
+                            tier * 5.0,
                         ));
                     }
                     PrefixTypes::Agility => {
@@ -153,7 +153,7 @@ pub fn generate_equipment_combat_attributes(
                     SuffixTypes::Hp => {
                         attribute_templates.push(AttributeValueCreationTemplate::new(
                             CombatAttributes::Hp,
-                            tier,
+                            tier * 2.0,
                             tier * 5.0,
                         ));
                     }

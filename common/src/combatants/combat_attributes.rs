@@ -9,13 +9,14 @@ use strum_macros::EnumIter;
 pub enum CombatAttributes {
     // DERIVED
     // offensive
-    Damage,           // flat bonus to physical damage
-    ArmorPenetration, // negates armor class
-    Accuracy,         // chance to hit with physical attacks and abilities
+    Damage,           // adds a flat bonus to physical damage
+    ArmorPenetration, // subtracted from target's armor class
+    Accuracy,         // after target's evasion subtracted, the chance for an evadable actions to
+    // hit its target
     // defensive
     ArmorClass, // compared with final damage of physical attack, reduces damage on a curve
-    Evasion,    // dodge an attack
-    Hp,         // if reduced to 0 or below, combatant is "dead"
+    Evasion,    // reduces the chance to be hit by evadable actions
+    Hp,         // if 0 or below, a combatant can no longer take actions
     // utility
     Speed, // determines turn order
     Mp,    // a resource for ability use

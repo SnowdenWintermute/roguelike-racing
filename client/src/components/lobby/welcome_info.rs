@@ -16,17 +16,17 @@ pub fn welcome_info() -> Html {
 
     html!(
         <section class="h-[19rem] max-h-[19rem] p-4 mb-4 mr-4 bg-slate-700 border border-slate-400 overflow-y-auto">
-        <div class="flex justify-between mb-2">
-            <h3 class="text-lg mb-2">{"Roguelike Racing alpha 0.5.0 "}</h3>
-            <button onclick={handle_show_patch_notes_click} class="border border-slate-400 p-[.25rem] pr-2 pl-2">
-                {patch_notes_button_text}
-            </button>
-        </div>
-        if *show_patch_notes_state == false {
-            <WelcomeMessage />
-        } else {
-            <PatchNotes />
-        }
+            <div class="flex justify-between mb-2">
+                <h3 class="text-lg mb-2">{"Roguelike Racing alpha 0.5.0 "}</h3>
+                <button onclick={handle_show_patch_notes_click} class="border border-slate-400 p-[.25rem] pr-2 pl-2">
+                    {patch_notes_button_text}
+                </button>
+            </div>
+            if *show_patch_notes_state == false {
+                <WelcomeMessage />
+            } else {
+                <PatchNotes />
+            }
         </section>
     )
 }

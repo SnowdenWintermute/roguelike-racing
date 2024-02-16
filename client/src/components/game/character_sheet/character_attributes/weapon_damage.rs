@@ -11,48 +11,49 @@ pub fn weapon_damage(
 ) -> Html {
     // @TODO - fix this to match with attack ability handler numbers
     //
-    let mh_weapon_option =
-        combatant_properties.get_equipped_weapon_properties(&EquipmentSlots::MainHand);
-    let oh_weapon_option =
-        combatant_properties.get_equipped_weapon_properties(&EquipmentSlots::OffHand);
+    // let mh_weapon_option =
+    //     combatant_properties.get_equipped_weapon_properties(&EquipmentSlots::MainHand);
+    // let oh_weapon_option =
+    //     combatant_properties.get_equipped_weapon_properties(&EquipmentSlots::OffHand);
 
-    let base_damage = match total_attributes.get(&CombatAttributes::Damage) {
-        Some(value) => *value,
-        None => 0,
-    };
+    // let base_damage = match total_attributes.get(&CombatAttributes::Damage) {
+    //     Some(value) => *value,
+    //     None => 0,
+    // };
 
-    let accuracy = total_attributes
-        .get(&CombatAttributes::Accuracy)
-        .unwrap_or_else(|| &0);
+    // let accuracy = total_attributes
+    //     .get(&CombatAttributes::Accuracy)
+    //     .unwrap_or_else(|| &0);
 
-    let mh_damage_and_acc_option = if let Some(mh_weapon) = mh_weapon_option {
-        Some(CombatantProperties::get_weapon_damage_and_hit_chance(
-            &mh_weapon.0,
-            &mh_weapon.1,
-            base_damage,
-            *accuracy,
-            false,
-        ))
-    } else {
-        None
-    };
+    // let mh_damage_and_acc_option = if let Some(mh_weapon) = mh_weapon_option {
+    //     Some(CombatantProperties::get_weapon_damage_and_hit_chance(
+    //         &mh_weapon.0,
+    //         &mh_weapon.1,
+    //         base_damage,
+    //         *accuracy,
+    //         false,
+    //     ))
+    // } else {
+    //     None
+    // };
 
-    let modified_oh_damage_and_acc = if let Some(oh_weapon) = oh_weapon_option {
-        Some(CombatantProperties::get_weapon_damage_and_hit_chance(
-            &oh_weapon.0,
-            &oh_weapon.1,
-            base_damage,
-            *accuracy,
-            true,
-        ))
-    } else {
-        None
-    };
+    // let modified_oh_damage_and_acc = if let Some(oh_weapon) = oh_weapon_option {
+    //     Some(CombatantProperties::get_weapon_damage_and_hit_chance(
+    //         &oh_weapon.0,
+    //         &oh_weapon.1,
+    //         base_damage,
+    //         *accuracy,
+    //         true,
+    //     ))
+    // } else {
+    //     None
+    // };
 
     html!(
         <div class="flex" >
-            {weapon_damage_entry(mh_damage_and_acc_option, &"Main Hand", &"mr-1")}
-            {weapon_damage_entry(modified_oh_damage_and_acc, &"Off Hand", &"ml-1")}
+        {"TODO - add damage numbers"}
+            // {weapon_damage_entry(mh_damage_and_acc_option, &"Main Hand", &"mr-1")}
+            // {weapon_damage_entry(modified_oh_damage_and_acc, &"Off Hand", &"ml-1")}
         </div>
     )
 }

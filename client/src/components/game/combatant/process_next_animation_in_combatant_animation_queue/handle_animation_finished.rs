@@ -1,7 +1,6 @@
 use crate::components::game::combatant::process_next_animation_in_combatant_animation_queue::approach_combatant_animation_finished_handler::approach_combatant_animation_finished_handler;
 use crate::components::game::combatant::process_next_animation_in_combatant_animation_queue::follow_through_swing_animation_finished_handler::follow_through_swing_animation_finished_handler;
 use crate::components::game::combatant::process_next_animation_in_combatant_animation_queue::return_to_ready_position_animation_finished_handler::return_to_ready_position_animation_finished_handler;
-use crate::components::game::combatant::process_next_animation_in_combatant_animation_queue::swing_to_hit_animation_finished_handler::swing_to_hit_animation_finished_handler;
 use crate::components::mesh_manager::CombatantAnimation;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
@@ -17,12 +16,10 @@ pub fn handle_animation_finished(
     combatant_id: u32,
 ) -> Result<(), AppError> {
     match animation {
-        CombatantAnimation::SwingMainHandToHit(target_id, hp_change_option, evaded) => {
-            swing_to_hit_animation_finished_handler(
+        CombatantAnimation::SwingMainHandToHit(targets_and_hp_change_results) => {
+            animation_causing_hp_change_finished_handler(
                 game_dispatch.clone(),
-                target_id,
-                hp_change_option,
-                evaded,
+                targets_and_hp_change_results,
                 combatant_id,
             )
         }

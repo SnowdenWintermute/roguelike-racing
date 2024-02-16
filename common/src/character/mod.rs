@@ -46,6 +46,18 @@ impl Character {
             CombatantAbilityNames::Attack,
             CombatantAbility::create_by_name(&CombatantAbilityNames::Attack),
         );
+        character.combatant_properties.abilities.insert(
+            CombatantAbilityNames::AttackMeleeMainhand,
+            CombatantAbility::create_by_name(&CombatantAbilityNames::AttackMeleeMainhand),
+        );
+        character.combatant_properties.abilities.insert(
+            CombatantAbilityNames::AttackMeleeOffhand,
+            CombatantAbility::create_by_name(&CombatantAbilityNames::AttackMeleeOffhand),
+        );
+        character.combatant_properties.abilities.insert(
+            CombatantAbilityNames::AttackRangedMainhand,
+            CombatantAbility::create_by_name(&CombatantAbilityNames::AttackRangedMainhand),
+        );
 
         match combatant_class {
             CombatantClass::Mage => {}

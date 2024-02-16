@@ -1,4 +1,7 @@
 use crate::components::mesh_manager::CombatantAnimation;
+use crate::components::mesh_manager::HpChange;
+use crate::components::mesh_manager::HpChangeResult;
+use crate::components::mesh_manager::TargetAndHpChangeResults;
 use crate::store::game_store::GameStore;
 use common::combat::ActionResult;
 use common::errors::AppError;
@@ -29,9 +32,28 @@ pub fn queue_attack_animations(
         } else {
             false
         };
+        let hp_change_value = hp_change_option.unwrap_or_else(|| &0);
+
+        let is_crit = if let Some(crits_by_id) = &action_result.crits_by_entity_id {
+            crits_by_id.get(&target_id).is_some()
+        } else {
+            false
+        };
+
+        let hp_change_result = if evaded {
+            HpChangeResult::Evaded
+        } else {
+            HpChangeResult::Damaged(HpChange {
+                value: *hp_change_value,
+                is_crit,
+            })
+        };
 
         event_manager.animation_queue.append(&mut VecDeque::from([
-            CombatantAnimation::SwingMainHandToHit(target_id, hp_change_option.copied(), evaded),
+            CombatantAnimation::SwingMainHandToHit(vec![TargetAndHpChangeResults {
+                target_id,
+                hp_change_result,
+            }]),
             CombatantAnimation::MainHandFollowThroughSwing,
         ]));
 

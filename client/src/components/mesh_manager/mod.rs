@@ -44,7 +44,7 @@ pub struct TargetAndHpChangeResults {
 pub enum CombatantAnimation {
     TurnToFaceCombatant(u32),
     ApproachCombatant(u32),
-    SwingMainHandToHit(u32, Option<i16>, bool),
+    SwingMainHandToHit(Vec<TargetAndHpChangeResults>),
     SwingOffHandToHit,
     MainHandFollowThroughSwing,
     OffHandFollowThroughSwing,
@@ -62,11 +62,8 @@ impl Display for CombatantAnimation {
         let to_write = match self {
             CombatantAnimation::TurnToFaceCombatant(id) => format!("turing to face {}", id),
             CombatantAnimation::ApproachCombatant(id) => format!("approaching combatant {}", id),
-            CombatantAnimation::SwingMainHandToHit(id, hp_change, evaded) => {
-                format!(
-                    "swinging main hand to hit {:?} for {:?} evaded: {evaded}",
-                    id, hp_change
-                )
+            CombatantAnimation::SwingMainHandToHit(targets_and_hp_changes) => {
+                format!("swinging main hand to hit",)
             }
             CombatantAnimation::SwingOffHandToHit => format!("swung offhand to hit"),
             CombatantAnimation::MainHandFollowThroughSwing => format!("main hand follow through"),

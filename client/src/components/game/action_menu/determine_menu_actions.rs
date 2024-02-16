@@ -113,6 +113,11 @@ pub fn determine_menu_actions(
         menu_types.push(MenuTypes::LevelUpAbilities);
         let mut ability_names =
             get_ability_menu_names(&party, game_state.focused_character_id, None);
+        ability_names.retain(|item| {
+            item != &CombatantAbilityNames::AttackMeleeMainhand
+                && item != &CombatantAbilityNames::AttackMeleeOffhand
+                && item != &CombatantAbilityNames::AttackRangedMainhand
+        });
         ability_names.sort_by(|a, b| a.partial_cmp(&b).unwrap());
         new_actions = MenuTypes::get_actions(
             &menu_types,
@@ -129,6 +134,11 @@ pub fn determine_menu_actions(
             game_state.focused_character_id,
             Some(AbilityUsableContext::InCombat),
         );
+        ability_names.retain(|item| {
+            item != &CombatantAbilityNames::AttackMeleeMainhand
+                && item != &CombatantAbilityNames::AttackMeleeOffhand
+                && item != &CombatantAbilityNames::AttackRangedMainhand
+        });
         ability_names.sort_by(|a, b| a.partial_cmp(&b).unwrap());
         if party.current_room.treasure_chest.is_some() {
             menu_types.push(MenuTypes::UnopenedChest);
@@ -153,6 +163,11 @@ pub fn determine_menu_actions(
             game_state.focused_character_id,
             Some(AbilityUsableContext::OutOfCombat),
         );
+        ability_names.retain(|item| {
+            item != &CombatantAbilityNames::AttackMeleeMainhand
+                && item != &CombatantAbilityNames::AttackMeleeOffhand
+                && item != &CombatantAbilityNames::AttackRangedMainhand
+        });
         ability_names.sort_by(|a, b| a.partial_cmp(&b).unwrap());
         new_actions = MenuTypes::get_actions(
             &menu_types,

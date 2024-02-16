@@ -5,11 +5,11 @@ use crate::combat::combat_actions::CombatActionTarget;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::errors::AppError;
 use crate::game::RoguelikeRacerGame;
-mod ability_resolution_calculators;
 mod add_weapon_damage_to_hp_change_range;
 mod apply_crit_multiplier_to_hp_change;
 pub mod apply_elemental_affinity_to_hp_change;
 pub mod attack;
+mod calculate_action_hp_and_mp_changes;
 pub mod calculate_combat_action_hp_changes;
 mod calculate_combat_action_mp_changes;
 mod calculate_healing_hp_change_and_add_to_action_result;
@@ -36,34 +36,16 @@ impl RoguelikeRacerGame {
 
         match ability_name {
             CombatantAbilityNames::Attack => {
-                self.attack_handler(ability_user_id, ability_targets, battle_option)
+                self.attack_handler(ability_user_id, ability_targets, battle_option, ally_ids)
             }
             CombatantAbilityNames::Fire | CombatantAbilityNames::Healing => {
                 let combat_action = CombatAction::AbilityUsed(ability_name.clone());
-                let mut action_result = ActionResult::new(
-                    ability_user_id,
-                    combat_action.clone(),
-                    ability_targets.clone(),
-                );
-                action_result.ends_turn = combat_action
-                    .get_properties_if_owned(&self, ability_user_id)?
-                    .requires_combat_turn;
-
-                let action_result = self.calculate_combat_action_mp_changes(
-                    &action_result,
-                    ability_user_id,
-                    ability_targets,
-                    battle_option,
-                    &combat_action,
-                )?;
-
-                let action_result = self.calculate_combat_action_hp_changes(
-                    &action_result,
+                let action_result = self.calculate_action_hp_and_mp_changes(
+                    combat_action,
                     ability_user_id,
                     ability_targets,
                     battle_option,
                     ally_ids,
-                    &combat_action,
                     Some((
                         ability.level,
                         ability_attributes.base_hp_change_values_level_multiplier,

@@ -56,7 +56,6 @@ impl RoguelikeRacerGame {
 
             let player = get_player(self, player_username)?;
             let target_preferences = player.target_preferences.clone();
-            println!("player: {:#?}", player);
 
             let new_targets = self.get_action_targets_by_saved_preference_or_default(
                 player_username,
@@ -65,16 +64,12 @@ impl RoguelikeRacerGame {
                 &opponent_ids_option,
             )?;
 
-            println!("new_targets : {:#?}", new_targets);
-
             let new_target_preferences = target_preferences.get_updated_preferences(
                 &combat_action_properties,
                 &new_targets,
                 ally_ids,
                 opponent_ids_option,
             );
-
-            println!("new target_prefs : {:#?}", new_target_preferences);
 
             let player = get_mut_player(self, player_username)?;
             player.target_preferences = new_target_preferences;

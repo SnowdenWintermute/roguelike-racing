@@ -5,6 +5,7 @@ use common::app_consts::error_messages;
 use common::combat::CombatTurnResult;
 use common::errors::AppError;
 use common::packets::server_to_client::BattleConclusion;
+use gloo::console::log;
 use yew::AttrValue;
 use yewdux::Dispatch;
 
@@ -14,6 +15,7 @@ pub fn handle_combat_turn_results(
 ) -> Result<(), AppError> {
     game_dispatch.reduce_mut(|store| {
         for turn_result in turn_results {
+            log!(format!("turn result: {:#?}", turn_result));
             store
                 .action_results_manager
                 .turn_results_queue

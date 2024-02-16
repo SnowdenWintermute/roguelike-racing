@@ -10,7 +10,6 @@ pub mod shields;
 pub mod trait_effects;
 pub mod two_handed_melee_weapons;
 pub mod two_handed_ranged_weapons;
-pub mod unarmed;
 pub mod weapon_properties;
 use self::affixes::Affix;
 use self::armor_properties::ArmorProperties;
@@ -176,11 +175,33 @@ impl EquipmentProperties {
         }
     }
 
+    pub fn is_shield(equipment_properties_option: Option<&EquipmentProperties>) -> bool {
+        match equipment_properties_option {
+            Some(equipment_properties) => match equipment_properties.equipment_type {
+                EquipmentTypes::Shield(_, _) => true,
+                _ => false,
+            },
+            None => false,
+        }
+    }
+
     pub fn is_two_handed(&self) -> bool {
         match self.equipment_type {
             EquipmentTypes::TwoHandedMeleeWeapon(_, _)
             | EquipmentTypes::TwoHandedRangedWeapon(_, _) => true,
             _ => false,
+        }
+    }
+
+    pub fn get_weapon_equipment_properties_option_from_equipment_properties_option(
+        equipment_properties_option: Option<&EquipmentProperties>,
+    ) -> Option<&EquipmentProperties> {
+        match equipment_properties_option {
+            Some(equipment_properties) => match equipment_properties.is_weapon() {
+                true => Some(equipment_properties),
+                false => None,
+            },
+            None => None,
         }
     }
 

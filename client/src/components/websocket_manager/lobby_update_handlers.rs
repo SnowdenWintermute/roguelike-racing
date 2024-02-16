@@ -1,6 +1,5 @@
 use crate::store::game_store::GameStore;
-use common::errors::AppError;
-use common::game::player::RoguelikeRacerPlayer;
+use common::{errors::AppError, game::player::RoguelikeRacerPlayer};
 
 pub fn handle_user_joined_game(
     game_state: &mut GameStore,

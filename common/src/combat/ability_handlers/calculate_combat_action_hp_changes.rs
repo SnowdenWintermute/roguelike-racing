@@ -64,38 +64,43 @@ impl RoguelikeRacerGame {
         let Range { min, max } = hp_change_properties.base_values;
         let mut min = min as f32;
         let mut max = max as f32;
+
+        match combat_action {
+            CombatAction::AbilityUsed(ability_name) => println!("ability name {}", ability_name),
+            CombatAction::ConsumableUsed(_) => println!("consumable used"),
+        }
+        println!("ability base damage min: {min} max: {max}");
         // add to base values if level greater than 1
         if let Some((level, level_scaling_factor)) =
             ability_level_and_base_value_scaling_factor_option
         {
-            println!("level: {level} scaling: {:?}", level_scaling_factor);
-            println!("min: {min} max: {max}");
             min = min * level as f32 * level_scaling_factor;
             max = max * level as f32 * level_scaling_factor;
-            println!("min: {min} max: {max}");
         }
         // add scaling attribute to range
-        if let Some((additive_attribute, scaling_factor)) =
-            hp_change_properties.additive_attribute_and_scaling_factor
+        if let Some((additive_attribute, percent_scaling_factor)) =
+            hp_change_properties.additive_attribute_and_percent_scaling_factor
         {
             let attribute_value = user_combat_attributes
                 .get(&additive_attribute)
                 .unwrap_or_else(|| &0);
-            let scaled_attribute_value = attribute_value * scaling_factor as u16;
-            min += scaled_attribute_value as f32;
-            max += scaled_attribute_value as f32;
+            let scaled_attribute_value =
+                *attribute_value as f32 * (percent_scaling_factor as f32 / 100.0);
+            min += scaled_attribute_value;
+            max += scaled_attribute_value;
         };
+        println!("damage after attribute min: {min} max: {max}");
         // if weapon damage, determine main/off hand and add appropriate damage to range
         if let Some(weapon_slots) = &hp_change_properties.add_weapon_damage_from {
-            let (weapon_min, weapon_max) = add_weapon_damage_to_combat_action_hp_change(
+            (min, max) = add_weapon_damage_to_combat_action_hp_change(
                 &weapon_slots,
                 &user_combatant_properties,
                 &min,
                 &max,
             )?;
-            min += weapon_min;
-            max += weapon_max;
         }
+
+        println!("damage after weapon added min: {min} max: {max}");
         // roll the hp change
         let mut rng = rand::thread_rng();
         let rolled = rng.gen_range(min..=max);

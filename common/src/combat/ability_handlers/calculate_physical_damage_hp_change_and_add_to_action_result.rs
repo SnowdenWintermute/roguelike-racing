@@ -9,6 +9,7 @@ use crate::combatants::combat_attributes::CombatAttributes;
 use crate::errors::AppError;
 use crate::game::RoguelikeRacerGame;
 use std::collections::HashMap;
+use std::collections::HashSet;
 
 impl RoguelikeRacerGame {
     pub fn calculate_physical_damage_hp_change_and_add_to_action_result(
@@ -22,6 +23,18 @@ impl RoguelikeRacerGame {
         //  - get crit chance vs crit chance reduction
         //  - roll crit chance vs %chance reduction from AGI if physical
         for target_id in target_entity_ids {
+            let user_accuracy = *user_combat_attributes
+                .get(&CombatAttributes::Accuracy)
+                .unwrap_or_else(|| &0) as f32
+                * (hp_change_properties.accuracy_percent_modifier as f32 / 100.0);
+            let evaded = self.roll_evaded(user_accuracy as u16, target_id)?;
+            if evaded {
+                action_result
+                    .misses_by_entity_id
+                    .get_or_insert(HashSet::new())
+                    .insert(target_id);
+                continue;
+            }
             let mut hp_change = rolled_hp_change_split_by_num_targets;
             let user_dex = user_combat_attributes
                 .get(&CombatAttributes::Dexterity)
@@ -32,13 +45,20 @@ impl RoguelikeRacerGame {
                 .get(&CombatAttributes::Agility)
                 .unwrap_or_else(|| &0);
             let crit_chance_after_reduction = BASE_CRIT_CHANCE + user_dex - target_agi;
+            println!("crit chance after reduction: {crit_chance_after_reduction}");
             let is_crit = roll_crit(crit_chance_after_reduction);
             if is_crit {
+                println!("CRIT SCORED");
                 hp_change = apply_crit_multiplier_to_hp_change(
                     &hp_change_properties,
                     &user_combat_attributes,
                     hp_change,
                 );
+                if let Some(crits_by_entity_id) = &mut action_result.crits_by_entity_id {
+                    crits_by_entity_id.insert(target_id);
+                } else {
+                    action_result.crits_by_entity_id = Some(HashSet::from([target_id]));
+                };
             }
             //  - reduce damage via target armor vs target armor pen
             let target_ac = target_combat_attributes
@@ -72,7 +92,7 @@ impl RoguelikeRacerGame {
                 hp_change = after_affinity;
             }
             //  - apply any base final multiplier
-            hp_change *= hp_change_properties.base_final_percent_multiplier as f32 / 100.0;
+            hp_change *= hp_change_properties.final_damage_percent_multiplier as f32 / 100.0;
             // as damage
             hp_change *= -1.0;
             action_result

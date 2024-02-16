@@ -16,7 +16,6 @@ use rand::seq::SliceRandom;
 use rand::Rng;
 use rand_distr::Distribution;
 use rand_distr::Normal;
-use rand_distr::StandardNormal;
 use serde::Deserialize;
 use serde::Serialize;
 use std::cmp;
@@ -156,6 +155,18 @@ impl Monster {
         monster.combatant_properties.abilities.insert(
             CombatantAbilityNames::Attack,
             CombatantAbility::create_by_name(&CombatantAbilityNames::Attack),
+        );
+        monster.combatant_properties.abilities.insert(
+            CombatantAbilityNames::AttackMeleeMainhand,
+            CombatantAbility::create_by_name(&CombatantAbilityNames::AttackMeleeMainhand),
+        );
+        monster.combatant_properties.abilities.insert(
+            CombatantAbilityNames::AttackMeleeOffhand,
+            CombatantAbility::create_by_name(&CombatantAbilityNames::AttackMeleeOffhand),
+        );
+        monster.combatant_properties.abilities.insert(
+            CombatantAbilityNames::AttackRangedMainhand,
+            CombatantAbility::create_by_name(&CombatantAbilityNames::AttackRangedMainhand),
         );
 
         monster

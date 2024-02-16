@@ -12,6 +12,10 @@ pub fn add_weapon_damage_to_combat_action_hp_change(
     let mut min: f32 = *min;
     let mut max: f32 = *max;
     for weapon_slot in weapon_slots {
+        println!(
+            "adding weapon damage from equipment in slot {}",
+            weapon_slot
+        );
         match weapon_slot {
             WeaponSlot::MainHand => calculate_and_add_weapon_damage(
                 user_combatant_properties,
@@ -39,7 +43,9 @@ pub fn calculate_and_add_weapon_damage(
 ) -> Result<(), AppError> {
     let equipment_option = user_combatant_properties.get_weapon_in_slot(slot);
     if let Some(equipment_properties) = equipment_option {
+        println!("found equipment_properties in slot {:#?}", slot);
         let (weapon_min, weapon_max) = equipment_properties.get_modified_weapon_damage_range()?;
+        println!("weapon min: {weapon_min} weapon max: {weapon_max}");
         *min += weapon_min;
         *max += weapon_max;
     }

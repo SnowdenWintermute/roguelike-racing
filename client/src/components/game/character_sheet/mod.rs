@@ -1,11 +1,8 @@
 pub mod character_attributes;
 mod paper_doll;
-use crate::{
-    components::game::character_sheet::{
-        character_attributes::CharacterAttributes, paper_doll::PaperDoll,
-    },
-    store::game_store::GameStore,
-};
+use crate::components::game::character_sheet::character_attributes::CharacterAttributes;
+use crate::components::game::character_sheet::paper_doll::PaperDoll;
+use crate::store::game_store::GameStore;
 use common::character::Character;
 use yew::prelude::*;
 use yewdux::prelude::use_store;

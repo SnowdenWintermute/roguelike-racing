@@ -26,10 +26,11 @@ impl RoguelikeRacerGame {
             // println!("hp_change initial: {}", hp_change);
             //  - if evadable roll accuracy vs evasion and return evaded
             if evadable {
-                let user_accuracy = user_combat_attributes
+                let user_accuracy = *user_combat_attributes
                     .get(&CombatAttributes::Accuracy)
-                    .unwrap_or_else(|| &0);
-                let evaded = self.roll_evaded(*user_accuracy, target_id)?;
+                    .unwrap_or_else(|| &0) as f32
+                    * (hp_change_properties.accuracy_percent_modifier as f32 / 100.0);
+                let evaded = self.roll_evaded(user_accuracy as u16, target_id)?;
                 if evaded {
                     action_result
                         .misses_by_entity_id
@@ -51,6 +52,11 @@ impl RoguelikeRacerGame {
                     &user_combat_attributes,
                     hp_change,
                 );
+                if let Some(crits_by_entity_id) = &mut action_result.crits_by_entity_id {
+                    crits_by_entity_id.insert(target_id);
+                } else {
+                    action_result.crits_by_entity_id = Some(HashSet::from([target_id]));
+                };
                 // println!("hp_change after crit: {}", hp_change);
             }
             //  - reduce or increase damage by elemental affinity if damage type is elemental
@@ -86,7 +92,7 @@ impl RoguelikeRacerGame {
                 // println!("hp_change after resilience: {}", hp_change);
             }
             //  - apply any base final multiplier
-            hp_change *= hp_change_properties.base_final_percent_multiplier as f32 / 100.0;
+            hp_change *= hp_change_properties.final_damage_percent_multiplier as f32 / 100.0;
             // println!("hp_change after final multiplier: {}", hp_change);
             // as damage
             hp_change *= -1.0;

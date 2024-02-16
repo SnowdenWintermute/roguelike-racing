@@ -54,7 +54,10 @@ pub fn process_next_action_result_in_combatant_event_queue(
                     false => (),
                 };
                 match ability_name {
-                    CombatantAbilityNames::Attack => {
+                    CombatantAbilityNames::Attack
+                    | CombatantAbilityNames::AttackMeleeMainhand
+                    | CombatantAbilityNames::AttackMeleeOffhand
+                    | CombatantAbilityNames::AttackRangedMainhand => {
                         queue_attack_animations(game_dispatch, combatant_id, new_action_result)
                     }
                     CombatantAbilityNames::Fire => {

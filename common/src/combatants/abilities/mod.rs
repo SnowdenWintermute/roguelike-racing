@@ -21,7 +21,7 @@ impl CombatantAbility {
 impl Default for CombatantAbility {
     fn default() -> CombatantAbility {
         CombatantAbility {
-            ability_name: CombatantAbilityNames::Attack,
+            ability_name: CombatantAbilityNames::AttackMeleeMainhand,
             level: 0,
         }
     }
@@ -30,6 +30,9 @@ impl Default for CombatantAbility {
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Serialize, Deserialize, PartialOrd, Ord)]
 pub enum CombatantAbilityNames {
     Attack,
+    AttackMeleeMainhand,
+    AttackMeleeOffhand,
+    AttackRangedMainhand,
     ArmorBreak,
     HeatLance,
     Fire,
@@ -41,6 +44,9 @@ impl Display for CombatantAbilityNames {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             CombatantAbilityNames::Attack => write!(f, "Attack"),
+            CombatantAbilityNames::AttackMeleeMainhand => write!(f, "Attack"),
+            CombatantAbilityNames::AttackMeleeOffhand => write!(f, "Attack"),
+            CombatantAbilityNames::AttackRangedMainhand => write!(f, "Ranged Attack"),
             CombatantAbilityNames::HeatLance => write!(f, "Heat Lance"),
             CombatantAbilityNames::ArmorBreak => write!(f, "Armor Break"),
             CombatantAbilityNames::Healing => write!(f, "Healing"),

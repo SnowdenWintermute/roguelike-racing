@@ -14,7 +14,6 @@ pub mod inventory;
 mod unequip_item;
 use crate::combat::combat_actions::CombatActionTarget;
 use crate::combat::magical_elements::MagicalElements;
-use crate::items::equipment::unarmed::FIST;
 use crate::items::equipment::EquipmentProperties;
 use crate::items::equipment::EquipmentTypes;
 pub mod get_weapon_properties_traits_and_base_bonus_damage;
@@ -63,6 +62,7 @@ pub enum CombatantControlledBy {
 pub struct CombatantProperties {
     pub combatant_class: CombatantClass,
     pub inherent_attributes: HashMap<CombatAttributes, u16>,
+    pub level: u8,
     pub hit_points: u16,
     pub mana: u16,
     pub status_effects: Vec<StatusEffects>,
@@ -85,6 +85,7 @@ impl CombatantProperties {
         CombatantProperties {
             combatant_class: combatant_class.clone(),
             inherent_attributes: HashMap::new(),
+            level: 1,
             hit_points: 0,
             mana: 0,
             status_effects: vec![],
@@ -198,13 +199,7 @@ impl CombatantProperties {
                 _ => return None,
             }
         } else {
-            match slot {
-                EquipmentSlots::MainHand | EquipmentSlots::OffHand => match FIST.equipment_type {
-                    EquipmentTypes::OneHandedMeleeWeapon(_, _) => Some(&FIST),
-                    _ => None,
-                },
-                _ => None,
-            }
+            None
         }
     }
 }

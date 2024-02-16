@@ -235,8 +235,8 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
 
     // starting_equipment.insert(EquipmentSlots::Body, chest);
     // starting_equipment.insert(EquipmentSlots::Head, head);
-    starting_equipment.insert(EquipmentSlots::MainHand, main_hand);
-    starting_equipment.insert(EquipmentSlots::OffHand, off_hand);
+    // starting_equipment.insert(EquipmentSlots::MainHand, main_hand);
+    // starting_equipment.insert(EquipmentSlots::OffHand, off_hand);
     // starting_equipment.insert(EquipmentSlots::RightRing, right_ring);
     // starting_equipment.insert(EquipmentSlots::LeftRing, left_ring);
     // starting_equipment.insert(EquipmentSlots::Amulet, amulet);

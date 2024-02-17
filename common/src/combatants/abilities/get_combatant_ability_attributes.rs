@@ -90,7 +90,7 @@ impl CombatantAbilityNames {
                         base_values: Range::new(1, 1),
                         final_damage_percent_multiplier: OFF_HAND_DAMAGE_MODIFIER,
                         accuracy_percent_modifier: OFF_HAND_ACCURACY_MODIFIER,
-                        add_weapon_damage_from: Some(vec![WeaponSlot::MainHand]),
+                        add_weapon_damage_from: Some(vec![WeaponSlot::OffHand]),
                         additive_attribute_and_percent_scaling_factor: Some((
                             CombatAttributes::Strength,
                             100,

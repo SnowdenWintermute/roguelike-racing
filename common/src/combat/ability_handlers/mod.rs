@@ -10,6 +10,7 @@ mod apply_crit_multiplier_to_hp_change;
 pub mod apply_elemental_affinity_to_hp_change;
 pub mod attack;
 mod calculate_action_hp_and_mp_changes;
+pub mod calculate_combat_action_hp_change_range;
 pub mod calculate_combat_action_hp_changes;
 mod calculate_combat_action_mp_changes;
 mod calculate_healing_hp_change_and_add_to_action_result;
@@ -20,6 +21,7 @@ mod get_healing_hp_change_on_target_combatant;
 pub mod roll_crit;
 mod roll_evaded;
 pub mod split_combat_action_hp_change_by_number_of_targets;
+mod test_calculate_combat_action_hp_changes;
 
 impl RoguelikeRacerGame {
     pub fn get_ability_results(

@@ -7,6 +7,7 @@ use crate::combatants::abilities::CombatantAbility;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::combatants::combatant_traits::CombatantTraits;
+use crate::combatants::inventory::Inventory;
 use crate::combatants::CombatantClass;
 use crate::combatants::CombatantControlledBy;
 use crate::combatants::CombatantProperties;
@@ -170,5 +171,35 @@ impl Monster {
         );
 
         monster
+    }
+
+    pub fn new(id: u32, name: String, hp: u16, mp: u16) -> Self {
+        Monster {
+            entity_properties: EntityProperties { id, name },
+            combatant_properties: CombatantProperties {
+                combatant_class: CombatantClass::Warrior,
+                inherent_attributes: HashMap::from([
+                    (CombatAttributes::Hp, hp),
+                    (CombatAttributes::Mp, mp),
+                ]),
+                level: 1,
+                hit_points: hp,
+                mana: mp,
+                status_effects: Vec::new(),
+                equipment: HashMap::new(),
+                inventory: Inventory {
+                    items: Vec::new(),
+                    capacity: 10,
+                    shards: 0,
+                    autoinjectors: 0,
+                },
+                abilities: HashMap::new(),
+                traits: Vec::new(),
+                inherent_elemental_affinities: HashMap::new(),
+                selected_combat_action: None,
+                combat_action_targets: None,
+                controlled_by: CombatantControlledBy::AI,
+            },
+        }
     }
 }

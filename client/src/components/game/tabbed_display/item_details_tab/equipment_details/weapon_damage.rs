@@ -28,14 +28,9 @@ pub fn weapon_damage(equipment_type: &EquipmentTypes) -> Html {
     match damage_types {
         Some(classifications) => {
             for classification in classifications {
-                let classification_text = match classification.category {
-                    HpChangeSourceCategories::PhysicalDamage => "Physical",
-                    HpChangeSourceCategories::MagicalDamage(_) => "Magical",
-                    HpChangeSourceCategories::Healing => "Healing",
-                    HpChangeSourceCategories::Direct => "Direct",
-                };
+                let classification_text = format!("{}", classification.category);
                 let damage_classification_border_color = match classification.category {
-                    HpChangeSourceCategories::PhysicalDamage => "border-zinc-300",
+                    HpChangeSourceCategories::PhysicalDamage(_) => "border-zinc-300",
                     HpChangeSourceCategories::MagicalDamage(_) => "border-sky-300",
                     HpChangeSourceCategories::Healing => "border-green-600",
                     HpChangeSourceCategories::Direct => "border-black-300",

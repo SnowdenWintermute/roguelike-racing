@@ -1,6 +1,7 @@
 mod hp_and_mp;
 mod weapon_damage;
 use crate::components::client_consts::UNMET_REQUIREMENT_TEXT_COLOR;
+use crate::components::game::character_sheet::character_attributes::weapon_damage::CharacterSheetWeaponDamage;
 use crate::store::game_store::GameStore;
 use common::combatants::combat_attributes::CombatAttributes;
 use common::combatants::CombatantProperties;
@@ -57,7 +58,7 @@ pub fn character_attributes(props: &Props) -> Html {
             </div>
             <div id="divider" class="bg-slate-400 h-[1px] flex mt-2 mr-2 ml-2 mb-2" />
             {hp_and_mp::hp_and_mp(&combatant_properties, &total_attributes)}
-            {weapon_damage::weapon_damage(&combatant_properties, &total_attributes)}
+            <CharacterSheetWeaponDamage combatant_id={entity_properties.id} />
         </div>
     )
 }

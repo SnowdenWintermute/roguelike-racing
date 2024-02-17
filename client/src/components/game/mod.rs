@@ -3,17 +3,16 @@ mod character_autofocus_manager;
 mod character_sheet;
 pub mod combat_log;
 pub mod combatant;
-mod combatant_detail_tab;
+pub mod context_dependant_information_display;
 pub mod debug;
 mod dungeon_room;
-mod tabbed_display;
 mod top_info_bar;
 pub mod turn_order_bar;
 use crate::components::game::action_menu::ActionMenu;
 use crate::components::game::character_autofocus_manager::CharacterAutofocusManager;
 use crate::components::game::character_sheet::CharacterSheet;
+use crate::components::game::context_dependant_information_display::ContextDependantInformationDisplay;
 use crate::components::game::dungeon_room::DungeonRoom;
-use crate::components::game::tabbed_display::TabbedDisplay;
 use crate::components::game::top_info_bar::TopInfoBar;
 use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
@@ -92,7 +91,7 @@ pub fn game() -> Html {
                 </div>
                 <div class="flex max-h-1/2 h-[40%] mt-2 mb-4 overflow-y-auto" >
                     <ActionMenu />
-                    <TabbedDisplay />
+                    <ContextDependantInformationDisplay />
                 </div>
             </div>
         </main>

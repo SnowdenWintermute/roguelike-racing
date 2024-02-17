@@ -1,5 +1,6 @@
 use common::items::equipment::{
     trait_effects::get_trait_modified_armor_class, EquipmentTraits, EquipmentTypes,
+
 };
 use yew::{html, Html};
 

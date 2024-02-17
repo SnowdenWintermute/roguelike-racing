@@ -27,6 +27,9 @@ pub fn create_action_mouse_enter_handler(
                 }
             }
         }),
+        GameActions::SelectCombatAction(combat_action) => Box::new(move || {
+            game_dispatch.reduce_mut(|store| store.hovered_action = Some(combat_action.clone()))
+        }),
         _ => Box::new(|| ()),
     }
 }
@@ -39,6 +42,9 @@ pub fn create_action_mouse_leave_handler(
         GameActions::SelectItem(_, _) => Box::new(move || {
             game_dispatch.reduce_mut(|store| store.hovered_entity = None);
         }),
+        GameActions::SelectCombatAction(combat_action) => {
+            Box::new(move || game_dispatch.reduce_mut(|store| store.hovered_action = None))
+        }
         _ => Box::new(|| ()),
     }
 }

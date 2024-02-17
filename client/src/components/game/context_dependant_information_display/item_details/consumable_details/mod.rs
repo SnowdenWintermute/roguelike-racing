@@ -1,5 +1,5 @@
-use crate::components::game::tabbed_display::item_details_tab::requirements::requirements;
-use crate::components::game::tabbed_display::item_details_tab::unmet_requirements_calculator::UnmetRequirementsCalculator;
+use crate::components::game::context_dependant_information_display::item_details::requirements::requirements;
+use crate::components::game::context_dependant_information_display::item_details::unmet_requirements_calculator::UnmetRequirementsCalculator;
 use crate::store::game_store::GameStore;
 use common::combatants::combat_attributes::CombatAttributes;
 use common::items::consumables::ConsumableProperties;

@@ -2,8 +2,8 @@ mod consumable_details;
 mod equipment_details;
 mod requirements;
 mod unmet_requirements_calculator;
-use crate::components::game::tabbed_display::item_details_tab::consumable_details::ConsumableDetails;
-use crate::components::game::tabbed_display::item_details_tab::equipment_details::EquipmentDetails;
+use crate::components::game::context_dependant_information_display::item_details::consumable_details::ConsumableDetails;
+use crate::components::game::context_dependant_information_display::item_details::equipment_details::EquipmentDetails;
 use crate::store::game_store::set_compared_item;
 use crate::store::game_store::GameStore;
 use crate::store::ui_store::UIStore;
@@ -20,8 +20,8 @@ pub struct Props {
     pub item: Item,
 }
 
-#[function_component(ItemDetailsTab)]
-pub fn item_details_tab(props: &Props) -> Html {
+#[function_component(ItemDetails)]
+pub fn item_details(props: &Props) -> Html {
     let (game_state, game_dispatch) = use_store::<GameStore>();
     let (ui_state, _) = use_store::<UIStore>();
     let item_id = props.item.entity_properties.id;

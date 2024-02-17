@@ -10,8 +10,8 @@ pub struct Props {
     pub combatant: CombatantDetails,
 }
 
-#[function_component(CombatantDetailTab)]
-pub fn combatant_detail_tab(props: &Props) -> Html {
+#[function_component(CombatantDetailsContextInfo)]
+pub fn combatant_details_context_info(props: &Props) -> Html {
     let (_, game_dispatch) = use_store::<GameStore>();
     let Props { combatant } = props;
 

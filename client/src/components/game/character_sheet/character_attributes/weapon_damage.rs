@@ -1,7 +1,9 @@
 use crate::store::game_store::GameStore;
+use common::app_consts::OFF_HAND_ACCURACY_MODIFIER;
 use common::app_consts::OFF_HAND_DAMAGE_MODIFIER;
 use common::combat::combat_actions::CombatAction;
 use common::combatants::abilities::CombatantAbilityNames;
+use common::combatants::combat_attributes::CombatAttributes;
 use common::items::equipment::EquipmentSlots;
 use common::items::equipment::EquipmentTypes;
 use common::primatives::Range;
@@ -23,6 +25,9 @@ pub fn character_sheet_weapon_damage(props: &Props) -> Html {
         .expect("to have a valid combatant");
     let combatant_level = combatant_properties.level;
     let combat_attributes = combatant_properties.get_total_attributes();
+    let combatant_accuracy = combat_attributes
+        .get(&CombatAttributes::Accuracy)
+        .unwrap_or_else(|| &0);
     let mh_weapon_option = combatant_properties.get_weapon_in_slot(&EquipmentSlots::MainHand);
     let mh_is_two_handed = match mh_weapon_option {
         Some(equipment_properties) => equipment_properties.is_two_handed(),
@@ -102,7 +107,10 @@ pub fn character_sheet_weapon_damage(props: &Props) -> Html {
         None => None,
     };
 
-    let mh_damage_and_acc_option = Some((Range::new(mh_min as u16, mh_max as u16), 0));
+    let mh_damage_and_acc_option = Some((
+        Range::new(mh_min as u16, mh_max as u16),
+        *combatant_accuracy,
+    ));
 
     let oh_damage_and_acc_option = match oh_damage_range_option {
         Some(range) => Some((
@@ -110,7 +118,7 @@ pub fn character_sheet_weapon_damage(props: &Props) -> Html {
                 (range.0 * OFF_HAND_DAMAGE_MODIFIER as f32 / 100.0) as u16,
                 (range.1 * OFF_HAND_DAMAGE_MODIFIER as f32 / 100.0) as u16,
             ),
-            0,
+            (*combatant_accuracy as f32 * (OFF_HAND_ACCURACY_MODIFIER as f32 / 100.0)) as u16,
         )),
         None => None,
     };

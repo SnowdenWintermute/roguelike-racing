@@ -38,7 +38,6 @@ impl RoguelikeRacerGame {
             min += scaled_attribute_value;
             max += scaled_attribute_value;
         };
-        println!("damage after attribute min: {min} max: {max}");
         // if weapon damage, determine main/off hand and add appropriate damage to range
         if let Some(weapon_slots) = &hp_change_properties.add_weapon_damage_from {
             (min, max) = add_weapon_damage_to_combat_action_hp_change(

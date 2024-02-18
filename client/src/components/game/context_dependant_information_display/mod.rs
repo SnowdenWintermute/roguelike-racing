@@ -1,3 +1,4 @@
+mod action_details_context_info;
 mod combatant_details_context_info;
 mod item_details;
 use crate::components::game::combat_log::CombatLog;
@@ -6,9 +7,10 @@ use crate::components::game::context_dependant_information_display::item_details
 use crate::store::game_store::DetailableEntities;
 use crate::store::game_store::GameStore;
 use crate::store::game_store::get_focused_character;
-use gloo::console::log;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
+
+use self::action_details_context_info::ActionDetailsContextInfo;
 
 #[function_component(ContextDependantInformationDisplay)]
 pub fn context_dependant_information_display() -> Html {
@@ -25,11 +27,13 @@ pub fn context_dependant_information_display() -> Html {
         },
         None => None,
     };
+
     if hovered_tab.is_none() && game_state.hovered_action.is_some() {
         let hovered_action = game_state.hovered_action.clone().expect("checked");
-        hovered_tab = Some(html!(<div>{format!("{:#?}" ,hovered_action.clone())}</div>))
+        hovered_tab =
+            Some(html!(<ActionDetailsContextInfo combat_action={hovered_action.clone()} />))
     }
-    log!(format!("detailed entity: {:#?}", detailed_entity));
+
     let mut detailed_tab = match detailed_entity {
         Some(detailable) => match detailable {
             DetailableEntities::Combatant(combatant_properties) => {
@@ -45,7 +49,9 @@ pub fn context_dependant_information_display() -> Html {
                     .combatant_properties
                     .selected_combat_action;
                 if let Some(selected_action) = selected_action_option {
-                    to_return = Some(html!(<div>{format!("{:#?}" ,selected_action.clone())}</div>))
+                    to_return = Some(
+                        html!(<ActionDetailsContextInfo combat_action={selected_action.clone()} />),
+                    )
                 }
             }
             to_return

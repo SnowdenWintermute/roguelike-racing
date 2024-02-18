@@ -48,6 +48,7 @@ impl CombatantAbilityNames {
                     prohibited_target_combatant_states: Some(vec![
                         ProhibitedTargetCombatantStates::Dead,
                     ]),
+                    description: "Use equipped weapon(s) or fists to strike the enemy.".to_string(),
                     ..Default::default()
                 },
                 ..Default::default()
@@ -151,6 +152,7 @@ impl CombatantAbilityNames {
                 mana_cost: 2,
                 mana_cost_level_multiplier: 1,
                 combat_action_properties: CombatActionProperties {
+                    description: "Deals fire damage".to_string(),
                     targeting_schemes: vec![TargetingScheme::Area, TargetingScheme::Single],
                     hp_change_properties: Some(CombatActionHpChangeProperties {
                         base_values: Range::new(8, 15),
@@ -180,6 +182,7 @@ impl CombatantAbilityNames {
                 mana_cost: 2,
                 mana_cost_level_multiplier: 1,
                 combat_action_properties: CombatActionProperties {
+                    description: "Restores HP or damages undead".to_string(),
                     targeting_schemes: vec![TargetingScheme::Single, TargetingScheme::Area],
                     hp_change_properties: Some(CombatActionHpChangeProperties {
                         base_values: Range::new(6, 12),

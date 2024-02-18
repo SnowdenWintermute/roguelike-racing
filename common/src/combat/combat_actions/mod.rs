@@ -22,6 +22,63 @@ use serde::Serialize;
 use std::fmt::Display;
 use strum_macros::EnumIter;
 
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq, Hash)]
+pub enum CombatAction {
+    AbilityUsed(CombatantAbilityNames),
+    ConsumableUsed(u32),
+}
+
+pub struct CombatActionProperties {
+    pub targeting_schemes: Vec<TargetingScheme>,
+    pub valid_target_categories: TargetCategories,
+    pub usability_context: AbilityUsableContext,
+    pub prohibited_target_combatant_states: Option<Vec<ProhibitedTargetCombatantStates>>,
+    pub requires_combat_turn: bool,
+    pub hp_change_properties: Option<CombatActionHpChangeProperties>,
+    pub description: String,
+}
+
+impl Default for CombatActionProperties {
+    fn default() -> Self {
+        CombatActionProperties {
+            targeting_schemes: vec![TargetingScheme::Single],
+            valid_target_categories: TargetCategories::Opponent,
+            usability_context: AbilityUsableContext::InCombat,
+            prohibited_target_combatant_states: None,
+            requires_combat_turn: true,
+            hp_change_properties: None,
+            description: "".to_string(),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct CombatActionHpChangeProperties {
+    pub base_values: Range<u16>,
+    pub final_damage_percent_multiplier: u8,
+    pub accuracy_percent_modifier: u8,
+    pub add_weapon_damage_from: Option<Vec<WeaponSlot>>,
+    pub additive_attribute_and_percent_scaling_factor: Option<(CombatAttributes, u8)>,
+    pub crit_chance_attribute: Option<CombatAttributes>,
+    pub crit_multiplier_attribute: Option<CombatAttributes>,
+    pub source_properties: HpChangeSource,
+}
+
+impl Default for CombatActionHpChangeProperties {
+    fn default() -> Self {
+        CombatActionHpChangeProperties {
+            base_values: Range::new(0, 0),
+            final_damage_percent_multiplier: 100,
+            accuracy_percent_modifier: 100,
+            add_weapon_damage_from: None,
+            additive_attribute_and_percent_scaling_factor: None,
+            crit_chance_attribute: None,
+            crit_multiplier_attribute: None,
+            source_properties: HpChangeSource::default(),
+        }
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, EnumIter)]
 pub enum FriendOrFoe {
     Friendly,
@@ -47,7 +104,7 @@ impl CombatActionTarget {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Ord, PartialOrd)]
 pub enum TargetingScheme {
     Single,
     Area,
@@ -109,12 +166,6 @@ impl Display for AbilityUsableContext {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq, Hash)]
-pub enum CombatAction {
-    AbilityUsed(CombatantAbilityNames),
-    ConsumableUsed(u32),
-}
-
 impl CombatAction {
     pub fn get_properties_if_owned(
         &self,
@@ -138,55 +189,6 @@ impl CombatAction {
                 let consumable = combatant_properties.inventory.get_consumable(&item_id)?;
                 Ok(consumable.consumable_type.get_combat_action_properties())
             }
-        }
-    }
-}
-
-pub struct CombatActionProperties {
-    pub targeting_schemes: Vec<TargetingScheme>,
-    pub valid_target_categories: TargetCategories,
-    pub usability_context: AbilityUsableContext,
-    pub prohibited_target_combatant_states: Option<Vec<ProhibitedTargetCombatantStates>>,
-    pub requires_combat_turn: bool,
-    pub hp_change_properties: Option<CombatActionHpChangeProperties>,
-}
-
-impl Default for CombatActionProperties {
-    fn default() -> Self {
-        CombatActionProperties {
-            targeting_schemes: vec![TargetingScheme::Single],
-            valid_target_categories: TargetCategories::Opponent,
-            usability_context: AbilityUsableContext::InCombat,
-            prohibited_target_combatant_states: None,
-            requires_combat_turn: true,
-            hp_change_properties: None,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub struct CombatActionHpChangeProperties {
-    pub base_values: Range<u16>,
-    pub final_damage_percent_multiplier: u8,
-    pub accuracy_percent_modifier: u8,
-    pub add_weapon_damage_from: Option<Vec<WeaponSlot>>,
-    pub additive_attribute_and_percent_scaling_factor: Option<(CombatAttributes, u8)>,
-    pub crit_chance_attribute: Option<CombatAttributes>,
-    pub crit_multiplier_attribute: Option<CombatAttributes>,
-    pub source_properties: HpChangeSource,
-}
-
-impl Default for CombatActionHpChangeProperties {
-    fn default() -> Self {
-        CombatActionHpChangeProperties {
-            base_values: Range::new(0, 0),
-            final_damage_percent_multiplier: 100,
-            accuracy_percent_modifier: 100,
-            add_weapon_damage_from: None,
-            additive_attribute_and_percent_scaling_factor: None,
-            crit_chance_attribute: None,
-            crit_multiplier_attribute: None,
-            source_properties: HpChangeSource::default(),
         }
     }
 }

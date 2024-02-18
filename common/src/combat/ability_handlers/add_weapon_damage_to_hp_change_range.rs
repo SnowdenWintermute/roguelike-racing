@@ -12,10 +12,6 @@ pub fn add_weapon_damage_to_combat_action_hp_change(
     let mut min: f32 = *min;
     let mut max: f32 = *max;
     for weapon_slot in weapon_slots {
-        println!(
-            "adding weapon damage from equipment in slot {}",
-            weapon_slot
-        );
         match weapon_slot {
             WeaponSlot::MainHand => calculate_and_add_weapon_damage(
                 user_combatant_properties,

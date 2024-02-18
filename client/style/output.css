@@ -703,6 +703,10 @@ video {
   height: 100vh;
 }
 
+.h-1\/2 {
+  height: 50%;
+}
+
 .max-h-10 {
   max-height: 2.5rem;
 }
@@ -725,6 +729,10 @@ video {
 
 .max-h-screen {
   max-height: 100vh;
+}
+
+.max-h-\[50\%\] {
+  max-height: 50%;
 }
 
 .min-h-\[2\.5rem\] {
@@ -793,6 +801,10 @@ video {
 
 .min-w-\[16rem\] {
   min-width: 16rem;
+}
+
+.min-w-\[22rem\] {
+  min-width: 22rem;
 }
 
 .max-w-\[80rem\] {
@@ -914,6 +926,14 @@ video {
 
 .justify-between {
   justify-content: space-between;
+}
+
+.self-end {
+  align-self: flex-end;
+}
+
+.justify-self-end {
+  justify-self: end;
 }
 
 .overflow-hidden {

@@ -58,6 +58,8 @@ impl RoguelikeRacerGame {
             })?;
         let user_combat_attributes = user_combatant_properties.get_total_attributes();
 
+        // ADJUST HP CHANGE SOURCE ELEMENT FROM WEAPON ELEMENT IF APPROPRIATE
+
         let (min, max) = self.calculate_combat_action_hp_change_range(
             &user_combatant_properties,
             hp_change_properties,
@@ -105,7 +107,7 @@ impl RoguelikeRacerGame {
                 )?,
             HpChangeSourceCategories::Direct => todo!(),
         }
-        println!("hp changes: {:#?}", &action_result.hp_changes_by_entity_id);
+
         Ok(action_result)
     }
 }

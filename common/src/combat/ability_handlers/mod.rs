@@ -16,7 +16,6 @@ mod calculate_combat_action_mp_changes;
 mod calculate_healing_hp_change_and_add_to_action_result;
 mod calculate_magical_damage_hp_change_and_add_to_action_result;
 mod calculate_physical_damage_hp_change_and_add_to_action_result;
-pub mod get_ability_base_hp_change_range;
 mod get_healing_hp_change_on_target_combatant;
 pub mod roll_crit;
 mod roll_evaded;

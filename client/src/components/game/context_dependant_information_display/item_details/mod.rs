@@ -7,6 +7,7 @@ use crate::components::game::context_dependant_information_display::item_details
 use crate::store::game_store::set_compared_item;
 use crate::store::game_store::GameStore;
 use crate::store::ui_store::UIStore;
+use common::combat::combat_actions::CombatAction;
 use common::items::equipment::EquipmentSlots;
 use common::items::equipment::EquipmentTypes;
 use common::items::Item;
@@ -14,6 +15,8 @@ use common::items::ItemProperties;
 use std::rc::Rc;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
+
+use super::action_details_context_info::ActionDetailsContextInfo;
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
@@ -98,6 +101,17 @@ pub fn item_details(props: &Props) -> Html {
         },
     };
 
+    let consumable_action_option = match &props.item.item_properties {
+        ItemProperties::Consumable(properties) => Some(CombatAction::ConsumableUsed(
+            props.item.entity_properties.id,
+        )),
+        ItemProperties::Equipment(_) => None,
+    };
+
+    if let Some(combat_action) = consumable_action_option {
+        return html!(<ActionDetailsContextInfo combat_action={combat_action} />);
+    }
+
     html!(
         <div class="w-full h-full flex">
             <div class="h-full w-1/2 relative">
@@ -122,14 +136,6 @@ pub fn item_details(props: &Props) -> Html {
                 {compared_display}
                 <div class="opacity-50 fill-slate-400 h-40 absolute bottom-5 right-3">
                     <img src="public/img/equipment-icons/1h-sword-a.svg" class="h-40 filter" />
-                </div>
-            } else if let Some(consumable_description) = consumable_description_option{
-                <div class="flex justify-between pr-2">
-                    {"Description"}
-                </div>
-                <div class="mr-2 mb-1 mt-1 h-[1px] bg-slate-400" />
-                <div>
-                    {consumable_description}
                 </div>
             }
             </div>

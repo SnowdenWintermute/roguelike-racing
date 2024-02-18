@@ -28,7 +28,12 @@ pub fn weapon_damage(equipment_type: &EquipmentTypes) -> Html {
     match damage_types {
         Some(classifications) => {
             for classification in classifications {
-                let classification_text = format!("{}", classification.category);
+                let classification_text = match classification.category {
+                    HpChangeSourceCategories::PhysicalDamage(_) => "Physical",
+                    HpChangeSourceCategories::MagicalDamage(_) => "Magical",
+                    HpChangeSourceCategories::Healing => "Healing",
+                    HpChangeSourceCategories::Direct => "Direct",
+                };
                 let damage_classification_border_color = match classification.category {
                     HpChangeSourceCategories::PhysicalDamage(_) => "border-zinc-300",
                     HpChangeSourceCategories::MagicalDamage(_) => "border-sky-300",
@@ -36,7 +41,10 @@ pub fn weapon_damage(equipment_type: &EquipmentTypes) -> Html {
                     HpChangeSourceCategories::Direct => "border-black-300",
                 };
 
-                let damage_type_text = format!("{}", classification_text);
+                let damage_type_text_option = match &classification.sub_category {
+                    Some(sub_category) => Some(format!("{}", sub_category)),
+                    None => None,
+                };
                 let mut damage_type_color_style = "bg-zinc-300 text-slate-700";
                 if let Some(element) = &classification.element {
                     damage_type_color_style = match element {
@@ -53,8 +61,16 @@ pub fn weapon_damage(equipment_type: &EquipmentTypes) -> Html {
                 let damage_type_style = format!("pr-1 pl-1 {}", damage_type_color_style);
                 classification_displays.push(html!(
                 <li class={format!("border pl-1 max-w-fit mb-1 {}", damage_classification_border_color)}>
-                    <span class={format!("inline-block pr-1 border-r h-full {}", damage_classification_border_color)}>{classification_text}{" "}</span>
-                    <span class={format!("inline-block h-full {}", damage_type_style)}>{damage_type_text}</span>
+                    <span class={format!("inline-block pr-1 h-full {}", damage_classification_border_color)}>{classification_text}{" "}</span>
+                    {match damage_type_text_option {
+                        Some(text) => 
+                            html!(
+                                <span class={format!("border-l inline-block h-full {}", damage_type_style)}>{text}</span>
+                                )
+                            ,
+                        None => html!(),
+                    }}
+                    
                 </li>
                 ))
             }

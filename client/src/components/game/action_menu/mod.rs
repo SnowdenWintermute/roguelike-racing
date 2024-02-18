@@ -82,7 +82,7 @@ pub fn action_menu(_: &Props) -> Html {
             set_keyup_listeners::set_keyup_listeners(
                 cloned_button_props_on_current_page,
                 keyup_listener_state,
-                keypress_listener_state
+                keypress_listener_state,
             )
         },
     );
@@ -140,7 +140,7 @@ pub fn action_menu(_: &Props) -> Html {
     };
 
     html!(
-        <section class="w-[22rem] border border-slate-400 bg-slate-700 mr-4 overflow-y-auto
+        <section class="w-[22rem] min-w-[22rem] border border-slate-400 bg-slate-700 mr-4 overflow-y-auto
         flex flex-col justify-between"
         >
         <ActionMenuChangeDetectionManager action_menu_button_properties={action_menu_button_properties} />

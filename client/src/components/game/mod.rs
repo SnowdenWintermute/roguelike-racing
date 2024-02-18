@@ -1,6 +1,6 @@
 pub mod action_menu;
 mod character_autofocus_manager;
-mod character_sheet;
+pub mod character_sheet;
 pub mod combat_log;
 pub mod combatant;
 pub mod context_dependant_information_display;

@@ -1,5 +1,5 @@
 mod hp_and_mp;
-mod weapon_damage;
+pub mod weapon_damage;
 use crate::components::client_consts::UNMET_REQUIREMENT_TEXT_COLOR;
 use crate::components::game::character_sheet::character_attributes::weapon_damage::CharacterSheetWeaponDamage;
 use crate::store::game_store::GameStore;

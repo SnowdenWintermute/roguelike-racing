@@ -42,7 +42,7 @@ impl GameServer {
 
         // ENSURE OWNERSHIP OF CONSUMABLE OR ABILITY
         let combat_action_properties =
-            selected_combat_action.get_properties_if_owned(game, character_id)?;
+            selected_combat_action.get_properties_if_owned(game, character_id, None)?;
 
         // ENSURE TARGETING
         let targets = character

@@ -1,24 +1,19 @@
+#![allow(unused)]
 use crate::errors::AppError;
 #[cfg(test)]
 #[test]
 pub fn test_calculate_combat_action_hp_changes() -> Result<(), AppError> {
-    use crate::adventuring_party::AdventuringParty;
-    use crate::character::Character;
     use crate::combat::battle::BattleGroup;
     use crate::combat::battle::BattleGroupTypes;
-    use crate::combat::combat_actions;
     use crate::combat::combat_actions::CombatAction;
     use crate::combat::combat_actions::CombatActionTarget;
     use crate::combat::ActionResult;
     use crate::combatants::abilities::CombatantAbilityNames;
     use crate::game::getters::get_mut_party;
-    use crate::game::getters::get_party;
-    use crate::monsters::Monster;
     use crate::tests::set_up_test_game::set_up_test_game;
 
     let (mut game, party_id, character_id, monster_id) = set_up_test_game()?;
     let party = get_mut_party(&mut game, party_id)?;
-    println!("PARTY NAM: {}", party.name);
     let test_character = party.characters.get(&character_id).expect("a character");
     let character_id = test_character.entity_properties.id;
     let ally_ids = party.character_positions.clone();

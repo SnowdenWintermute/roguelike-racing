@@ -2,6 +2,7 @@
 mod random_monster_names;
 // use self::random_monster_names::MONSTER_FIRST_NAMES;
 use self::random_monster_names::MONSTER_LAST_NAMES;
+use crate::combat::hp_change_source_types::PhysicalDamageTypes;
 use crate::combat::magical_elements::MagicalElements;
 use crate::combatants::abilities::CombatantAbility;
 use crate::combatants::abilities::CombatantAbilityNames;
@@ -90,18 +91,24 @@ impl Monster {
         inherent_attributes.insert(CombatAttributes::Accuracy, 75);
 
         let trait_randomizer_number = rng.gen_range(1..=100);
-        if trait_randomizer_number < 25 {
+        if trait_randomizer_number <= 100 {
             monster
                 .combatant_properties
                 .traits
                 .push(CombatantTraits::Undead);
-            monster
-                .combatant_properties
-                .traits
-                .push(CombatantTraits::ElementalAffinityPercent(
-                    MagicalElements::Light,
-                    -100,
-                ));
+            monster.combatant_properties.traits.push(
+                CombatantTraits::PhysicalDamageTypeResistancePercent(
+                    PhysicalDamageTypes::Blunt,
+                    -50,
+                ),
+            );
+            // monster
+            //     .combatant_properties
+            //     .traits
+            //     .push(CombatantTraits::ElementalAffinityPercent(
+            //         MagicalElements::Light,
+            //         -100,
+            //     ));
             monster
                 .combatant_properties
                 .traits

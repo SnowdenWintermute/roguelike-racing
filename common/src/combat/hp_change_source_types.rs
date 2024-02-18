@@ -7,14 +7,14 @@ use strum_macros::EnumIter;
 #[derive(Serialize, Deserialize, Eq, PartialEq, Clone, Debug, Default)]
 pub struct HpChangeSource {
     pub category: HpChangeSourceCategories,
-    pub sub_category: Option<HpChangeSourceSubCategories>,
+    pub sub_category: Option<PhysicalDamageTypes>,
     pub element: Option<MagicalElements>,
 }
 
 impl HpChangeSource {
     pub fn new(
         category: HpChangeSourceCategories,
-        sub_category: Option<HpChangeSourceSubCategories>,
+        sub_category: Option<PhysicalDamageTypes>,
         element: Option<MagicalElements>,
     ) -> Self {
         HpChangeSource {
@@ -49,20 +49,20 @@ pub enum MeleeOrRanged {
     Ranged,
 }
 
-#[derive(Serialize, Deserialize, Eq, PartialEq, Clone, Debug, Default)]
-pub enum HpChangeSourceSubCategories {
+#[derive(Serialize, Deserialize, Eq, PartialEq, Clone, Debug, Default, Hash)]
+pub enum PhysicalDamageTypes {
     #[default]
     Blunt,
     Slashing,
     Piercing,
 }
 
-impl fmt::Display for HpChangeSourceSubCategories {
+impl fmt::Display for PhysicalDamageTypes {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            HpChangeSourceSubCategories::Slashing => write!(f, "Slashing"),
-            HpChangeSourceSubCategories::Blunt => write!(f, "Blunt"),
-            HpChangeSourceSubCategories::Piercing => write!(f, "Piercing"),
+            PhysicalDamageTypes::Slashing => write!(f, "Slashing"),
+            PhysicalDamageTypes::Blunt => write!(f, "Blunt"),
+            PhysicalDamageTypes::Piercing => write!(f, "Piercing"),
         }
     }
 }

@@ -1,7 +1,6 @@
 use common::combat::hp_change_source_types::HpChangeSourceCategories;
 use common::combat::magical_elements::MagicalElements;
 use common::items::equipment::EquipmentTypes;
-use gloo::console::log;
 use yew::html;
 use yew::Html;
 
@@ -52,8 +51,8 @@ pub fn weapon_damage(equipment_type: &EquipmentTypes) -> Html {
                     None => None,
                 };
                 let mut damage_type_color_style = "bg-zinc-300 text-slate-700";
-                if let Some(element) = &hp_change_source.element {
-                    damage_type_color_style = match element {
+                let element_color_style = if let Some(element) = &hp_change_source.element {
+                    match element {
                         MagicalElements::Fire => "bg-firered",
                         MagicalElements::Ice => "bg-iceblue",
                         MagicalElements::Lightning => "bg-lightningpurple",
@@ -63,15 +62,15 @@ pub fn weapon_damage(equipment_type: &EquipmentTypes) -> Html {
                         MagicalElements::Dark => "bg-darknessblack",
                         MagicalElements::Light => "bg-lightwhite text-slate-700",
                     }
-                }
-                let damage_type_style = format!("pr-1 pl-1 {}", damage_type_color_style);
+                } else { "" };
+                let damage_type_style = format!("{}", damage_type_color_style);
                 classification_displays.push(html!(
                 <li class={format!("border pl-1 max-w-fit mb-1 {}", damage_classification_border_color)}>
                     <span class={format!("inline-block pr-1 h-full {}", damage_classification_border_color)}>{classification_text}{" "}</span>
                     {match damage_type_text_option {
                         Some(text) => 
                             html!(
-                                <span class={format!("border-l inline-block h-full {}", damage_type_style)}>{text}</span>
+                                <span class={format!("border-l inline-block h-full pr-1 pl-1 {}", damage_type_style)}>{text}</span>
                                 )
                             ,
                         None => html!(),
@@ -79,7 +78,7 @@ pub fn weapon_damage(equipment_type: &EquipmentTypes) -> Html {
 
                     {match element_text_option {
                         Some(element_text) => html!(
-                                <span class={format!("border-l inline-block h-full {}", damage_type_style )}>{element_text}</span>
+                                <span class={format!("border-l inline-block h-full pr-1 pl-1 {}", element_color_style )}>{element_text}</span>
                             ),
                         None => html!(),
                     }}

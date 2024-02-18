@@ -1,4 +1,4 @@
-pub fn apply_elemental_affinity_to_hp_change(affinity_as_percentage: i16, hp_change: f32) -> f32 {
+pub fn apply_affinity_to_hp_change(affinity_as_percentage: i16, hp_change: f32) -> f32 {
     let affinity_multiplier = if affinity_as_percentage < 0 {
         1.0 + (affinity_as_percentage as f32 * -1.0) / 100.0
     } else if affinity_as_percentage > 0 && affinity_as_percentage <= 100 {

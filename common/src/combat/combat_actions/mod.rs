@@ -59,6 +59,7 @@ pub struct CombatActionHpChangeProperties {
     pub accuracy_percent_modifier: u8,
     pub add_weapon_damage_from: Option<Vec<WeaponSlot>>,
     pub add_weapon_element_from: Option<WeaponSlot>,
+    pub add_weapon_damage_type_from: Option<WeaponSlot>,
     pub additive_attribute_and_percent_scaling_factor: Option<(CombatAttributes, u8)>,
     pub crit_chance_attribute: Option<CombatAttributes>,
     pub crit_multiplier_attribute: Option<CombatAttributes>,
@@ -73,6 +74,7 @@ impl Default for CombatActionHpChangeProperties {
             accuracy_percent_modifier: 100,
             add_weapon_damage_from: None,
             add_weapon_element_from: None,
+            add_weapon_damage_type_from: None,
             additive_attribute_and_percent_scaling_factor: None,
             crit_chance_attribute: None,
             crit_multiplier_attribute: None,
@@ -173,6 +175,7 @@ impl CombatAction {
         &self,
         game: &RoguelikeRacerGame,
         user_id: u32,
+        allow_unowned_consumables_to_be_considered_in_party_id: Option<u32>,
     ) -> Result<CombatActionProperties, AppError> {
         match self {
             CombatAction::AbilityUsed(ability_name) => {
@@ -188,8 +191,27 @@ impl CombatAction {
             }
             CombatAction::ConsumableUsed(item_id) => {
                 let (_, combatant_properties) = game.get_combatant_by_id(&user_id)?;
-                let consumable = combatant_properties.inventory.get_consumable(&item_id)?;
-                Ok(consumable.consumable_type.get_combat_action_properties())
+                let mut consumable = combatant_properties.inventory.get_consumable(&item_id).ok();
+                if consumable.is_none() {
+                    if let Some(party_id) = allow_unowned_consumables_to_be_considered_in_party_id {
+                        let item_option = game.get_item_in_adventuring_party(party_id, *item_id);
+                        if let Some(item) = item_option {
+                            match &item.item_properties {
+                                crate::items::ItemProperties::Consumable(consumable_properties) => {
+                                    consumable = Some(&consumable_properties)
+                                }
+                                crate::items::ItemProperties::Equipment(_) => (),
+                            }
+                        }
+                    }
+                }
+                Ok(consumable
+                    .ok_or_else(|| AppError {
+                        error_type: AppErrorTypes::InvalidInput,
+                        message: error_messages::CONSUMABLE_NOT_FOUND.to_string(),
+                    })?
+                    .consumable_type
+                    .get_combat_action_properties())
             }
         }
     }

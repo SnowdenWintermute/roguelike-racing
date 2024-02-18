@@ -1,5 +1,5 @@
+use super::apply_affinity_to_hp_change::apply_affinity_to_hp_change;
 use super::apply_crit_multiplier_to_hp_change::apply_crit_multiplier_to_hp_change;
-use super::apply_elemental_affinity_to_hp_change::apply_elemental_affinity_to_hp_change;
 use super::roll_crit::roll_crit;
 use crate::app_consts::BASE_CRIT_CHANCE;
 use crate::app_consts::DEX_TO_RANGED_ARMOR_PEN_RATIO;
@@ -100,19 +100,21 @@ impl RoguelikeRacerGame {
 
             //  - reduce or increase damage by elemental affinity if damage type is elemental
             //     - if physical, affinity effect is halved
-            println!("hp change before affinity {:?}", hp_change);
             if let Some(element) = &hp_change_properties.source_properties.element {
-                println!(
-                    "calculating physical elemental damage for element {:?}",
-                    element
-                );
                 let target_affinites = target_combatant_properties.get_total_elemental_affinites();
                 let target_affinity = target_affinites.get(element).unwrap_or_else(|| &0);
                 let halved_affinity = *target_affinity as f32 / 2.0;
-                let after_affinity =
-                    apply_elemental_affinity_to_hp_change(halved_affinity as i16, hp_change);
+                let after_affinity = apply_affinity_to_hp_change(halved_affinity as i16, hp_change);
                 hp_change = after_affinity;
-                println!("hp change after affinity {:?}", hp_change);
+            }
+            // apply physical damage type if any
+            if let Some(damage_type) = &hp_change_properties.source_properties.sub_category {
+                let target_affinities =
+                    target_combatant_properties.get_total_physical_damage_type_affinites();
+                let target_affinity = target_affinities.get(&damage_type).unwrap_or_else(|| &0);
+                let after_affinity =
+                    apply_affinity_to_hp_change(*target_affinity as i16, hp_change);
+                hp_change = after_affinity;
             }
             //  - apply any base final multiplier
             hp_change *= hp_change_properties.final_damage_percent_multiplier as f32 / 100.0;

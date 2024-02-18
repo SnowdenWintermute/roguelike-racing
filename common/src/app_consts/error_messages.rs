@@ -40,6 +40,7 @@ pub const DROP_EQUIPPED_ITEM_SERVER_PACKET_MISMATCH: &str =
     "Received a packet telling a character to drop an equipped item but the item wasn't found";
 pub const NO_BASE_EQUIPMENT_FOUND: &str = "No base equipment was provided";
 pub const NO_CONSUMABLE_SELECTED: &str = "No consumable is selected";
+pub const CONSUMABLE_NOT_FOUND: &str = "No consumable found";
 pub const INVALID_EQUIPMENT_SLOT: &str = "An invalid equipment slot was provided";
 // COMBATANTS
 pub const ENEMY_COMBATANTS_NOT_FOUND: &str = "No enemy combatants found";

@@ -1,5 +1,5 @@
+use super::apply_affinity_to_hp_change::apply_affinity_to_hp_change;
 use super::apply_crit_multiplier_to_hp_change::apply_crit_multiplier_to_hp_change;
-use super::apply_elemental_affinity_to_hp_change::apply_elemental_affinity_to_hp_change;
 use super::roll_crit::roll_crit;
 use crate::app_consts::FOCUS_TO_CRIT_CHANCE_RATIO;
 use crate::app_consts::RESILIENCE_TO_PERCENT_MAGICAL_DAMAGE_REDUCTION_RATIO;
@@ -66,9 +66,18 @@ impl RoguelikeRacerGame {
                 let target_affinites = target_combatant_properties.get_total_elemental_affinites();
                 let target_affinity = target_affinites.get(element).unwrap_or_else(|| &0);
                 let after_affinity =
-                    apply_elemental_affinity_to_hp_change(*target_affinity as i16, hp_change);
+                    apply_affinity_to_hp_change(*target_affinity as i16, hp_change);
                 hp_change = after_affinity;
                 // println!("hp_change after affinity bonus: {}", hp_change);
+            }
+            // apply 50% of the physical damage type if any
+            if let Some(damage_type) = &hp_change_properties.source_properties.sub_category {
+                let target_affinities =
+                    target_combatant_properties.get_total_physical_damage_type_affinites();
+                let target_affinity = target_affinities.get(&damage_type).unwrap_or_else(|| &0);
+                let halved_affinity = *target_affinity as f32 / 2.0;
+                let after_affinity = apply_affinity_to_hp_change(halved_affinity as i16, hp_change);
+                hp_change = after_affinity;
             }
             //  reduce damage via resilience if not getting healed by affinity
             if hp_change > 0.0 {

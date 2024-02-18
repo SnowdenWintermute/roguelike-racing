@@ -30,7 +30,8 @@ impl RoguelikeRacerGame {
             (ally_ids, None)
         };
 
-        let combat_action_properties = combat_action.get_properties_if_owned(self, user_id)?;
+        let combat_action_properties =
+            combat_action.get_properties_if_owned(self, user_id, None)?;
 
         let (filtered_ally_ids, filtered_opponent_ids_option) =
             filter_possible_target_ids_by_prohibited_combatant_states(
@@ -57,6 +58,12 @@ impl RoguelikeRacerGame {
             })?;
         let user_combat_attributes = user_combatant_properties.get_total_attributes();
 
+        let (min, max) = self.calculate_combat_action_hp_change_range(
+            &user_combatant_properties,
+            &hp_change_properties,
+            &ability_level_and_base_value_scaling_factor_option,
+        )?;
+
         // ADJUST HP CHANGE SOURCE ELEMENT FROM WEAPON ELEMENT IF APPROPRIATE, ADDING THE MOST
         // DAMAGING ONE
         let weapon_slot_to_add_element_from_option =
@@ -68,17 +75,19 @@ impl RoguelikeRacerGame {
                 &target_entity_ids,
                 &mut hp_change_properties,
             )?;
-            println!(
-                "changed ability element to {:#?}",
-                hp_change_properties.source_properties.element
-            )
         };
-
-        let (min, max) = self.calculate_combat_action_hp_change_range(
-            &user_combatant_properties,
-            &hp_change_properties,
-            &ability_level_and_base_value_scaling_factor_option,
-        )?;
+        // ADJUST HP CHANGE SOURCE PHYSICAL DAMAGE TYPE FROM WEAPON ELEMENT IF APPROPRIATE, ADDING THE MOST
+        // DAMAGING ONE
+        let weapon_slot_to_add_damage_type_from_option =
+            hp_change_properties.add_weapon_damage_type_from.clone();
+        if let Some(weapon_slot) = &weapon_slot_to_add_damage_type_from_option {
+            self.add_damage_type_from_weapon_to_hp_change_properties(
+                &weapon_slot,
+                &user_combatant_properties,
+                &target_entity_ids,
+                &mut hp_change_properties,
+            )?;
+        };
 
         // roll the hp change
         let mut rng = rand::thread_rng();

@@ -1189,6 +1189,10 @@ video {
   padding: .25rem;
 }
 
+.p-1 {
+  padding: 0.25rem;
+}
+
 .pl-1 {
   padding-left: 0.25rem;
 }

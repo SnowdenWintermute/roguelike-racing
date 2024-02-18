@@ -1,7 +1,7 @@
 #![allow(unused)]
 use crate::combat::hp_change_source_types::HpChangeSource;
 use crate::combat::hp_change_source_types::HpChangeSourceCategories;
-use crate::combat::hp_change_source_types::HpChangeSourceSubCategories;
+use crate::combat::hp_change_source_types::PhysicalDamageTypes;
 use crate::combat::hp_change_source_types::MeleeOrRanged;
 use crate::combat::magical_elements::MagicalElements;
 use crate::combatants::combat_attributes::CombatAttributes;
@@ -98,7 +98,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
                 damage_classifications: vec![
                     HpChangeSource::new(
                         HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
-                        Some(HpChangeSourceSubCategories::Blunt),
+                        Some(PhysicalDamageTypes::Blunt),
                         Some(MagicalElements::Light),
                     ),
                     HpChangeSource::new(
@@ -137,7 +137,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
     //     equipment_type: EquipmentTypes::OneHandedMeleeWeapon(
     //         OneHandedMeleeWeapons::Stick,
     //         WeaponProperties {
-    //             damage_classifications: vec![HpChangeSource::new(HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee), Some(HpChangeSourceSubCategories::Blunt)],
+    //             damage_classifications: vec![HpChangeSource::new(HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee), Some(PhysicalDamageTypes::Blunt)],
     //             damage: Range::new(1, 4),
     //         },
     //     ),

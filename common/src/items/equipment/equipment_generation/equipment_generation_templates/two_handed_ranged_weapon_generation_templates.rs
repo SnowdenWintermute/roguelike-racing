@@ -3,7 +3,7 @@ use super::WeaponGenerationTemplate;
 use crate::combat::hp_change_source_types::Evadable;
 use crate::combat::hp_change_source_types::HpChangeSource;
 use crate::combat::hp_change_source_types::HpChangeSourceCategories;
-use crate::combat::hp_change_source_types::HpChangeSourceSubCategories;
+use crate::combat::hp_change_source_types::PhysicalDamageTypes;
 use crate::combat::hp_change_source_types::MeleeOrRanged;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::items::equipment::two_handed_ranged_weapons::TwoHandedRangedWeapons;
@@ -23,7 +23,7 @@ fn two_handed_ranged_weapon_template_from_base_item(
             Some(1),
             vec![HpChangeSource::new(
                 HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Ranged),
-                Some(HpChangeSourceSubCategories::Piercing),
+                Some(PhysicalDamageTypes::Piercing),
                 None,
             )],
             1,
@@ -39,7 +39,7 @@ fn two_handed_ranged_weapon_template_from_base_item(
                 Some(1),
                 vec![HpChangeSource::new(
                     HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Ranged),
-                    Some(HpChangeSourceSubCategories::Piercing),
+                    Some(PhysicalDamageTypes::Piercing),
                     None,
                 )],
                 1,
@@ -54,7 +54,7 @@ fn two_handed_ranged_weapon_template_from_base_item(
             Some(1),
             vec![HpChangeSource::new(
                 HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Ranged),
-                Some(HpChangeSourceSubCategories::Piercing),
+                Some(PhysicalDamageTypes::Piercing),
                 None,
             )],
             1,
@@ -68,7 +68,7 @@ fn two_handed_ranged_weapon_template_from_base_item(
             Some(1),
             vec![HpChangeSource::new(
                 HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Ranged),
-                Some(HpChangeSourceSubCategories::Piercing),
+                Some(PhysicalDamageTypes::Piercing),
                 None,
             )],
             1,
@@ -82,7 +82,7 @@ fn two_handed_ranged_weapon_template_from_base_item(
             Some(1),
             vec![HpChangeSource::new(
                 HpChangeSourceCategories::MagicalDamage(Evadable::new(true)),
-                Some(HpChangeSourceSubCategories::Piercing),
+                Some(PhysicalDamageTypes::Piercing),
                 None,
             )],
             1,

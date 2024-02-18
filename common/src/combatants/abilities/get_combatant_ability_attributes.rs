@@ -41,6 +41,8 @@ impl Default for CombatantAbilityAttributes {
 impl CombatantAbilityNames {
     pub fn get_attributes(&self) -> CombatantAbilityAttributes {
         match self {
+            // attack ability is an entry point into the other attack abilites and will never be
+            // actually executed
             CombatantAbilityNames::Attack => CombatantAbilityAttributes {
                 mana_cost: 0,
                 is_melee: true,
@@ -61,6 +63,7 @@ impl CombatantAbilityNames {
                     hp_change_properties: Some(CombatActionHpChangeProperties {
                         base_values: Range::new(1, 1),
                         add_weapon_damage_from: Some(vec![WeaponSlot::MainHand]),
+                        add_weapon_element_from: Some(WeaponSlot::MainHand),
                         additive_attribute_and_percent_scaling_factor: Some((
                             CombatAttributes::Strength,
                             100,
@@ -92,6 +95,7 @@ impl CombatantAbilityNames {
                         final_damage_percent_multiplier: OFF_HAND_DAMAGE_MODIFIER,
                         accuracy_percent_modifier: OFF_HAND_ACCURACY_MODIFIER,
                         add_weapon_damage_from: Some(vec![WeaponSlot::OffHand]),
+                        add_weapon_element_from: Some(WeaponSlot::OffHand),
                         additive_attribute_and_percent_scaling_factor: Some((
                             CombatAttributes::Strength,
                             100,
@@ -120,6 +124,7 @@ impl CombatantAbilityNames {
                     hp_change_properties: Some(CombatActionHpChangeProperties {
                         base_values: Range::new(1, 1),
                         add_weapon_damage_from: Some(vec![WeaponSlot::MainHand]),
+                        add_weapon_element_from: Some(WeaponSlot::MainHand),
                         additive_attribute_and_percent_scaling_factor: Some((
                             CombatAttributes::Dexterity,
                             100,

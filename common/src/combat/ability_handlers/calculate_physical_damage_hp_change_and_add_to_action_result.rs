@@ -49,10 +49,8 @@ impl RoguelikeRacerGame {
                 .get(&CombatAttributes::Agility)
                 .unwrap_or_else(|| &0);
             let crit_chance_after_reduction = BASE_CRIT_CHANCE + user_dex - target_agi;
-            println!("crit chance after reduction: {crit_chance_after_reduction}");
             let is_crit = roll_crit(crit_chance_after_reduction);
             if is_crit {
-                println!("CRIT SCORED");
                 hp_change = apply_crit_multiplier_to_hp_change(
                     &hp_change_properties,
                     &user_combat_attributes,
@@ -102,13 +100,19 @@ impl RoguelikeRacerGame {
 
             //  - reduce or increase damage by elemental affinity if damage type is elemental
             //     - if physical, affinity effect is halved
+            println!("hp change before affinity {:?}", hp_change);
             if let Some(element) = &hp_change_properties.source_properties.element {
+                println!(
+                    "calculating physical elemental damage for element {:?}",
+                    element
+                );
                 let target_affinites = target_combatant_properties.get_total_elemental_affinites();
                 let target_affinity = target_affinites.get(element).unwrap_or_else(|| &0);
                 let halved_affinity = *target_affinity as f32 / 2.0;
                 let after_affinity =
                     apply_elemental_affinity_to_hp_change(halved_affinity as i16, hp_change);
                 hp_change = after_affinity;
+                println!("hp change after affinity {:?}", hp_change);
             }
             //  - apply any base final multiplier
             hp_change *= hp_change_properties.final_damage_percent_multiplier as f32 / 100.0;

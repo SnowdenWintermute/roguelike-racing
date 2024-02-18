@@ -1,5 +1,4 @@
 use core::fmt;
-
 use serde::Deserialize;
 use serde::Serialize;
 

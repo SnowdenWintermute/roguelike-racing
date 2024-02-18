@@ -5,6 +5,7 @@ use crate::combat::combat_actions::CombatActionTarget;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::errors::AppError;
 use crate::game::RoguelikeRacerGame;
+mod add_element_from_weapon_to_hp_change_properties;
 mod add_weapon_damage_to_hp_change_range;
 mod apply_crit_multiplier_to_hp_change;
 pub mod apply_elemental_affinity_to_hp_change;

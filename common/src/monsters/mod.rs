@@ -90,7 +90,7 @@ impl Monster {
         inherent_attributes.insert(CombatAttributes::Accuracy, 75);
 
         let trait_randomizer_number = rng.gen_range(1..=100);
-        if trait_randomizer_number <= 25 {
+        if trait_randomizer_number < 25 {
             monster
                 .combatant_properties
                 .traits
@@ -101,6 +101,13 @@ impl Monster {
                 .push(CombatantTraits::ElementalAffinityPercent(
                     MagicalElements::Light,
                     -100,
+                ));
+            monster
+                .combatant_properties
+                .traits
+                .push(CombatantTraits::ElementalAffinityPercent(
+                    MagicalElements::Dark,
+                    100,
                 ));
             monster.entity_properties.name = format!("undead {}", monster.entity_properties.name);
         } else if trait_randomizer_number >= 25 && trait_randomizer_number < 35 {

@@ -175,7 +175,31 @@ impl CombatAction {
         &self,
         game: &RoguelikeRacerGame,
         user_id: u32,
-        allow_unowned_consumables_to_be_considered_in_party_id: Option<u32>,
+    ) -> Result<CombatActionProperties, AppError> {
+        match self {
+            CombatAction::AbilityUsed(ability_name) => {
+                let (_, combatant_properties) = game.get_combatant_by_id(&user_id)?;
+                if !combatant_properties.abilities.contains_key(ability_name) {
+                    return Err(AppError {
+                        error_type: AppErrorTypes::InvalidInput,
+                        message: error_messages::ABILITY_NOT_OWNED.to_string(),
+                    });
+                }
+
+                Ok(ability_name.get_attributes().combat_action_properties)
+            }
+            CombatAction::ConsumableUsed(item_id) => {
+                let (_, combatant_properties) = game.get_combatant_by_id(&user_id)?;
+                let consumable = combatant_properties.inventory.get_consumable(&item_id)?;
+                Ok(consumable.consumable_type.get_combat_action_properties())
+            }
+        }
+    }
+    pub fn get_properties(
+        &self,
+        game: &RoguelikeRacerGame,
+        user_id: u32,
+        party_id: u32, // to get action properties for unowned items
     ) -> Result<CombatActionProperties, AppError> {
         match self {
             CombatAction::AbilityUsed(ability_name) => {
@@ -193,15 +217,13 @@ impl CombatAction {
                 let (_, combatant_properties) = game.get_combatant_by_id(&user_id)?;
                 let mut consumable = combatant_properties.inventory.get_consumable(&item_id).ok();
                 if consumable.is_none() {
-                    if let Some(party_id) = allow_unowned_consumables_to_be_considered_in_party_id {
-                        let item_option = game.get_item_in_adventuring_party(party_id, *item_id);
-                        if let Some(item) = item_option {
-                            match &item.item_properties {
-                                crate::items::ItemProperties::Consumable(consumable_properties) => {
-                                    consumable = Some(&consumable_properties)
-                                }
-                                crate::items::ItemProperties::Equipment(_) => (),
+                    let item_option = game.get_item_in_adventuring_party(party_id, *item_id);
+                    if let Some(item) = item_option {
+                        match &item.item_properties {
+                            crate::items::ItemProperties::Consumable(consumable_properties) => {
+                                consumable = Some(&consumable_properties)
                             }
+                            crate::items::ItemProperties::Equipment(_) => (),
                         }
                     }
                 }

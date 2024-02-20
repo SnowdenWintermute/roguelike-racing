@@ -1,8 +1,8 @@
 #![allow(unused)]
 use crate::combat::hp_change_source_types::HpChangeSource;
 use crate::combat::hp_change_source_types::HpChangeSourceCategories;
-use crate::combat::hp_change_source_types::PhysicalDamageTypes;
 use crate::combat::hp_change_source_types::MeleeOrRanged;
+use crate::combat::hp_change_source_types::PhysicalDamageTypes;
 use crate::combat::magical_elements::MagicalElements;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::game::id_generator::IdGenerator;
@@ -103,7 +103,7 @@ pub fn create_starting_equipment(id_generator: &mut IdGenerator) -> HashMap<Equi
                     ),
                     HpChangeSource::new(
                         HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
-                        None,
+                        Some(PhysicalDamageTypes::Piercing),
                         Some(MagicalElements::Dark),
                     ),
                     HpChangeSource::new(

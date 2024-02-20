@@ -98,8 +98,8 @@ impl Monster {
                 .push(CombatantTraits::Undead);
             monster.combatant_properties.traits.push(
                 CombatantTraits::PhysicalDamageTypeResistancePercent(
-                    PhysicalDamageTypes::Blunt,
-                    -50,
+                    PhysicalDamageTypes::Piercing,
+                    100,
                 ),
             );
             // monster

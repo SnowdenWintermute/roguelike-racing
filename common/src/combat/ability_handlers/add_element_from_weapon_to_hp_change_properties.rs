@@ -1,7 +1,6 @@
 use crate::app_consts::error_messages;
 use crate::combat::combat_actions::CombatActionHpChangeProperties;
 use crate::combat::magical_elements::MagicalElements;
-use crate::combatants::combatant_traits::CombatantTraits;
 use crate::combatants::CombatantProperties;
 use crate::errors::AppError;
 use crate::game::RoguelikeRacerGame;
@@ -39,30 +38,23 @@ impl RoguelikeRacerGame {
                 message: error_messages::NO_VALID_TARGETS_FOUND.to_string(),
             })?;
             let (_, target_combatant_properties) = self.get_combatant_by_id(&first_target_id)?;
+            let target_affinities = target_combatant_properties.get_total_elemental_affinites();
             let mut weakest_affinity_with_weapon_elemental_options: Option<(MagicalElements, i16)> =
                 None;
-            if elements_to_select_from.len() > 0 {
-                for combatant_trait in &target_combatant_properties.traits {
-                    match combatant_trait {
-                        CombatantTraits::ElementalAffinityPercent(element, affinity_percentage) => {
-                            if elements_to_select_from.contains(&element) {
-                                if let Some((_, weakest_percentage)) =
-                                    weakest_affinity_with_weapon_elemental_options
-                                {
-                                    if *affinity_percentage < weakest_percentage {
-                                        weakest_affinity_with_weapon_elemental_options =
-                                            Some((element.clone(), *affinity_percentage))
-                                    }
-                                } else {
-                                    weakest_affinity_with_weapon_elemental_options =
-                                        Some((element.clone(), *affinity_percentage))
-                                }
-                            }
-                        }
-                        _ => (),
+
+            for element in elements_to_select_from {
+                let target_affinity = target_affinities.get(&element).unwrap_or_else(|| &0);
+                if let Some((_, percent_value)) = &weakest_affinity_with_weapon_elemental_options {
+                    if target_affinity < percent_value {
+                        weakest_affinity_with_weapon_elemental_options =
+                            Some((element.clone(), *target_affinity))
                     }
+                } else {
+                    weakest_affinity_with_weapon_elemental_options =
+                        Some((element.clone(), *target_affinity))
                 }
             }
+
             if let Some((element, _)) = weakest_affinity_with_weapon_elemental_options {
                 hp_change_properties.source_properties.element = Some(element);
             }

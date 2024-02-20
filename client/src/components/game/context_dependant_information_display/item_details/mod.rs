@@ -73,13 +73,6 @@ pub fn item_details(props: &Props) -> Html {
               ),
     };
 
-    let consumable_description_option = match &props.item.item_properties {
-        ItemProperties::Consumable(properties) => {
-            Some(properties.consumable_type.get_description())
-        }
-        ItemProperties::Equipment(_) => None,
-    };
-
     let compared_item_name = match &compared_item {
         Some(item) => &item.entity_properties.name,
         None => "",
@@ -102,7 +95,7 @@ pub fn item_details(props: &Props) -> Html {
     };
 
     let consumable_action_option = match &props.item.item_properties {
-        ItemProperties::Consumable(properties) => Some(CombatAction::ConsumableUsed(
+        ItemProperties::Consumable(_) => Some(CombatAction::ConsumableUsed(
             props.item.entity_properties.id,
         )),
         ItemProperties::Equipment(_) => None,

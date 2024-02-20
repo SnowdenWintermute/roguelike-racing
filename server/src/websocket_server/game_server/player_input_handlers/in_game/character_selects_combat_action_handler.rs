@@ -27,7 +27,7 @@ impl GameServer {
 
         let combat_action_properties_option = match &packet.combat_action_option {
             Some(combat_action) => {
-                Some(combat_action.get_properties_if_owned(game, packet.character_id, None)?)
+                Some(combat_action.get_properties_if_owned(game, packet.character_id)?)
             }
             None => None,
         };

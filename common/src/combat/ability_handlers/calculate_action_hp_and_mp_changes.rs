@@ -18,7 +18,7 @@ impl RoguelikeRacerGame {
         let mut action_result =
             ActionResult::new(action_user_id, combat_action.clone(), targets.clone());
         action_result.ends_turn = combat_action
-            .get_properties_if_owned(&self, action_user_id, None)?
+            .get_properties_if_owned(&self, action_user_id)?
             .requires_combat_turn;
 
         let action_result = self.calculate_combat_action_mp_changes(

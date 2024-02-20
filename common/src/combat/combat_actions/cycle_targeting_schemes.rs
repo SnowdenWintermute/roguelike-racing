@@ -30,7 +30,7 @@ impl RoguelikeRacerGame {
             })?;
 
         let combat_action_properties =
-            selected_combat_action.get_properties_if_owned(self, character_id, None)?;
+            selected_combat_action.get_properties_if_owned(self, character_id)?;
 
         if combat_action_properties.targeting_schemes.len() < 2 {
             return Err(AppError {

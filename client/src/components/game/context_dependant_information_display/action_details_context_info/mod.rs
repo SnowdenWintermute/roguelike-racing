@@ -1,9 +1,9 @@
 mod ability_details;
 use self::ability_details::ability_details;
-use crate::components::common_components::atoms::targeting_indicator;
 use crate::store::game_store::get_focused_character;
 use crate::store::game_store::GameStore;
 use common::combat::combat_actions::CombatAction;
+use common::items::ItemProperties;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
@@ -14,27 +14,30 @@ pub struct Props {
 
 #[function_component(ActionDetailsContextInfo)]
 pub fn action_details_context_info(props: &Props) -> Html {
-    let (game_state, game_dispatch) = use_store::<GameStore>();
+    let (game_state, _) = use_store::<GameStore>();
     let game = game_state.game.as_ref().expect("to be in a game");
     let focused_character =
         get_focused_character(&game_state).expect("to have a focused_character");
     let focused_character_id = focused_character.entity_properties.id;
+    let party_id = game_state.current_party_id.expect("to be in a party");
     let combat_action_properties = props
         .combat_action
-        .get_properties_if_owned(game, focused_character_id)
-        .expect("to own the action");
+        .get_properties(game, focused_character_id, party_id)
+        .expect("to either own the ability or have the consumable exist in the party");
     let action_name = match &props.combat_action {
         CombatAction::AbilityUsed(ability_name) => format!("{}", ability_name),
         CombatAction::ConsumableUsed(item_id) => {
-            format!(
-                "{}",
-                focused_character
-                    .combatant_properties
-                    .inventory
-                    .get_consumable(item_id)
-                    .expect("to only look at owned items")
-                    .consumable_type
-            )
+            let item = game
+                .get_item_in_adventuring_party(party_id, *item_id)
+                .expect("for an item to be in this party");
+            match &item.item_properties {
+                ItemProperties::Consumable(consumable_properties) => {
+                    format!("{}", consumable_properties.consumable_type)
+                }
+                ItemProperties::Equipment(_) => {
+                    "Equipment can not be used as an action".to_string()
+                }
+            }
         }
     };
 

@@ -100,20 +100,29 @@ impl RoguelikeRacerGame {
 
             //  - reduce or increase damage by elemental affinity if damage type is elemental
             //     - if physical, affinity effect is halved
+            println!("before elemental affinity: {:#?}", hp_change);
             if let Some(element) = &hp_change_properties.source_properties.element {
+                println!("adjusting elemental damage for : {:?}", element);
+                println!("before elemental affinity: {:#?}", hp_change);
                 let target_affinites = target_combatant_properties.get_total_elemental_affinites();
                 let target_affinity = target_affinites.get(element).unwrap_or_else(|| &0);
                 let halved_affinity = *target_affinity as f32 / 2.0;
                 let after_affinity = apply_affinity_to_hp_change(halved_affinity as i16, hp_change);
                 hp_change = after_affinity;
+                println!("after elemental affinity: {:#?}", hp_change);
             }
             // apply physical damage type if any
+            println!("before affinity: {:#?}", hp_change);
             if let Some(damage_type) = &hp_change_properties.source_properties.sub_category {
+                println!("adjusting physical damage for pdmgtype: {:?}", damage_type);
                 let target_affinities =
                     target_combatant_properties.get_total_physical_damage_type_affinites();
+                println!("target affinities: {:#?}", target_affinities);
                 let target_affinity = target_affinities.get(&damage_type).unwrap_or_else(|| &0);
+                println!("target affinity: {:#?}", target_affinity);
                 let after_affinity =
                     apply_affinity_to_hp_change(*target_affinity as i16, hp_change);
+                println!("after affinity: {:#?}", after_affinity);
                 hp_change = after_affinity;
             }
             //  - apply any base final multiplier

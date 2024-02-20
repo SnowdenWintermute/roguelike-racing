@@ -1,7 +1,6 @@
 use crate::app_consts::error_messages;
 use crate::combat::combat_actions::CombatActionHpChangeProperties;
 use crate::combat::hp_change_source_types::PhysicalDamageTypes;
-use crate::combatants::combatant_traits::CombatantTraits;
 use crate::combatants::CombatantProperties;
 use crate::errors::AppError;
 use crate::game::RoguelikeRacerGame;
@@ -33,42 +32,28 @@ impl RoguelikeRacerGame {
                     None => (),
                 }
             }
-            // CHECK WEAKNESSES AGAINST ONLY 1 TARGET ID
+            // CHECK ELEMENTAL WEAKNESSES AGAINST ONLY 1 TARGET ID
             let first_target_id = target_entity_ids.first().ok_or_else(|| AppError {
                 error_type: crate::errors::AppErrorTypes::Generic,
                 message: error_messages::NO_VALID_TARGETS_FOUND.to_string(),
             })?;
             let (_, target_combatant_properties) = self.get_combatant_by_id(&first_target_id)?;
-            let mut weakest_affinity_with_weapon_damage_type_options: Option<(
-                PhysicalDamageTypes,
-                i16,
-            )> = None;
-            if damage_types_to_select_from.len() > 0 {
-                for combatant_trait in &target_combatant_properties.traits {
-                    match combatant_trait {
-                        CombatantTraits::PhysicalDamageTypeResistancePercent(
-                            damage_type,
-                            affinity_percentage,
-                        ) => {
-                            if damage_types_to_select_from.contains(&damage_type) {
-                                if let Some((_, weakest_percentage)) =
-                                    weakest_affinity_with_weapon_damage_type_options
-                                {
-                                    if *affinity_percentage < weakest_percentage {
-                                        weakest_affinity_with_weapon_damage_type_options =
-                                            Some((damage_type.clone(), *affinity_percentage))
-                                    }
-                                } else {
-                                    weakest_affinity_with_weapon_damage_type_options =
-                                        Some((damage_type.clone(), *affinity_percentage))
-                                }
-                            }
-                        }
-                        _ => (),
+            let target_affinities =
+                target_combatant_properties.get_total_physical_damage_type_affinites();
+            let mut weakest_affinity_option: Option<(PhysicalDamageTypes, i16)> = None;
+
+            for damage_type in damage_types_to_select_from {
+                let target_affinity = target_affinities.get(&damage_type).unwrap_or_else(|| &0);
+                if let Some((_, percent_value)) = &weakest_affinity_option {
+                    if target_affinity < percent_value {
+                        weakest_affinity_option = Some((damage_type.clone(), *target_affinity))
                     }
+                } else {
+                    weakest_affinity_option = Some((damage_type.clone(), *target_affinity))
                 }
             }
-            if let Some((damage_type, _)) = weakest_affinity_with_weapon_damage_type_options {
+
+            if let Some((damage_type, _)) = weakest_affinity_option {
                 hp_change_properties.source_properties.sub_category = Some(damage_type);
             }
         }

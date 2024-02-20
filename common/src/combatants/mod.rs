@@ -57,10 +57,17 @@ pub enum CombatantControlledBy {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct ExperiencePoints {
+    pub current: u16,
+    pub required_for_next_level: Option<u16>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct CombatantProperties {
     pub combatant_class: CombatantClass,
     pub inherent_attributes: HashMap<CombatAttributes, u16>,
     pub level: u8,
+    pub experience_points: ExperiencePoints,
     pub hit_points: u16,
     pub mana: u16,
     pub status_effects: Vec<StatusEffects>,
@@ -85,6 +92,10 @@ impl CombatantProperties {
             inherent_attributes: HashMap::new(),
             level: 1,
             hit_points: 0,
+            experience_points: ExperiencePoints {
+                current: 0,
+                required_for_next_level: Some(100),
+            },
             mana: 0,
             status_effects: vec![],
             equipment: HashMap::new(),

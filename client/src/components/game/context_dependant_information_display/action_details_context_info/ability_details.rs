@@ -1,5 +1,6 @@
 use crate::components::client_consts::UNMET_REQUIREMENT_TEXT_COLOR;
 use crate::components::game::character_sheet::character_attributes::weapon_damage::CharacterSheetWeaponDamage;
+use crate::components::game::context_dependant_information_display::damage_type_badge::DamageTypeBadge;
 use common::combat::combat_actions::CombatActionProperties;
 use common::combatants::abilities::CombatantAbility;
 use common::combatants::abilities::CombatantAbilityNames;
@@ -56,8 +57,15 @@ pub fn ability_details(
 
     let value_range_display = match value_range_option {
         Some(range) => html!(
-          <div>{"Value range: "}{range.0}{" - "}{range.1}</div>
+          <div class="mb-1">{"Value range: "}{range.0}{" - "}{range.1}</div>
         ),
+        None => html!(),
+    };
+
+    let damage_type_badge = match &combat_action_properties.hp_change_properties {
+        Some(hp_change_properties) => {
+            html!(<DamageTypeBadge hp_change_source={hp_change_properties.source_properties.clone()} />)
+        }
         None => html!(),
     };
 
@@ -65,5 +73,6 @@ pub fn ability_details(
               {mp_cost_display}
               {value_range_display}
               {attack_damage_display}
+              {damage_type_badge}
           </div>)
 }

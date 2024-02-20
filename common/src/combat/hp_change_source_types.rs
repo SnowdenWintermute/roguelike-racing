@@ -75,12 +75,12 @@ impl fmt::Display for HpChangeSourceCategories {
             match self {
                 HpChangeSourceCategories::PhysicalDamage(melee_or_ranged) =>
                     match melee_or_ranged {
-                        MeleeOrRanged::Melee => "Melee Physical Damage",
-                        MeleeOrRanged::Ranged => "Ranged Physical Damage",
+                        MeleeOrRanged::Melee => "Melee",
+                        MeleeOrRanged::Ranged => "Ranged",
                     },
                 HpChangeSourceCategories::MagicalDamage(Evadable(evadable)) => match evadable {
-                    true => "Evadable Magical Damage",
-                    false => "Magical Damage",
+                    true => "Magical (Evadable)",
+                    false => "Magical",
                 },
                 HpChangeSourceCategories::Healing => "Healing",
                 HpChangeSourceCategories::Direct => "Direct",

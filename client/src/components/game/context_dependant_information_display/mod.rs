@@ -1,5 +1,6 @@
 mod action_details_context_info;
 mod combatant_details_context_info;
+mod damage_type_badge;
 mod item_details;
 use crate::components::game::combat_log::CombatLog;
 use crate::components::game::context_dependant_information_display::combatant_details_context_info::CombatantDetailsContextInfo;
@@ -34,7 +35,7 @@ pub fn context_dependant_information_display() -> Html {
             Some(html!(<ActionDetailsContextInfo combat_action={hovered_action.clone()} />))
     }
 
-    let mut detailed_tab = match detailed_entity {
+    let detailed_tab = match detailed_entity {
         Some(detailable) => match detailable {
             DetailableEntities::Combatant(combatant_properties) => {
                 Some(html!(<CombatantDetailsContextInfo combatant={combatant_properties.clone()}/>))

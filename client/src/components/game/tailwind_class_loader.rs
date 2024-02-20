@@ -5,6 +5,7 @@ pub fn tailwind_class_loader() -> Html {
     html!(
     <>
         <div class="bg-ffxipink" />
+        <div class="text-ffxipink" />
         <div class="border-ffxipink" />
         <div class="bg-blue-700" />
         <div class="border-t-yellow-700" />

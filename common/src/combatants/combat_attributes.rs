@@ -41,6 +41,16 @@ pub const CORE_ATTRIBUTES: [CombatAttributes; 4] = [
     CombatAttributes::Vitality,
 ];
 
+pub const ATTRIBUTE_POINT_ASSIGNABLE_ATTRIBUTES: [CombatAttributes; 7] = [
+    CombatAttributes::Dexterity,
+    CombatAttributes::Intelligence,
+    CombatAttributes::Strength,
+    CombatAttributes::Vitality,
+    CombatAttributes::Resilience,
+    CombatAttributes::Focus,
+    CombatAttributes::Agility,
+];
+
 impl fmt::Display for CombatAttributes {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {

@@ -2,10 +2,12 @@ use crate::components::mesh_manager::CombatantEventManager;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::combat::battle::Battle;
+use common::combatants::combat_attributes::CombatAttributes;
 use common::dungeon_rooms::DungeonRoom;
 use common::dungeon_rooms::DungeonRoomTypes;
 use common::errors::AppError;
 use common::game::getters::get_character;
+use common::game::getters::get_mut_character;
 use common::game::getters::get_mut_party;
 use common::packets::CharacterAndDirection;
 use common::packets::CharacterId;
@@ -162,6 +164,27 @@ pub fn character_cycled_targeting_schemes_handler(
             character_id,
         )?;
 
+        Ok(())
+    })
+}
+
+pub fn character_spent_attribute_point_handler(
+    game_dispatch: Dispatch<GameStore>,
+    character_id: CharacterId,
+    attribute: &CombatAttributes,
+) -> Result<(), AppError> {
+    game_dispatch.reduce_mut(|game_store| {
+        let party = game_store.get_current_party()?;
+        let party_id = party.id;
+        let game = game_store.get_current_game_mut()?;
+        let character = get_mut_character(game, party_id, character_id)?;
+        character.combatant_properties.unspent_attribute_points -= 1;
+        let attribute_to_increment = character
+            .combatant_properties
+            .inherent_attributes
+            .entry(*attribute)
+            .or_insert(0);
+        *attribute_to_increment += 1;
         Ok(())
     })
 }

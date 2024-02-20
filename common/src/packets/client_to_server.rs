@@ -5,6 +5,7 @@ use super::CharacterId;
 use crate::combat::combat_actions::CombatAction;
 use crate::combat::combat_actions::CombatActionTarget;
 use crate::combatants::abilities::CombatantAbilityNames;
+use crate::combatants::combat_attributes::CombatAttributes;
 use crate::combatants::CombatantClass;
 use crate::items::equipment::EquipmentSlots;
 use serde::Deserialize;
@@ -35,6 +36,7 @@ pub enum PlayerInputs {
     EquipInventoryItem(EquipItemRequest),
     // manage abilities
     LevelUpAbilitySlot(u8),
+    IncrementAttribute(CharacterId, CombatAttributes),
     // exploration
     ToggleReadyToExplore,
     ToggleReadyToGoDownStairs,

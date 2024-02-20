@@ -2,9 +2,13 @@ mod hp_and_mp;
 pub mod weapon_damage;
 use crate::components::client_consts::UNMET_REQUIREMENT_TEXT_COLOR;
 use crate::components::game::character_sheet::character_attributes::weapon_damage::CharacterSheetWeaponDamage;
+use crate::components::websocket_manager::send_client_input::send_client_input;
 use crate::store::game_store::GameStore;
+use crate::store::websocket_store::WebsocketStore;
 use common::combatants::combat_attributes::CombatAttributes;
+use common::combatants::combat_attributes::ATTRIBUTE_POINT_ASSIGNABLE_ATTRIBUTES;
 use common::combatants::CombatantProperties;
+use common::packets::client_to_server::PlayerInputs;
 use common::primatives::EntityProperties;
 use std::rc::Rc;
 use yew::prelude::*;
@@ -24,6 +28,7 @@ pub fn character_attributes(props: &Props) -> Html {
         entity_properties,
     } = props;
     let (game_state, _) = use_store::<GameStore>();
+    let (websocket_state, _) = use_store::<WebsocketStore>();
     let total_attributes = combatant_properties.get_total_attributes();
     let mut combatant_attributes_as_vec = total_attributes
         .iter()
@@ -44,6 +49,23 @@ pub fn character_attributes(props: &Props) -> Html {
         None => "∞".to_string(),
     };
 
+    let has_unspent_attribute_points = combatant_properties.unspent_attribute_points > 0;
+    let has_unspent_ability_points = combatant_properties.unspent_ability_points > 0;
+    let unspent_attribute_points_display = if has_unspent_attribute_points {
+        html!(
+            <div class="text-ffxipink" >{"unspent attributes: "}{combatant_properties.unspent_attribute_points}</div>
+        )
+    } else {
+        html!()
+    };
+    let unspent_ability_points_display = if has_unspent_ability_points {
+        html!(
+            <div class="text-ffxipink" >{"unspent ability points: "}{combatant_properties.unspent_ability_points}</div>
+        )
+    } else {
+        html!()
+    };
+
     html!(
         <div class="h-full pl-2 w-1/2">
             <div class="font-bold" >
@@ -58,18 +80,22 @@ pub fn character_attributes(props: &Props) -> Html {
                     {format!("{} / {} experience", combatant_properties.experience_points.current, exp_required_for_next_level_string) }
                 </span>
             </div>
+            {unspent_attribute_points_display}
+            {unspent_ability_points_display}
+            <div id="divider" class="bg-slate-400 h-[1px] flex mt-2 mr-2 ml-2 mb-2" />
             <div class="flex mb-1" >
                 <ul class="list-none w-1/2 mr-1" >
                     {combatant_attributes_as_vec.iter()
                         .enumerate()
                         .filter(|( i, _ )| i < &half_num_attributes)
-                        .map(|(_, (attribute, value))| attribute_list_item(attribute, value, &game_state)).collect::<Html>()}
+                        .map(|(_, (attribute, value))|
+                             attribute_list_item(attribute, value, &game_state, has_unspent_attribute_points, &websocket_state)).collect::<Html>()}
                 </ul>
                 <ul class="list-none w-1/2 ml-1" >
                     {combatant_attributes_as_vec.iter()
                         .enumerate()
                         .filter(|( i, _)| i >= &half_num_attributes)
-                        .map(|(_, (attribute, value))| attribute_list_item(attribute, value, &game_state)).collect::<Html>()}
+                        .map(|(_, (attribute, value))| attribute_list_item(attribute, value, &game_state, has_unspent_attribute_points, &websocket_state)).collect::<Html>()}
                 </ul>
             </div>
             <div id="divider" class="bg-slate-400 h-[1px] flex mt-2 mr-2 ml-2 mb-2" />
@@ -87,6 +113,8 @@ fn attribute_list_item(
     attribute: &CombatAttributes,
     value: &u16,
     game_state: &Rc<GameStore>,
+    has_unspent_attribute_points: bool,
+    websocket_state: &Rc<WebsocketStore>,
 ) -> VNode {
     let is_unmet_requirement = match &game_state.considered_item_unmet_requirements {
         Some(unmet_attribute_requirements) => unmet_attribute_requirements.get(attribute).is_some(),
@@ -99,10 +127,39 @@ fn attribute_list_item(
         ""
     };
 
+    let focused_character_id = game_state.focused_character_id;
+
+    let increase_attribute_button = if has_unspent_attribute_points
+        && ATTRIBUTE_POINT_ASSIGNABLE_ATTRIBUTES.contains(attribute)
+    {
+        let cloned_websocket_state = websocket_state.clone();
+        let cloned_attribute = attribute.clone();
+        let handle_click = Callback::from(move |_| {
+            send_client_input(
+                &cloned_websocket_state.websocket,
+                PlayerInputs::IncrementAttribute(focused_character_id, cloned_attribute),
+            )
+        });
+
+        html!(
+        <button
+            onclick={handle_click}
+            class="inline-block h-4 w-4 border border-slate-400 text-lg leading-3 mr-2"
+        >
+            {"+"}
+        </button>
+        )
+    } else {
+        html!()
+    };
+
     html!(
         <li class={ format!( "flex justify-between {}", highlight_class  ) }>
-            <span>{format!("{}", attribute)}</span>
+        <span>{format!("{}", attribute)}</span>
+        <span>
+            {increase_attribute_button}
             <span>{format!("{}", value)}</span>
+        </span>
         </li>
     )
 }

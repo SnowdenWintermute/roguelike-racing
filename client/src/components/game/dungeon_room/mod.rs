@@ -68,7 +68,7 @@ pub fn dungeon_room(props: &Props) -> Html {
 
         html!(
             <section class={format!("h-full border border-slate-400 bg-slate-700 flex {}", conditional_styles)} >
-                <div class="w-1/2 flex p-2 h-full" >
+                <div class="w-fit flex p-2 h-full" >
                     <div class="flex flex-col mr-4 h-full flex-grow" >
                         {characters.iter().map(|(_id, character)|
                             html!{<Combatant
@@ -85,7 +85,7 @@ pub fn dungeon_room(props: &Props) -> Html {
                         />
                     }
                 </div>
-                <div class="w-1/2 border-l border-slate-400 p-2 flex flex-col" >
+                <div class="border-l border-slate-400 p-2 flex flex-col flex-grow w-full" >
                     if let Some(time_of_death) = time_of_death_option {
                         <div class=" border border-slate-400 bg-slate-700 p-4
                             absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" >

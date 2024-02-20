@@ -13,6 +13,7 @@ use crate::combat::combat_actions::CombatActionTarget;
 use crate::combat::ActionResult;
 use crate::combat::CombatTurnResult;
 use crate::combatants::abilities::CombatantAbilityNames;
+use crate::combatants::combat_attributes::CombatAttributes;
 use crate::combatants::CombatantClass;
 use crate::dungeon_rooms::DungeonRoom;
 use crate::dungeon_rooms::DungeonRoomTypes;
@@ -69,6 +70,7 @@ pub enum GameServerUpdatePackets {
     DungeonFloorNumber(u8),
     DungeonRoomTypesOnCurrentFloor(VecDeque<Option<DungeonRoomTypes>>),
     GameMessage(GameMessages),
+    CharacterSpentAttributePoint(CharacterId, CombatAttributes),
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Default)]

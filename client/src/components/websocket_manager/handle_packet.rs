@@ -14,6 +14,7 @@ use super::handle_combat_turn_results::handle_combat_turn_results;
 use super::handle_raw_action_results::handle_raw_action_results;
 use super::in_game_party_update_handlers::character_cycled_targeting_schemes_handler;
 use super::in_game_party_update_handlers::character_cycled_targets_handler;
+use super::in_game_party_update_handlers::character_spent_attribute_point_handler;
 use super::in_game_party_update_handlers::handle_battle_full_update;
 use super::in_game_party_update_handlers::handle_new_dungeon_room;
 use super::in_game_party_update_handlers::handle_player_toggled_ready_to_descend;
@@ -163,6 +164,9 @@ pub fn handle_packet(
         }
         GameServerUpdatePackets::GameMessage(packet) => {
             new_game_message_handler(game_dispatch, packet)
+        }
+        GameServerUpdatePackets::CharacterSpentAttributePoint(character_id, attribute) => {
+            character_spent_attribute_point_handler(game_dispatch, character_id, &attribute)
         }
         _ => {
             log!(format!("unhandled packet: {:#?}", data));

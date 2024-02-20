@@ -156,6 +156,12 @@ impl Handler<ClientBinaryMessage> for GameServer {
             }
             Ok(PlayerInputs::AcknowledgeReceiptOfItemOnGroundUpdate(item_id)) => self
                 .client_acknowledges_receipt_of_item_on_ground_handler(message.actor_id, item_id),
+            Ok(PlayerInputs::IncrementAttribute(character_id, attribute)) => self
+                .character_spends_attribute_point_handler(
+                    message.actor_id,
+                    character_id,
+                    attribute,
+                ),
             _ => {
                 println! {"unhandled binary message\n {:#?}:",deserialized};
                 Ok(())

@@ -1,9 +1,12 @@
 use crate::websocket_server::game_server::GameServer;
 use crate::websocket_server::game_server::getters::ActorIdAssociatedGameData;
 use crate::websocket_server::game_server::getters::get_mut_game_data_from_actor_id;
+use crate::websocket_server::game_server::player_input_handlers::in_game::handle_new_combat_action_results::award_experience_points::award_experience_points;
 use crate::websocket_server::game_server::player_input_handlers::in_game::handle_new_combat_action_results::generate_loot_if_appropriate::generate_loot;
+use common::combatants::award_levelups::award_levelups;
 use common::errors::AppError;
 use common::game::getters::get_mut_party;
+use common::packets::ExperienceChange;
 use common::packets::server_to_client::BattleConclusion;
 use common::packets::server_to_client::BattleEndReportPacket;
 use common::packets::server_to_client::GameServerUpdatePackets;
@@ -38,7 +41,7 @@ impl GameServer {
 
         // get list of defeated monsters and their levels
         let mut defeated_monster_levels = Vec::new();
-        if let Some(monsters) = party.current_room.monsters {
+        if let Some(monsters) = &party.current_room.monsters {
             for (_, monster) in monsters {
                 defeated_monster_levels.push(monster.combatant_properties.level)
             }
@@ -54,52 +57,24 @@ impl GameServer {
             }
         }
 
-        // @TODO - remove once revives are in the game
+        let mut experience_change_reports = Vec::new();
         for (_, character) in party.characters.iter_mut() {
             // ADD EXP
-            if character.combatant_properties > 0 {
-                let mut total_xp_to_award = 0;
-                for monster_level in defeated_monster_levels {
-                    let base_xp = 30 / num_characters_alive;
-                    let level_diff = character.combatant_properties.level - monster_level;
-                    let base_xp_diff_multiplier: f32 = 0.25;
-                    let diff_multiplier = base_xp_diff_multiplier * level_diff.abs();
-                    let mut xp_to_award_for_this_monster = base_xp;
+            if character.combatant_properties.hit_points > 0 {
+                let total_exp_awarded = award_experience_points(
+                    &mut character.combatant_properties,
+                    &defeated_monster_levels,
+                    num_characters_alive,
+                );
+                experience_change_reports.push(ExperienceChange {
+                    combatant_id: character.entity_properties.id,
+                    experience_change: total_exp_awarded as i16,
+                });
 
-                    if level_diff > 0 {
-                        xp_to_award_for_this_monster -= base_xp * diff_multiplier;
-                    } else if level_diff < 0 {
-                        xp_to_award_for_this_monster += base_xp * diff_multiplier;
-                    }
-                    total_xp_to_award += xp_to_award_for_this_monster;
-                }
-
-                character.combatant_properties.experience_points.current += total_xp_to_award;
-                let mut calculating_new_levelups = true;
-                while calculating_new_levelups {
-                    if let Some(required_to_level) = character
-                        .combatant_properties
-                        .experience_points
-                        .required_for_next_level
-                    {
-                        if character.combatant_properties.experience_points.current
-                            >= required_to_level
-                        {
-                            character.combatant_properties.level += 1;
-                            character.combatant_properties.experience_points -= required_to_level;
-                            character
-                                .combatant_properties
-                                .experience_points
-                                .required_for_next_level = Some(required_to_level + 25);
-                        } else {
-                            calculating_new_levelups = false;
-                        }
-                    } else {
-                        calculating_new_levelups = false;
-                    }
-                }
+                award_levelups(&mut character.combatant_properties);
             }
 
+            // @TODO - remove once revives are in the game
             if character.combatant_properties.hit_points == 0 {
                 character.combatant_properties.hit_points = 1;
             }
@@ -113,6 +88,7 @@ impl GameServer {
             &GameServerUpdatePackets::BattleEndReport(BattleEndReportPacket {
                 conclusion: BattleConclusion::Victory,
                 loot: Some(loot),
+                exp_changes: Some(experience_change_reports),
             }),
             None,
         )

@@ -1,4 +1,5 @@
 pub mod abilities;
+pub mod award_levelups;
 pub mod combat_attributes;
 pub mod combatant_traits;
 mod equip_item;
@@ -68,6 +69,8 @@ pub struct CombatantProperties {
     pub inherent_attributes: HashMap<CombatAttributes, u16>,
     pub level: u8,
     pub experience_points: ExperiencePoints,
+    pub unspent_attribute_points: u8,
+    pub unspent_ability_points: u8,
     pub hit_points: u16,
     pub mana: u16,
     pub status_effects: Vec<StatusEffects>,
@@ -96,6 +99,8 @@ impl CombatantProperties {
                 current: 0,
                 required_for_next_level: Some(100),
             },
+            unspent_attribute_points: 0,
+            unspent_ability_points: 0,
             mana: 0,
             status_effects: vec![],
             equipment: HashMap::new(),

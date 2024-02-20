@@ -3,6 +3,7 @@ use super::CharacterAndDirection;
 use super::CharacterAndItem;
 use super::CharacterAndSlot;
 use super::CharacterId;
+use super::ExperienceChange;
 use super::GameMessages;
 use super::WebsocketChannelNamespace;
 use crate::app_consts::LOBBY_CHANNEL;
@@ -213,6 +214,7 @@ pub enum BattleConclusion {
 pub struct BattleEndReportPacket {
     pub conclusion: BattleConclusion,
     pub loot: Option<Vec<Item>>,
+    pub exp_changes: Option<Vec<ExperienceChange>>,
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]

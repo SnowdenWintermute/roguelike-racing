@@ -6,6 +6,7 @@ pub mod combatant;
 pub mod context_dependant_information_display;
 pub mod debug;
 mod dungeon_room;
+mod tailwind_class_loader;
 mod top_info_bar;
 pub mod turn_order_bar;
 use crate::components::game::action_menu::ActionMenu;
@@ -13,6 +14,7 @@ use crate::components::game::character_autofocus_manager::CharacterAutofocusMana
 use crate::components::game::character_sheet::CharacterSheet;
 use crate::components::game::context_dependant_information_display::ContextDependantInformationDisplay;
 use crate::components::game::dungeon_room::DungeonRoom;
+use crate::components::game::tailwind_class_loader::TailwindClassLoader;
 use crate::components::game::top_info_bar::TopInfoBar;
 use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
@@ -72,11 +74,7 @@ pub fn game() -> Html {
 
     html!(
         <main class="h-screen w-screen bg-slate-800 flex justify-center relative overflow-y-auto">
-        <div id="tailwind-color-loader" class="bg-blue-700" />
-        <div id="tailwind-color-loader" class="border-t-yellow-700" />
-        <div id="tailwind-color-loader" class="border-blue-700" />
-        <div id="tailwind-color-loader" class="border-t-green-600" />
-        <div id="tailwind-color-loader" class="border-green-600" />
+            <TailwindClassLoader />
             <div class="w-full h-full max-w-[80rem] max-h-[67.5rem] pr-4 pl-4 text-zinc-300 flex flex-col" >
                 // <GameDebug />
                 <CharacterAutofocusManager />

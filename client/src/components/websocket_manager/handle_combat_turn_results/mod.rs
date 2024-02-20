@@ -3,6 +3,7 @@ use crate::components::game::combat_log::combat_log_message::CombatLogMessageSty
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::combat::CombatTurnResult;
+use common::combatants::award_levelups::award_levelups;
 use common::errors::AppError;
 use common::packets::server_to_client::BattleConclusion;
 use gloo::console::log;
@@ -55,6 +56,23 @@ pub fn send_next_turn_result_to_combatant_event_manager(
                         CombatLogMessageStyle::BattleVictory,
                         0,
                     ));
+
+                    // HANDLE LEVELUPS
+                    if let Some(exp_changes) = battle_end_report.exp_changes {
+                        for exp_change in exp_changes {
+                            let party = store.get_current_party_mut()?;
+                            let (_, combatant_properties) =
+                                party.get_mut_combatant_by_id(&exp_change.combatant_id)?;
+                            if exp_change.experience_change > 0 {
+                                combatant_properties.experience_points.current +=
+                                    exp_change.experience_change.abs() as u16;
+                            } else {
+                                combatant_properties.experience_points.current -=
+                                    exp_change.experience_change.abs() as u16;
+                            }
+                            award_levelups(combatant_properties);
+                        }
+                    }
 
                     store.current_battle_id = None;
                 }

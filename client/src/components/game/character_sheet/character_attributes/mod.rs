@@ -36,11 +36,27 @@ pub fn character_attributes(props: &Props) -> Html {
         _ => (num_attributes - 1) / 2,
     };
 
+    let exp_required_for_next_level_string = match combatant_properties
+        .experience_points
+        .required_for_next_level
+    {
+        Some(number) => format!("{number}"),
+        None => "∞".to_string(),
+    };
+
     html!(
         <div class="h-full pl-2 w-1/2">
             <div class="font-bold" >
                 {entity_properties.name.clone()}{format!(" ({})", combatant_properties.combatant_class)}
                 {format!(" {}", entity_properties.id)}
+            </div>
+            <div class="flex justify-between" >
+                <span>
+                    {"Level "}{combatant_properties.level}{" "}
+                </span>
+                <span>
+                    {format!("{} / {} experience", combatant_properties.experience_points.current, exp_required_for_next_level_string) }
+                </span>
             </div>
             <div class="flex mb-1" >
                 <ul class="list-none w-1/2 mr-1" >

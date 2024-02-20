@@ -60,6 +60,7 @@ impl GameServer {
             &GameServerUpdatePackets::BattleEndReport(BattleEndReportPacket {
                 conclusion: BattleConclusion::Defeat,
                 loot: None,
+                exp_changes: None,
             }),
             None,
         )?;

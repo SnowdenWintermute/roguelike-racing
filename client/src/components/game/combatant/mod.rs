@@ -34,13 +34,6 @@ pub fn combatant(props: &Props) -> Html {
     let name = props.entity_properties.name.clone();
     let combatant_properties = props.combatant_properties.clone();
 
-    if id == 2 {
-        log!(format!(
-            "target: {:?}",
-            combatant_properties.combat_action_targets,
-        ));
-    }
-
     let cloned_entity_properties = props.entity_properties.clone();
     let cloned_combatant_properties = combatant_properties.clone();
     let handle_click = Callback::from(move |_| {
@@ -66,7 +59,7 @@ pub fn combatant(props: &Props) -> Html {
     let selected_style = if is_selected { "border-yellow-400" } else { "" };
 
     let styles = format!(
-        "flex border border-slate-400 mb-2 w-40 relative {}",
+        "flex border border-slate-400 mb-2 relative h-fit w-fit {}",
         selected_style
     );
 
@@ -98,9 +91,9 @@ pub fn combatant(props: &Props) -> Html {
                     {"active"}
                 </div>
             }
-            <button class={"flex flex-col bg-slate-700
-                text-left p-2 cursor-help w-full overflow-hidden"} onclick={handle_click} id={format!("combatant-{}", id)} >
-                <div class="pointer-events-none" >
+            <button class={"flex flex-col bg-slate-700 w-40
+                text-left p-2 cursor-help overflow-hidden"} onclick={handle_click} id={format!("combatant-{}", id)} >
+                <div class="pointer-events-none whitespace-nowrap overflow-ellipsis" >
                     {name}
                 </div>
                 <div class="h-5 w-full pointer-events-none" >
@@ -112,7 +105,7 @@ pub fn combatant(props: &Props) -> Html {
                     }
                 }
                 </div>
-                <div class="h-5 w-full pointer-events-none" >
+                <div class="h-5 w-full pointer-events-none mb-2" >
                 {
                     if let Some(max_mp) = max_mp_option {
                         html!(
@@ -120,6 +113,20 @@ pub fn combatant(props: &Props) -> Html {
                             )
                     } else {
                         html!({"Infinite Mana"})
+                    }
+                }
+                </div>
+                <div class="w-full flex pointer-events-none items-end " >
+                <span class="mr-2 whitespace-nowrap inline-block leading-3" >{format!( "Lv. {}", combatant_properties.level )}</span>
+                {
+                    if let Some(required_exp_to_level) = combatant_properties.experience_points.required_for_next_level {
+                        html!(
+                            <div class="h-2 w-full">
+                                <ValueBar max={required_exp_to_level} curr={combatant_properties.experience_points.current} color={"ffxipink"} hide_numbers={ true } />
+                            </div>
+                            )
+                    } else {
+                        html!()
                     }
                 }
                 </div>

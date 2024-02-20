@@ -12,6 +12,7 @@ use crate::combatants::inventory::Inventory;
 use crate::combatants::CombatantClass;
 use crate::combatants::CombatantControlledBy;
 use crate::combatants::CombatantProperties;
+use crate::combatants::ExperiencePoints;
 use crate::game::id_generator::IdGenerator;
 use crate::primatives::EntityProperties;
 use rand::seq::SliceRandom;
@@ -66,6 +67,10 @@ impl Monster {
                 HashMap::new(),
                 CombatantControlledBy::AI,
             ),
+        };
+        monster.combatant_properties.experience_points = ExperiencePoints {
+            current: 0,
+            required_for_next_level: None,
         };
 
         let inherent_attributes = &mut monster.combatant_properties.inherent_attributes;
@@ -197,6 +202,12 @@ impl Monster {
                     (CombatAttributes::Mp, mp),
                 ]),
                 level: 1,
+                experience_points: ExperiencePoints {
+                    current: 0,
+                    required_for_next_level: None,
+                },
+                unspent_attribute_points: 0,
+                unspent_ability_points: 0,
                 hit_points: hp,
                 mana: mp,
                 status_effects: Vec::new(),

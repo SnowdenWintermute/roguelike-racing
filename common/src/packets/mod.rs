@@ -40,3 +40,9 @@ pub enum GameMessages {
     PartyEscape(String, u64),
     PartyWipe(String, u8, u64),
 }
+
+#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
+pub struct ExperienceChange {
+    pub combatant_id: u32,
+    pub experience_change: i16,
+}

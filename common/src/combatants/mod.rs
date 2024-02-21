@@ -67,6 +67,7 @@ pub struct ExperiencePoints {
 pub struct CombatantProperties {
     pub combatant_class: CombatantClass,
     pub inherent_attributes: HashMap<CombatAttributes, u16>,
+    pub specced_attributes: HashMap<CombatAttributes, u16>,
     pub level: u8,
     pub experience_points: ExperiencePoints,
     pub unspent_attribute_points: u8,
@@ -93,6 +94,7 @@ impl CombatantProperties {
         CombatantProperties {
             combatant_class: combatant_class.clone(),
             inherent_attributes: HashMap::new(),
+            specced_attributes: HashMap::new(),
             level: 1,
             hit_points: 0,
             experience_points: ExperiencePoints {

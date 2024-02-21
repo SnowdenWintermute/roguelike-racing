@@ -85,6 +85,14 @@ pub fn action_menu_change_detection_manager(props: &Props) -> Html {
             .front(),
         None => None,
     };
+    let focused_character_unspent_attribute_points = match focused_character_option {
+        Some(focused_character) => {
+            focused_character
+                .combatant_properties
+                .unspent_attribute_points
+        }
+        None => 0,
+    };
 
     let cloned_focused_character_current_animation_processing_option =
         match focused_character_current_animation_processing_option {
@@ -111,6 +119,7 @@ pub fn action_menu_change_detection_manager(props: &Props) -> Html {
                 selected_item_id,
                 focused_character_selected_combat_action_option,
                 cloned_focused_character_current_animation_processing_option,
+                focused_character_unspent_attribute_points,
             ),
             cloned_game_state.viewing_items_on_ground,
             cloned_game_state.viewing_skill_level_up_menu,

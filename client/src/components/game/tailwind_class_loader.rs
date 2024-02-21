@@ -4,6 +4,7 @@ use yew::prelude::*;
 pub fn tailwind_class_loader() -> Html {
     html!(
     <>
+        <div class="translate-x-[.5rem] translate-y-[.5rem]" />
         <div class="bg-ffxipink" />
         <div class="text-ffxipink" />
         <div class="border-ffxipink" />

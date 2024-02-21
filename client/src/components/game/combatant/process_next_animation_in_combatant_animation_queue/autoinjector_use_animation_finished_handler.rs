@@ -47,7 +47,7 @@ pub fn autoinjector_use_animation_finished_handler(
                 };
                 store.combat_log.push(CombatLogMessage::new(
                     AttrValue::from(format!(
-                        "{} ({user_id}) injected {} for {value_change} MP",
+                        "{} injected {} for {value_change} MP",
                         user_name, target_text
                     )),
                     CombatLogMessageStyle::Basic,

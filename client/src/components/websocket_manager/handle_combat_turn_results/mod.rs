@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::components::game::combat_log::combat_log_message::CombatLogMessage;
 use crate::components::game::combat_log::combat_log_message::CombatLogMessageStyle;
 use crate::store::game_store::GameStore;
@@ -56,13 +58,17 @@ pub fn send_next_turn_result_to_combatant_event_manager(
                         CombatLogMessageStyle::BattleVictory,
                         0,
                     ));
-
+                    let mut entity_ids_and_previous_levels = HashMap::new();
                     // HANDLE LEVELUPS
                     if let Some(exp_changes) = battle_end_report.exp_changes {
                         for exp_change in exp_changes {
+                            let entity_id = exp_change.combatant_id;
                             let party = store.get_current_party_mut()?;
-                            let (_, combatant_properties) =
+                            let (entity_properties, combatant_properties) =
                                 party.get_mut_combatant_by_id(&exp_change.combatant_id)?;
+                            let entity_name = entity_properties.name.clone();
+                            entity_ids_and_previous_levels
+                                .insert(entity_id, combatant_properties.level);
                             if exp_change.experience_change > 0 {
                                 combatant_properties.experience_points.current +=
                                     exp_change.experience_change.abs() as u16;
@@ -71,6 +77,30 @@ pub fn send_next_turn_result_to_combatant_event_manager(
                                     exp_change.experience_change.abs() as u16;
                             }
                             award_levelups(combatant_properties);
+
+                            store.combat_log.push(CombatLogMessage::new(
+                                AttrValue::from(format!(
+                                    "{} gained {} experience points",
+                                    entity_name, exp_change.experience_change
+                                )),
+                                CombatLogMessageStyle::Basic,
+                                0,
+                            ));
+                        }
+
+                        for (id, level) in &entity_ids_and_previous_levels {
+                            let party = store.get_current_party_mut()?;
+                            let (entity_properties, combatant_properties) =
+                                party.get_mut_combatant_by_id(&id)?;
+                            let name = entity_properties.name.clone();
+                            let new_level = combatant_properties.level;
+                            if *level != new_level {
+                                store.combat_log.push(CombatLogMessage::new(
+                                    AttrValue::from(format!("{} is now level {}", name, new_level)),
+                                    CombatLogMessageStyle::Basic,
+                                    0,
+                                ));
+                            }
                         }
                     }
 

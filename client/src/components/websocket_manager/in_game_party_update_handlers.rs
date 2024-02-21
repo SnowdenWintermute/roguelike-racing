@@ -181,7 +181,7 @@ pub fn character_spent_attribute_point_handler(
         character.combatant_properties.unspent_attribute_points -= 1;
         let attribute_to_increment = character
             .combatant_properties
-            .inherent_attributes
+            .specced_attributes
             .entry(*attribute)
             .or_insert(0);
         *attribute_to_increment += 1;

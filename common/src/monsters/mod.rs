@@ -68,6 +68,7 @@ impl Monster {
                 CombatantControlledBy::AI,
             ),
         };
+        monster.combatant_properties.level = level;
         monster.combatant_properties.experience_points = ExperiencePoints {
             current: 0,
             required_for_next_level: None,
@@ -201,6 +202,7 @@ impl Monster {
                     (CombatAttributes::Hp, hp),
                     (CombatAttributes::Mp, mp),
                 ]),
+                specced_attributes: HashMap::new(),
                 level: 1,
                 experience_points: ExperiencePoints {
                     current: 0,

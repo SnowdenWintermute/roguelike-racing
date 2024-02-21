@@ -37,7 +37,7 @@ impl GameServer {
 
         combatant_properties.unspent_attribute_points -= 1;
         let current_attribute_value = combatant_properties
-            .inherent_attributes
+            .specced_attributes
             .entry(attribute)
             .or_insert(0);
         *current_attribute_value += 1;

@@ -106,6 +106,13 @@ pub fn determine_action_menu_buttons_disabled(
             }
         }
         GameActions::ShardItem(_) => !player_owns_character || true,
+        GameActions::AssignAttributePoint(_) => {
+            focused_character
+                .combatant_properties
+                .unspent_attribute_points
+                <= 0
+        }
+        GameActions::SetAssignAttributePointsMenuOpen(_) => !player_owns_character,
 
         _ => false,
     }

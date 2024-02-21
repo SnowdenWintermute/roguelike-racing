@@ -17,6 +17,7 @@ impl CombatantProperties {
         }
 
         add_attributes_to_accumulator(&self.inherent_attributes, &mut total_attributes);
+        add_attributes_to_accumulator(&self.specced_attributes, &mut total_attributes);
 
         for (_slot, item) in &self.equipment {
             match &item.item_properties {

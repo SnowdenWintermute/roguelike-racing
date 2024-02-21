@@ -43,7 +43,9 @@ pub fn dungeon_room(props: &Props) -> Html {
                 .unwrap()
         });
 
-        let conditional_styles = match game_state.viewing_inventory {
+        let conditional_styles = match game_state.viewing_inventory
+            || game_state.viewing_attribute_point_assignment_menu
+        {
             true => "w-[22rem] mr-4",
             false => "w-full",
         };

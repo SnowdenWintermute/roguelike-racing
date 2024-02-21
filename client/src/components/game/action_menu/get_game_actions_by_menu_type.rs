@@ -4,6 +4,7 @@ use super::PAGE_SIZE;
 use common::combat::combat_actions::CombatAction;
 use common::combat::combat_actions::CombatActionProperties;
 use common::combatants::abilities::CombatantAbilityNames;
+use common::combatants::combat_attributes::ATTRIBUTE_POINT_ASSIGNABLE_ATTRIBUTES;
 use common::items::consumables::ConsumableTypes;
 use common::primatives::NextOrPrevious;
 use std::collections::HashMap;
@@ -46,9 +47,17 @@ impl MenuTypes {
                         None => (),
                     }
                 }
-                MenuTypes::LevelUpAbilities => {
-                    menu_items.push(GameActions::SetAssignAttributePointsMenuOpen(true));
-                    add_abilities_to_menu(&abilities, &mut menu_items);
+                MenuTypes::AssignAttributePoints => {
+                    menu_items.push(GameActions::SetAssignAttributePointsMenuOpen(false));
+                    let mut num_menu_buttons = 1;
+                    for attribute in ATTRIBUTE_POINT_ASSIGNABLE_ATTRIBUTES {
+                        if num_menu_buttons % PAGE_SIZE == 0 {
+                            menu_items.push(GameActions::SetAssignAttributePointsMenuOpen(false));
+                            num_menu_buttons += 1;
+                        }
+                        menu_items.push(GameActions::AssignAttributePoint(attribute));
+                        num_menu_buttons += 1;
+                    }
                 }
                 MenuTypes::InventoryOpen => {
                     menu_items.push(GameActions::SetInventoryOpen(!inventory_is_open));
@@ -105,8 +114,8 @@ impl MenuTypes {
                     menu_items.push(GameActions::ShardItem(*id));
                     menu_items.push(GameActions::DropItem(*id));
                 }
-                MenuTypes::AttributePointAssignment => {
-                    menu_items.push(GameActions::SetAssignAttributePointsMenuOpen(false));
+                MenuTypes::LevelUpAbilities => {
+                    // menu_items.push(GameActions::Set(false));
                 }
                 MenuTypes::Staircase => menu_items.push(GameActions::ToggleReadyToDescend),
             }

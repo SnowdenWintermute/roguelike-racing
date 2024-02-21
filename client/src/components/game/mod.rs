@@ -82,7 +82,7 @@ pub fn game() -> Html {
                     <TopInfoBar />
                     <div class="flex flex-grow">
                         <DungeonRoom party_id={party_id} />
-                        if game_state.viewing_inventory && focused_character.is_some(){
+                        if ( game_state.viewing_inventory || game_state.viewing_attribute_point_assignment_menu ) && focused_character.is_some(){
                             <CharacterSheet character={focused_character.as_deref().expect("is_some checked").clone()} />
                         }
                     </div>

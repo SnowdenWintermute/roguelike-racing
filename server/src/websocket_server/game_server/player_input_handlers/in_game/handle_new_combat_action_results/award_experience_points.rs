@@ -1,6 +1,6 @@
 use common::combatants::CombatantProperties;
-const BASE_XP_PER_MONSTER: f32 = 30.0;
-// const BASE_XP_PER_MONSTER: f32 = 110.0;
+// const BASE_XP_PER_MONSTER: f32 = 30.0;
+const BASE_XP_PER_MONSTER: f32 = 110.0;
 const BASE_XP_LEVEL_DIFF_MULTIPLIER: f32 = 0.25;
 
 pub fn award_experience_points(
@@ -30,7 +30,7 @@ pub fn award_experience_points(
 #[cfg(test)]
 #[test]
 fn award_experience_points_test() {
-    use common::combatants::CombatantClass;
+    use common::combatants::combatant_classes::CombatantClass;
     use common::combatants::CombatantControlledBy;
     use std::collections::HashMap;
 

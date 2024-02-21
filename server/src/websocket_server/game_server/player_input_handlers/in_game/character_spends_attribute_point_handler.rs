@@ -2,6 +2,8 @@ use crate::websocket_server::game_server::getters::get_mut_game_data_from_actor_
 use crate::websocket_server::game_server::getters::ActorIdAssociatedGameData;
 use crate::websocket_server::game_server::GameServer;
 use common::app_consts::error_messages;
+use common::app_consts::INT_TO_MP_RATIO;
+use common::app_consts::VIT_TO_HP_RATIO;
 use common::combatants::combat_attributes::CombatAttributes;
 use common::errors::AppError;
 use common::game::getters::get_mut_party;
@@ -41,6 +43,12 @@ impl GameServer {
             .entry(attribute)
             .or_insert(0);
         *current_attribute_value += 1;
+
+        match &attribute {
+            CombatAttributes::Intelligence => combatant_properties.mana += INT_TO_MP_RATIO,
+            CombatAttributes::Vitality => combatant_properties.hit_points += VIT_TO_HP_RATIO,
+            _ => (),
+        }
 
         self.emit_packet(
             &party_websocket_channel_name,

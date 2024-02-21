@@ -14,7 +14,7 @@ use crate::combat::ActionResult;
 use crate::combat::CombatTurnResult;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::combat_attributes::CombatAttributes;
-use crate::combatants::CombatantClass;
+use crate::combatants::combatant_classes::CombatantClass;
 use crate::dungeon_rooms::DungeonRoom;
 use crate::dungeon_rooms::DungeonRoomTypes;
 use crate::game::RoguelikeRacerGame;

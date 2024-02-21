@@ -1,7 +1,7 @@
 use crate::components::common_components::molocules::text_submit::TextSubmit;
 use crate::components::websocket_manager::send_client_input::send_client_input;
 use crate::store::websocket_store::WebsocketStore;
-use common::combatants::CombatantClass;
+use common::combatants::combatant_classes::CombatantClass;
 use common::packets::client_to_server::CharacterCreation;
 use common::packets::client_to_server::PlayerInputs;
 use std::ops::Deref;

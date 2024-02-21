@@ -1,7 +1,7 @@
 use self::outfit_new_warrior::outfit_new_warrior;
 use crate::combatants::abilities::CombatantAbility;
 use crate::combatants::abilities::CombatantAbilityNames;
-use crate::combatants::CombatantClass;
+use crate::combatants::combatant_classes::CombatantClass;
 use crate::combatants::CombatantControlledBy;
 use crate::combatants::CombatantProperties;
 use crate::game::RoguelikeRacerGame;

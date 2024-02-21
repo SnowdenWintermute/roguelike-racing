@@ -1,6 +1,8 @@
 use crate::components::mesh_manager::CombatantEventManager;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
+use common::app_consts::INT_TO_MP_RATIO;
+use common::app_consts::VIT_TO_HP_RATIO;
 use common::combat::battle::Battle;
 use common::combatants::combat_attributes::CombatAttributes;
 use common::dungeon_rooms::DungeonRoom;
@@ -185,6 +187,17 @@ pub fn character_spent_attribute_point_handler(
             .entry(*attribute)
             .or_insert(0);
         *attribute_to_increment += 1;
+
+        match &attribute {
+            CombatAttributes::Intelligence => {
+                character.combatant_properties.mana += INT_TO_MP_RATIO
+            }
+            CombatAttributes::Vitality => {
+                character.combatant_properties.hit_points += VIT_TO_HP_RATIO
+            }
+            _ => (),
+        }
+
         Ok(())
     })
 }

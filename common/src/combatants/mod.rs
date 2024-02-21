@@ -1,10 +1,12 @@
 pub mod abilities;
 pub mod award_levelups;
 pub mod combat_attributes;
+pub mod combatant_classes;
 pub mod combatant_traits;
 mod equip_item;
 mod get_total_elemental_affinites;
 mod get_total_physical_damage_type_affinities;
+use self::combatant_classes::CombatantClass;
 use self::combatant_traits::CombatantTraits;
 use crate::combat::combat_actions::CombatAction;
 mod get_equipped_item;
@@ -27,29 +29,9 @@ use crate::items::equipment::EquipmentSlots;
 use crate::items::Item;
 use crate::status_effects::StatusEffects;
 use crate::utils::add_i16_to_u16_and_clamp_to_max;
-use core::fmt;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
-pub enum CombatantClass {
-    Warrior,
-    Mage,
-    Rogue,
-    None,
-}
-
-impl fmt::Display for CombatantClass {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            CombatantClass::Warrior => write!(f, "Warrior"),
-            CombatantClass::Mage => write!(f, "Mage"),
-            CombatantClass::Rogue => write!(f, "Rogue"),
-            CombatantClass::None => write!(f, "None"),
-        }
-    }
-}
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum CombatantControlledBy {

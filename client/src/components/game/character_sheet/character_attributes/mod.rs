@@ -4,6 +4,7 @@ use crate::components::client_consts::UNMET_REQUIREMENT_TEXT_COLOR;
 use crate::components::game::character_sheet::character_attributes::weapon_damage::CharacterSheetWeaponDamage;
 use crate::components::websocket_manager::send_client_input::send_client_input;
 use crate::store::game_store::GameStore;
+use crate::store::lobby_store::LobbyStore;
 use crate::store::websocket_store::WebsocketStore;
 use common::combatants::combat_attributes::CombatAttributes;
 use common::combatants::combat_attributes::ATTRIBUTE_POINT_ASSIGNABLE_ATTRIBUTES;
@@ -28,7 +29,16 @@ pub fn character_attributes(props: &Props) -> Html {
         entity_properties,
     } = props;
     let (game_state, _) = use_store::<GameStore>();
+    let focused_character_id = game_state.focused_character_id;
+    let (lobby_state, _) = use_store::<LobbyStore>();
     let (websocket_state, _) = use_store::<WebsocketStore>();
+
+    let player_owns_character = if let Ok(party) = game_state.get_current_party() {
+        party.player_owns_character(&lobby_state.username, focused_character_id)
+    } else {
+        false
+    };
+
     let total_attributes = combatant_properties.get_total_attributes();
     let mut combatant_attributes_as_vec = total_attributes
         .iter()
@@ -89,13 +99,13 @@ pub fn character_attributes(props: &Props) -> Html {
                         .enumerate()
                         .filter(|( i, _ )| i < &half_num_attributes)
                         .map(|(_, (attribute, value))|
-                             attribute_list_item(attribute, value, &game_state, has_unspent_attribute_points, &websocket_state)).collect::<Html>()}
+                             attribute_list_item(attribute, value, &game_state, has_unspent_attribute_points, &websocket_state, player_owns_character)).collect::<Html>()}
                 </ul>
                 <ul class="list-none w-1/2 ml-1" >
                     {combatant_attributes_as_vec.iter()
                         .enumerate()
                         .filter(|( i, _)| i >= &half_num_attributes)
-                        .map(|(_, (attribute, value))| attribute_list_item(attribute, value, &game_state, has_unspent_attribute_points, &websocket_state)).collect::<Html>()}
+                        .map(|(_, (attribute, value))| attribute_list_item(attribute, value, &game_state, has_unspent_attribute_points, &websocket_state, player_owns_character)).collect::<Html>()}
                 </ul>
             </div>
             <div id="divider" class="bg-slate-400 h-[1px] flex mt-2 mr-2 ml-2 mb-2" />
@@ -115,6 +125,7 @@ fn attribute_list_item(
     game_state: &Rc<GameStore>,
     has_unspent_attribute_points: bool,
     websocket_state: &Rc<WebsocketStore>,
+    player_owns_character: bool,
 ) -> VNode {
     let is_unmet_requirement = match &game_state.considered_item_unmet_requirements {
         Some(unmet_attribute_requirements) => unmet_attribute_requirements.get(attribute).is_some(),
@@ -131,6 +142,7 @@ fn attribute_list_item(
 
     let increase_attribute_button = if has_unspent_attribute_points
         && ATTRIBUTE_POINT_ASSIGNABLE_ATTRIBUTES.contains(attribute)
+        && player_owns_character
     {
         let cloned_websocket_state = websocket_state.clone();
         let cloned_attribute = attribute.clone();

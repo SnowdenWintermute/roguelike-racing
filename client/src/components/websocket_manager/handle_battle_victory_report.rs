@@ -31,6 +31,7 @@ pub fn handle_battle_end_report(
         }
 
         for (_, character) in party.characters.iter_mut() {
+            // @TODO - remove this when revive is implemented
             if character.combatant_properties.hit_points == 0 {
                 character.combatant_properties.hit_points = 1;
             }

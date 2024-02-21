@@ -1,5 +1,5 @@
 use crate::adventuring_party::AdventuringParty;
-use crate::combatants::CombatantClass;
+use crate::combatants::combatant_classes::CombatantClass;
 use crate::errors::AppError;
 use crate::game::getters::get_mut_party;
 use crate::game::player::RoguelikeRacerPlayer;

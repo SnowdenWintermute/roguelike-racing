@@ -42,8 +42,8 @@ pub fn award_levelups(combatant_properties: &mut CombatantProperties) {
 #[cfg(test)]
 #[test]
 fn award_levelups_test() {
-    use common::combatants::CombatantClass;
-    use common::combatants::CombatantControlledBy;
+    use crate::combatants::combatant_classes::CombatantClass;
+    use crate::combatants::CombatantControlledBy;
     use std::collections::HashMap;
 
     let mut combatant_properties = CombatantProperties::new(

@@ -63,7 +63,6 @@ impl Character {
             CombatantClass::Mage => {}
             CombatantClass::Rogue => {}
             CombatantClass::Warrior => outfit_new_warrior(game, &mut character),
-            CombatantClass::None => {}
         }
 
         character

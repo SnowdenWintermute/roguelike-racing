@@ -1,6 +1,7 @@
 mod hp_and_mp;
 pub mod weapon_damage;
 use crate::components::client_consts::UNMET_REQUIREMENT_TEXT_COLOR;
+use crate::components::common_components::atoms::divider::Divider;
 use crate::components::game::character_sheet::character_attributes::weapon_damage::CharacterSheetWeaponDamage;
 use crate::components::websocket_manager::send_client_input::send_client_input;
 use crate::store::game_store::GameStore;
@@ -92,7 +93,7 @@ pub fn character_attributes(props: &Props) -> Html {
             </div>
             {unspent_attribute_points_display}
             {unspent_ability_points_display}
-            <div id="divider" class="bg-slate-400 h-[1px] flex mt-2 mr-2 ml-2 mb-2" />
+            <Divider styles={AttrValue::from("mr-2 ml-2 ")} />
             <div class="flex mb-1" >
                 <ul class="list-none w-1/2 mr-1" >
                     {combatant_attributes_as_vec.iter()
@@ -108,7 +109,7 @@ pub fn character_attributes(props: &Props) -> Html {
                         .map(|(_, (attribute, value))| attribute_list_item(attribute, value, &game_state, has_unspent_attribute_points, &websocket_state, player_owns_character)).collect::<Html>()}
                 </ul>
             </div>
-            <div id="divider" class="bg-slate-400 h-[1px] flex mt-2 mr-2 ml-2 mb-2" />
+            <Divider styles={AttrValue::from("mr-2 ml-2 ")} />
             {hp_and_mp::hp_and_mp(&combatant_properties, &total_attributes)}
             <CharacterSheetWeaponDamage combatant_id={entity_properties.id} />
         </div>

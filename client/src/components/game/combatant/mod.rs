@@ -17,7 +17,6 @@ use crate::store::game_store::{self};
 use common::combatants::combat_attributes::CombatAttributes;
 use common::combatants::CombatantProperties;
 use common::primatives::EntityProperties;
-use gloo::console::log;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 

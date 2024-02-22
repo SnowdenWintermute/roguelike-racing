@@ -63,7 +63,7 @@ impl Monster {
                 name: generate_random_monster_name().to_string(),
             },
             combatant_properties: CombatantProperties::new(
-                &CombatantClass::None,
+                &CombatantClass::Warrior,
                 HashMap::new(),
                 CombatantControlledBy::AI,
             ),

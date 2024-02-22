@@ -1,4 +1,5 @@
 mod combatant_animation_manager;
+pub mod combatant_class_icon;
 mod combatant_is_ally;
 mod combatant_is_selected;
 mod combatant_is_targeted;
@@ -73,7 +74,7 @@ pub fn combatant(props: &Props) -> Html {
     let max_mp_option = total_attributes.get(&CombatAttributes::Mp);
 
     html!(
-        <div class={styles}>
+        <div class={styles} >
             if targeted_by.len() > 0{
                 <div class="absolute top-[-1.5rem] left-1/2 -translate-x-1/2 z-20
                             flex" >
@@ -115,7 +116,7 @@ pub fn combatant(props: &Props) -> Html {
                     }
                 }
                 </div>
-                <div class="w-full flex pointer-events-none items-end " >
+                <div class="w-full flex pointer-events-none items-end mb-2" >
                 <span class="mr-2 whitespace-nowrap inline-block leading-3" >{format!( "Lv. {}", combatant_properties.level )}</span>
                 {
                     if let Some(required_exp_to_level) = combatant_properties.experience_points.required_for_next_level {
@@ -132,7 +133,7 @@ pub fn combatant(props: &Props) -> Html {
                 <CombatantAnimationManager combatant_id={id} />
             </button>
             if is_ally {
-                <FocusCharacterButton id={id} is_ally={is_ally} />
+                <FocusCharacterButton id={id} is_ally={is_ally} combatant_class={props.combatant_properties.combatant_class.clone()} />
             }
         </div>
     )

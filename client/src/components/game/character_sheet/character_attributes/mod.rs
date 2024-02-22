@@ -3,12 +3,14 @@ pub mod weapon_damage;
 use crate::components::client_consts::UNMET_REQUIREMENT_TEXT_COLOR;
 use crate::components::common_components::atoms::divider::Divider;
 use crate::components::game::character_sheet::character_attributes::weapon_damage::CharacterSheetWeaponDamage;
+use crate::components::game::combatant::combatant_class_icon::CombatantClassIcon;
 use crate::components::websocket_manager::send_client_input::send_client_input;
 use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
 use crate::store::websocket_store::WebsocketStore;
 use common::combatants::combat_attributes::CombatAttributes;
 use common::combatants::combat_attributes::ATTRIBUTE_POINT_ASSIGNABLE_ATTRIBUTES;
+use common::combatants::combatant_classes::CombatantClass;
 use common::combatants::CombatantControlledBy;
 use common::combatants::CombatantProperties;
 use common::packets::client_to_server::PlayerInputs;
@@ -104,8 +106,14 @@ pub fn character_attributes(props: &Props) -> Html {
 
     html!(
         <div class="h-full pl-2 w-1/2">
-            <div class="font-bold" >
-                {entity_properties.name.clone()}{format!(" ({})", combatant_properties.combatant_class)}
+            <div class="font-bold flex justify-between items-center" >
+                <span>
+                    {entity_properties.name.clone()}
+                    {format!(" ({})", combatant_properties.combatant_class)}
+                </span>
+                <span class="h-10 w-10 p-1 flex justify-center rotate-45" >
+                    <CombatantClassIcon combatant_class={combatant_properties.combatant_class.clone()} />
+                </span>
             </div>
             <div class="flex justify-between" >
                 <span>

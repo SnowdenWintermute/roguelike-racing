@@ -1,10 +1,12 @@
 use crate::components::alerts::set_alert;
+use crate::components::game::combatant::combatant_class_icon::CombatantClassIcon;
 use crate::components::websocket_manager::send_client_input::send_client_input;
 use crate::store::alert_store::AlertStore;
 use crate::store::game_store::get_focused_character;
 use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
 use crate::store::websocket_store::WebsocketStore;
+use common::combatants::combatant_classes::CombatantClass;
 use common::errors::AppError;
 use common::game::getters::get_player;
 use common::packets::client_to_server::CharacterAndCombatAction;
@@ -17,6 +19,7 @@ use yewdux::prelude::use_store;
 pub struct Props {
     pub id: u32,
     pub is_ally: bool,
+    pub combatant_class: CombatantClass,
 }
 
 #[function_component(FocusCharacterButton)]
@@ -76,14 +79,18 @@ pub fn focus_character_button(props: &Props) -> Html {
     };
 
     html!(
-        <div class={format!("border-l border-slate-400 w-10 max-w-10 min-w-10 {}", conditional_styles)} >
+        <div class={format!("border-l border-slate-400 w-10 max-w-10 min-w-10  {}", conditional_styles)} >
             if is_focused_character {
-                <button class="flex items-center justify-center w-full h-full">
-                {"X"}
+                <button class="flex items-center justify-center w-full h-full relative">
+                    <div class="flex items-center justify-center absolute h-full w-full p-1 pt-2 pb-2" >
+                        <CombatantClassIcon combatant_class={props.combatant_class.clone()} />
+                    </div>
                 </button>
             } else if props.is_ally {
-                <button class="flex items-center justify-center w-full h-full m-0" onclick={handle_click} >
-                {"O"}
+                <button class="flex items-center justify-center w-full h-full relative m-0" onclick={handle_click} >
+                    <div class="flex items-center justify-center absolute h-full w-full p-1 pt-2 pb-2" >
+                        <CombatantClassIcon combatant_class={props.combatant_class.clone()} />
+                    </div>
                 </button>
             }
         </div>

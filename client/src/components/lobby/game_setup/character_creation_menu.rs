@@ -1,4 +1,5 @@
 use crate::components::common_components::molocules::text_submit::TextSubmit;
+use crate::components::game::combatant::combatant_class_icon::CombatantClassIcon;
 use crate::components::websocket_manager::send_client_input::send_client_input;
 use crate::store::websocket_store::WebsocketStore;
 use common::combatants::combatant_classes::CombatantClass;
@@ -38,18 +39,26 @@ pub fn character_creation_menu() -> Html {
         to_return
     };
 
+    let combatant_class = &*combatant_class_selection_state.clone();
+
     html!(
         <div class="mb-2">
             <ul class="flex mb-2" >
                 {class_selection_buttons}
             </ul>
-            <div class="mb-2" >
-                <h5 class="font-bold mb-1" >
-                    {format!("{}", *combatant_class_selection_state)}
-                </h5>
-                <p>
-                    {format!("{}", COMBATANT_CLASS_DESCRIPTIONS.get(&*combatant_class_selection_state).unwrap_or_else(||&""))}
-                </p>
+            <div class="mb-2 flex " >
+                <span class="h-20 w-20 p-1 flex justify-center rotate-45 mr-4" >
+                    <CombatantClassIcon combatant_class={combatant_class.clone()} />
+                </span>
+                <div>
+                    <h5 class="font-bold mb-1" >
+                        {format!("{}", *combatant_class_selection_state)}
+                    </h5>
+                    <p>
+                        {format!("{}", COMBATANT_CLASS_DESCRIPTIONS.get(&*combatant_class_selection_state).unwrap_or_else(||&""))}
+
+                    </p>
+                </div>
             </div>
             <TextSubmit
                 input_name={"character name"}

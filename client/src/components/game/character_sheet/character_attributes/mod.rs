@@ -10,7 +10,6 @@ use crate::store::lobby_store::LobbyStore;
 use crate::store::websocket_store::WebsocketStore;
 use common::combatants::combat_attributes::CombatAttributes;
 use common::combatants::combat_attributes::ATTRIBUTE_POINT_ASSIGNABLE_ATTRIBUTES;
-use common::combatants::combatant_classes::CombatantClass;
 use common::combatants::CombatantControlledBy;
 use common::combatants::CombatantProperties;
 use common::packets::client_to_server::PlayerInputs;

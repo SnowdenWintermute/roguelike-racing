@@ -70,15 +70,15 @@ pub fn combatant_animation_manager(props: &Props) -> Html {
     let animation_to_show = if let Some(animation) = event_manager.animation_queue.front() {
         format!("{}", animation)
     } else {
-        "idle".to_string()
+        "".to_string()
     };
 
     let debug = true;
     if debug {
         return html! {
-            <div class="whitespace-nowrap text-ellipsis overflow-hidden">
-                {"animation: "} {animation_to_show}
-            </div>
+            <span class="whitespace-nowrap text-ellipsis overflow-hidden">
+                {animation_to_show}
+            </span>
         };
     }
     html!()

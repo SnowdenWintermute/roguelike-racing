@@ -37,7 +37,7 @@ pub fn enemy_battle_group(props: &Props) -> Html {
     };
 
     let inventory_open_styles = if game_state.viewing_inventory {
-        "translate-x-[.5rem] translate-y-.5rem w-1/2"
+        "w-full"
     } else {
         ""
     };

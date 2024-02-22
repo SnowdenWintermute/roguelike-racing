@@ -75,20 +75,20 @@ pub fn focus_character_button(props: &Props) -> Html {
     let conditional_styles = if is_focused_character {
         "bg-green-700"
     } else {
-        ""
+        "bg-slate-700"
     };
 
     html!(
-        <div class={format!("border-l border-slate-400 w-10 max-w-10 min-w-10  {}", conditional_styles)} >
+        <div class={format!("border-l border-slate-400 w-10 max-w-10 min-w-10 {}", conditional_styles)} >
             if is_focused_character {
                 <button class="flex items-center justify-center w-full h-full relative">
-                    <div class="flex items-center justify-center absolute h-full w-full p-1 pt-2 pb-2" >
+                    <div class="flex items-center justify-center absolute h-full w-full p-1 pt-4 pb-4" >
                         <CombatantClassIcon combatant_class={props.combatant_class.clone()} />
                     </div>
                 </button>
             } else if props.is_ally {
                 <button class="flex items-center justify-center w-full h-full relative m-0" onclick={handle_click} >
-                    <div class="flex items-center justify-center absolute h-full w-full p-1 pt-2 pb-2" >
+                    <div class="flex items-center justify-center absolute h-full w-full p-1 pt-4 pb-4" >
                         <CombatantClassIcon combatant_class={props.combatant_class.clone()} />
                     </div>
                 </button>

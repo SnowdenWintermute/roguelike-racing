@@ -50,6 +50,14 @@ pub fn dungeon_room(props: &Props) -> Html {
             false => "w-full",
         };
 
+        let right_side_conditional_styles = match game_state.viewing_inventory
+            || game_state.viewing_attribute_point_assignment_menu
+        {
+            true => "w-full",
+            false => "",
+        };
+
+
         let time_of_death_option = if let Some(time_of_wipe) = party.time_of_wipe {
             Some(format!("unix timestamp ({})", time_of_wipe))
         } else {
@@ -70,8 +78,8 @@ pub fn dungeon_room(props: &Props) -> Html {
 
         html!(
             <section class={format!("h-full border border-slate-400 bg-slate-700 flex {}", conditional_styles)} >
-                <div class="w-fit flex p-2 h-full" >
-                    <div class="flex flex-col mr-4 h-full flex-grow" >
+                <div class="w-1/2 flex p-2 h-full" >
+                    <div class="flex flex-col mr-4 h-full flex-grow z-10" >
                         {characters.iter().map(|(_id, character)|
                             html!{<Combatant
                                 entity_properties={character.entity_properties.clone()}
@@ -87,7 +95,7 @@ pub fn dungeon_room(props: &Props) -> Html {
                         />
                     }
                 </div>
-                <div class="border-l border-slate-400 p-2 flex flex-col flex-grow w-full" >
+                <div class={ format!( "border-l border-slate-400 p-2 flex flex-col w-1/2 {}", right_side_conditional_styles ) } >
                     if let Some(time_of_death) = time_of_death_option {
                         <div class=" border border-slate-400 bg-slate-700 p-4
                             absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" >

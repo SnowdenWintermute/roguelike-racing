@@ -73,6 +73,16 @@ pub fn combatant(props: &Props) -> Html {
     let max_hp_option = total_attributes.get(&CombatAttributes::Hp);
     let max_mp_option = total_attributes.get(&CombatAttributes::Mp);
 
+    let event_manager_option = game_state
+        .action_results_manager
+        .combantant_event_managers
+        .get(&id);
+    let animating = if let Some(event_manager) = event_manager_option {
+        event_manager.animation_queue.len() > 0
+    } else {
+        false
+    };
+
     html!(
         <div class={styles} >
             if targeted_by.len() > 0{
@@ -94,7 +104,10 @@ pub fn combatant(props: &Props) -> Html {
             <button class={"flex flex-col bg-slate-700 w-40
                 text-left p-2 cursor-help overflow-hidden"} onclick={handle_click} id={format!("combatant-{}", id)} >
                 <div class="pointer-events-none whitespace-nowrap overflow-ellipsis" >
-                    {name}
+                    if !animating {
+                        {name}
+                    }
+                    <CombatantAnimationManager combatant_id={id} />
                 </div>
                 <div class="h-5 w-full pointer-events-none" >
                 {
@@ -116,7 +129,7 @@ pub fn combatant(props: &Props) -> Html {
                     }
                 }
                 </div>
-                <div class="w-full flex pointer-events-none items-end mb-2" >
+                <div class="w-full flex pointer-events-none items-end" >
                 <span class="mr-2 whitespace-nowrap inline-block leading-3" >{format!( "Lv. {}", combatant_properties.level )}</span>
                 {
                     if let Some(required_exp_to_level) = combatant_properties.experience_points.required_for_next_level {
@@ -130,7 +143,6 @@ pub fn combatant(props: &Props) -> Html {
                     }
                 }
                 </div>
-                <CombatantAnimationManager combatant_id={id} />
             </button>
             if is_ally {
                 <FocusCharacterButton id={id} is_ally={is_ally} combatant_class={props.combatant_properties.combatant_class.clone()} />

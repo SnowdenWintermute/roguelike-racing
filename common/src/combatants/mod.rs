@@ -98,6 +98,18 @@ impl CombatantProperties {
         }
     }
 
+    pub fn set_hp_and_mp_to_max(&mut self) {
+        let total_attributes = self.get_total_attributes();
+        let max_hp_option = total_attributes.get(&CombatAttributes::Hp);
+        if let Some(max_hp) = max_hp_option {
+            self.hit_points = *max_hp;
+        }
+        let max_mana_option = total_attributes.get(&CombatAttributes::Mp);
+        if let Some(max_mana) = max_mana_option {
+            self.mana = *max_mana
+        }
+    }
+
     pub fn can_use_item(&self, item: &Item) -> bool {
         let total_character_attributes = self.get_total_attributes();
         item.requirements_satisfied_by_attributes(&total_character_attributes)

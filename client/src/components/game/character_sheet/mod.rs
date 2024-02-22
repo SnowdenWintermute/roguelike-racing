@@ -31,6 +31,7 @@ pub fn character_sheet(props: &Props) -> Html {
             <CharacterAttributes
                 entity_properties={character.entity_properties.clone()}
                 combatant_properties={character.combatant_properties.clone()}
+                show_attribute_assignment_buttons={true}
             />
         </section>
     )

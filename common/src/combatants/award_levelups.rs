@@ -1,4 +1,3 @@
-use super::combat_attributes::CombatAttributes;
 use super::CombatantProperties;
 
 const XP_REQUIRED_TO_LEVEL_INCREASE_INCREMENT: u16 = 25;
@@ -18,13 +17,7 @@ pub fn award_levelups(combatant_properties: &mut CombatantProperties) {
                 combatant_properties.unspent_attribute_points += ATTRIBUTE_POINTS_AWARDED_PER_LEVEL;
                 combatant_properties.experience_points.current -= required_to_level;
 
-                let combatant_attributes = combatant_properties.get_total_attributes();
-                combatant_properties.hit_points = *combatant_attributes
-                    .get(&CombatAttributes::Hp)
-                    .unwrap_or_else(|| &0);
-                combatant_properties.mana = *combatant_attributes
-                    .get(&CombatAttributes::Mp)
-                    .unwrap_or_else(|| &0);
+                combatant_properties.set_hp_and_mp_to_max();
 
                 combatant_properties
                     .experience_points

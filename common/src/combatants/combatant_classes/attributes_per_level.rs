@@ -16,6 +16,8 @@ pub static ATTRIBUTES_BY_LEVEL: Lazy<HashMap<CombatantClass, HashMap<CombatAttri
                     (CombatAttributes::Vitality, 2.0),
                     (CombatAttributes::Resilience, 1.0),
                     (CombatAttributes::Agility, 1.0),
+                    (CombatAttributes::Hp, 2.0),
+                    (CombatAttributes::Mp, 1.0),
                 ]),
             ),
             (
@@ -28,6 +30,8 @@ pub static ATTRIBUTES_BY_LEVEL: Lazy<HashMap<CombatantClass, HashMap<CombatAttri
                     (CombatAttributes::Vitality, 1.0),
                     (CombatAttributes::Resilience, 1.5),
                     (CombatAttributes::Agility, 1.0),
+                    (CombatAttributes::Hp, 1.0),
+                    (CombatAttributes::Mp, 2.0),
                 ]),
             ),
             (
@@ -40,6 +44,8 @@ pub static ATTRIBUTES_BY_LEVEL: Lazy<HashMap<CombatantClass, HashMap<CombatAttri
                     (CombatAttributes::Vitality, 1.5),
                     (CombatAttributes::Resilience, 1.5),
                     (CombatAttributes::Agility, 1.5),
+                    (CombatAttributes::Hp, 1.5),
+                    (CombatAttributes::Mp, 1.5),
                 ]),
             ),
         ])

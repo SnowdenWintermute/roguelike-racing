@@ -21,9 +21,9 @@ pub fn context_dependant_information_display() -> Html {
 
     let mut hovered_tab = match hovered_entity {
         Some(detailable) => match detailable {
-            DetailableEntities::Combatant(combatant_properties) => {
-                Some(html!(<CombatantDetailsContextInfo combatant={combatant_properties.clone()}/>))
-            }
+            DetailableEntities::Combatant(combatant_properties) => Some(
+                html!(<CombatantDetailsContextInfo combatant_id={combatant_properties.entity_properties.id}/>),
+            ),
             DetailableEntities::Item(item) => Some(html!(<ItemDetails item={item.clone()}  />)),
         },
         None => None,
@@ -37,9 +37,9 @@ pub fn context_dependant_information_display() -> Html {
 
     let detailed_tab = match detailed_entity {
         Some(detailable) => match detailable {
-            DetailableEntities::Combatant(combatant_properties) => {
-                Some(html!(<CombatantDetailsContextInfo combatant={combatant_properties.clone()}/>))
-            }
+            DetailableEntities::Combatant(combatant_properties) => Some(
+                html!(<CombatantDetailsContextInfo combatant_id={combatant_properties.entity_properties.id}/>),
+            ),
             DetailableEntities::Item(item) => Some(html!(<ItemDetails item={item.clone()} />)),
         },
         None => {

@@ -1,4 +1,4 @@
-use self::outfit_new_warrior::outfit_new_warrior;
+use self::outfit_new_character::outfit_new_character;
 use crate::combatants::abilities::CombatantAbility;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::combatant_classes::CombatantClass;
@@ -9,7 +9,8 @@ use crate::primatives::EntityProperties;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
-pub mod outfit_new_warrior;
+mod create_inventory_test_items;
+pub mod outfit_new_character;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Character {
@@ -59,11 +60,7 @@ impl Character {
             CombatantAbility::create_by_name(&CombatantAbilityNames::AttackRangedMainhand),
         );
 
-        match combatant_class {
-            CombatantClass::Mage => {}
-            CombatantClass::Rogue => {}
-            CombatantClass::Warrior => outfit_new_warrior(game, &mut character),
-        }
+        outfit_new_character(game, &mut character);
 
         character
     }

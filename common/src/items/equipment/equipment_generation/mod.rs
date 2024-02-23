@@ -13,8 +13,6 @@ pub mod name_equipment;
 pub mod print_random_equipments;
 mod roll_equipment_properties_from_blueprint;
 mod select_random_affix_types;
-use rand::Rng;
-
 use self::equipment_blueprints::body_armor_blueprints::body_armor_blueprint_from_base_item;
 use self::equipment_blueprints::head_gear_blueprints::head_gear_blueprint_from_base_item;
 use self::equipment_blueprints::jewelry_blueprints::jewelry_blueprint_from_base_item;
@@ -29,6 +27,7 @@ use self::generate_weapon_damage_classifications::generate_weapon_damage_classif
 use self::roll_equipment_properties_from_blueprint::roll_equipment_properties_from_blueprint;
 use super::EquipmentProperties;
 use crate::combatants::combat_attributes::CombatAttributes;
+use rand::Rng;
 use std::collections::HashMap;
 
 pub struct EquipmentPropertiesAndRequirements {

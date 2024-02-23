@@ -1,4 +1,6 @@
 use crate::components::common_components::atoms::button_basic::ButtonBasic;
+use crate::components::common_components::atoms::divider::Divider;
+use crate::components::common_components::atoms::hoverable_tooltip_wrapper::HoverableTooltipWrapper;
 use crate::components::game::character_sheet::character_attributes::CharacterAttributes;
 use crate::store::game_store::GameStore;
 use yew::prelude::*;
@@ -29,12 +31,39 @@ pub fn combatant_details_context_info(props: &Props) -> Html {
 
     if let Some((entity_properties, combatant_properties)) = combatant_option {
         html!(
-            <div class="flex justify-between">
+            <div class="flex justify-between ">
                 <CharacterAttributes
                     combatant_properties={combatant_properties.clone()}
                     entity_properties={entity_properties.clone()}
                 />
-                <ButtonBasic onclick={close_display} >{"Close"}</ButtonBasic>
+                <div class="h-full pl-4 w-1/2" >
+                    <div class="w-full flex justify-end" >
+                        <ButtonBasic onclick={close_display} >{"Close"}</ButtonBasic>
+                    </div>
+                    <div class="flex justify-between" >
+                        <span>
+                            {"Traits "}
+                        </span>
+                        <span>
+                            {" "}
+                        </span>
+                    </div>
+                    <Divider  />
+                    <ul>
+                        {combatant_properties.traits.iter().map(|item| html!(
+                            <li>
+                                <span class="inline-block h-6 w-6">
+                                    <HoverableTooltipWrapper tooltip_text={AttrValue::from(item.get_description().to_string())} >
+                                        <span class="cursor-help h-full w-full inline-block">
+                                            {"ⓘ "}
+                                        </span>
+                                    </HoverableTooltipWrapper>
+                                </span>
+                                {format!("{}", item)}
+                            </li>
+                        )).collect::<Vec<Html>>()}
+                    </ul>
+                </div>
             </div>
         )
     } else {

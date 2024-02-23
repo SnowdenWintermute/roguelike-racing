@@ -70,7 +70,7 @@ pub fn context_dependant_information_display() -> Html {
     };
 
     html!(
-        <section class="p-2 flex-grow border border-slate-400 bg-slate-700">
+        <section class="p-2 flex-grow border border-slate-400 bg-slate-700 overflow-y-auto">
             {displayed_tab}
         </section>
     )

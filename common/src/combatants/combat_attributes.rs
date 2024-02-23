@@ -22,12 +22,12 @@ pub enum CombatAttributes {
     Mp,    // a resource for ability use
     // MAIN
     // offensive
-    Focus,     // negates %magic reduction and increases spell crit chance and crit multiplier
+    Strength, // damage with melee attacks, melee crit multiplier, melee armor pen, shield block
+    // chance
     Dexterity, // ranged damage, accuracy, physical crit chance, armor ranged armor pen, shield
     // block chance
     Intelligence, // mp, magic ability damage
-    Strength,     // damage with melee attacks, melee crit multiplier, melee armor pen, shield block
-    // chance
+    Focus,        // negates %magic reduction and increases spell crit chance and crit multiplier
     // defensive
     Vitality,   // hp, and debuff duration, shield block damage reduction
     Resilience, // %magic damage reduction, healing received, debuff duration
@@ -69,6 +69,28 @@ impl fmt::Display for CombatAttributes {
             CombatAttributes::Hp => write!(f, "HP"),
             CombatAttributes::Mp => write!(f, "MP"),
             CombatAttributes::ArmorPenetration => write!(f, "Armor Pen."),
+        }
+    }
+}
+
+impl CombatAttributes {
+    pub fn get_description(&self) -> &str {
+        match self {
+            CombatAttributes::Damage => "A flat bonus applied to physical attacks",
+            CombatAttributes::ArmorPenetration => "Negates a target's armor class",
+            CombatAttributes::Accuracy => "Chance to hit a target with an evadable attack",
+            CombatAttributes::ArmorClass => "Reduces physical damage",
+            CombatAttributes::Evasion => "Chance to avoid being hit",
+            CombatAttributes::Hp => "If reduced to zero, the combatant can no longer take actions",
+            CombatAttributes::Speed => "Determines turn order",
+            CombatAttributes::Mp => "The primary resource for using abilities",
+            CombatAttributes::Focus => "Negates magic defense and increases crit chance and crit multiplier for spells",
+            CombatAttributes::Dexterity => "Increases accuracy, crit chance with physical attacks, ranged attack damage and ranged attack armor penetration",
+            CombatAttributes::Intelligence => "Increases mana and spell damage",
+            CombatAttributes::Strength => "Increases attack damage, crit multiplier and armor penetration with physical attacks",
+            CombatAttributes::Vitality => "Increases hit points and reduces physical damage by a percentage",
+            CombatAttributes::Resilience => "Reduces magical damage by a percentage and increases healing received from spells",
+            CombatAttributes::Agility => "Increases evasion and speed",
         }
     }
 }

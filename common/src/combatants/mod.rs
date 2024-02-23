@@ -83,7 +83,7 @@ impl CombatantProperties {
                 current: 0,
                 required_for_next_level: Some(100),
             },
-            unspent_attribute_points: 3,
+            unspent_attribute_points: 0,
             unspent_ability_points: 0,
             mana: 0,
             status_effects: vec![],

@@ -2,13 +2,12 @@ use super::apply_affinity_to_hp_change::apply_affinity_to_hp_change;
 use super::apply_crit_multiplier_to_hp_change::apply_crit_multiplier_to_hp_change;
 use super::roll_crit::roll_crit;
 use crate::app_consts::BASE_CRIT_CHANCE;
-use crate::app_consts::DEX_TO_RANGED_ARMOR_PEN_RATIO;
-use crate::app_consts::STR_TO_MELEE_ARMOR_PEN_RATIO;
 use crate::app_consts::VIT_TO_PERCENT_PHYSICAL_DAMAGE_REDUCTION_RATIO;
 use crate::combat::combat_actions::CombatActionHpChangeProperties;
 use crate::combat::hp_change_source_types::MeleeOrRanged;
 use crate::combat::ActionResult;
 use crate::combatants::combat_attributes::CombatAttributes;
+use crate::combatants::CombatantProperties;
 use crate::errors::AppError;
 use crate::game::RoguelikeRacerGame;
 use std::collections::HashMap;
@@ -71,16 +70,16 @@ impl RoguelikeRacerGame {
                 .unwrap_or_else(|| &0);
             let armor_pen_attribute_bonus_based_on_weapon_type = match melee_or_ranged {
                 MeleeOrRanged::Melee => {
-                    user_combat_attributes
-                        .get(&CombatAttributes::Strength)
-                        .unwrap_or_else(|| &0)
-                        * STR_TO_MELEE_ARMOR_PEN_RATIO
+                    CombatantProperties::get_armor_pen_derrived_attribute_based_on_weapon_type(
+                        &user_combat_attributes,
+                        &CombatAttributes::Strength,
+                    )
                 }
                 MeleeOrRanged::Ranged => {
-                    user_combat_attributes
-                        .get(&CombatAttributes::Dexterity)
-                        .unwrap_or_else(|| &0)
-                        * DEX_TO_RANGED_ARMOR_PEN_RATIO
+                    CombatantProperties::get_armor_pen_derrived_attribute_based_on_weapon_type(
+                        &user_combat_attributes,
+                        &CombatAttributes::Dexterity,
+                    )
                 }
             };
             user_armor_pen += armor_pen_attribute_bonus_based_on_weapon_type;
@@ -100,29 +99,20 @@ impl RoguelikeRacerGame {
 
             //  - reduce or increase damage by elemental affinity if damage type is elemental
             //     - if physical, affinity effect is halved
-            println!("before elemental affinity: {:#?}", hp_change);
             if let Some(element) = &hp_change_properties.source_properties.element {
-                println!("adjusting elemental damage for : {:?}", element);
-                println!("before elemental affinity: {:#?}", hp_change);
                 let target_affinites = target_combatant_properties.get_total_elemental_affinites();
                 let target_affinity = target_affinites.get(element).unwrap_or_else(|| &0);
                 let halved_affinity = *target_affinity as f32 / 2.0;
                 let after_affinity = apply_affinity_to_hp_change(halved_affinity as i16, hp_change);
                 hp_change = after_affinity;
-                println!("after elemental affinity: {:#?}", hp_change);
             }
             // apply physical damage type if any
-            println!("before affinity: {:#?}", hp_change);
             if let Some(damage_type) = &hp_change_properties.source_properties.sub_category {
-                println!("adjusting physical damage for pdmgtype: {:?}", damage_type);
                 let target_affinities =
                     target_combatant_properties.get_total_physical_damage_type_affinites();
-                println!("target affinities: {:#?}", target_affinities);
                 let target_affinity = target_affinities.get(&damage_type).unwrap_or_else(|| &0);
-                println!("target affinity: {:#?}", target_affinity);
                 let after_affinity =
                     apply_affinity_to_hp_change(*target_affinity as i16, hp_change);
-                println!("after affinity: {:#?}", after_affinity);
                 hp_change = after_affinity;
             }
             //  - apply any base final multiplier

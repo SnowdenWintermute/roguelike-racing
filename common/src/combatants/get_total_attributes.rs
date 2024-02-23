@@ -4,8 +4,9 @@ use super::CombatantProperties;
 use crate::app_consts::AGI_TO_EVASION_RATIO;
 use crate::app_consts::AGI_TO_SPEED_RATIO;
 use crate::app_consts::DEX_TO_ACCURACY_RATIO;
-use crate::app_consts::INT_TO_FOCUS_RATIO;
+use crate::app_consts::DEX_TO_RANGED_ARMOR_PEN_RATIO;
 use crate::app_consts::INT_TO_MP_RATIO;
+use crate::app_consts::STR_TO_MELEE_ARMOR_PEN_RATIO;
 use crate::app_consts::VIT_TO_HP_RATIO;
 use std::collections::HashMap;
 use strum::IntoEnumIterator;
@@ -20,6 +21,7 @@ impl CombatantProperties {
 
         add_attributes_to_accumulator(&self.inherent_attributes, &mut total_attributes);
         add_attributes_to_accumulator(&self.specced_attributes, &mut total_attributes);
+
         let class_attributes_option = ATTRIBUTES_BY_LEVEL.get(&self.combatant_class);
         let class_attributes = if let Some(attributes) = class_attributes_option {
             attributes.clone()
@@ -80,13 +82,6 @@ impl CombatantProperties {
         calculate_and_add_derived_attribute(
             &mut total_attributes,
             &CombatAttributes::Intelligence,
-            CombatAttributes::Focus,
-            INT_TO_FOCUS_RATIO,
-        );
-
-        calculate_and_add_derived_attribute(
-            &mut total_attributes,
-            &CombatAttributes::Intelligence,
             CombatAttributes::Mp,
             INT_TO_MP_RATIO,
         );
@@ -113,6 +108,27 @@ impl CombatantProperties {
         );
 
         total_attributes
+    }
+
+    pub fn get_armor_pen_derrived_attribute_based_on_weapon_type(
+        total_attributes: &HashMap<CombatAttributes, u16>,
+        armor_pen_attribute: &CombatAttributes,
+    ) -> u16 {
+        match armor_pen_attribute {
+            CombatAttributes::Dexterity => {
+                total_attributes
+                    .get(&armor_pen_attribute)
+                    .unwrap_or_else(|| &0)
+                    * DEX_TO_RANGED_ARMOR_PEN_RATIO
+            }
+            CombatAttributes::Strength => {
+                total_attributes
+                    .get(&armor_pen_attribute)
+                    .unwrap_or_else(|| &0)
+                    * STR_TO_MELEE_ARMOR_PEN_RATIO
+            }
+            _ => 0,
+        }
     }
 }
 

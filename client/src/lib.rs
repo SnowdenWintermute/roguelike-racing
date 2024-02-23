@@ -7,6 +7,7 @@ use crate::components::game::Game;
 use crate::components::global_keyboard_event_manager::GlobalKeyboardEventManager;
 use crate::components::lobby::game_setup::GameSetup;
 use crate::components::lobby::Lobby;
+use crate::components::tooltips::TooltipManager;
 use crate::components::websocket_manager::WebsocketManager;
 use crate::store::game_store::GameStore;
 use yew::prelude::*;
@@ -26,10 +27,11 @@ pub fn app() -> Html {
     };
 
     html! {
-        <div >
+        <div class="relative" >
             <GlobalKeyboardEventManager />
             <WebsocketManager server_url={websocket_server_url} />
             <AlertManager />
+            <TooltipManager />
             if game_state.game.is_some() && game.unwrap().time_started.is_some() {
                 <Game />
             }else if game_state.game.is_some() {

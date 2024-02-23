@@ -17,7 +17,7 @@ pub fn lobby() -> Html {
             <div class="p-4 h-screen max-h-screen max-w-[80rem] mx-auto flex flex-col" >
                 <LobbyMenu />
                 <div class="flex flex-grow" >
-                    <div class="flex flex-col" >
+                    <div class="flex flex-col flex-grow" >
                         <WelcomeInfo />
                         <GameList/>
                     </div>

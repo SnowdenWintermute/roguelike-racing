@@ -3,8 +3,8 @@ use super::WeaponGenerationTemplate;
 use crate::combat::hp_change_source_types::Evadable;
 use crate::combat::hp_change_source_types::HpChangeSource;
 use crate::combat::hp_change_source_types::HpChangeSourceCategories;
-use crate::combat::hp_change_source_types::PhysicalDamageTypes;
 use crate::combat::hp_change_source_types::MeleeOrRanged;
+use crate::combat::hp_change_source_types::PhysicalDamageTypes;
 use crate::combat::magical_elements::MagicalElements;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::items::equipment::two_handed_melee_weapons::TwoHandedMeleeWeapons;
@@ -33,8 +33,8 @@ fn two_handed_melee_weapon_template_from_base_item(
             None,
         ),
         TwoHandedMeleeWeapons::Spear => {
-            requirements.insert(CombatAttributes::Dexterity, 3);
-            requirements.insert(CombatAttributes::Strength, 3);
+            requirements.insert(CombatAttributes::Dexterity, 10);
+            requirements.insert(CombatAttributes::Strength, 5);
             WeaponGenerationTemplate::new(
                 Range::new(2, 5),
                 Range::new(3, 9),
@@ -50,201 +50,307 @@ fn two_handed_melee_weapon_template_from_base_item(
                 None,
             )
         }
-        TwoHandedMeleeWeapons::Bardiche => WeaponGenerationTemplate::new(
-            Range::new(2, 5),
-            Range::new(5, 11),
-            Some(1),
-            vec![HpChangeSource::new(
-                HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
-                Some(PhysicalDamageTypes::Slashing),
+        TwoHandedMeleeWeapons::Bardiche => {
+            requirements.insert(CombatAttributes::Strength, 15);
+            WeaponGenerationTemplate::new(
+                Range::new(2, 5),
+                Range::new(5, 11),
+                Some(1),
+                vec![HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
+                    Some(PhysicalDamageTypes::Slashing),
+                    None,
+                )],
+                1,
+                Some(requirements),
                 None,
-            )],
-            1,
-            Some(requirements),
-            None,
-            None,
-        ),
-        TwoHandedMeleeWeapons::SplittingMaul => WeaponGenerationTemplate::new(
-            Range::new(3, 6),
-            Range::new(6, 12),
-            Some(1),
-            vec![
-                HpChangeSource::new(
+                None,
+            )
+        }
+        TwoHandedMeleeWeapons::SplittingMaul => {
+            requirements.insert(CombatAttributes::Strength, 25);
+            requirements.insert(CombatAttributes::Dexterity, 7);
+            WeaponGenerationTemplate::new(
+                Range::new(3, 6),
+                Range::new(6, 12),
+                Some(1),
+                vec![
+                    HpChangeSource::new(
+                        HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
+                        Some(PhysicalDamageTypes::Blunt),
+                        None,
+                    ),
+                    HpChangeSource::new(
+                        HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
+                        Some(PhysicalDamageTypes::Piercing),
+                        None,
+                    ),
+                ],
+                2,
+                Some(requirements),
+                None,
+                None,
+            )
+        }
+        TwoHandedMeleeWeapons::Maul => {
+            requirements.insert(CombatAttributes::Strength, 28);
+            WeaponGenerationTemplate::new(
+                Range::new(5, 7),
+                Range::new(9, 14),
+                Some(1),
+                vec![HpChangeSource::new(
                     HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
                     Some(PhysicalDamageTypes::Blunt),
                     None,
-                ),
-                HpChangeSource::new(
-                    HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
-                    Some(PhysicalDamageTypes::Piercing),
-                    None,
-                ),
-            ],
-            2,
-            Some(requirements),
-            None,
-            None,
-        ),
-        TwoHandedMeleeWeapons::Maul => WeaponGenerationTemplate::new(
-            Range::new(5, 7),
-            Range::new(9, 14),
-            Some(1),
-            vec![HpChangeSource::new(
-                HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
-                Some(PhysicalDamageTypes::Blunt),
+                )],
+                1,
+                Some(requirements),
                 None,
-            )],
-            1,
-            Some(requirements),
-            None,
-            None,
-        ),
-        TwoHandedMeleeWeapons::BattleAxe => WeaponGenerationTemplate::new(
-            Range::new(5, 7),
-            Range::new(6, 17),
-            Some(1),
-            vec![HpChangeSource::new(
-                HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
-                Some(PhysicalDamageTypes::Slashing),
                 None,
-            )],
-            1,
-            Some(requirements),
-            None,
-            None,
-        ),
-        TwoHandedMeleeWeapons::Glaive => WeaponGenerationTemplate::new(
-            Range::new(5, 7),
-            Range::new(8, 16),
-            Some(1),
-            vec![
-                HpChangeSource::new(
+            )
+        }
+        TwoHandedMeleeWeapons::BattleAxe => {
+            requirements.insert(CombatAttributes::Strength, 35);
+            WeaponGenerationTemplate::new(
+                Range::new(5, 7),
+                Range::new(6, 17),
+                Some(1),
+                vec![HpChangeSource::new(
                     HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
                     Some(PhysicalDamageTypes::Slashing),
                     None,
-                ),
-                HpChangeSource::new(
-                    HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
-                    Some(PhysicalDamageTypes::Piercing),
-                    None,
-                ),
-            ],
-            2,
-            Some(requirements),
-            None,
-            None,
-        ),
-        TwoHandedMeleeWeapons::ElementalStaff => WeaponGenerationTemplate::new(
-            Range::new(6, 9),
-            Range::new(10, 18),
-            Some(1),
-            vec![
-                HpChangeSource::new(
-                    HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
-                    Some(PhysicalDamageTypes::Slashing),
-                    Some(MagicalElements::Fire),
-                ),
-                HpChangeSource::new(
-                    HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
-                    Some(PhysicalDamageTypes::Slashing),
-                    Some(MagicalElements::Ice),
-                ),
-                HpChangeSource::new(
-                    HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
-                    Some(PhysicalDamageTypes::Slashing),
-                    Some(MagicalElements::Lightning),
-                ),
-                HpChangeSource::new(
-                    HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
-                    Some(PhysicalDamageTypes::Slashing),
-                    Some(MagicalElements::Water),
-                ),
-                HpChangeSource::new(
-                    HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
-                    Some(PhysicalDamageTypes::Slashing),
-                    Some(MagicalElements::Wind),
-                ),
-                HpChangeSource::new(
-                    HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
-                    Some(PhysicalDamageTypes::Slashing),
-                    Some(MagicalElements::Earth),
-                ),
-            ],
-            2,
-            Some(requirements),
-            None,
-            None,
-        ),
-        TwoHandedMeleeWeapons::Trident => WeaponGenerationTemplate::new(
-            Range::new(8, 10),
-            Range::new(14, 26),
-            Some(1),
-            vec![
-                HpChangeSource::new(
-                    HpChangeSourceCategories::MagicalDamage(Evadable::new(false)),
-                    None,
-                    Some(MagicalElements::Water),
-                ),
-                HpChangeSource::new(
-                    HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
-                    Some(PhysicalDamageTypes::Piercing),
-                    None,
-                ),
-            ],
-            2,
-            Some(requirements),
-            None,
-            None,
-        ),
-        TwoHandedMeleeWeapons::Halberd => WeaponGenerationTemplate::new(
-            Range::new(8, 10),
-            Range::new(12, 25),
-            Some(1),
-            vec![
-                HpChangeSource::new(
-                    HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
-                    Some(PhysicalDamageTypes::Piercing),
-                    None,
-                ),
-                HpChangeSource::new(
-                    HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
-                    Some(PhysicalDamageTypes::Slashing),
-                    None,
-                ),
-            ],
-            2,
-            Some(requirements),
-            None,
-            None,
-        ),
-        TwoHandedMeleeWeapons::GreatAxe => WeaponGenerationTemplate::new(
-            Range::new(9, 10),
-            Range::new(15, 35),
-            Some(1),
-            vec![HpChangeSource::new(
-                HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
-                Some(PhysicalDamageTypes::Slashing),
+                )],
+                1,
+                Some(requirements),
                 None,
-            )],
-            1,
-            Some(requirements),
-            None,
-            None,
-        ),
-        TwoHandedMeleeWeapons::GravityHammer => WeaponGenerationTemplate::new(
-            Range::new(9, 10),
-            Range::new(20, 30),
-            Some(1),
-            vec![HpChangeSource::new(
-                HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
-                Some(PhysicalDamageTypes::Blunt),
                 None,
-            )],
-            1,
-            Some(requirements),
-            None,
-            None,
-        ),
+            )
+        }
+        TwoHandedMeleeWeapons::Glaive => {
+            requirements.insert(CombatAttributes::Strength, 14);
+            requirements.insert(CombatAttributes::Dexterity, 35);
+            WeaponGenerationTemplate::new(
+                Range::new(5, 7),
+                Range::new(8, 16),
+                Some(1),
+                vec![
+                    HpChangeSource::new(
+                        HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
+                        Some(PhysicalDamageTypes::Slashing),
+                        None,
+                    ),
+                    HpChangeSource::new(
+                        HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
+                        Some(PhysicalDamageTypes::Piercing),
+                        None,
+                    ),
+                ],
+                2,
+                Some(requirements),
+                None,
+                None,
+            )
+        }
+        TwoHandedMeleeWeapons::ElementalStaff => {
+            requirements.insert(CombatAttributes::Strength, 20);
+            requirements.insert(CombatAttributes::Intelligence, 20);
+
+            WeaponGenerationTemplate::new(
+                Range::new(6, 9),
+                Range::new(10, 18),
+                Some(1),
+                vec![
+                    HpChangeSource::new(
+                        HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
+                        Some(PhysicalDamageTypes::Blunt),
+                        Some(MagicalElements::Fire),
+                    ),
+                    HpChangeSource::new(
+                        HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
+                        Some(PhysicalDamageTypes::Blunt),
+                        Some(MagicalElements::Ice),
+                    ),
+                    HpChangeSource::new(
+                        HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
+                        Some(PhysicalDamageTypes::Blunt),
+                        Some(MagicalElements::Lightning),
+                    ),
+                    HpChangeSource::new(
+                        HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
+                        Some(PhysicalDamageTypes::Blunt),
+                        Some(MagicalElements::Water),
+                    ),
+                    HpChangeSource::new(
+                        HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
+                        Some(PhysicalDamageTypes::Blunt),
+                        Some(MagicalElements::Wind),
+                    ),
+                    HpChangeSource::new(
+                        HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
+                        Some(PhysicalDamageTypes::Blunt),
+                        Some(MagicalElements::Earth),
+                    ),
+                ],
+                2,
+                Some(requirements),
+                None,
+                None,
+            )
+        }
+        TwoHandedMeleeWeapons::Trident => {
+            requirements.insert(CombatAttributes::Strength, 15);
+            requirements.insert(CombatAttributes::Intelligence, 35);
+
+            WeaponGenerationTemplate::new(
+                Range::new(8, 10),
+                Range::new(14, 26),
+                Some(1),
+                vec![
+                    HpChangeSource::new(
+                        HpChangeSourceCategories::MagicalDamage(Evadable::new(false)),
+                        None,
+                        Some(MagicalElements::Water),
+                    ),
+                    HpChangeSource::new(
+                        HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
+                        Some(PhysicalDamageTypes::Piercing),
+                        None,
+                    ),
+                ],
+                2,
+                Some(requirements),
+                None,
+                None,
+            )
+        }
+        TwoHandedMeleeWeapons::Halberd => {
+            requirements.insert(CombatAttributes::Dexterity, 35);
+            requirements.insert(CombatAttributes::Strength, 20);
+
+            WeaponGenerationTemplate::new(
+                Range::new(8, 10),
+                Range::new(12, 25),
+                Some(1),
+                vec![
+                    HpChangeSource::new(
+                        HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
+                        Some(PhysicalDamageTypes::Piercing),
+                        None,
+                    ),
+                    HpChangeSource::new(
+                        HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
+                        Some(PhysicalDamageTypes::Slashing),
+                        None,
+                    ),
+                ],
+                2,
+                Some(requirements),
+                None,
+                None,
+            )
+        }
+        TwoHandedMeleeWeapons::GreatAxe => {
+            requirements.insert(CombatAttributes::Strength, 65);
+            WeaponGenerationTemplate::new(
+                Range::new(9, 10),
+                Range::new(15, 35),
+                Some(1),
+                vec![HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
+                    Some(PhysicalDamageTypes::Slashing),
+                    None,
+                )],
+                1,
+                Some(requirements),
+                None,
+                None,
+            )
+        }
+        TwoHandedMeleeWeapons::GravityHammer => {
+            requirements.insert(CombatAttributes::Strength, 70);
+            WeaponGenerationTemplate::new(
+                Range::new(9, 10),
+                Range::new(20, 30),
+                Some(1),
+                vec![HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
+                    Some(PhysicalDamageTypes::Blunt),
+                    None,
+                )],
+                1,
+                Some(requirements),
+                None,
+                None,
+            )
+        }
+        TwoHandedMeleeWeapons::AshStaff => {
+            requirements.insert(CombatAttributes::Intelligence, 15);
+            WeaponGenerationTemplate::new(
+                Range::new(1, 4),
+                Range::new(2, 8),
+                Some(1),
+                vec![HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
+                    Some(PhysicalDamageTypes::Blunt),
+                    None,
+                )],
+                1,
+                Some(requirements),
+                None,
+                None,
+            )
+        }
+        TwoHandedMeleeWeapons::ElmStaff => {
+            requirements.insert(CombatAttributes::Intelligence, 25);
+            WeaponGenerationTemplate::new(
+                Range::new(3, 6),
+                Range::new(4, 12),
+                Some(1),
+                vec![HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
+                    Some(PhysicalDamageTypes::Blunt),
+                    None,
+                )],
+                1,
+                Some(requirements),
+                None,
+                None,
+            )
+        }
+        TwoHandedMeleeWeapons::MahoganyStaff => {
+            requirements.insert(CombatAttributes::Intelligence, 45);
+            WeaponGenerationTemplate::new(
+                Range::new(5, 8),
+                Range::new(8, 22),
+                Some(1),
+                vec![HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
+                    Some(PhysicalDamageTypes::Blunt),
+                    None,
+                )],
+                1,
+                Some(requirements),
+                None,
+                None,
+            )
+        }
+        TwoHandedMeleeWeapons::EbonyStaff => {
+            requirements.insert(CombatAttributes::Intelligence, 70);
+            WeaponGenerationTemplate::new(
+                Range::new(8, 10),
+                Range::new(10, 32),
+                Some(1),
+                vec![HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
+                    Some(PhysicalDamageTypes::Blunt),
+                    None,
+                )],
+                1,
+                Some(requirements),
+                None,
+                None,
+            )
+        }
     }
 }
 pub static TWO_HANDED_MELEE_WEAPON_GENERATION_TEMPLATES: Lazy<

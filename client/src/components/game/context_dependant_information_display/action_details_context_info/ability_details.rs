@@ -57,7 +57,7 @@ pub fn ability_details(
 
     let value_range_display = match value_range_option {
         Some(range) => html!(
-          <div class="mb-1">{"Value range: "}{range.0}{" - "}{range.1}</div>
+          <div class="mb-1">{"Value range: "}{range.0 as u16}{" - "}{range.1 as u16}</div>
         ),
         None => html!(),
     };

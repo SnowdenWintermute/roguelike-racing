@@ -1,3 +1,4 @@
+use crate::app_consts::COMBATANT_LEVEL_ACTION_VALUE_LEVEL_MODIFIER;
 use crate::combat::ability_handlers::add_weapon_damage_to_hp_change_range::add_weapon_damage_to_combat_action_hp_change;
 use crate::combat::combat_actions::CombatActionHpChangeProperties;
 use crate::combatants::CombatantProperties;
@@ -13,6 +14,7 @@ impl RoguelikeRacerGame {
         ability_level_and_base_value_scaling_factor_option: &Option<(u8, f32)>, // ability_level_and_base_value_scaling_factor_option: Option<(u8, f32)>
     ) -> Result<(f32, f32), AppError> {
         let user_combat_attributes = user_combatant_properties.get_total_attributes();
+        let combatant_level = user_combatant_properties.level;
 
         // get base range
         let Range { min, max } = hp_change_properties.base_values;
@@ -35,8 +37,12 @@ impl RoguelikeRacerGame {
                 .unwrap_or_else(|| &0);
             let scaled_attribute_value =
                 *attribute_value as f32 * (percent_scaling_factor as f32 / 100.0);
-            min += scaled_attribute_value;
-            max += scaled_attribute_value;
+
+            let level_adjusted_value = scaled_attribute_value * combatant_level as f32
+                / COMBATANT_LEVEL_ACTION_VALUE_LEVEL_MODIFIER as f32;
+
+            min += level_adjusted_value;
+            max += level_adjusted_value;
         };
         // if weapon damage, determine main/off hand and add appropriate damage to range
         if let Some(weapon_slots) = &hp_change_properties.add_weapon_damage_from {

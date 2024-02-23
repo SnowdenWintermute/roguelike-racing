@@ -3,8 +3,8 @@ use super::WeaponGenerationTemplate;
 use crate::combat::hp_change_source_types::Evadable;
 use crate::combat::hp_change_source_types::HpChangeSource;
 use crate::combat::hp_change_source_types::HpChangeSourceCategories;
-use crate::combat::hp_change_source_types::PhysicalDamageTypes;
 use crate::combat::hp_change_source_types::MeleeOrRanged;
+use crate::combat::hp_change_source_types::PhysicalDamageTypes;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::items::equipment::two_handed_ranged_weapons::TwoHandedRangedWeapons;
 use crate::items::items_by_level::items_by_level;
@@ -17,22 +17,25 @@ fn two_handed_ranged_weapon_template_from_base_item(
     mut requirements: HashMap<CombatAttributes, u8>,
 ) -> WeaponGenerationTemplate {
     match item {
-        TwoHandedRangedWeapons::ShortBow => WeaponGenerationTemplate::new(
-            Range::new(1, 4),
-            Range::new(2, 7),
-            Some(1),
-            vec![HpChangeSource::new(
-                HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Ranged),
-                Some(PhysicalDamageTypes::Piercing),
-                None,
-            )],
-            1,
-            Some(requirements),
-            None,
-            None,
-        ),
-        TwoHandedRangedWeapons::RecurveBow => {
+        TwoHandedRangedWeapons::ShortBow => {
             requirements.insert(CombatAttributes::Dexterity, 5);
+            WeaponGenerationTemplate::new(
+                Range::new(1, 4),
+                Range::new(2, 7),
+                Some(1),
+                vec![HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Ranged),
+                    Some(PhysicalDamageTypes::Piercing),
+                    None,
+                )],
+                1,
+                Some(requirements),
+                None,
+                None,
+            )
+        }
+        TwoHandedRangedWeapons::RecurveBow => {
+            requirements.insert(CombatAttributes::Dexterity, 15);
             WeaponGenerationTemplate::new(
                 Range::new(3, 6),
                 Range::new(5, 10),
@@ -48,48 +51,60 @@ fn two_handed_ranged_weapon_template_from_base_item(
                 None,
             )
         }
-        TwoHandedRangedWeapons::CompositeBow => WeaponGenerationTemplate::new(
-            Range::new(5, 8),
-            Range::new(8, 16),
-            Some(1),
-            vec![HpChangeSource::new(
-                HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Ranged),
-                Some(PhysicalDamageTypes::Piercing),
+        TwoHandedRangedWeapons::CompositeBow => {
+            requirements.insert(CombatAttributes::Dexterity, 35);
+            WeaponGenerationTemplate::new(
+                Range::new(5, 8),
+                Range::new(8, 16),
+                Some(1),
+                vec![HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Ranged),
+                    Some(PhysicalDamageTypes::Piercing),
+                    None,
+                )],
+                1,
+                Some(requirements),
                 None,
-            )],
-            1,
-            Some(requirements),
-            None,
-            None,
-        ),
-        TwoHandedRangedWeapons::MilitaryBow => WeaponGenerationTemplate::new(
-            Range::new(8, 10),
-            Range::new(12, 26),
-            Some(1),
-            vec![HpChangeSource::new(
-                HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Ranged),
-                Some(PhysicalDamageTypes::Piercing),
                 None,
-            )],
-            1,
-            Some(requirements),
-            None,
-            None,
-        ),
-        TwoHandedRangedWeapons::EtherBow => WeaponGenerationTemplate::new(
-            Range::new(7, 10),
-            Range::new(10, 22),
-            Some(1),
-            vec![HpChangeSource::new(
-                HpChangeSourceCategories::MagicalDamage(Evadable::new(true)),
-                Some(PhysicalDamageTypes::Piercing),
+            )
+        }
+        TwoHandedRangedWeapons::MilitaryBow => {
+            requirements.insert(CombatAttributes::Dexterity, 45);
+            requirements.insert(CombatAttributes::Strength, 15);
+            WeaponGenerationTemplate::new(
+                Range::new(8, 10),
+                Range::new(12, 26),
+                Some(1),
+                vec![HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Ranged),
+                    Some(PhysicalDamageTypes::Piercing),
+                    None,
+                )],
+                1,
+                Some(requirements),
                 None,
-            )],
-            1,
-            Some(requirements),
-            None,
-            None,
-        ),
+                None,
+            )
+        }
+        TwoHandedRangedWeapons::EtherBow => {
+            requirements.insert(CombatAttributes::Dexterity, 25);
+            requirements.insert(CombatAttributes::Intelligence, 25);
+
+            WeaponGenerationTemplate::new(
+                Range::new(7, 10),
+                Range::new(10, 22),
+                Some(1),
+                vec![HpChangeSource::new(
+                    HpChangeSourceCategories::MagicalDamage(Evadable::new(true)),
+                    Some(PhysicalDamageTypes::Piercing),
+                    None,
+                )],
+                1,
+                Some(requirements),
+                None,
+                None,
+            )
+        }
     }
 }
 

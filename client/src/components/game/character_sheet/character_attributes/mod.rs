@@ -2,16 +2,21 @@ mod hp_and_mp;
 pub mod weapon_damage;
 use crate::components::client_consts::UNMET_REQUIREMENT_TEXT_COLOR;
 use crate::components::common_components::atoms::divider::Divider;
+use crate::components::common_components::atoms::hoverable_tooltip_wrapper::HoverableTooltipWrapper;
 use crate::components::game::character_sheet::character_attributes::weapon_damage::CharacterSheetWeaponDamage;
 use crate::components::game::combatant::combatant_class_icon::CombatantClassIcon;
 use crate::components::websocket_manager::send_client_input::send_client_input;
 use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
 use crate::store::websocket_store::WebsocketStore;
+use common::combat::hp_change_source_types::MeleeOrRanged;
 use common::combatants::combat_attributes::CombatAttributes;
 use common::combatants::combat_attributes::ATTRIBUTE_POINT_ASSIGNABLE_ATTRIBUTES;
 use common::combatants::CombatantControlledBy;
 use common::combatants::CombatantProperties;
+use common::items::equipment::EquipmentProperties;
+use common::items::equipment::EquipmentSlots;
+use common::items::equipment::EquipmentTypes;
 use common::packets::client_to_server::PlayerInputs;
 use common::primatives::EntityProperties;
 use std::rc::Rc;
@@ -44,7 +49,37 @@ pub fn character_attributes(props: &Props) -> Html {
         false
     };
 
-    let total_attributes = combatant_properties.get_total_attributes();
+    let mh_equipment_option = combatant_properties.get_equipped_item(&EquipmentSlots::MainHand);
+    // check for sheilds since they can't be used to attack
+    let mh_weapon_option = EquipmentProperties::get_weapon_equipment_properties_option_from_equipment_properties_option(mh_equipment_option);
+    let weapon_type_equipped = match mh_weapon_option {
+        Some(equipment_properties) => match equipment_properties.equipment_type {
+            EquipmentTypes::TwoHandedRangedWeapon(_, _) => MeleeOrRanged::Ranged,
+            _ => MeleeOrRanged::Melee,
+        },
+        None => MeleeOrRanged::Melee,
+    };
+
+    let mut total_attributes = combatant_properties.get_total_attributes();
+    let armor_pen_attribute_bonus_based_on_weapon_type = match weapon_type_equipped {
+        MeleeOrRanged::Melee => {
+            CombatantProperties::get_armor_pen_derrived_attribute_based_on_weapon_type(
+                &total_attributes,
+                &CombatAttributes::Strength,
+            )
+        }
+        MeleeOrRanged::Ranged => {
+            CombatantProperties::get_armor_pen_derrived_attribute_based_on_weapon_type(
+                &total_attributes,
+                &CombatAttributes::Dexterity,
+            )
+        }
+    };
+    let total_armor_pen = total_attributes
+        .entry(CombatAttributes::ArmorPenetration)
+        .or_insert(0);
+    *total_armor_pen += armor_pen_attribute_bonus_based_on_weapon_type;
+
     let mut combatant_attributes_as_vec = total_attributes
         .iter()
         .filter(|(attribute, _)| !is_custom_displayed_attribute(&attribute))
@@ -122,7 +157,6 @@ pub fn character_attributes(props: &Props) -> Html {
                     {experience_points_text}
                 </span>
             </div>
-            {unspent_ability_points_display}
             <Divider styles={AttrValue::from("mr-2 ml-2 ")} />
             <div class="flex mb-1" >
                 <ul class="list-none w-1/2 mr-1" >
@@ -207,7 +241,7 @@ fn attribute_list_item(
         html!(
         <button
             onclick={handle_click}
-            class="inline-block h-4 w-4 border border-slate-400 text-lg leading-3 mr-2"
+            class="inline-block h-4 w-4 border border-slate-400 text-lg leading-3 ml-2"
         >
             {"+"}
         </button>
@@ -218,10 +252,19 @@ fn attribute_list_item(
 
     html!(
         <li class={ format!( "flex justify-between {}", highlight_class  ) }>
-            <span>{format!("{}", attribute)}</span>
             <span>
-                {increase_attribute_button}
+                <span class="inline-block h-6 w-6" >
+                    <HoverableTooltipWrapper tooltip_text={AttrValue::from(attribute.get_description().to_string())} >
+                        <span class="cursor-help h-full w-full inline-block" >
+                            {"ⓘ "}
+                        </span>
+                    </HoverableTooltipWrapper>
+                </span>
+                {format!("{}", attribute)}
+            </span>
+            <span>
                 <span>{format!("{}", value)}</span>
+                {increase_attribute_button}
             </span>
         </li>
     )

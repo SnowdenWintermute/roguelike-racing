@@ -25,7 +25,9 @@ pub fn set_up_test_game() -> Result<(RoguelikeRacerGame, u32, u32, u32), AppErro
     )?;
     let monster_id = game.id_generator.get_next_entity_id();
     let party = get_mut_party(&mut game, party_id)?;
-    let test_monster = Monster::new(monster_id, "test_monster".to_string(), 20, 20);
+    let mut test_monster = Monster::new(monster_id, "test_monster".to_string());
+    test_monster.combatant_properties.hit_points = 20;
+
     party.current_room.monsters = Some(HashMap::from([(monster_id, test_monster)]));
 
     Ok((game, party_id, character_id, monster_id))

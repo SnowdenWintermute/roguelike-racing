@@ -78,7 +78,7 @@ impl CombatantProperties {
             inherent_attributes: HashMap::new(),
             specced_attributes: HashMap::new(),
             level: 1,
-            hit_points: 0,
+            hit_points: 1,
             experience_points: ExperiencePoints {
                 current: 0,
                 required_for_next_level: Some(100),

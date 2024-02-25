@@ -284,7 +284,7 @@ fn two_handed_melee_weapon_template_from_base_item(
             )
         }
         TwoHandedMeleeWeapons::AshStaff => {
-            requirements.insert(CombatAttributes::Intelligence, 15);
+            requirements.insert(CombatAttributes::Intelligence, 7);
             WeaponGenerationTemplate::new(
                 Range::new(1, 4),
                 Range::new(2, 8),

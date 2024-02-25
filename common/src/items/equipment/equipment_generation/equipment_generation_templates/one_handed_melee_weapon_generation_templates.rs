@@ -292,7 +292,7 @@ pub fn one_handed_melee_weapon_template_from_base_item(
             )
         }
         OneHandedMeleeWeapons::MapleWand => {
-            requirements.insert(CombatAttributes::Intelligence, 10);
+            requirements.insert(CombatAttributes::Intelligence, 7);
             WeaponGenerationTemplate::new(
                 Range::new(2, 6),
                 Range::new(1, 8),

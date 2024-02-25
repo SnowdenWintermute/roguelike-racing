@@ -1,4 +1,4 @@
-FROM rust:1.72.0 as builder
+FROM rust:1.76.0 as builder
 RUN cargo install --locked trunk
 RUN rustup target add wasm32-unknown-unknown
 

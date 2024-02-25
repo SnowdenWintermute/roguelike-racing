@@ -64,10 +64,34 @@ impl MonsterTypes {
             MonsterTypes::FireElemental => vec![
                 CombatantTraits::ElementalAffinityPercent(MagicalElements::Fire, 200),
                 CombatantTraits::ElementalAffinityPercent(MagicalElements::Ice, -100),
+                CombatantTraits::PhysicalDamageTypeResistancePercent(
+                    PhysicalDamageTypes::Blunt,
+                    50,
+                ),
+                CombatantTraits::PhysicalDamageTypeResistancePercent(
+                    PhysicalDamageTypes::Piercing,
+                    50,
+                ),
+                CombatantTraits::PhysicalDamageTypeResistancePercent(
+                    PhysicalDamageTypes::Slashing,
+                    50,
+                ),
             ],
             MonsterTypes::IceElemental => vec![
                 CombatantTraits::ElementalAffinityPercent(MagicalElements::Ice, 200),
                 CombatantTraits::ElementalAffinityPercent(MagicalElements::Fire, -100),
+                CombatantTraits::PhysicalDamageTypeResistancePercent(
+                    PhysicalDamageTypes::Blunt,
+                    50,
+                ),
+                CombatantTraits::PhysicalDamageTypeResistancePercent(
+                    PhysicalDamageTypes::Piercing,
+                    50,
+                ),
+                CombatantTraits::PhysicalDamageTypeResistancePercent(
+                    PhysicalDamageTypes::Slashing,
+                    50,
+                ),
             ],
             MonsterTypes::MetallicGolem => vec![],
         }

@@ -45,10 +45,10 @@ pub fn create_starting_equipment(
                 WeaponProperties {
                     damage_classifications: vec![HpChangeSource::new(
                         HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
-                        Some(PhysicalDamageTypes::Piercing),
+                        Some(PhysicalDamageTypes::Blunt),
                         None,
                     )],
-                    damage: Range::new(1, 4),
+                    damage: Range::new(2, 4),
                 },
             ),
             Some(MaxAndCurrent::new(2, 2)),
@@ -65,7 +65,7 @@ pub fn create_starting_equipment(
                         Some(PhysicalDamageTypes::Blunt),
                         None,
                     )],
-                    damage: Range::new(1, 3),
+                    damage: Range::new(2, 7),
                 },
             ),
             Some(MaxAndCurrent::new(2, 2)),
@@ -79,10 +79,10 @@ pub fn create_starting_equipment(
                 WeaponProperties {
                     damage_classifications: vec![HpChangeSource::new(
                         HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
-                        Some(PhysicalDamageTypes::Blunt),
+                        Some(PhysicalDamageTypes::Slashing),
                         None,
                     )],
-                    damage: Range::new(1, 3),
+                    damage: Range::new(1, 5),
                 },
             ),
             Some(MaxAndCurrent::new(2, 2)),

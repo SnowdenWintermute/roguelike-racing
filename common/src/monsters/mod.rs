@@ -2,6 +2,7 @@
 mod monster_abilities;
 mod monster_equipment;
 mod monster_per_level_attributes;
+mod monster_spawnable_floors;
 mod monster_starting_attributes;
 mod monster_traits;
 pub mod monster_types;
@@ -14,6 +15,7 @@ use crate::combatants::CombatantProperties;
 use crate::combatants::ExperiencePoints;
 use crate::game::id_generator::IdGenerator;
 use crate::primatives::EntityProperties;
+use rand::seq::SliceRandom;
 use rand_distr::Distribution;
 use rand_distr::Normal;
 use serde::Deserialize;
@@ -47,7 +49,10 @@ pub struct Monster {
 impl Monster {
     pub fn generate(id_generator: &mut IdGenerator, level: u8) -> Monster {
         // roll a random monster type from list of pre determined types
-        let monster_type = MonsterTypes::select_random();
+        // let monster_type = MonsterTypes::select_random();
+        let spawnable_types = MonsterTypes::get_spawnable_types_on_floor(level);
+        let mut rng = rand::thread_rng();
+        let monster_type = spawnable_types.choose(&mut rng).unwrap();
         // create a monster of that type
         let mut monster = Monster::new(
             id_generator.get_next_entity_id(),
@@ -77,7 +82,7 @@ impl Monster {
                 .inherent_attributes
                 .entry(*attribute)
                 .or_insert(0);
-            *current += *value as u16;
+            *current += *value as u16 * level as u16;
         }
         // - randomize their hp a little
         let base_hp = monster

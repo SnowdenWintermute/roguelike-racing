@@ -5,6 +5,7 @@ pub mod equipment_generation;
 pub mod head_gears;
 pub mod jewelries;
 pub mod one_handed_melee_weapons;
+pub mod pre_made_items;
 pub mod shield_properties;
 pub mod shields;
 pub mod trait_effects;

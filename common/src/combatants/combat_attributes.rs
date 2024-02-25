@@ -88,7 +88,7 @@ impl CombatAttributes {
             CombatAttributes::Dexterity => "Increases accuracy, crit chance with physical attacks, ranged attack damage and ranged attack armor penetration",
             CombatAttributes::Intelligence => "Increases mana and spell damage",
             CombatAttributes::Strength => "Increases attack damage, crit multiplier and armor penetration with physical attacks",
-            CombatAttributes::Vitality => "Increases hit points and reduces physical damage by a percentage",
+            CombatAttributes::Vitality => "Increases hit points",
             CombatAttributes::Resilience => "Reduces magical damage by a percentage and increases healing received from spells",
             CombatAttributes::Agility => "Increases evasion and speed",
         }

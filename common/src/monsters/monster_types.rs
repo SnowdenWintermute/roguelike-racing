@@ -4,8 +4,9 @@ use rand::Rng;
 use serde::Deserialize;
 use serde::Serialize;
 use std::fmt::Display;
+use strum_macros::EnumIter;
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, EnumIter, PartialEq)]
 pub enum MonsterTypes {
     MetallicGolem,  // High AC
     Zombie,         // 1.25 blunt, .75 slashing, .5 piercing, high HP and vit

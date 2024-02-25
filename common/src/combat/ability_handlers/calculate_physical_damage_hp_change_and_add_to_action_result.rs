@@ -1,6 +1,7 @@
 use super::apply_affinity_to_hp_change::apply_affinity_to_hp_change;
 use super::apply_crit_multiplier_to_hp_change::apply_crit_multiplier_to_hp_change;
 use super::roll_crit::roll_crit;
+use crate::app_consts::ARMOR_CLASS_EQUATION_MODIFIER;
 use crate::app_consts::BASE_CRIT_CHANCE;
 use crate::app_consts::VIT_TO_PERCENT_PHYSICAL_DAMAGE_REDUCTION_RATIO;
 use crate::combat::combat_actions::CombatActionHpChangeProperties;
@@ -23,6 +24,10 @@ impl RoguelikeRacerGame {
         rolled_hp_change_split_by_num_targets: f32,
         hp_change_properties: &CombatActionHpChangeProperties,
     ) -> Result<(), AppError> {
+        println!(
+            "base physical damage: {}",
+            rolled_hp_change_split_by_num_targets
+        );
         //  - get crit chance vs crit chance reduction
         //  - roll crit chance vs %chance reduction from AGI if physical
         for target_id in target_entity_ids {
@@ -60,6 +65,7 @@ impl RoguelikeRacerGame {
                 } else {
                     action_result.crits_by_entity_id = Some(HashSet::from([target_id]));
                 };
+                println!("crit damage: {hp_change}");
             }
             //  - reduce damage via target armor vs target armor pen
             let target_ac = target_combat_attributes
@@ -84,18 +90,21 @@ impl RoguelikeRacerGame {
             };
             user_armor_pen += armor_pen_attribute_bonus_based_on_weapon_type;
             let final_ac = target_ac.saturating_sub(user_armor_pen) as u32;
-            let damage_after_ac = hp_change.powf(2.0) / (final_ac as f32 + hp_change);
-            //  reduce damage via vit
-            let target_vit = target_combat_attributes
-                .get(&CombatAttributes::Vitality)
-                .unwrap_or_else(|| &0);
+            let damage_after_ac = (ARMOR_CLASS_EQUATION_MODIFIER * hp_change.powf(2.0))
+                / (final_ac as f32 + ARMOR_CLASS_EQUATION_MODIFIER * hp_change);
+            hp_change = damage_after_ac;
+            println!("after ac: {hp_change}");
+            // //  reduce damage via vit
+            // let target_vit = target_combat_attributes
+            //     .get(&CombatAttributes::Vitality)
+            //     .unwrap_or_else(|| &0);
 
-            let damage_reduction_percentage = std::cmp::min(
-                (*target_vit as f32 * VIT_TO_PERCENT_PHYSICAL_DAMAGE_REDUCTION_RATIO) as u16,
-                100,
-            );
-            let damage_reduction_multiplier = 1.0 - damage_reduction_percentage as f32 / 100.0;
-            hp_change = damage_after_ac * damage_reduction_multiplier;
+            // let damage_reduction_percentage = std::cmp::min(
+            //     (*target_vit as f32 * VIT_TO_PERCENT_PHYSICAL_DAMAGE_REDUCTION_RATIO) as u16,
+            //     100,
+            // );
+            // let damage_reduction_multiplier = 1.0 - damage_reduction_percentage as f32 / 100.0;
+            // hp_change = damage_after_ac * damage_reduction_multiplier;
 
             //  - reduce or increase damage by elemental affinity if damage type is elemental
             //     - if physical, affinity effect is halved
@@ -115,8 +124,10 @@ impl RoguelikeRacerGame {
                     apply_affinity_to_hp_change(*target_affinity as i16, hp_change);
                 hp_change = after_affinity;
             }
+            println!("after affinity traits: {hp_change}");
             //  - apply any base final multiplier
             hp_change *= hp_change_properties.final_damage_percent_multiplier as f32 / 100.0;
+            println!("after final multiplier: {hp_change}");
             // as damage
             hp_change *= -1.0;
             action_result

@@ -1,5 +1,7 @@
 use yew::prelude::*;
 
+use crate::components::common_components::atoms::divider::Divider;
+
 #[function_component(WelcomeInfo)]
 pub fn welcome_info() -> Html {
     let show_patch_notes_state = use_state(|| false);
@@ -17,7 +19,7 @@ pub fn welcome_info() -> Html {
     html!(
         <section class="h-[19rem] max-h-[19rem] p-4 mb-4 mr-4 bg-slate-700 border border-slate-400 overflow-y-auto">
             <div class="flex justify-between mb-2">
-                <h3 class="text-lg mb-2">{"Roguelike Racing alpha 0.5.0 "}</h3>
+                <h3 class="text-lg mb-2">{"Roguelike Racing alpha 0.6.0 "}</h3>
                 <button onclick={handle_show_patch_notes_click} class="border border-slate-400 p-[.25rem] pr-2 pl-2">
                     {patch_notes_button_text}
                 </button>
@@ -35,6 +37,38 @@ pub fn welcome_info() -> Html {
 fn welcome_message() -> Html {
     html!(
         <>
+    <p class="font-bold" >{"0.6.0 2/25/2024"}</p>
+    <p class="underline" >{"Summary:"}</p>
+    <p class="mb-2">{ "Added two new character classes, a leveling system, implemented physical damage types and resistances and elemental weapon damage." }</p>
+    <p class="underline" >{"Balance changes:"}</p>
+    <ul class="list-disc list-inside mb-1">
+    <li>{ "Strength, Dexterity and Intelligence now add damage to their respective actions based on a more conservative formula: (attribute * combatant_level / 30)" }</li>
+        <li>{ "Armor Penetration, Evasion and Accuracy affixes increased to 2-5 points per tier" }</li>
+        <li>{ "Many equipments have had their attribute requirements adjusted" }</li>
+        <li>{ "Added four wand type weapons, four staff type weapons and an Ice elemental damage sword" }</li>
+        <li>{ "Changed the cost of spells to increase with character level" }</li>
+        <li>{ "Reduced the damage of the Fire spell" }</li>
+    </ul>
+    <p class="underline" >{"Fixed bugs:"}</p>
+    <ul class="list-disc list-inside mb-1">
+        <li>{ "Attack damage tooltip now shows the correct values based on the user's combat attributes and weapon" }</li>
+        <li>{ "'Execute' button is now disabled if an action costs more mana than the user has" }</li>
+        <li>{ "Resized the lobby to the correct dimensions when viewed on the Windows operating system" }</li>
+    </ul>
+    <p class="underline" >{"Added features:"}</p>
+    <ul class="list-disc list-inside mb-1">
+        <li>{ "Added two new combatant classes, Mage and Rogue" }</li>
+        <li>{ "Characters can now gain experience points and level up, thereby earning discretionary attribute points and attributes based on their combatant class" }</li>
+        <li>{ "Monsters have been heavily modified and now include a variety of weaknesses, resistances and abilities" }</li>
+        <li>{ "The Attack ability has been split behind the scenes into 'Main Hand Melee', 'Off Hand Melee' and 'Ranged Attack' and now uses Dexterity as the damage bonus stat for ranged weapons."}</li>
+        <li>{ "Weapons with elemental damage now correctly damage targets with affinities for those elements"}</li>
+        <li>{ "Weapon physical damage types such as 'Slashing' and 'Piercing' now correctly damage targets with resistances/weaknesses for those damage types"}</li>
+        <li>{ "Combat attributes now show tooltips when hovering their info icons"}</li>
+        <li>{ "Combatant traits are now displayed in the combatant detail view in the context display"}</li>
+        <li>{ "Added a new ability: Ice"}</li>
+        <li>{ "Added favicon with temporary logo"}</li>
+    </ul>
+    <Divider />
     <p class="font-bold" >{"0.5.0 2/15/2024"}</p>
     <p class="underline" >{"Summary:"}</p>
     <p class="mb-2">{ "A large refactor combined the code handling using abilities and consumables into a single generic pipeline, enabling the creation of two new abilities, 'Fire' and 'Healing', and laying the groundwork for creating new actions more easily. Monster variety has been increased, and some quality of life features such as stacking consumables and more intuitive keyboard controls were implemented." }</p>
@@ -69,6 +103,7 @@ fn welcome_message() -> Html {
         <li>{ "Action menu hotkeys for 'Go Back' and 'Cancel' type actions now use dedicated key 'Escape'" }</li>
         <li>{ "Action menu hotkeys for 'Use/Equip' and 'Confirm' type actions now use dedicated key 'R' with 'Enter' as an alternative" }</li>
     </ul>
+    <Divider />
     <p class="font-bold" >{"0.4.0 2/4/2024"}</p>
     <p class="underline" >{"Fixed bugs:"}</p>
     <ul class="list-disc list-inside mb-1">
@@ -92,6 +127,7 @@ fn welcome_message() -> Html {
         <li>{"The action menu is now scrollable with mousewheel action if the element is not overflowing"}</li>
         <li>{"The party may now be defeated if monsters go first in combat and kill the last party member"}</li>
     </ul>
+    <Divider />
     <p class="font-bold" >{"0.3.0 1/26/2024"}</p>
     <p class="underline" >{"Fixed bugs:"}</p>
     <ul class="list-disc list-inside mb-1">
@@ -108,6 +144,7 @@ fn welcome_message() -> Html {
         <li>{"Added patch notes section to welcome info"}</li>
         <li>{"Fixed a bug where the room exploration tracker wouldn't work on any floor except the first"}</li>
     </ul>
+    <Divider />
     <p class="font-bold" >{"0.2.0 1/24/2024"}</p>
     <p class="underline" >{"Fixed bugs:"}</p>
     <ul class="list-disc list-inside mb-1">

@@ -57,7 +57,6 @@ pub fn test_calculate_combat_action_hp_changes() -> Result<(), AppError> {
             &combat_action,
             Some((1, 1.0)),
         )?;
-        println!("{:#?}", action_result.hp_changes_by_entity_id);
     }
 
     Ok(())

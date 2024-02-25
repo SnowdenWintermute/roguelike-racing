@@ -58,12 +58,6 @@ impl GameServer {
             });
         }
 
-        let player = get_mut_player(game, &username)?;
-        println!(
-            "character ids after deleting character id {character_id}: {:#?}",
-            player.character_ids
-        );
-
         let was_ready = game.players_readied.remove(&username);
         if was_ready {
             self.emit_packet(

@@ -8,6 +8,7 @@ use common::errors::AppError;
 use common::packets::server_to_client::GameServerUpdatePackets;
 use common::packets::server_to_client::PlayerRemovedFromGame;
 use common::packets::WebsocketChannelNamespace;
+use common::utils::server_log;
 
 impl GameServer {
     pub fn leave_game_handler(&mut self, actor_id: u32) -> Result<(), AppError> {
@@ -23,7 +24,7 @@ impl GameServer {
             WebsocketChannelNamespace::Lobby,
             actor_id,
         )?;
-        println!("leaving game {:#?}", player_and_game);
+        server_log(&format!("leaving game {:#?}", player_and_game));
         let game = get_game(&self.games, player_and_game.game_name.clone());
         if let Ok(_game_in_existance) = game {
             self.emit_packet(
@@ -41,7 +42,7 @@ impl GameServer {
         actor_id: u32,
     ) -> Result<PlayerRemovedFromGame, AppError> {
         let connected_user = get_mut_user(&mut self.sessions, actor_id)?;
-        println!("user leaving game: {:#?}", connected_user);
+        server_log(&format!("removing user from game {:#?}", connected_user));
         let game_name_leaving =
             connected_user
                 .current_game_name
@@ -60,12 +61,13 @@ impl GameServer {
             .remove(&connected_user.username.clone());
 
         if game.get_number_of_players() < 1 {
-            println!("no players remain in game named '{game_name}', removing game from server");
+            server_log(&format!(
+                "no players remain in game named '{game_name}', removing game from server"
+            ));
             self.games.remove(&game_name_leaving);
         }
 
         connected_user.current_game_name = None;
-        println!("removed player from game and set their current game name to None");
         Ok(PlayerRemovedFromGame {
             username: connected_user.username.clone(),
             game_name: game_name_leaving,

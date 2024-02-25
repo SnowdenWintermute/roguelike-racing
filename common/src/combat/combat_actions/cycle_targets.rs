@@ -84,7 +84,6 @@ impl RoguelikeRacerGame {
         )?;
 
         let player = get_mut_player(self, player_username)?;
-        println!("cycle targets player: {:#?}", player);
 
         player.target_preferences = player.target_preferences.get_updated_preferences(
             &combat_action_properties,

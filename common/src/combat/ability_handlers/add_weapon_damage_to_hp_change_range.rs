@@ -39,9 +39,7 @@ pub fn calculate_and_add_weapon_damage(
 ) -> Result<(), AppError> {
     let equipment_option = user_combatant_properties.get_weapon_in_slot(slot);
     if let Some(equipment_properties) = equipment_option {
-        println!("found equipment_properties in slot {:#?}", slot);
         let (weapon_min, weapon_max) = equipment_properties.get_modified_weapon_damage_range()?;
-        println!("weapon min: {weapon_min} weapon max: {weapon_max}");
         *min += weapon_min;
         *max += weapon_max;
     }

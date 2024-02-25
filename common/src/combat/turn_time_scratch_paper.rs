@@ -28,9 +28,7 @@ impl Combatant {
         let adjusted_speed = self.speed * 10;
         let movement_to_add =
             (((adjusted_speed - MIN_SPEED) * MOVEMENT_RANGE) / SPEED_RANGE) + MIN_MOVEMENT_PER_TICK;
-        // println!("{} added {} movement", self.id, movement_to_add);
         self.movement += movement_to_add;
-        // println!("{:?}", self.movement)
     }
 
     fn new(speed: u16, id: u8) -> Self {
@@ -86,13 +84,8 @@ fn main() {
         // let second_combatant_movement = combatants[1].movement;
         // let next_combatant_equal_movement = first_combatant_movement == second_combatant_movement;
         let first_combatant = &mut combatants[0];
-        // println!("first combatant movement: {}", first_combatant.movement);
 
         if first_combatant.movement >= REQUIRED_MOVEMENT_TO_MOVE {
-            println!(
-                "{} with speed {} moving with movement {}",
-                first_combatant.id, first_combatant.speed, first_combatant.movement
-            );
             first_combatant.movement -= REQUIRED_MOVEMENT_TO_MOVE;
             first_combatant.num_turns += 1;
             num_turns_in_battle_remaining -= 1;
@@ -106,6 +99,4 @@ fn main() {
     }
 
     combatants.sort_by(|a, b| b.num_turns.partial_cmp(&a.num_turns).unwrap());
-    println!("{:#?}", combatants);
 }
-

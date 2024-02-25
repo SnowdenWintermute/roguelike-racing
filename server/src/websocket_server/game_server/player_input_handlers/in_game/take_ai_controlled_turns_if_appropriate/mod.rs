@@ -5,6 +5,7 @@ use common::combat::CombatTurnResult;
 use common::combatants::CombatantControlledBy;
 use common::errors::AppError;
 use common::game::RoguelikeRacerGame;
+use common::utils::server_log;
 
 pub fn take_ai_controlled_turns_if_appropriate(
     game: &mut RoguelikeRacerGame,
@@ -31,7 +32,7 @@ pub fn take_ai_controlled_turns_if_appropriate(
     let mut active_combatant_turn_action_results = vec![];
 
     while active_combatant_is_ai_controlled {
-        println!("taking AI turn");
+        server_log(&format!("taking AI turn",));
         let battle = game.battles.get(&battle_id).ok_or_else(|| AppError {
             error_type: common::errors::AppErrorTypes::ServerError,
             message: error_messages::BATTLE_NOT_FOUND.to_string(),
@@ -60,7 +61,7 @@ pub fn take_ai_controlled_turns_if_appropriate(
         // process result
         apply_action_results(game, &action_results, Some(battle.id))?;
         let party_defeated = game.all_combatants_in_group_are_dead(enemy_ids)?;
-        // println!("party defeated by ai ability: {party_defeated}");
+        if party_defeated {}
 
         active_combatant_turn_action_results.append(&mut action_results);
         let ability_attributes = ability_name.get_attributes();
@@ -76,12 +77,10 @@ pub fn take_ai_controlled_turns_if_appropriate(
             message: error_messages::TURN_TRACKERS_EMPTY.to_string(),
         })?;
 
-        println!(
-            "ai id {} took turn action {} with movement {}",
-            active_combatant_id,
-            combat_action_properties.requires_combat_turn,
-            first_tracker.movement
-        );
+        server_log(&format!(
+            "ai id {} took turn action {:?} with movement {}",
+            active_combatant_id, ability_name, first_tracker.movement
+        ));
 
         if combat_action_properties.requires_combat_turn {
             ai_turn_results.push(CombatTurnResult {
@@ -92,10 +91,6 @@ pub fn take_ai_controlled_turns_if_appropriate(
 
             let new_active_combatant_turn_tracker = game.end_active_combatant_turn(battle_id)?;
             active_combatant_id = new_active_combatant_turn_tracker.entity_id.clone();
-            println!(
-                "active combatant id:{:#?} turn tracker: {:#?}",
-                active_combatant_id, new_active_combatant_turn_tracker
-            );
             (
                 active_combatant_entity_properties,
                 active_combatant_properties,
@@ -106,6 +101,7 @@ pub fn take_ai_controlled_turns_if_appropriate(
         }
 
         if party_defeated {
+            server_log("party defeated by ai ability");
             return Ok(ai_turn_results);
         }
     }

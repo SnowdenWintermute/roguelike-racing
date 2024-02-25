@@ -11,6 +11,7 @@ use common::packets::server_to_client::BattleConclusion;
 use common::packets::server_to_client::BattleEndReportPacket;
 use common::packets::server_to_client::GameServerUpdatePackets;
 use common::packets::WebsocketChannelNamespace;
+use common::utils::server_log;
 
 impl GameServer {
     pub fn handle_party_battle_victory(
@@ -36,7 +37,10 @@ impl GameServer {
         }
 
         // REMOVE THE BATTLE
-        println!("all opponents defeated, concluding battle as victory");
+        server_log(&format!(
+            "all opponents defeated, concluding battle as victory for party {}",
+            party.name
+        ));
         party.battle_id = None;
 
         // get list of defeated monsters and their levels

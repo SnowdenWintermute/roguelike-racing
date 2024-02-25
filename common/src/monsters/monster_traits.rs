@@ -10,11 +10,11 @@ impl MonsterTypes {
                 CombatantTraits::Undead,
                 CombatantTraits::PhysicalDamageTypeResistancePercent(
                     PhysicalDamageTypes::Blunt,
-                    125,
+                    -25,
                 ),
                 CombatantTraits::PhysicalDamageTypeResistancePercent(
                     PhysicalDamageTypes::Slashing,
-                    75,
+                    25,
                 ),
                 CombatantTraits::PhysicalDamageTypeResistancePercent(
                     PhysicalDamageTypes::Piercing,
@@ -25,11 +25,11 @@ impl MonsterTypes {
                 CombatantTraits::Undead,
                 CombatantTraits::PhysicalDamageTypeResistancePercent(
                     PhysicalDamageTypes::Blunt,
-                    125,
+                    -25,
                 ),
                 CombatantTraits::PhysicalDamageTypeResistancePercent(
                     PhysicalDamageTypes::Slashing,
-                    75,
+                    25,
                 ),
                 CombatantTraits::PhysicalDamageTypeResistancePercent(
                     PhysicalDamageTypes::Piercing,
@@ -43,7 +43,7 @@ impl MonsterTypes {
                 ),
                 CombatantTraits::PhysicalDamageTypeResistancePercent(
                     PhysicalDamageTypes::Slashing,
-                    125,
+                    -25,
                 ),
             ],
             MonsterTypes::Vulture => vec![
@@ -53,7 +53,7 @@ impl MonsterTypes {
                 ),
                 CombatantTraits::PhysicalDamageTypeResistancePercent(
                     PhysicalDamageTypes::Piercing,
-                    125,
+                    -25,
                 ),
             ],
             MonsterTypes::FireMage => vec![CombatantTraits::ElementalAffinityPercent(

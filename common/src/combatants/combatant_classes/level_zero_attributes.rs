@@ -15,6 +15,7 @@ pub static BASE_STARTING_ATTRIBUTES: Lazy<HashMap<CombatantClass, HashMap<Combat
                     (CombatAttributes::Hp, 20),
                     (CombatAttributes::Mp, 2),
                     (CombatAttributes::Accuracy, 75),
+                    (CombatAttributes::Speed, 1),
                 ]),
             ),
             (
@@ -25,6 +26,7 @@ pub static BASE_STARTING_ATTRIBUTES: Lazy<HashMap<CombatantClass, HashMap<Combat
                     (CombatAttributes::Hp, 15),
                     (CombatAttributes::Mp, 4),
                     (CombatAttributes::Accuracy, 65),
+                    (CombatAttributes::Speed, 1),
                 ]),
             ),
             (
@@ -35,6 +37,7 @@ pub static BASE_STARTING_ATTRIBUTES: Lazy<HashMap<CombatantClass, HashMap<Combat
                     (CombatAttributes::Hp, 17),
                     (CombatAttributes::Mp, 3),
                     (CombatAttributes::Accuracy, 85),
+                    (CombatAttributes::Speed, 1),
                 ]),
             ),
         ])

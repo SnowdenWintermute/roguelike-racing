@@ -1,3 +1,6 @@
+use std::collections::HashMap;
+
+use super::combatant_classes::attributes_per_level::ATTRIBUTES_BY_LEVEL;
 use super::CombatantProperties;
 
 const XP_REQUIRED_TO_LEVEL_INCREASE_INCREMENT: u16 = 25;
@@ -13,6 +16,22 @@ pub fn award_levelups(combatant_properties: &mut CombatantProperties) {
         {
             if combatant_properties.experience_points.current >= required_to_level {
                 combatant_properties.level += 1;
+                // ADD TO INHERENT ATTRIBUTES
+                let class_attributes_option =
+                    ATTRIBUTES_BY_LEVEL.get(&combatant_properties.combatant_class);
+                let class_attributes = if let Some(attributes) = class_attributes_option {
+                    attributes.clone()
+                } else {
+                    HashMap::new()
+                };
+
+                for (attribute, value) in class_attributes.iter() {
+                    *combatant_properties
+                        .inherent_attributes
+                        .entry(*attribute)
+                        .or_insert(0) += *value as u16
+                }
+
                 combatant_properties.unspent_ability_points += ABILITY_POINTS_AWARDED_PER_LEVEL;
                 combatant_properties.unspent_attribute_points += ATTRIBUTE_POINTS_AWARDED_PER_LEVEL;
                 combatant_properties.experience_points.current -= required_to_level;

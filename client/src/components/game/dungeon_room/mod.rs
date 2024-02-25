@@ -57,7 +57,6 @@ pub fn dungeon_room(props: &Props) -> Html {
             false => "",
         };
 
-
         let time_of_death_option = if let Some(time_of_wipe) = party.time_of_wipe {
             Some(format!("unix timestamp ({})", time_of_wipe))
         } else {
@@ -98,7 +97,7 @@ pub fn dungeon_room(props: &Props) -> Html {
                 <div class={ format!( "border-l border-slate-400 p-2 flex flex-col w-1/2 {}", right_side_conditional_styles ) } >
                     if let Some(time_of_death) = time_of_death_option {
                         <div class=" border border-slate-400 bg-slate-700 p-4
-                            absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" >
+                            absolute z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" >
                             <span class="
                             text-lg mb-2
                             ">{"Time of death: "}{time_of_death}</span>

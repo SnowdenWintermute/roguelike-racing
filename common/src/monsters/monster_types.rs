@@ -1,8 +1,11 @@
 use crate::combatants::combatant_classes::CombatantClass;
 use core::fmt;
 use rand::Rng;
+use serde::Deserialize;
+use serde::Serialize;
 use std::fmt::Display;
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum MonsterTypes {
     MetallicGolem,  // High AC
     Zombie,         // 1.25 blunt, .75 slashing, .5 piercing, high HP and vit

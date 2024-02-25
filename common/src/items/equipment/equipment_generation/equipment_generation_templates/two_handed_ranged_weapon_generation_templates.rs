@@ -18,7 +18,7 @@ fn two_handed_ranged_weapon_template_from_base_item(
 ) -> WeaponGenerationTemplate {
     match item {
         TwoHandedRangedWeapons::ShortBow => {
-            requirements.insert(CombatAttributes::Dexterity, 5);
+            requirements.insert(CombatAttributes::Dexterity, 3);
             WeaponGenerationTemplate::new(
                 Range::new(1, 4),
                 Range::new(2, 7),

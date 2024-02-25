@@ -22,20 +22,6 @@ impl CombatantProperties {
         add_attributes_to_accumulator(&self.inherent_attributes, &mut total_attributes);
         add_attributes_to_accumulator(&self.specced_attributes, &mut total_attributes);
 
-        let class_attributes_option = ATTRIBUTES_BY_LEVEL.get(&self.combatant_class);
-        let class_attributes = if let Some(attributes) = class_attributes_option {
-            attributes.clone()
-        } else {
-            HashMap::new()
-        };
-        let mut class_attributes_as_u16 = HashMap::new();
-
-        for (attribute, value) in class_attributes.iter() {
-            let new_value = *value * combatant_level as f32;
-            class_attributes_as_u16.insert(attribute.clone(), new_value as u16);
-        }
-        add_attributes_to_accumulator(&class_attributes_as_u16, &mut total_attributes);
-
         for (_slot, item) in &self.equipment {
             match &item.item_properties {
                 crate::items::ItemProperties::Consumable(_) => (),

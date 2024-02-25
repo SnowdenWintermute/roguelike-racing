@@ -41,6 +41,19 @@ impl RoguelikeRacerGame {
         }
         if user_combatant_properties
             .abilities
+            .contains_key(&CombatantAbilityNames::Ice)
+        {
+            let level_adjusted_mp_cost =
+                user_combatant_properties.get_ability_cost_if_owned(&CombatantAbilityNames::Ice)?;
+            if user_combatant_properties.mana > level_adjusted_mp_cost as u16 {
+                return Ok((
+                    CombatantAbilityNames::Ice,
+                    CombatActionTarget::Single(*random_enemy_id),
+                ));
+            }
+        }
+        if user_combatant_properties
+            .abilities
             .contains_key(&CombatantAbilityNames::Healing)
         {
             let level_adjusted_mp_cost = user_combatant_properties

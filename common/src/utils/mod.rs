@@ -1,3 +1,5 @@
+use chrono::Local;
+
 pub fn calculate_number_of_pages(page_size: usize, num_items: usize) -> usize {
     let full_pages = num_items / page_size;
     let remaining_items = num_items % page_size;
@@ -25,4 +27,12 @@ pub fn vec_shift<T>(vec: &mut Vec<T>) -> Option<T> {
     } else {
         None
     }
+}
+
+pub fn server_log(message: &str) {
+    let current_time = Local::now();
+
+    // Format the current time into a human-readable string
+    let formatted_time = current_time.format("%Y-%m-%d %H:%M:%S").to_string();
+    println!("{}: {message}", formatted_time)
 }

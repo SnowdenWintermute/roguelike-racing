@@ -6,6 +6,7 @@ use actix::Handler;
 use common::app_consts::LOBBY_CHANNEL;
 use common::packets::server_to_client::GameServerUpdatePackets;
 use common::packets::WebsocketChannelNamespace;
+use common::utils::server_log;
 
 impl Handler<Connect> for GameServer {
     type Result = u32;
@@ -18,7 +19,7 @@ impl Handler<Connect> for GameServer {
         let new_user_connection = ConnectedUser::new(actor_id, actor_address);
         let username = new_user_connection.username.clone();
         self.sessions.insert(actor_id, new_user_connection);
-        println!("actor id {} connected", actor_id);
+        server_log(&format!("actor id {} connected", actor_id));
 
         let result = self.join_user_to_websocket_channel(
             LOBBY_CHANNEL,
@@ -26,7 +27,7 @@ impl Handler<Connect> for GameServer {
             actor_id,
         );
         if result.is_err() {
-            eprintln!("{:#?}", result)
+            server_log(&format!("{:#?}", result))
         }
 
         let full_update = GameServer::create_client_update_packet(self, actor_id);
@@ -35,12 +36,10 @@ impl Handler<Connect> for GameServer {
                 let result =
                     self.send_packet(&GameServerUpdatePackets::FullUpdate(update), actor_id);
                 if result.is_err() {
-                    eprintln!("{:#?}", result)
+                    server_log(&format!("{:#?}", result))
                 }
             }
-            Err(e) => {
-                eprintln!("{:#?}", e)
-            }
+            Err(e) => server_log(&format!("{:#?}", e)),
         }
 
         let _ = self.send_packet(&GameServerUpdatePackets::ClientUserName(username), actor_id);

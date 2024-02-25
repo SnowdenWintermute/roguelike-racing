@@ -60,10 +60,9 @@ pub fn process_next_action_result_in_combatant_event_queue(
                     | CombatantAbilityNames::AttackRangedMainhand => {
                         queue_attack_animations(game_dispatch, combatant_id, new_action_result)
                     }
-                    CombatantAbilityNames::Fire => {
-                        queue_fire_animations(game_dispatch, combatant_id, new_action_result)
-                    }
-                    CombatantAbilityNames::Healing => {
+                    CombatantAbilityNames::Fire
+                    | CombatantAbilityNames::Ice
+                    | CombatantAbilityNames::Healing => {
                         queue_fire_animations(game_dispatch, combatant_id, new_action_result)
                     }
                     _ => Ok(()),

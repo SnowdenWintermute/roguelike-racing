@@ -17,9 +17,7 @@ pub fn ability_details(
     combatant_id: u32,
 ) -> Html {
     let ability_attributes = ability.ability_name.get_attributes();
-    let mp_cost = ability_attributes.mana_cost
-        * ability_attributes.mana_cost_level_multiplier
-        * user_combatant_properties.level;
+    let mp_cost = user_combatant_properties.get_ability_mana_cost(&ability);
 
     let mp_cost_style = if mp_cost as u16 > user_combatant_properties.mana {
         UNMET_REQUIREMENT_TEXT_COLOR

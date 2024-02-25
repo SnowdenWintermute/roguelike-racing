@@ -7,6 +7,7 @@ use common::packets::server_to_client::BattleConclusion;
 use common::packets::server_to_client::BattleEndReportPacket;
 use common::packets::server_to_client::GameServerUpdatePackets;
 use common::packets::WebsocketChannelNamespace;
+use common::utils::server_log;
 use std::time::SystemTime;
 use std::time::UNIX_EPOCH;
 
@@ -76,7 +77,7 @@ impl GameServer {
                 if let Some(actor_id) = player.actor_id {
                     let result = self.remove_player_from_game(actor_id);
                     if let Some(err) = result.err() {
-                        println!("error removing player from game {}", err.message)
+                        server_log(&format!("error removing player from game {}", err.message))
                     }
                 }
             }

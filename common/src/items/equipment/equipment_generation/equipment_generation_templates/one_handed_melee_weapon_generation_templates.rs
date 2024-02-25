@@ -100,6 +100,23 @@ pub fn one_handed_melee_weapon_template_from_base_item(
                 None,
             )
         }
+        OneHandedMeleeWeapons::IceBlade => {
+            requirements.insert(CombatAttributes::Strength, 15);
+            WeaponGenerationTemplate::new(
+                Range::new(2, 4),
+                Range::new(2, 6),
+                Some(1),
+                vec![HpChangeSource::new(
+                    HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
+                    Some(PhysicalDamageTypes::Slashing),
+                    Some(MagicalElements::Ice),
+                )],
+                1,
+                Some(requirements),
+                None,
+                None,
+            )
+        }
         OneHandedMeleeWeapons::Blade => {
             requirements.insert(CombatAttributes::Strength, 20);
             requirements.insert(CombatAttributes::Dexterity, 20);

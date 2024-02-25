@@ -1,4 +1,5 @@
 #![allow(unused)]
+use common::combat::combat_actions::CombatAction;
 use common::combat::ActionResult;
 use common::combat::CombatTurnResult;
 use std::collections::HashMap;
@@ -38,6 +39,7 @@ pub enum HpChangeResult {
 pub struct TargetAndHpChangeResults {
     pub target_id: u32,
     pub hp_change_result: HpChangeResult,
+    pub combat_action: CombatAction,
 }
 
 #[derive(PartialEq, Clone, Debug)]

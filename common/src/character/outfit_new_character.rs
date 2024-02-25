@@ -7,6 +7,7 @@ use crate::combatants::combat_attributes::CombatAttributes;
 use crate::combatants::combatant_classes::level_zero_attributes::BASE_STARTING_ATTRIBUTES;
 use crate::combatants::combatant_classes::starting_traits;
 use crate::combatants::combatant_classes::starting_traits::STARTING_COMBATANT_TRAITS;
+use crate::combatants::combatant_classes::CombatantClass;
 use crate::combatants::combatant_traits::CombatantTraits;
 use crate::game::RoguelikeRacerGame;
 use crate::items::consumables::ConsumableTypes;
@@ -16,6 +17,7 @@ use crate::items::ItemCategories;
 
 pub fn outfit_new_character(game: &mut RoguelikeRacerGame, character: &mut Character) {
     let combatant_properties = &mut character.combatant_properties;
+    // combatant_properties.unspent_attribute_points = 3;
 
     // SET UP STARTING ATTRIBUTES
     let inherent_attributes = &mut combatant_properties.inherent_attributes;
@@ -41,6 +43,12 @@ pub fn outfit_new_character(game: &mut RoguelikeRacerGame, character: &mut Chara
         CombatantAbilityNames::Fire,
         CombatantAbility::create_by_name(&CombatantAbilityNames::Fire),
     );
+    if combatant_properties.combatant_class == CombatantClass::Mage {
+        combatant_properties.abilities.insert(
+            CombatantAbilityNames::Ice,
+            CombatantAbility::create_by_name(&CombatantAbilityNames::Ice),
+        );
+    }
     combatant_properties.abilities.insert(
         CombatantAbilityNames::Healing,
         CombatantAbility::create_by_name(&CombatantAbilityNames::Healing),
@@ -56,6 +64,7 @@ pub fn outfit_new_character(game: &mut RoguelikeRacerGame, character: &mut Chara
     );
     combatant_properties.inventory.items.push(hp_injector);
     combatant_properties.inventory.items.push(mp_injector);
+
     // TEST INVENTORY ITEMS
     // let mut test_items = create_inventory_test_items(game);
     // combatant_properties.inventory.items.append(&mut test_items);

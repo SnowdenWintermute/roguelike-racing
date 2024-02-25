@@ -36,6 +36,12 @@ impl MonsterTypes {
                     CombatantAbility::create_by_name(&CombatantAbilityNames::Fire),
                 );
             }
+            MonsterTypes::IceElemental => {
+                abilities.insert(
+                    CombatantAbilityNames::Ice,
+                    CombatantAbility::create_by_name(&CombatantAbilityNames::Ice),
+                );
+            }
             MonsterTypes::Cultist => {
                 abilities.insert(
                     CombatantAbilityNames::Healing,

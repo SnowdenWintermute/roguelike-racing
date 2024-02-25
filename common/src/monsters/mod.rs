@@ -82,7 +82,7 @@ impl Monster {
                 .inherent_attributes
                 .entry(*attribute)
                 .or_insert(0);
-            *current += *value as u16 * level as u16;
+            *current += *value as u16 * (level - 1) as u16;
         }
         // - randomize their hp a little
         let base_hp = monster

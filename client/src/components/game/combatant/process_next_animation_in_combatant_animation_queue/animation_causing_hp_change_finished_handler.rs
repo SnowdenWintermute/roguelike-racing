@@ -6,6 +6,8 @@ use crate::components::mesh_manager::HpChangeResult;
 use crate::components::mesh_manager::TargetAndHpChangeResults;
 use crate::store::game_store::GameStore;
 use common::app_consts::error_messages;
+use common::combat::combat_actions::CombatAction;
+use common::combatants::abilities::CombatantAbilityNames;
 use common::errors::AppError;
 use common::game::RoguelikeRacerGame;
 use std::collections::VecDeque;
@@ -24,10 +26,39 @@ pub fn animation_causing_hp_change_finished_handler(
         let (causer_entity_properties, _) = game.get_mut_combatant_by_id(&causer_id)?;
         let causer_name = causer_entity_properties.name.clone();
 
+        let combat_log_ability_use_option =
+            if let Some(target_and_result) = targets_and_hp_change_results.first() {
+                match &target_and_result.combat_action {
+                    CombatAction::AbilityUsed(ability_name) => match ability_name {
+                        CombatantAbilityNames::Attack => None,
+                        CombatantAbilityNames::AttackMeleeMainhand => None,
+                        CombatantAbilityNames::AttackMeleeOffhand => None,
+                        CombatantAbilityNames::AttackRangedMainhand => None,
+                        CombatantAbilityNames::Fire
+                        | CombatantAbilityNames::Healing
+                        | CombatantAbilityNames::Ice => {
+                            Some(format!("{causer_name} casts {ability_name}"))
+                        }
+                    },
+                    CombatAction::ConsumableUsed(_) => None,
+                }
+            } else {
+                None
+            };
+
+        if let Some(ability_use_message) = combat_log_ability_use_option {
+            store.combat_log.push(CombatLogMessage::new(
+                AttrValue::from(ability_use_message),
+                CombatLogMessageStyle::Basic,
+                0,
+            ));
+        }
+
         for target_and_hp_change_result in targets_and_hp_change_results {
             let TargetAndHpChangeResults {
                 target_id,
                 hp_change_result,
+                combat_action,
             } = target_and_hp_change_result;
             let game = store.get_current_game_mut()?;
             let (entity_properties, _) = game.get_mut_combatant_by_id(&target_id)?;

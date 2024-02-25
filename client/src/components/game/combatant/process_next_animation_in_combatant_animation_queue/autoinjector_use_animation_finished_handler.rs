@@ -43,7 +43,7 @@ pub fn autoinjector_use_animation_finished_handler(
                 let target_text = if user_id == target_id {
                     "themselves".to_string()
                 } else {
-                    format!("{} ({target_id})", target_name)
+                    format!("{}", target_name)
                 };
                 store.combat_log.push(CombatLogMessage::new(
                     AttrValue::from(format!(

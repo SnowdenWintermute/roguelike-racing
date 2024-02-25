@@ -81,9 +81,9 @@ pub fn send_next_turn_result_to_combatant_event_manager(
                             store.combat_log.push(CombatLogMessage::new(
                                 AttrValue::from(format!(
                                     "{} gained {} experience points",
-                                    entity_name, exp_change.experience_change
+                                    entity_name, exp_change.experience_change,
                                 )),
-                                CombatLogMessageStyle::Basic,
+                                CombatLogMessageStyle::PartyProgress,
                                 0,
                             ));
                         }
@@ -97,7 +97,7 @@ pub fn send_next_turn_result_to_combatant_event_manager(
                             if *level != new_level {
                                 store.combat_log.push(CombatLogMessage::new(
                                     AttrValue::from(format!("{} is now level {}", name, new_level)),
-                                    CombatLogMessageStyle::Basic,
+                                    CombatLogMessageStyle::PartyProgress,
                                     0,
                                 ));
                             }

@@ -170,11 +170,20 @@ impl CombatantProperties {
             error_type: crate::errors::AppErrorTypes::InvalidInput,
             message: error_messages::ABILITY_NOT_OWNED.to_string(),
         })?;
-        let ability_attributes = ability_name.get_attributes();
+        Ok(self.get_ability_mana_cost(&ability))
+    }
+
+    pub fn get_ability_mana_cost(&self, ability: &CombatantAbility) -> u8 {
+        let ability_attributes = ability.ability_name.get_attributes();
         let base_mp_cost = ability_attributes.mana_cost;
-        let mana_cost_level_multiplier = ability_attributes.mana_cost_level_multiplier;
-        let level_adjusted_mp_cost = ability.level * (base_mp_cost * mana_cost_level_multiplier);
-        Ok(level_adjusted_mp_cost)
+        let ability_mana_cost_level_multiplier =
+            ability_attributes.ability_level_mana_cost_multiplier;
+        let ability_level_adjusted_mp_cost =
+            ability.level * (base_mp_cost * ability_mana_cost_level_multiplier);
+        let combatant_level_mana_cost_adjustment =
+            self.level * ability_attributes.combatant_level_mana_cost_multiplier;
+
+        combatant_level_mana_cost_adjustment + ability_level_adjusted_mp_cost
     }
 
     pub fn change_hp(&mut self, hp_change: i16) -> u16 {

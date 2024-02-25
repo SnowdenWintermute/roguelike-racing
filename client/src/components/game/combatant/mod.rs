@@ -7,6 +7,7 @@ mod focus_character_button;
 mod process_next_action_result_in_combatant_event_queue;
 mod process_next_animation_in_combatant_animation_queue;
 mod value_bar;
+use crate::components::common_components::atoms::hoverable_tooltip_wrapper::HoverableTooltipWrapper;
 use crate::components::common_components::atoms::targeting_indicator::TargetingIndicator;
 use crate::components::game::combatant::combatant_animation_manager::CombatantAnimationManager;
 use crate::components::game::combatant::focus_character_button::FocusCharacterButton;
@@ -36,8 +37,9 @@ pub fn combatant(props: &Props) -> Html {
 
     let cloned_entity_properties = props.entity_properties.clone();
     let cloned_combatant_properties = combatant_properties.clone();
+    let cloned_game_dispatch = game_dispatch.clone();
     let handle_click = Callback::from(move |_| {
-        game_dispatch.reduce_mut(|store| {
+        cloned_game_dispatch.reduce_mut(|store| {
             store.detailed_entity = Some(DetailableEntities::Combatant(
                 game_store::CombatantDetails {
                     entity_properties: cloned_entity_properties.clone(),
@@ -83,9 +85,30 @@ pub fn combatant(props: &Props) -> Html {
         false
     };
 
+    let cloned_game_dispatch = game_dispatch.clone();
+    let handle_unspent_attributes_button_click = Callback::from(move |_: MouseEvent| {
+        cloned_game_dispatch.reduce_mut(|store| {
+            store.focused_character_id = id;
+            store.viewing_attribute_point_assignment_menu = true;
+        })
+    });
+
+    let unspent_attributes_button = if is_ally && combatant_properties.unspent_attribute_points > 0
+    {
+        html!(
+            <button onclick={handle_unspent_attributes_button_click}
+                class="bg-ffxipink h-5 w-5 border border-slate-950 text-slate-950 absolute top-1 left-1 text-lg leading-3" >
+                { "+" }
+            </button>
+        )
+    } else {
+        html!()
+    };
+
     html!(
         <div class={styles} >
-            if targeted_by.len() > 0{
+            {unspent_attributes_button}
+            if targeted_by.len() > 0 {
                 <div class="absolute top-[-1.5rem] left-1/2 -translate-x-1/2 z-20
                             flex" >
                             {targeted_by.iter().map(|combatant_id_and_with_what| html!(

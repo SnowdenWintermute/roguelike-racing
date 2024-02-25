@@ -33,10 +33,8 @@ pub enum CombatantAbilityNames {
     AttackMeleeMainhand,
     AttackMeleeOffhand,
     AttackRangedMainhand,
-    ArmorBreak,
-    HeatLance,
     Fire,
-    RainStorm,
+    Ice,
     Healing,
 }
 
@@ -47,11 +45,9 @@ impl Display for CombatantAbilityNames {
             CombatantAbilityNames::AttackMeleeMainhand => write!(f, "Attack"),
             CombatantAbilityNames::AttackMeleeOffhand => write!(f, "Attack"),
             CombatantAbilityNames::AttackRangedMainhand => write!(f, "Ranged Attack"),
-            CombatantAbilityNames::HeatLance => write!(f, "Heat Lance"),
-            CombatantAbilityNames::ArmorBreak => write!(f, "Armor Break"),
             CombatantAbilityNames::Healing => write!(f, "Healing"),
             CombatantAbilityNames::Fire => write!(f, "Fire"),
-            CombatantAbilityNames::RainStorm => write!(f, "Rain Storm"),
+            CombatantAbilityNames::Ice => write!(f, "Ice"),
         }
     }
 }
@@ -72,6 +68,11 @@ impl CombatantAbility {
             }
             CombatantAbilityNames::Fire => {
                 let mut ability = CombatantAbility::new(CombatantAbilityNames::Fire);
+                ability.level = 1;
+                ability
+            }
+            CombatantAbilityNames::Ice => {
+                let mut ability = CombatantAbility::new(CombatantAbilityNames::Ice);
                 ability.level = 1;
                 ability
             }

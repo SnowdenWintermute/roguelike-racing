@@ -53,6 +53,7 @@ pub fn queue_attack_animations(
             CombatantAnimation::SwingMainHandToHit(vec![TargetAndHpChangeResults {
                 target_id,
                 hp_change_result,
+                combat_action: action_result.action.clone(),
             }]),
             CombatantAnimation::MainHandFollowThroughSwing,
         ]));

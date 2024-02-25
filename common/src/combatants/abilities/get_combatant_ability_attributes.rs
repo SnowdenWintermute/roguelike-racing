@@ -20,7 +20,8 @@ pub struct CombatantAbilityAttributes {
     pub combat_action_properties: CombatActionProperties,
     pub is_melee: bool,
     pub mana_cost: u8,
-    pub mana_cost_level_multiplier: u8,
+    pub ability_level_mana_cost_multiplier: u8,
+    pub combatant_level_mana_cost_multiplier: u8,
     pub base_hp_change_values_level_multiplier: f32,
     pub shard_cost: u8,
 }
@@ -30,8 +31,9 @@ impl Default for CombatantAbilityAttributes {
         CombatantAbilityAttributes {
             combat_action_properties: CombatActionProperties::default(),
             is_melee: false,
-            mana_cost: 1,
-            mana_cost_level_multiplier: 1,
+            mana_cost: 0,
+            ability_level_mana_cost_multiplier: 1,
+            combatant_level_mana_cost_multiplier: 0,
             base_hp_change_values_level_multiplier: 1.0,
             shard_cost: 0,
         }
@@ -149,16 +151,10 @@ impl CombatantAbilityNames {
                 base_hp_change_values_level_multiplier: 1.0,
                 ..Default::default()
             },
-            CombatantAbilityNames::ArmorBreak => CombatantAbilityAttributes {
-                is_melee: true,
-                ..Default::default()
-            },
-            CombatantAbilityNames::HeatLance => CombatantAbilityAttributes {
-                ..Default::default()
-            },
             CombatantAbilityNames::Fire => CombatantAbilityAttributes {
                 mana_cost: 2,
-                mana_cost_level_multiplier: 1,
+                ability_level_mana_cost_multiplier: 1,
+                combatant_level_mana_cost_multiplier: 1,
                 combat_action_properties: CombatActionProperties {
                     description: "Deals fire damage".to_string(),
                     targeting_schemes: vec![TargetingScheme::Area, TargetingScheme::Single],
@@ -186,9 +182,41 @@ impl CombatantAbilityNames {
                 },
                 ..Default::default()
             },
+            CombatantAbilityNames::Ice => CombatantAbilityAttributes {
+                mana_cost: 2,
+                ability_level_mana_cost_multiplier: 1,
+                combatant_level_mana_cost_multiplier: 1,
+                combat_action_properties: CombatActionProperties {
+                    description: "Deals ice damage".to_string(),
+                    targeting_schemes: vec![TargetingScheme::Area, TargetingScheme::Single],
+                    hp_change_properties: Some(CombatActionHpChangeProperties {
+                        base_values: Range::new(4, 8),
+                        additive_attribute_and_percent_scaling_factor: Some((
+                            CombatAttributes::Intelligence,
+                            100,
+                        )),
+                        source_properties: HpChangeSource::new(
+                            HpChangeSourceCategories::MagicalDamage(Evadable::new(false)),
+                            None,
+                            Some(MagicalElements::Ice),
+                        ),
+                        add_weapon_damage_from: None,
+                        crit_chance_attribute: Some(CombatAttributes::Focus),
+                        crit_multiplier_attribute: Some(CombatAttributes::Focus),
+                        ..Default::default()
+                    }),
+                    valid_target_categories: TargetCategories::Opponent,
+                    prohibited_target_combatant_states: Some(vec![
+                        ProhibitedTargetCombatantStates::Dead,
+                    ]),
+                    ..Default::default()
+                },
+                ..Default::default()
+            },
             CombatantAbilityNames::Healing => CombatantAbilityAttributes {
                 mana_cost: 2,
-                mana_cost_level_multiplier: 1,
+                ability_level_mana_cost_multiplier: 1,
+                combatant_level_mana_cost_multiplier: 1,
                 combat_action_properties: CombatActionProperties {
                     description: "Restores HP or damages undead".to_string(),
                     targeting_schemes: vec![TargetingScheme::Single, TargetingScheme::Area],
@@ -215,9 +243,6 @@ impl CombatantAbilityNames {
                     usability_context: AbilityUsableContext::All,
                     ..Default::default()
                 },
-                ..Default::default()
-            },
-            CombatantAbilityNames::RainStorm => CombatantAbilityAttributes {
                 ..Default::default()
             },
         }

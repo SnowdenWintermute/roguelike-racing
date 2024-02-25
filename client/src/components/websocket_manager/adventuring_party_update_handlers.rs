@@ -10,7 +10,6 @@ use common::packets::server_to_client::AdventuringPartyCreation;
 use common::packets::server_to_client::NewCharacterInParty;
 use common::packets::server_to_client::PlayerAdventuringPartyChange;
 use common::packets::server_to_client::PlayerCharacterDeletion;
-use gloo::console::log;
 use std::collections::HashSet;
 use yewdux::Dispatch;
 

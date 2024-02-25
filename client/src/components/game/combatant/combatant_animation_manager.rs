@@ -76,9 +76,9 @@ pub fn combatant_animation_manager(props: &Props) -> Html {
     let debug = true;
     if debug {
         return html! {
-            <div class="whitespace-nowrap text-ellipsis overflow-hidden">
+            <span class="whitespace-nowrap text-ellipsis overflow-hidden">
                 {animation_to_show}
-            </div>
+            </span>
         };
     }
     html!()

@@ -1,5 +1,6 @@
 use crate::combat::hp_change_source_types::HpChangeSource;
 use crate::combat::hp_change_source_types::HpChangeSourceCategories;
+use crate::combat::hp_change_source_types::MeleeOrRanged;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::items::equipment::one_handed_melee_weapons::OneHandedMeleeWeapons;
 use crate::items::equipment::weapon_properties::WeaponProperties;
@@ -27,7 +28,7 @@ pub fn create_item_with_damage_increase_mods(
                 OneHandedMeleeWeapons::Stick,
                 WeaponProperties {
                     damage_classifications: vec![HpChangeSource {
-                        category: HpChangeSourceCategories::PhysicalDamage,
+                        category: HpChangeSourceCategories::PhysicalDamage(MeleeOrRanged::Melee),
                         sub_category: None,
                         element: None,
                     }],

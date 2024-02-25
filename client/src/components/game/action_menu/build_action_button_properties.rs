@@ -103,6 +103,10 @@ pub fn build_action_button_properties(
                 true => None,
                 false => Some(GameKeys::Cancel),
             },
+            GameActions::SetAssignAttributePointsMenuOpen(to_set) => match to_set {
+                true => None,
+                false => Some(GameKeys::Cancel),
+            },
             GameActions::UseItem(_) => Some(GameKeys::Confirm),
             GameActions::DeselectItem => Some(GameKeys::Cancel),
             GameActions::UseSelectedCombatAction => Some(GameKeys::Confirm),

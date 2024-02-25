@@ -41,7 +41,7 @@ pub fn lobby_menu() -> Html {
             <div class="flex">
                 <form class="flex mr-2" onsubmit={create_game}>
                     <TextInput name="game name" placeholder="Game name..." handle_change={handle_change} />
-                    <ButtonBasic disabled=false extra_styles="border-l-0 " button_type="submit" >
+                    <ButtonBasic disabled=false extra_styles="border-l-0 text-yellow-400" button_type="submit" >
                         {"Create Game"}
                     </ButtonBasic>
                 </form>

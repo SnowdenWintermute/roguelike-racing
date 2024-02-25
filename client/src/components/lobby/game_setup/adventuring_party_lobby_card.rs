@@ -1,4 +1,5 @@
 use crate::components::common_components::atoms::button_basic::ButtonBasic;
+use crate::components::common_components::atoms::divider::Divider;
 use crate::components::lobby::game_setup::character_creation_menu::CharacterCreationMenu;
 use crate::components::lobby::game_setup::character_lobby_card::CharacterLobbyCard;
 use crate::components::websocket_manager::send_client_input::send_client_input;
@@ -65,6 +66,7 @@ pub fn adventuring_party_lobby_card(props: &Props) -> Html {
                         <div class="mb-2">
                             <ButtonBasic onclick={leave_party} >{ "Leave Party" }</ButtonBasic>
                         </div>
+                        <Divider styles={"mt-4 mb-4"} />
                         <CharacterCreationMenu />
                         }
                 } else {
@@ -72,6 +74,7 @@ pub fn adventuring_party_lobby_card(props: &Props) -> Html {
                             <ButtonBasic onclick={join_party} >{ "Join Party" }</ButtonBasic>
                         </div>
                 }
+                <Divider styles={"mt-4 mb-4"} />
                 {characters_by_username.iter().map(|username_with_characters|{
                     let is_ready = game.players_readied.contains(&username_with_characters.0);
                     let ready_style = match is_ready  {

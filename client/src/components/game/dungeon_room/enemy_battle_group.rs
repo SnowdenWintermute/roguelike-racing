@@ -36,9 +36,15 @@ pub fn enemy_battle_group(props: &Props) -> Html {
         None
     };
 
+    let inventory_open_styles = if game_state.viewing_inventory {
+        "w-full"
+    } else {
+        ""
+    };
+
     if let Some(enemy_combatants) = enemy_combatants_option {
         html!(
-            <div class="flex flex-col items-end whitespace-nowrap" >
+            <div class={format!("flex flex-col items-end whitespace-nowrap {}", inventory_open_styles)} >
                 {enemy_combatants.iter().map(|combatant_result| {
                     if let Ok((entity_properties ,combatant_properties )) = *combatant_result {
                         let entity_properties = entity_properties.clone();

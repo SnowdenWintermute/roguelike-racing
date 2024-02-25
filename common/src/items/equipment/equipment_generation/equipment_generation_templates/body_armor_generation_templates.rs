@@ -31,17 +31,20 @@ fn body_armor_template_from_base_item(
             None,
             None,
         ),
-        BodyArmors::Cloak => ArmorGenerationTemplate::new(
-            Range::new(3, 7),
-            Range::new(10, 14),
-            Some(18),
-            ArmorCategories::Cloth,
-            Some(requirements),
-            None,
-            None,
-        ),
+        BodyArmors::Cloak => {
+            requirements.insert(CombatAttributes::Intelligence, 20);
+            ArmorGenerationTemplate::new(
+                Range::new(3, 7),
+                Range::new(10, 14),
+                Some(18),
+                ArmorCategories::Cloth,
+                Some(requirements),
+                None,
+                None,
+            )
+        }
         BodyArmors::Robe => {
-            requirements.insert(CombatAttributes::Intelligence, 5);
+            requirements.insert(CombatAttributes::Intelligence, 30);
             ArmorGenerationTemplate::new(
                 Range::new(6, 9),
                 Range::new(18, 22),
@@ -53,7 +56,7 @@ fn body_armor_template_from_base_item(
             )
         }
         BodyArmors::Kevlar => {
-            requirements.insert(CombatAttributes::Intelligence, 10);
+            requirements.insert(CombatAttributes::Intelligence, 50);
             ArmorGenerationTemplate::new(
                 Range::new(8, 10),
                 Range::new(30, 40),
@@ -65,7 +68,7 @@ fn body_armor_template_from_base_item(
             )
         }
         BodyArmors::LeatherArmor => {
-            requirements.insert(CombatAttributes::Dexterity, 3);
+            requirements.insert(CombatAttributes::Dexterity, 10);
             ArmorGenerationTemplate::new(
                 Range::new(1, 5),
                 Range::new(15, 22),
@@ -77,7 +80,7 @@ fn body_armor_template_from_base_item(
             )
         }
         BodyArmors::HardLeatherArmor => {
-            requirements.insert(CombatAttributes::Dexterity, 5);
+            requirements.insert(CombatAttributes::Dexterity, 20);
             ArmorGenerationTemplate::new(
                 Range::new(3, 7),
                 Range::new(25, 35),
@@ -89,7 +92,7 @@ fn body_armor_template_from_base_item(
             )
         }
         BodyArmors::StuddedLeatherArmor => {
-            requirements.insert(CombatAttributes::Dexterity, 7);
+            requirements.insert(CombatAttributes::Dexterity, 35);
             ArmorGenerationTemplate::new(
                 Range::new(4, 10),
                 Range::new(30, 45),
@@ -101,7 +104,7 @@ fn body_armor_template_from_base_item(
             )
         }
         BodyArmors::DemonsaurArmor => {
-            requirements.insert(CombatAttributes::Dexterity, 15);
+            requirements.insert(CombatAttributes::Dexterity, 50);
             ArmorGenerationTemplate::new(
                 Range::new(8, 10),
                 Range::new(55, 65),
@@ -113,8 +116,8 @@ fn body_armor_template_from_base_item(
             )
         }
         BodyArmors::RingMail => {
-            requirements.insert(CombatAttributes::Strength, 3);
-            requirements.insert(CombatAttributes::Dexterity, 3);
+            requirements.insert(CombatAttributes::Strength, 7);
+            requirements.insert(CombatAttributes::Dexterity, 7);
             ArmorGenerationTemplate::new(
                 Range::new(2, 5),
                 Range::new(20, 24),
@@ -126,9 +129,9 @@ fn body_armor_template_from_base_item(
             )
         }
         BodyArmors::ChainMail => {
-            requirements.insert(CombatAttributes::Strength, 3);
-            requirements.insert(CombatAttributes::Dexterity, 3);
-            requirements.insert(CombatAttributes::Intelligence, 3);
+            requirements.insert(CombatAttributes::Strength, 10);
+            requirements.insert(CombatAttributes::Dexterity, 10);
+            requirements.insert(CombatAttributes::Intelligence, 10);
             ArmorGenerationTemplate::new(
                 Range::new(3, 6),
                 Range::new(28, 36),
@@ -140,8 +143,8 @@ fn body_armor_template_from_base_item(
             )
         }
         BodyArmors::ScaleMail => {
-            requirements.insert(CombatAttributes::Dexterity, 5);
-            requirements.insert(CombatAttributes::Intelligence, 5);
+            requirements.insert(CombatAttributes::Dexterity, 15);
+            requirements.insert(CombatAttributes::Intelligence, 15);
             ArmorGenerationTemplate::new(
                 Range::new(4, 7),
                 Range::new(34, 45),
@@ -153,8 +156,8 @@ fn body_armor_template_from_base_item(
             )
         }
         BodyArmors::SplintMail => {
-            requirements.insert(CombatAttributes::Strength, 7);
-            requirements.insert(CombatAttributes::Intelligence, 7);
+            requirements.insert(CombatAttributes::Strength, 20);
+            requirements.insert(CombatAttributes::Intelligence, 20);
             ArmorGenerationTemplate::new(
                 Range::new(5, 9),
                 Range::new(48, 60),
@@ -166,9 +169,9 @@ fn body_armor_template_from_base_item(
             )
         }
         BodyArmors::OhmushellMail => {
-            requirements.insert(CombatAttributes::Strength, 10);
-            requirements.insert(CombatAttributes::Dexterity, 10);
-            requirements.insert(CombatAttributes::Intelligence, 10);
+            requirements.insert(CombatAttributes::Strength, 15);
+            requirements.insert(CombatAttributes::Dexterity, 15);
+            requirements.insert(CombatAttributes::Intelligence, 15);
             ArmorGenerationTemplate::new(
                 Range::new(65, 80),
                 Range::new(1, 1),
@@ -180,7 +183,7 @@ fn body_armor_template_from_base_item(
             )
         }
         BodyArmors::BreastPlate => {
-            requirements.insert(CombatAttributes::Strength, 5);
+            requirements.insert(CombatAttributes::Strength, 10);
             ArmorGenerationTemplate::new(
                 Range::new(2, 4),
                 Range::new(30, 40),
@@ -192,7 +195,7 @@ fn body_armor_template_from_base_item(
             )
         }
         BodyArmors::FieldPlate => {
-            requirements.insert(CombatAttributes::Strength, 7);
+            requirements.insert(CombatAttributes::Strength, 17);
             ArmorGenerationTemplate::new(
                 Range::new(3, 6),
                 Range::new(40, 45),
@@ -204,7 +207,7 @@ fn body_armor_template_from_base_item(
             )
         }
         BodyArmors::GothicPlate => {
-            requirements.insert(CombatAttributes::Strength, 12);
+            requirements.insert(CombatAttributes::Strength, 30);
             ArmorGenerationTemplate::new(
                 Range::new(5, 8),
                 Range::new(50, 60),
@@ -216,7 +219,7 @@ fn body_armor_template_from_base_item(
             )
         }
         BodyArmors::FullPlate => {
-            requirements.insert(CombatAttributes::Strength, 15);
+            requirements.insert(CombatAttributes::Strength, 50);
             ArmorGenerationTemplate::new(
                 Range::new(6, 8),
                 Range::new(60, 75),
@@ -228,7 +231,7 @@ fn body_armor_template_from_base_item(
             )
         }
         BodyArmors::ShardPlate => {
-            requirements.insert(CombatAttributes::Strength, 20);
+            requirements.insert(CombatAttributes::Strength, 65);
             ArmorGenerationTemplate::new(
                 Range::new(8, 10),
                 Range::new(80, 100),

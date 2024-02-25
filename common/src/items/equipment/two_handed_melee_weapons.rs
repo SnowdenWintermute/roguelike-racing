@@ -18,6 +18,11 @@ pub enum TwoHandedMeleeWeapons {
     Halberd,
     GreatAxe,
     GravityHammer,
+    // FOR MAGES
+    AshStaff,
+    ElmStaff,
+    MahoganyStaff,
+    EbonyStaff,
 }
 
 impl fmt::Display for TwoHandedMeleeWeapons {
@@ -35,6 +40,10 @@ impl fmt::Display for TwoHandedMeleeWeapons {
             TwoHandedMeleeWeapons::Spear => write!(f, "Spear"),
             TwoHandedMeleeWeapons::Trident => write!(f, "Trident"),
             TwoHandedMeleeWeapons::ElementalStaff => write!(f, "Elemental Staff"),
+            TwoHandedMeleeWeapons::AshStaff => write!(f, "Ash Staff"),
+            TwoHandedMeleeWeapons::ElmStaff => write!(f, "Elm Staff"),
+            TwoHandedMeleeWeapons::MahoganyStaff => write!(f, "Mahogany Staff"),
+            TwoHandedMeleeWeapons::EbonyStaff => write!(f, "Ebony Staff"),
         }
     }
 }

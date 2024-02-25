@@ -40,11 +40,15 @@ pub const DROP_EQUIPPED_ITEM_SERVER_PACKET_MISMATCH: &str =
     "Received a packet telling a character to drop an equipped item but the item wasn't found";
 pub const NO_BASE_EQUIPMENT_FOUND: &str = "No base equipment was provided";
 pub const NO_CONSUMABLE_SELECTED: &str = "No consumable is selected";
+pub const CONSUMABLE_NOT_FOUND: &str = "No consumable found";
 pub const INVALID_EQUIPMENT_SLOT: &str = "An invalid equipment slot was provided";
 // COMBATANTS
 pub const ENEMY_COMBATANTS_NOT_FOUND: &str = "No enemy combatants found";
 pub const ALLY_COMBATANTS_NOT_FOUND: &str = "No allied combatants found";
 pub const COMBATANT_NOT_FOUND: &str = "No combatant was found by the provided ID";
+// ATTRIBUTES
+pub const NO_UNSPENT_ATTRIBUTE_POINTS: &str =
+    "The selected combatant has no attribute points to spend";
 // ABILITIES
 pub const ABILITY_NOT_OWNED: &str = "That character doesn't have that ability";
 pub const MISSING_ABILITY_REFERENCE: &str = "The character has no ability selected";

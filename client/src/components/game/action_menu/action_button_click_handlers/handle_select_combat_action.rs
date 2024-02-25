@@ -23,6 +23,7 @@ pub fn handle_select_combat_action(
     combat_action_option: Option<CombatAction>,
 ) {
     let result = game_dispatch.reduce_mut(|game_store| -> Result<(), AppError> {
+        game_store.hovered_action = None;
         let game = game_store.game.as_mut().ok_or_else(|| AppError {
             error_type: common::errors::AppErrorTypes::ClientError,
             message: error_messages::MISSING_GAME_REFERENCE.to_string(),

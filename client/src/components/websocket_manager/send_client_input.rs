@@ -1,4 +1,5 @@
 use common::packets::client_to_server::PlayerInputs;
+use gloo::console::log;
 use web_sys::WebSocket;
 
 pub fn send_client_input(websocket_option: &Option<WebSocket>, player_action: PlayerInputs) {
@@ -11,7 +12,7 @@ pub fn send_client_input(websocket_option: &Option<WebSocket>, player_action: Pl
             };
         }
         None => {
-            println!("no websocket in global state");
+            log!("no websocket in global state");
             ()
         }
     }

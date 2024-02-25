@@ -1,5 +1,3 @@
-use std::collections::VecDeque;
-
 use crate::websocket_server::game_server::getters::get_mut_game;
 use crate::websocket_server::game_server::getters::get_mut_user;
 use crate::websocket_server::game_server::GameServer;
@@ -13,6 +11,8 @@ use common::game::getters::get_mut_party;
 use common::game::getters::get_mut_player;
 use common::packets::server_to_client::GameServerUpdatePackets;
 use common::packets::WebsocketChannelNamespace;
+use common::utils::server_log;
+use std::collections::VecDeque;
 
 impl GameServer {
     pub fn toggle_ready_to_explore_handler(&mut self, actor_id: u32) -> Result<(), AppError> {
@@ -153,7 +153,8 @@ impl GameServer {
                     group_type: BattleGroupTypes::ComputerControlled,
                 };
                 let battle_id = game.initiate_battle(group_a, group_b)?;
-                println!("ticking combat at battle start");
+                server_log("ticking combat at battle start");
+
                 game.tick_combat_until_next_combatant_is_active(battle_id)?;
                 let party = get_mut_party(game, party_id)?;
                 party.battle_id = Some(battle_id);

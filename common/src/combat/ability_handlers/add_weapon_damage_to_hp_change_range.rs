@@ -50,7 +50,7 @@ pub fn calculate_and_add_weapon_damage(
 #[test]
 
 pub fn add_weapon_damage_to_combat_action_hp_change_test() -> Result<(), AppError> {
-    use crate::combatants::CombatantClass;
+    use crate::combatants::combatant_classes::CombatantClass;
     use crate::combatants::CombatantControlledBy;
     use crate::tests::test_items::test_items::create_item_with_damage_increase_mods;
     use std::collections::HashMap;

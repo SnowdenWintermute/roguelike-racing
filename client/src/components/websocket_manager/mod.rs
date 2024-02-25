@@ -101,7 +101,7 @@ pub fn websocket_manager(props: &Props) -> Html {
                 let dispatch = websocket_dispatch.clone();
                 dispatch.reduce_mut(|store| store.websocket = Some(websocket_success));
             }
-            _ => println!("websocket failed to create"),
+            _ => log!("websocket failed to create"),
         }
     });
 

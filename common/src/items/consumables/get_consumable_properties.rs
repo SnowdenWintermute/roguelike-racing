@@ -17,6 +17,7 @@ impl ConsumableTypes {
                 ]),
                 requires_combat_turn: false,
                 hp_change_properties: None,
+                description: "Heal a friendly target".to_string(),
             },
             ConsumableTypes::MpAutoinjector => CombatActionProperties {
                 targeting_schemes: vec![TargetingScheme::Single],
@@ -27,6 +28,7 @@ impl ConsumableTypes {
                 ]),
                 requires_combat_turn: false,
                 hp_change_properties: None,
+                description: "Restore MP to a friendly target".to_string(),
             },
             ConsumableTypes::Grenade => CombatActionProperties {
                 targeting_schemes: vec![TargetingScheme::Area],
@@ -35,6 +37,7 @@ impl ConsumableTypes {
                 prohibited_target_combatant_states: None,
                 requires_combat_turn: true,
                 hp_change_properties: None,
+                ..Default::default()
             },
             ConsumableTypes::SmokeBomb => CombatActionProperties {
                 targeting_schemes: vec![TargetingScheme::Area],
@@ -43,6 +46,7 @@ impl ConsumableTypes {
                 prohibited_target_combatant_states: None,
                 requires_combat_turn: false,
                 hp_change_properties: None,
+                ..Default::default()
             },
             // _ => CombatActionProperties::default(),
         }

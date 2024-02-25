@@ -1,7 +1,7 @@
-use self::outfit_new_warrior::outfit_new_warrior;
+use self::outfit_new_character::outfit_new_character;
 use crate::combatants::abilities::CombatantAbility;
 use crate::combatants::abilities::CombatantAbilityNames;
-use crate::combatants::CombatantClass;
+use crate::combatants::combatant_classes::CombatantClass;
 use crate::combatants::CombatantControlledBy;
 use crate::combatants::CombatantProperties;
 use crate::game::RoguelikeRacerGame;
@@ -9,7 +9,8 @@ use crate::primatives::EntityProperties;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
-pub mod outfit_new_warrior;
+mod create_inventory_test_items;
+pub mod outfit_new_character;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Character {
@@ -46,13 +47,20 @@ impl Character {
             CombatantAbilityNames::Attack,
             CombatantAbility::create_by_name(&CombatantAbilityNames::Attack),
         );
+        character.combatant_properties.abilities.insert(
+            CombatantAbilityNames::AttackMeleeMainhand,
+            CombatantAbility::create_by_name(&CombatantAbilityNames::AttackMeleeMainhand),
+        );
+        character.combatant_properties.abilities.insert(
+            CombatantAbilityNames::AttackMeleeOffhand,
+            CombatantAbility::create_by_name(&CombatantAbilityNames::AttackMeleeOffhand),
+        );
+        character.combatant_properties.abilities.insert(
+            CombatantAbilityNames::AttackRangedMainhand,
+            CombatantAbility::create_by_name(&CombatantAbilityNames::AttackRangedMainhand),
+        );
 
-        match combatant_class {
-            CombatantClass::Mage => {}
-            CombatantClass::Rogue => {}
-            CombatantClass::Warrior => outfit_new_warrior(game, &mut character),
-            CombatantClass::None => {}
-        }
+        outfit_new_character(game, &mut character);
 
         character
     }

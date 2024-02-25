@@ -1,22 +1,26 @@
+use super::combatant_classes::attributes_per_level::ATTRIBUTES_BY_LEVEL;
 use super::CombatAttributes;
 use super::CombatantProperties;
 use crate::app_consts::AGI_TO_EVASION_RATIO;
 use crate::app_consts::AGI_TO_SPEED_RATIO;
 use crate::app_consts::DEX_TO_ACCURACY_RATIO;
-use crate::app_consts::INT_TO_FOCUS_RATIO;
+use crate::app_consts::DEX_TO_RANGED_ARMOR_PEN_RATIO;
 use crate::app_consts::INT_TO_MP_RATIO;
+use crate::app_consts::STR_TO_MELEE_ARMOR_PEN_RATIO;
 use crate::app_consts::VIT_TO_HP_RATIO;
 use std::collections::HashMap;
 use strum::IntoEnumIterator;
 
 impl CombatantProperties {
     pub fn get_total_attributes(&self) -> HashMap<CombatAttributes, u16> {
+        let combatant_level = self.level;
         let mut total_attributes = HashMap::new();
         for attribute in CombatAttributes::iter() {
             total_attributes.insert(attribute, 0);
         }
 
         add_attributes_to_accumulator(&self.inherent_attributes, &mut total_attributes);
+        add_attributes_to_accumulator(&self.specced_attributes, &mut total_attributes);
 
         for (_slot, item) in &self.equipment {
             match &item.item_properties {
@@ -64,13 +68,6 @@ impl CombatantProperties {
         calculate_and_add_derived_attribute(
             &mut total_attributes,
             &CombatAttributes::Intelligence,
-            CombatAttributes::Focus,
-            INT_TO_FOCUS_RATIO,
-        );
-
-        calculate_and_add_derived_attribute(
-            &mut total_attributes,
-            &CombatAttributes::Intelligence,
             CombatAttributes::Mp,
             INT_TO_MP_RATIO,
         );
@@ -97,6 +94,27 @@ impl CombatantProperties {
         );
 
         total_attributes
+    }
+
+    pub fn get_armor_pen_derrived_attribute_based_on_weapon_type(
+        total_attributes: &HashMap<CombatAttributes, u16>,
+        armor_pen_attribute: &CombatAttributes,
+    ) -> u16 {
+        match armor_pen_attribute {
+            CombatAttributes::Dexterity => {
+                total_attributes
+                    .get(&armor_pen_attribute)
+                    .unwrap_or_else(|| &0)
+                    * DEX_TO_RANGED_ARMOR_PEN_RATIO
+            }
+            CombatAttributes::Strength => {
+                total_attributes
+                    .get(&armor_pen_attribute)
+                    .unwrap_or_else(|| &0)
+                    * STR_TO_MELEE_ARMOR_PEN_RATIO
+            }
+            _ => 0,
+        }
     }
 }
 

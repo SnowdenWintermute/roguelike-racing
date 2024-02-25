@@ -3,7 +3,7 @@ use super::RoguelikeRacerGame;
 use crate::app_consts::error_messages;
 use crate::app_consts::MAX_PARTY_SIZE;
 use crate::character::Character;
-use crate::combatants::CombatantClass;
+use crate::combatants::combatant_classes::CombatantClass;
 use crate::errors::AppError;
 
 impl RoguelikeRacerGame {

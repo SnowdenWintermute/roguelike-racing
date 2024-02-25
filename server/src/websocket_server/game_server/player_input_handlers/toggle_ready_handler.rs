@@ -6,6 +6,7 @@ use common::errors::AppError;
 use common::game::getters::get_mut_player;
 use common::packets::server_to_client::GameServerUpdatePackets;
 use common::packets::WebsocketChannelNamespace;
+use common::utils::server_log;
 use std::time::SystemTime;
 use std::time::UNIX_EPOCH;
 
@@ -50,7 +51,7 @@ impl GameServer {
             true
         })();
 
-        println!("all players readied: {}", all_players_ready);
+        server_log(&format!("all players readied: {}", all_players_ready));
         // if all players have their name in the readied list, start the game
         if all_players_ready {
             let actor_ids: Vec<Option<u32>> = game

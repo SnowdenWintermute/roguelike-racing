@@ -24,6 +24,12 @@ pub enum OneHandedMeleeWeapons {
     RuneSword,
     // MAGICAL SLASHING
     EtherBlade,
+    IceBlade,
+    // FOR MAGES
+    MapleWand,
+    WillowWand,
+    YewWand,
+    RoseWand,
 }
 
 impl fmt::Display for OneHandedMeleeWeapons {
@@ -42,6 +48,11 @@ impl fmt::Display for OneHandedMeleeWeapons {
             OneHandedMeleeWeapons::Rapier => write!(f, "Rapier"),
             OneHandedMeleeWeapons::ShortSpear => write!(f, "Short Spear"),
             OneHandedMeleeWeapons::EtherBlade => write!(f, "Ether Blade"),
+            OneHandedMeleeWeapons::MapleWand => write!(f, "Maple Wand"),
+            OneHandedMeleeWeapons::WillowWand => write!(f, "Willow Wand"),
+            OneHandedMeleeWeapons::YewWand => write!(f, "Yew Wand"),
+            OneHandedMeleeWeapons::RoseWand => write!(f, "Rose Wand"),
+            OneHandedMeleeWeapons::IceBlade => write!(f, "Ice Blade"),
         }
     }
 }

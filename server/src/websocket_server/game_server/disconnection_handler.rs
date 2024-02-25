@@ -4,16 +4,17 @@ use actix::Context;
 use actix::Handler;
 use common::packets::server_to_client::GameServerUpdatePackets;
 use common::packets::WebsocketChannelNamespace;
+use common::utils::server_log;
 
 impl Handler<Disconnect> for GameServer {
     type Result = ();
     fn handle(&mut self, message: Disconnect, _: &mut Context<Self>) {
         let Disconnect { actor_id } = message;
-        println!("Actor with id {} disconnected", actor_id);
+        server_log(&format!("Actor with id {} disconnected", actor_id));
 
         let connected_user = self.sessions.get(&actor_id);
         if connected_user.is_none() {
-            println!("a user disconnected but they weren't in the server's list of users");
+            server_log("a user disconnected but they weren't in the server's list of users");
             return;
         }
         let connected_user = connected_user.expect("is_none checked");
@@ -45,7 +46,7 @@ impl Handler<Disconnect> for GameServer {
         }
         let err = result.err();
         if let Some(error) = err {
-            println!("Server error: {}", error.message)
+            server_log(&format!("Server error: {}", error.message))
         }
 
         // remove them from their game if any
@@ -58,7 +59,7 @@ impl Handler<Disconnect> for GameServer {
                 Some(actor_id),
             );
             if result.is_err() {
-                eprintln!("{:#?}", result)
+                server_log(&format!("{:#?}", result))
             }
         };
 

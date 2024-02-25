@@ -78,7 +78,7 @@ pub fn queue_fire_animations(
             } else {
                 let hp_change = hp_changes_by_entity_id
                     .get(&target_id)
-                    .expect("to have an hp_change_option");
+                    .unwrap_or_else(|| &0);
                 let is_crit = crits_by_entity_id.contains(&target_id);
                 if hp_change <= &0 {
                     HpChangeResult::Damaged(HpChange {
@@ -95,6 +95,7 @@ pub fn queue_fire_animations(
             hp_change_results.push(TargetAndHpChangeResults {
                 target_id,
                 hp_change_result,
+                combat_action: action_result.action.clone(),
             })
         }
         let event_manager = store

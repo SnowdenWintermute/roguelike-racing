@@ -3,6 +3,7 @@ use super::CharacterAndDirection;
 use super::CharacterAndItem;
 use super::CharacterAndSlot;
 use super::CharacterId;
+use super::ExperienceChange;
 use super::GameMessages;
 use super::WebsocketChannelNamespace;
 use crate::app_consts::LOBBY_CHANNEL;
@@ -12,7 +13,8 @@ use crate::combat::combat_actions::CombatActionTarget;
 use crate::combat::ActionResult;
 use crate::combat::CombatTurnResult;
 use crate::combatants::abilities::CombatantAbilityNames;
-use crate::combatants::CombatantClass;
+use crate::combatants::combat_attributes::CombatAttributes;
+use crate::combatants::combatant_classes::CombatantClass;
 use crate::dungeon_rooms::DungeonRoom;
 use crate::dungeon_rooms::DungeonRoomTypes;
 use crate::game::RoguelikeRacerGame;
@@ -68,6 +70,7 @@ pub enum GameServerUpdatePackets {
     DungeonFloorNumber(u8),
     DungeonRoomTypesOnCurrentFloor(VecDeque<Option<DungeonRoomTypes>>),
     GameMessage(GameMessages),
+    CharacterSpentAttributePoint(CharacterId, CombatAttributes),
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Default)]
@@ -213,6 +216,7 @@ pub enum BattleConclusion {
 pub struct BattleEndReportPacket {
     pub conclusion: BattleConclusion,
     pub loot: Option<Vec<Item>>,
+    pub exp_changes: Option<Vec<ExperienceChange>>,
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]

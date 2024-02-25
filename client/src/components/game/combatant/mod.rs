@@ -1,4 +1,5 @@
 mod combatant_animation_manager;
+pub mod combatant_class_icon;
 mod combatant_is_ally;
 mod combatant_is_selected;
 mod combatant_is_targeted;
@@ -6,6 +7,7 @@ mod focus_character_button;
 mod process_next_action_result_in_combatant_event_queue;
 mod process_next_animation_in_combatant_animation_queue;
 mod value_bar;
+use crate::components::common_components::atoms::hoverable_tooltip_wrapper::HoverableTooltipWrapper;
 use crate::components::common_components::atoms::targeting_indicator::TargetingIndicator;
 use crate::components::game::combatant::combatant_animation_manager::CombatantAnimationManager;
 use crate::components::game::combatant::focus_character_button::FocusCharacterButton;
@@ -17,7 +19,6 @@ use crate::store::game_store::{self};
 use common::combatants::combat_attributes::CombatAttributes;
 use common::combatants::CombatantProperties;
 use common::primatives::EntityProperties;
-use gloo::console::log;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
@@ -34,17 +35,11 @@ pub fn combatant(props: &Props) -> Html {
     let name = props.entity_properties.name.clone();
     let combatant_properties = props.combatant_properties.clone();
 
-    if id == 2 {
-        log!(format!(
-            "target: {:?}",
-            combatant_properties.combat_action_targets,
-        ));
-    }
-
     let cloned_entity_properties = props.entity_properties.clone();
     let cloned_combatant_properties = combatant_properties.clone();
+    let cloned_game_dispatch = game_dispatch.clone();
     let handle_click = Callback::from(move |_| {
-        game_dispatch.reduce_mut(|store| {
+        cloned_game_dispatch.reduce_mut(|store| {
             store.detailed_entity = Some(DetailableEntities::Combatant(
                 game_store::CombatantDetails {
                     entity_properties: cloned_entity_properties.clone(),
@@ -66,7 +61,7 @@ pub fn combatant(props: &Props) -> Html {
     let selected_style = if is_selected { "border-yellow-400" } else { "" };
 
     let styles = format!(
-        "flex border border-slate-400 mb-2 w-40 relative {}",
+        "flex border border-slate-400 mb-2 relative h-fit w-fit {}",
         selected_style
     );
 
@@ -80,9 +75,40 @@ pub fn combatant(props: &Props) -> Html {
     let max_hp_option = total_attributes.get(&CombatAttributes::Hp);
     let max_mp_option = total_attributes.get(&CombatAttributes::Mp);
 
+    let event_manager_option = game_state
+        .action_results_manager
+        .combantant_event_managers
+        .get(&id);
+    let animating = if let Some(event_manager) = event_manager_option {
+        event_manager.animation_queue.len() > 0
+    } else {
+        false
+    };
+
+    let cloned_game_dispatch = game_dispatch.clone();
+    let handle_unspent_attributes_button_click = Callback::from(move |_: MouseEvent| {
+        cloned_game_dispatch.reduce_mut(|store| {
+            store.focused_character_id = id;
+            store.viewing_attribute_point_assignment_menu = true;
+        })
+    });
+
+    let unspent_attributes_button = if is_ally && combatant_properties.unspent_attribute_points > 0
+    {
+        html!(
+            <button onclick={handle_unspent_attributes_button_click}
+                class="bg-ffxipink h-5 w-5 border border-slate-950 text-slate-950 absolute top-1 left-1 text-lg leading-3" >
+                { "+" }
+            </button>
+        )
+    } else {
+        html!()
+    };
+
     html!(
-        <div class={styles}>
-            if targeted_by.len() > 0{
+        <div class={styles} >
+            {unspent_attributes_button}
+            if targeted_by.len() > 0 {
                 <div class="absolute top-[-1.5rem] left-1/2 -translate-x-1/2 z-20
                             flex" >
                             {targeted_by.iter().map(|combatant_id_and_with_what| html!(
@@ -98,10 +124,13 @@ pub fn combatant(props: &Props) -> Html {
                     {"active"}
                 </div>
             }
-            <button class={"flex flex-col bg-slate-700
-                text-left p-2 cursor-help w-full overflow-hidden"} onclick={handle_click} id={format!("combatant-{}", id)} >
-                <div class="pointer-events-none" >
-                    {name}
+            <button class={"flex flex-col bg-slate-700 w-40
+                text-left p-2 cursor-help overflow-hidden"} onclick={handle_click} id={format!("combatant-{}", id)} >
+                <div class="pointer-events-none whitespace-nowrap overflow-ellipsis" >
+                    if !animating {
+                        {name}
+                    }
+                    <CombatantAnimationManager combatant_id={id} />
                 </div>
                 <div class="h-5 w-full pointer-events-none" >
                 {
@@ -112,7 +141,7 @@ pub fn combatant(props: &Props) -> Html {
                     }
                 }
                 </div>
-                <div class="h-5 w-full pointer-events-none" >
+                <div class="h-5 w-full pointer-events-none mb-2" >
                 {
                     if let Some(max_mp) = max_mp_option {
                         html!(
@@ -123,10 +152,23 @@ pub fn combatant(props: &Props) -> Html {
                     }
                 }
                 </div>
-                <CombatantAnimationManager combatant_id={id} />
+                <div class="w-full flex pointer-events-none items-end" >
+                <span class="mr-2 whitespace-nowrap inline-block leading-3" >{format!( "Lv. {}", combatant_properties.level )}</span>
+                {
+                    if let Some(required_exp_to_level) = combatant_properties.experience_points.required_for_next_level {
+                        html!(
+                            <div class="h-2 w-full">
+                                <ValueBar max={required_exp_to_level} curr={combatant_properties.experience_points.current} color={"ffxipink"} hide_numbers={ true } />
+                            </div>
+                            )
+                    } else {
+                        html!()
+                    }
+                }
+                </div>
             </button>
             if is_ally {
-                <FocusCharacterButton id={id} is_ally={is_ally} />
+                <FocusCharacterButton id={id} is_ally={is_ally} combatant_class={props.combatant_properties.combatant_class.clone()} />
             }
         </div>
     )

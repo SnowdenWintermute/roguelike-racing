@@ -1,4 +1,5 @@
 #![allow(unused)]
+use common::combat::combat_actions::CombatAction;
 use common::combat::ActionResult;
 use common::combat::CombatTurnResult;
 use std::collections::HashMap;
@@ -38,13 +39,14 @@ pub enum HpChangeResult {
 pub struct TargetAndHpChangeResults {
     pub target_id: u32,
     pub hp_change_result: HpChangeResult,
+    pub combat_action: CombatAction,
 }
 
 #[derive(PartialEq, Clone, Debug)]
 pub enum CombatantAnimation {
     TurnToFaceCombatant(u32),
     ApproachCombatant(u32),
-    SwingMainHandToHit(u32, Option<i16>, bool),
+    SwingMainHandToHit(Vec<TargetAndHpChangeResults>),
     SwingOffHandToHit,
     MainHandFollowThroughSwing,
     OffHandFollowThroughSwing,
@@ -62,11 +64,8 @@ impl Display for CombatantAnimation {
         let to_write = match self {
             CombatantAnimation::TurnToFaceCombatant(id) => format!("turing to face {}", id),
             CombatantAnimation::ApproachCombatant(id) => format!("approaching combatant {}", id),
-            CombatantAnimation::SwingMainHandToHit(id, hp_change, evaded) => {
-                format!(
-                    "swinging main hand to hit {:?} for {:?} evaded: {evaded}",
-                    id, hp_change
-                )
+            CombatantAnimation::SwingMainHandToHit(targets_and_hp_changes) => {
+                format!("swinging main hand to hit",)
             }
             CombatantAnimation::SwingOffHandToHit => format!("swung offhand to hit"),
             CombatantAnimation::MainHandFollowThroughSwing => format!("main hand follow through"),

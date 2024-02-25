@@ -6,6 +6,7 @@ use common::adventuring_party::AdventuringParty;
 use common::app_consts::error_messages::{self};
 use common::character::Character;
 use common::combat::battle::Battle;
+use common::combat::combat_actions::CombatAction;
 use common::combatants::combat_attributes::CombatAttributes;
 use common::combatants::CombatantProperties;
 use common::errors::AppError;
@@ -51,6 +52,7 @@ pub struct GameStore {
     pub current_battle_end_report: Option<BattleEndReportPacket>,
     pub detailed_entity: Option<DetailableEntities>,
     pub hovered_entity: Option<DetailableEntities>,
+    pub hovered_action: Option<CombatAction>,
     pub selected_item: Option<Item>,
     pub compared_item: Option<Item>,
     pub compared_slot: Option<EquipmentSlots>,

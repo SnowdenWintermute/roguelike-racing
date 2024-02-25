@@ -46,7 +46,7 @@ pub fn determine_action_button_text(action: GameActions, game_state: Rc<GameStor
         GameActions::SetAssignAttributePointsMenuOpen(_open_status) => {
             "Assign attributes".to_string()
         }
-        GameActions::AssignAttributePoint(_attribute) => "Increase attribute".to_string(),
+        GameActions::AssignAttributePoint(attribute) => format!("{attribute}"),
         GameActions::CycleTargets(direction) => match direction {
             common::primatives::NextOrPrevious::Next => "Next target".to_string(),
             common::primatives::NextOrPrevious::Previous => "Prev target".to_string(),

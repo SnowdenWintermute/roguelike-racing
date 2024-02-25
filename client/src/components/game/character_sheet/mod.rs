@@ -1,11 +1,8 @@
 pub mod character_attributes;
 mod paper_doll;
-use crate::{
-    components::game::character_sheet::{
-        character_attributes::CharacterAttributes, paper_doll::PaperDoll,
-    },
-    store::game_store::GameStore,
-};
+use crate::components::game::character_sheet::character_attributes::CharacterAttributes;
+use crate::components::game::character_sheet::paper_doll::PaperDoll;
+use crate::store::game_store::GameStore;
 use common::character::Character;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
@@ -34,6 +31,7 @@ pub fn character_sheet(props: &Props) -> Html {
             <CharacterAttributes
                 entity_properties={character.entity_properties.clone()}
                 combatant_properties={character.combatant_properties.clone()}
+                show_attribute_assignment_buttons={true}
             />
         </section>
     )

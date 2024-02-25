@@ -14,6 +14,7 @@ use crate::items::equipment::shields::Shields;
 use crate::items::equipment::two_handed_melee_weapons::TwoHandedMeleeWeapons;
 use crate::items::equipment::two_handed_ranged_weapons::TwoHandedRangedWeapons;
 use crate::items::equipment::EquipmentTypes;
+use crate::utils::server_log;
 use core::fmt::Debug;
 use rand::prelude::*;
 use strum::IntoEnumIterator;
@@ -54,8 +55,9 @@ where
 pub fn generate_base_equipment(level: u8) -> BaseEquipment {
     let categories: Vec<EquipmentTypes> = EquipmentTypes::iter().collect();
     let category = categories.choose(&mut rand::thread_rng()).unwrap();
-    println!("generating random equipment in category: {category}");
-
+    server_log(&format!(
+        "generating random equipment in category: {category}"
+    ));
     match category {
         EquipmentTypes::BodyArmor(_, _) => {
             let possible_base_items = BODY_ARMORS_BY_LEVEL.get(&level);
@@ -63,7 +65,6 @@ pub fn generate_base_equipment(level: u8) -> BaseEquipment {
             if let Ok(base_item) = base_item_result {
                 BaseEquipment::BodyArmor(base_item)
             } else {
-                println!("body by level: {:#?}", possible_base_items);
                 generate_base_equipment(level)
             }
         }
@@ -73,7 +74,6 @@ pub fn generate_base_equipment(level: u8) -> BaseEquipment {
             if let Ok(base_item) = base_item_result {
                 BaseEquipment::HeadGear(base_item)
             } else {
-                println!("head by level: {:#?}", possible_base_items);
                 generate_base_equipment(level)
             }
         }
@@ -85,7 +85,6 @@ pub fn generate_base_equipment(level: u8) -> BaseEquipment {
             if let Ok(base_item) = base_item_result {
                 BaseEquipment::OneHandedMeleeWeapon(base_item)
             } else {
-                println!("1hmelee by level: {:#?}", possible_base_items);
                 generate_base_equipment(level)
             }
         }
@@ -95,7 +94,6 @@ pub fn generate_base_equipment(level: u8) -> BaseEquipment {
             if let Ok(base_item) = base_item_result {
                 BaseEquipment::TwoHandedMeleeWeapon(base_item)
             } else {
-                println!("2hmelee by level: {:#?}", possible_base_items);
                 generate_base_equipment(level)
             }
         }
@@ -105,7 +103,6 @@ pub fn generate_base_equipment(level: u8) -> BaseEquipment {
             if let Ok(base_item) = base_item_result {
                 BaseEquipment::TwoHandedRangedWeapon(base_item)
             } else {
-                println!("2hranged by level: {:#?}", possible_base_items);
                 generate_base_equipment(level)
             }
         }
@@ -115,7 +112,6 @@ pub fn generate_base_equipment(level: u8) -> BaseEquipment {
             if let Ok(base_item) = base_item_result {
                 BaseEquipment::Shield(base_item)
             } else {
-                println!("shields by level: {:#?}", possible_base_items);
                 generate_base_equipment(level)
             }
         }

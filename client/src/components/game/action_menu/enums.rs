@@ -9,7 +9,7 @@ pub enum MenuTypes {
     CombatActionSelected,
     OutOfCombat,
     LevelUpAbilities,
-    AttributePointAssignment,
+    AssignAttributePoints,
     InventoryOpen,
     ViewingEquipedItems,
     ItemSelected(u32),

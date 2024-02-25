@@ -1,122 +1,117 @@
-use crate::combat::ability_handlers::ability_resolution_calculators::calculate_weapon_swing_result::calculate_weapon_swing_result;
+use crate::app_consts::error_messages::INVALID_EQUIPMENT_EQUIPPED;
 use crate::combat::battle::Battle;
-use crate::app_consts::error_messages;
+use crate::combat::combat_actions::CombatAction;
+use crate::combat::combat_actions::CombatActionTarget;
 use crate::combat::ActionResult;
-use crate::combat::combat_actions::{CombatActionTarget, TargetingScheme};
+use crate::combatants::abilities::CombatantAbilityNames;
 use crate::errors::AppError;
 use crate::game::RoguelikeRacerGame;
+use crate::items::equipment::EquipmentProperties;
 use crate::items::equipment::EquipmentSlots;
-use crate::items::equipment::unarmed::FIST;
+use crate::items::equipment::EquipmentTypes;
 
 impl RoguelikeRacerGame {
     pub fn attack_handler(
         &self,
-        ability_user_id: u32,
-        ability_target: &CombatActionTarget,
+        action_user_id: u32,
+        targets: &CombatActionTarget,
         battle_option: Option<&Battle>,
+        ally_ids: Vec<u32>,
     ) -> Result<Vec<ActionResult>, AppError> {
+        // ALL TARGET VALIDATION SHOULD BE DONE ALREADY WHEN SELECTING THE ABILITY
+        let (_, combatant_properties) = self.get_combatant_by_id(&action_user_id)?;
+        let combatant_level = combatant_properties.level;
+
         let mut action_results = vec![];
-        let battle = battle_option.ok_or_else(|| AppError {
-            error_type: crate::errors::AppErrorTypes::Generic,
-            message: error_messages::INVALID_USABILITY_CONTEXT.to_string(),
-        })?;
-
-        let (ally_ids, opponent_ids_option) =
-            battle.get_ally_ids_and_opponent_ids_option(ability_user_id)?;
-
-        let target_entity_id = ability_target.get_targets_if_scheme_valid(
-            ally_ids,
-            opponent_ids_option,
-            vec![TargetingScheme::All, TargetingScheme::Area],
-        )?[0];
-
-        let (_, target_combatant_properties) =
-            self.get_combatant_in_battle_by_id(&battle, &target_entity_id)?;
-        let target_combatant_properties = target_combatant_properties.clone();
-        let (_, user_combatant_properties) =
-            self.get_combatant_in_battle_by_id(&battle, &ability_user_id)?;
-        let user_total_attributes = user_combatant_properties.get_total_attributes();
-        let target_total_attributes = target_combatant_properties.get_total_attributes();
-
+        // DETERMINE USER WEAPONS
+        let (_, user_combatant_properties) = self.get_combatant_by_id(&action_user_id)?;
         let mh_equipment_option =
             user_combatant_properties.get_equipped_item(&EquipmentSlots::MainHand);
         let oh_equipment_option =
             user_combatant_properties.get_equipped_item(&EquipmentSlots::OffHand);
         // check for sheilds since they can't be used to attack
-        let mh_weapon_option = match mh_equipment_option {
-            Some(equipment_properties) => match equipment_properties.is_weapon() {
-                true => Some(equipment_properties),
-                false => None,
-            },
-            None => None,
-        };
-        let oh_weapon_option = match oh_equipment_option {
-            Some(equipment_properties) => match equipment_properties.is_weapon() {
-                true => Some(equipment_properties),
-                false => None,
-            },
-            None => None,
-        };
+        let mh_weapon_option = EquipmentProperties::get_weapon_equipment_properties_option_from_equipment_properties_option(mh_equipment_option);
+        let oh_weapon_option = EquipmentProperties::get_weapon_equipment_properties_option_from_equipment_properties_option(oh_equipment_option);
 
-        // WEILDING WEAPON(S)
-        if mh_weapon_option.is_some() || oh_weapon_option.is_some() {
-            let mh_swing_ends_turn = oh_weapon_option.is_none();
-            if let Some(mh_weapon_properties) = mh_weapon_option {
-                action_results.push(calculate_weapon_swing_result(
-                    ability_user_id,
-                    ability_target,
-                    target_entity_id,
-                    &user_total_attributes,
-                    &target_total_attributes,
-                    mh_weapon_properties,
-                    false,
-                    mh_swing_ends_turn,
-                )?);
+        let mh_attack_ends_turn = EquipmentProperties::is_shield(oh_equipment_option)
+            || if let Some(mh_weapon_properties) = mh_weapon_option {
+                mh_weapon_properties.is_two_handed()
+            } else {
+                false
             };
-            if let Some(oh_weapon_properties) = oh_weapon_option {
-                action_results.push(calculate_weapon_swing_result(
-                    ability_user_id,
-                    ability_target,
-                    target_entity_id,
-                    &user_total_attributes,
-                    &target_total_attributes,
-                    oh_weapon_properties,
-                    true,
-                    true,
-                )?);
-            };
-        } else {
-            // UNARMED
-            let mh_swing_ends_turn = oh_equipment_option.is_some();
-            if mh_equipment_option.is_none() {
-                action_results.push(calculate_weapon_swing_result(
-                    ability_user_id,
-                    ability_target,
-                    target_entity_id,
-                    &user_total_attributes,
-                    &target_total_attributes,
-                    &FIST,
-                    false,
-                    mh_swing_ends_turn,
-                )?);
-            }
-            if !mh_swing_ends_turn {
-                println!("calculating oh unarmed swing: ");
-                if oh_equipment_option.is_none() {
-                    action_results.push(calculate_weapon_swing_result(
-                        ability_user_id,
-                        ability_target,
-                        target_entity_id,
-                        &user_total_attributes,
-                        &target_total_attributes,
-                        &FIST,
-                        true,
-                        true,
-                    )?);
+
+        // MAIN HAND RESULT
+        let mh_attack_ability_name = if let Some(mh_weapon_properties) = mh_weapon_option {
+            match &mh_weapon_properties.equipment_type {
+                EquipmentTypes::TwoHandedRangedWeapon(..) => {
+                    CombatantAbilityNames::AttackRangedMainhand
+                }
+                EquipmentTypes::TwoHandedMeleeWeapon(..) => {
+                    CombatantAbilityNames::AttackMeleeMainhand
+                }
+                EquipmentTypes::OneHandedMeleeWeapon(..) => {
+                    CombatantAbilityNames::AttackMeleeMainhand
+                }
+                _ => {
+                    return Err(AppError {
+                        error_type: crate::errors::AppErrorTypes::Generic,
+                        message: INVALID_EQUIPMENT_EQUIPPED.to_string(),
+                    })
                 }
             }
-        }
+        } else {
+            CombatantAbilityNames::AttackMeleeMainhand
+        };
+        let mh_attack_action = CombatAction::AbilityUsed(mh_attack_ability_name.clone());
+        let mh_attack_ability_attributes = mh_attack_ability_name.get_attributes();
+        let mut mh_attack_result = self.calculate_action_hp_and_mp_changes(
+            mh_attack_action,
+            action_user_id,
+            targets,
+            battle_option,
+            ally_ids.clone(),
+            Some((
+                combatant_level,
+                mh_attack_ability_attributes.base_hp_change_values_level_multiplier,
+            )),
+        )?;
 
+        mh_attack_result.ends_turn = mh_attack_ends_turn;
+        action_results.push(mh_attack_result);
+
+        // OFF HAND RESULT IF ANY
+        if !mh_attack_ends_turn && !EquipmentProperties::is_shield(oh_equipment_option) {
+            let oh_attack_ability_name = if let Some(oh_weapon_properties) = oh_weapon_option {
+                match &oh_weapon_properties.equipment_type {
+                    EquipmentTypes::OneHandedMeleeWeapon(..) => {
+                        CombatantAbilityNames::AttackMeleeOffhand
+                    }
+                    _ => {
+                        return Err(AppError {
+                            error_type: crate::errors::AppErrorTypes::Generic,
+                            message: INVALID_EQUIPMENT_EQUIPPED.to_string(),
+                        })
+                    }
+                }
+            } else {
+                CombatantAbilityNames::AttackMeleeOffhand
+            };
+            let oh_attack_action = CombatAction::AbilityUsed(oh_attack_ability_name.clone());
+            let oh_attack_ability_attributes = oh_attack_ability_name.get_attributes();
+            let oh_attack_result = self.calculate_action_hp_and_mp_changes(
+                oh_attack_action,
+                action_user_id,
+                targets,
+                battle_option,
+                ally_ids,
+                Some((
+                    combatant_level,
+                    oh_attack_ability_attributes.base_hp_change_values_level_multiplier,
+                )),
+            )?;
+
+            action_results.push(oh_attack_result);
+        }
         Ok(action_results)
     }
 }

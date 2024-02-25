@@ -28,7 +28,7 @@ pub fn items_on_ground() -> Html {
 
     html!(
     <ul id="items on ground"
-        class="list-none overflow-y-auto"
+        class="list-none overflow-y-auto w-full"
     >
         {items_to_display.iter().map(|item|
             html!(

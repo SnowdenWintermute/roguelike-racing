@@ -20,6 +20,7 @@ use super::AppMessage;
 use super::ClientBinaryMessage;
 use super::ClientMessage;
 use crate::utils::generate_random_username;
+use common::utils::server_log;
 
 #[derive(Debug)]
 pub struct UserWebsocketChannels {
@@ -90,10 +91,9 @@ impl Actor for GameServer {
 impl Handler<ClientBinaryMessage> for GameServer {
     type Result = ();
     fn handle(&mut self, message: ClientBinaryMessage, _: &mut Context<Self>) {
-        println!("message received: {:?}", message.content);
         let byte_slice = &message.content[..];
         let deserialized: Result<PlayerInputs, _> = serde_cbor::from_slice(byte_slice);
-        println!("deserialized: {:?}", deserialized);
+        server_log(&format!("packet from client: {:?}", deserialized));
         let result = match deserialized {
             Ok(PlayerInputs::CreateGame(game_creation_data)) => {
                 self.create_game_handler(message.actor_id, game_creation_data)
@@ -156,19 +156,27 @@ impl Handler<ClientBinaryMessage> for GameServer {
             }
             Ok(PlayerInputs::AcknowledgeReceiptOfItemOnGroundUpdate(item_id)) => self
                 .client_acknowledges_receipt_of_item_on_ground_handler(message.actor_id, item_id),
+            Ok(PlayerInputs::IncrementAttribute(character_id, attribute)) => self
+                .character_spends_attribute_point_handler(
+                    message.actor_id,
+                    character_id,
+                    attribute,
+                ),
             _ => {
-                println! {"unhandled binary message\n {:#?}:",deserialized};
+                server_log(&format!("unhandled binary message\n {:#?}:", deserialized));
                 Ok(())
             }
         };
         match result {
             Err(app_error) => {
-                println!("{:#?}", app_error);
+                server_log(&format!("{:#?}", app_error));
                 match self.send_packet(
                     &GameServerUpdatePackets::Error(app_error.message),
                     message.actor_id,
                 ) {
-                    Err(app_error) => eprintln!("{:#?}", app_error),
+                    Err(app_error) => {
+                        server_log(&format!("{:#?}", app_error));
+                    }
                     _ => (),
                 }
             }
@@ -180,7 +188,7 @@ impl Handler<ClientBinaryMessage> for GameServer {
 impl Handler<ClientMessage> for GameServer {
     type Result = ();
     fn handle(&mut self, message: ClientMessage, _: &mut Context<Self>) {
-        println!("message received: {}", message.content);
+        server_log(&format!("message received: {}", message.content));
         let channel_option = &self
             .sessions
             .get(&message.actor_id)
@@ -190,8 +198,8 @@ impl Handler<ClientMessage> for GameServer {
 
         if let Some(channel) = channel_option {
             let result = self.send_string_message(&channel, message.content.as_str());
-            if result.is_err() {
-                eprintln!("{:#?}", result);
+            if let Err(e) = result {
+                server_log(&format!("{:#?}", e));
             }
         }
     }

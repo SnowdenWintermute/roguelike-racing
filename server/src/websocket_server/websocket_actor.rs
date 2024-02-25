@@ -1,5 +1,6 @@
 use crate::websocket_server;
 use actix::prelude::*;
+use common::utils::server_log;
 // use actix_web::web::Buf;
 use actix_web_actors::ws;
 use std::time::Duration;
@@ -19,7 +20,7 @@ impl WebsocketActor {
     fn heartbeat(&self, context: &mut ws::WebsocketContext<Self>) {
         context.run_interval(HEARTBEAT_INTERVAL, |act, context| {
             if Instant::now().duration_since(act.time_of_last_ping_received) > CLIENT_TIMEOUT {
-                println!("Websocket Client heartbeat failed, disconnecting!");
+                server_log("Websocket Client heartbeat failed, disconnecting!");
                 act.game_server_actor_address
                     .do_send(websocket_server::Disconnect { actor_id: act.id });
                 context.stop();
@@ -105,7 +106,6 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WebsocketActor {
             }
             ws::Message::Text(text) => {
                 let m = text.trim();
-                println!("{}", text);
                 // we check for /sss type of messages
                 if m.starts_with('/') {
                     let v: Vec<&str> = m.splitn(2, ' ').collect();
@@ -113,7 +113,6 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WebsocketActor {
                         "/list" => {
                             // Send ListRooms message to chat server and wait for
                             // response
-                            println!("List rooms");
                             // self.game_server_actor_address
                             //     .send(websocket_server::ListRooms)
                             //     .into_actor(self)
@@ -124,7 +123,7 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WebsocketActor {
                             //                     context.text(room);
                             //                 }
                             //             }
-                            //             _ => println!("Something is wrong"),
+                            //             _ => (),
                             //         }
                             //         fut::ready(())
                             //     })

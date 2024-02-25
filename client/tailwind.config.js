@@ -15,6 +15,7 @@ module.exports = {
         waterblue: "#332e92",
         darknessblack: "#2e2514",
         lightwhite: "#a7a08d",
+        ffxipink: "#ff9b9b",
       },
       keyframes: {
         "slide-left-appear-keyframes": {

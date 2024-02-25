@@ -1,23 +1,23 @@
 pub mod abilities;
+pub mod award_levelups;
 pub mod combat_attributes;
+pub mod combatant_classes;
 pub mod combatant_traits;
 mod equip_item;
-pub mod get_base_ability_damage_bonus;
 mod get_total_elemental_affinites;
+mod get_total_physical_damage_type_affinities;
+use self::combatant_classes::CombatantClass;
 use self::combatant_traits::CombatantTraits;
 use crate::combat::combat_actions::CombatAction;
 mod get_equipped_item;
 mod get_equipped_weapon_properties;
 mod get_total_attributes;
-mod get_weapon_damage_and_hit_chance;
 pub mod inventory;
 mod unequip_item;
 use crate::combat::combat_actions::CombatActionTarget;
 use crate::combat::magical_elements::MagicalElements;
-use crate::items::equipment::unarmed::FIST;
 use crate::items::equipment::EquipmentProperties;
 use crate::items::equipment::EquipmentTypes;
-pub mod get_weapon_properties_traits_and_base_bonus_damage;
 mod set_new_ability_target_preferences;
 use self::abilities::CombatantAbility;
 use self::abilities::CombatantAbilityNames;
@@ -29,29 +29,9 @@ use crate::items::equipment::EquipmentSlots;
 use crate::items::Item;
 use crate::status_effects::StatusEffects;
 use crate::utils::add_i16_to_u16_and_clamp_to_max;
-use core::fmt;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
-pub enum CombatantClass {
-    Warrior,
-    Mage,
-    Rogue,
-    None,
-}
-
-impl fmt::Display for CombatantClass {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            CombatantClass::Warrior => write!(f, "Warrior"),
-            CombatantClass::Mage => write!(f, "Mage"),
-            CombatantClass::Rogue => write!(f, "Rogue"),
-            CombatantClass::None => write!(f, "None"),
-        }
-    }
-}
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum CombatantControlledBy {
@@ -60,9 +40,20 @@ pub enum CombatantControlledBy {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct ExperiencePoints {
+    pub current: u16,
+    pub required_for_next_level: Option<u16>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct CombatantProperties {
     pub combatant_class: CombatantClass,
     pub inherent_attributes: HashMap<CombatAttributes, u16>,
+    pub specced_attributes: HashMap<CombatAttributes, u16>,
+    pub level: u8,
+    pub experience_points: ExperiencePoints,
+    pub unspent_attribute_points: u8,
+    pub unspent_ability_points: u8,
     pub hit_points: u16,
     pub mana: u16,
     pub status_effects: Vec<StatusEffects>,
@@ -85,7 +76,15 @@ impl CombatantProperties {
         CombatantProperties {
             combatant_class: combatant_class.clone(),
             inherent_attributes: HashMap::new(),
-            hit_points: 0,
+            specced_attributes: HashMap::new(),
+            level: 1,
+            hit_points: 1,
+            experience_points: ExperiencePoints {
+                current: 0,
+                required_for_next_level: Some(100),
+            },
+            unspent_attribute_points: 0,
+            unspent_ability_points: 0,
             mana: 0,
             status_effects: vec![],
             equipment: HashMap::new(),
@@ -96,6 +95,18 @@ impl CombatantProperties {
             selected_combat_action: None,
             combat_action_targets: None,
             controlled_by,
+        }
+    }
+
+    pub fn set_hp_and_mp_to_max(&mut self) {
+        let total_attributes = self.get_total_attributes();
+        let max_hp_option = total_attributes.get(&CombatAttributes::Hp);
+        if let Some(max_hp) = max_hp_option {
+            self.hit_points = *max_hp;
+        }
+        let max_mana_option = total_attributes.get(&CombatAttributes::Mp);
+        if let Some(max_mana) = max_mana_option {
+            self.mana = *max_mana
         }
     }
 
@@ -159,11 +170,20 @@ impl CombatantProperties {
             error_type: crate::errors::AppErrorTypes::InvalidInput,
             message: error_messages::ABILITY_NOT_OWNED.to_string(),
         })?;
-        let ability_attributes = ability_name.get_attributes();
+        Ok(self.get_ability_mana_cost(&ability))
+    }
+
+    pub fn get_ability_mana_cost(&self, ability: &CombatantAbility) -> u8 {
+        let ability_attributes = ability.ability_name.get_attributes();
         let base_mp_cost = ability_attributes.mana_cost;
-        let mana_cost_level_multiplier = ability_attributes.mana_cost_level_multiplier;
-        let level_adjusted_mp_cost = ability.level * (base_mp_cost * mana_cost_level_multiplier);
-        Ok(level_adjusted_mp_cost)
+        let ability_mana_cost_level_multiplier =
+            ability_attributes.ability_level_mana_cost_multiplier;
+        let ability_level_adjusted_mp_cost =
+            ability.level * (base_mp_cost * ability_mana_cost_level_multiplier);
+        let combatant_level_mana_cost_adjustment =
+            self.level * ability_attributes.combatant_level_mana_cost_multiplier;
+
+        combatant_level_mana_cost_adjustment + ability_level_adjusted_mp_cost
     }
 
     pub fn change_hp(&mut self, hp_change: i16) -> u16 {
@@ -198,13 +218,7 @@ impl CombatantProperties {
                 _ => return None,
             }
         } else {
-            match slot {
-                EquipmentSlots::MainHand | EquipmentSlots::OffHand => match FIST.equipment_type {
-                    EquipmentTypes::OneHandedMeleeWeapon(_, _) => Some(&FIST),
-                    _ => None,
-                },
-                _ => None,
-            }
+            None
         }
     }
 }

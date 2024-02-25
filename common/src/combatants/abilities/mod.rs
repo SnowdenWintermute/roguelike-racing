@@ -21,7 +21,7 @@ impl CombatantAbility {
 impl Default for CombatantAbility {
     fn default() -> CombatantAbility {
         CombatantAbility {
-            ability_name: CombatantAbilityNames::Attack,
+            ability_name: CombatantAbilityNames::AttackMeleeMainhand,
             level: 0,
         }
     }
@@ -30,10 +30,11 @@ impl Default for CombatantAbility {
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Serialize, Deserialize, PartialOrd, Ord)]
 pub enum CombatantAbilityNames {
     Attack,
-    ArmorBreak,
-    HeatLance,
+    AttackMeleeMainhand,
+    AttackMeleeOffhand,
+    AttackRangedMainhand,
     Fire,
-    RainStorm,
+    Ice,
     Healing,
 }
 
@@ -41,11 +42,12 @@ impl Display for CombatantAbilityNames {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             CombatantAbilityNames::Attack => write!(f, "Attack"),
-            CombatantAbilityNames::HeatLance => write!(f, "Heat Lance"),
-            CombatantAbilityNames::ArmorBreak => write!(f, "Armor Break"),
+            CombatantAbilityNames::AttackMeleeMainhand => write!(f, "Attack"),
+            CombatantAbilityNames::AttackMeleeOffhand => write!(f, "Attack"),
+            CombatantAbilityNames::AttackRangedMainhand => write!(f, "Ranged Attack"),
             CombatantAbilityNames::Healing => write!(f, "Healing"),
             CombatantAbilityNames::Fire => write!(f, "Fire"),
-            CombatantAbilityNames::RainStorm => write!(f, "Rain Storm"),
+            CombatantAbilityNames::Ice => write!(f, "Ice"),
         }
     }
 }
@@ -66,6 +68,11 @@ impl CombatantAbility {
             }
             CombatantAbilityNames::Fire => {
                 let mut ability = CombatantAbility::new(CombatantAbilityNames::Fire);
+                ability.level = 1;
+                ability
+            }
+            CombatantAbilityNames::Ice => {
+                let mut ability = CombatantAbility::new(CombatantAbilityNames::Ice);
                 ability.level = 1;
                 ability
             }

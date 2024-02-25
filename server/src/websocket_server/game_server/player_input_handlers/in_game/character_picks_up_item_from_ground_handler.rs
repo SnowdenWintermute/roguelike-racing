@@ -7,6 +7,7 @@ use common::game::getters::get_mut_party;
 use common::packets::server_to_client::GameServerUpdatePackets;
 use common::packets::CharacterAndItem;
 use common::packets::WebsocketChannelNamespace;
+use common::utils::server_log;
 
 impl GameServer {
     pub fn character_picks_up_item_from_ground_handler(
@@ -46,7 +47,7 @@ impl GameServer {
             .get_mut_character_if_owned(player_character_ids_option.clone(), packet.character_id)?;
         let character_id = character.entity_properties.id;
         character.combatant_properties.inventory.items.push(item);
-        println!("character picked up item");
+        server_log(&format!("character picked up item"));
         self.emit_packet(
             &party_websocket_channel_name,
             &WebsocketChannelNamespace::Party,

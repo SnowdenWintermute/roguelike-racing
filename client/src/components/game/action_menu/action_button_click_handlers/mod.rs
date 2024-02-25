@@ -185,6 +185,17 @@ pub fn create_action_button_click_handler<'a>(
                 PlayerInputs::ToggleReadyToGoDownStairs,
             );
         }),
+        GameActions::SetAssignAttributePointsMenuOpen(state) => Box::new(move || {
+            game_dispatch.reduce_mut(|store| store.viewing_attribute_point_assignment_menu = state)
+        }),
+        GameActions::AssignAttributePoint(attribute) => Box::new(move || {
+            game_dispatch.reduce_mut(|store| {
+                send_client_input(
+                    &websocket_state.websocket,
+                    PlayerInputs::IncrementAttribute(store.focused_character_id, attribute.clone()),
+                )
+            })
+        }),
         _ => Box::new(|| ()),
     }
 }

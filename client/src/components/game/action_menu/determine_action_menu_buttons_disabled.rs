@@ -2,6 +2,7 @@ use super::enums::GameActions;
 use crate::store::game_store::get_current_battle_option;
 use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
+use common::combat::combat_actions::CombatAction;
 use common::game::getters::get_character;
 use std::ops::Deref;
 use std::rc::Rc;
@@ -79,9 +80,35 @@ pub fn determine_action_menu_buttons_disabled(
             false
         }
         GameActions::UseSelectedCombatAction => {
-            focused_character.combatant_properties.hit_points == 0
+            focused_character.combatant_properties.hit_points == 0 || {
+                if let Some(action) = &focused_character
+                    .combatant_properties
+                    .selected_combat_action
+                {
+                    let mp_cost = match action {
+                        CombatAction::AbilityUsed(ability_name) => {
+                            let ability_attributes = ability_name.get_attributes();
+                            focused_character
+                                .combatant_properties
+                                .get_ability_cost_if_owned(&ability_name)
+                                .expect("to own the ability")
+                        }
+                        CombatAction::ConsumableUsed(_) => 0,
+                    };
+                    mp_cost as u16 > focused_character.combatant_properties.mana
+                } else {
+                    true
+                }
+            }
         }
         GameActions::ShardItem(_) => !player_owns_character || true,
+        GameActions::AssignAttributePoint(_) => {
+            focused_character
+                .combatant_properties
+                .unspent_attribute_points
+                <= 0
+        }
+        GameActions::SetAssignAttributePointsMenuOpen(_) => !player_owns_character,
 
         _ => false,
     }

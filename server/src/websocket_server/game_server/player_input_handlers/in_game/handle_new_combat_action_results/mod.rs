@@ -1,4 +1,5 @@
 mod action_result_ended_turn;
+mod award_experience_points;
 mod generate_loot_if_appropriate;
 mod get_character_ally_ids;
 mod get_number_of_opponents;

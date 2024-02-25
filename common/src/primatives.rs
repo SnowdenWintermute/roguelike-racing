@@ -1,3 +1,5 @@
+use core::fmt;
+
 use serde::Deserialize;
 use serde::Serialize;
 
@@ -29,6 +31,15 @@ pub enum UpOrDown {
 pub enum WeaponSlot {
     MainHand,
     OffHand,
+}
+
+impl fmt::Display for WeaponSlot {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            WeaponSlot::MainHand => write!(f, "Main Hand"),
+            WeaponSlot::OffHand => write!(f, "Off Hand"),
+        }
+    }
 }
 
 #[derive(PartialEq, Debug, Serialize, Deserialize, Clone)]

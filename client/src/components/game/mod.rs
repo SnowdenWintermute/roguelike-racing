@@ -1,19 +1,20 @@
 pub mod action_menu;
 mod character_autofocus_manager;
-mod character_sheet;
+pub mod character_sheet;
 pub mod combat_log;
 pub mod combatant;
-mod combatant_detail_tab;
+pub mod context_dependant_information_display;
 pub mod debug;
 mod dungeon_room;
-mod tabbed_display;
+mod tailwind_class_loader;
 mod top_info_bar;
 pub mod turn_order_bar;
 use crate::components::game::action_menu::ActionMenu;
 use crate::components::game::character_autofocus_manager::CharacterAutofocusManager;
 use crate::components::game::character_sheet::CharacterSheet;
+use crate::components::game::context_dependant_information_display::ContextDependantInformationDisplay;
 use crate::components::game::dungeon_room::DungeonRoom;
-use crate::components::game::tabbed_display::TabbedDisplay;
+use crate::components::game::tailwind_class_loader::TailwindClassLoader;
 use crate::components::game::top_info_bar::TopInfoBar;
 use crate::store::game_store::GameStore;
 use crate::store::lobby_store::LobbyStore;
@@ -73,11 +74,7 @@ pub fn game() -> Html {
 
     html!(
         <main class="h-screen w-screen bg-slate-800 flex justify-center relative overflow-y-auto">
-        <div id="tailwind-color-loader" class="bg-blue-700" />
-        <div id="tailwind-color-loader" class="border-t-yellow-700" />
-        <div id="tailwind-color-loader" class="border-blue-700" />
-        <div id="tailwind-color-loader" class="border-t-green-600" />
-        <div id="tailwind-color-loader" class="border-green-600" />
+            <TailwindClassLoader />
             <div class="w-full h-full max-w-[80rem] max-h-[67.5rem] pr-4 pl-4 text-zinc-300 flex flex-col" >
                 // <GameDebug />
                 <CharacterAutofocusManager />
@@ -85,14 +82,14 @@ pub fn game() -> Html {
                     <TopInfoBar />
                     <div class="flex flex-grow">
                         <DungeonRoom party_id={party_id} />
-                        if game_state.viewing_inventory && focused_character.is_some(){
+                        if ( game_state.viewing_inventory || game_state.viewing_attribute_point_assignment_menu ) && focused_character.is_some(){
                             <CharacterSheet character={focused_character.as_deref().expect("is_some checked").clone()} />
                         }
                     </div>
                 </div>
                 <div class="flex max-h-1/2 h-[40%] mt-2 mb-4 overflow-y-auto" >
                     <ActionMenu />
-                    <TabbedDisplay />
+                    <ContextDependantInformationDisplay />
                 </div>
             </div>
         </main>

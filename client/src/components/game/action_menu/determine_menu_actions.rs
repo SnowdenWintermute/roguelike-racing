@@ -107,20 +107,9 @@ pub fn determine_menu_actions(
             );
         }
         //
-    } else if game_state.viewing_skill_level_up_menu
-        || game_state.viewing_attribute_point_assignment_menu
-    {
-        menu_types.push(MenuTypes::LevelUpAbilities);
-        let mut ability_names =
-            get_ability_menu_names(&party, game_state.focused_character_id, None);
-        ability_names.sort_by(|a, b| a.partial_cmp(&b).unwrap());
-        new_actions = MenuTypes::get_actions(
-            &menu_types,
-            None,
-            Some(ability_names),
-            None,
-            inventory_is_open,
-        );
+    } else if game_state.viewing_attribute_point_assignment_menu {
+        menu_types.push(MenuTypes::AssignAttributePoints);
+        new_actions = MenuTypes::get_actions(&menu_types, None, None, None, inventory_is_open);
         //
     } else if party.battle_id.is_none() {
         menu_types.push(MenuTypes::OutOfCombat);
@@ -129,6 +118,11 @@ pub fn determine_menu_actions(
             game_state.focused_character_id,
             Some(AbilityUsableContext::InCombat),
         );
+        ability_names.retain(|item| {
+            item != &CombatantAbilityNames::AttackMeleeMainhand
+                && item != &CombatantAbilityNames::AttackMeleeOffhand
+                && item != &CombatantAbilityNames::AttackRangedMainhand
+        });
         ability_names.sort_by(|a, b| a.partial_cmp(&b).unwrap());
         if party.current_room.treasure_chest.is_some() {
             menu_types.push(MenuTypes::UnopenedChest);
@@ -153,6 +147,11 @@ pub fn determine_menu_actions(
             game_state.focused_character_id,
             Some(AbilityUsableContext::OutOfCombat),
         );
+        ability_names.retain(|item| {
+            item != &CombatantAbilityNames::AttackMeleeMainhand
+                && item != &CombatantAbilityNames::AttackMeleeOffhand
+                && item != &CombatantAbilityNames::AttackRangedMainhand
+        });
         ability_names.sort_by(|a, b| a.partial_cmp(&b).unwrap());
         new_actions = MenuTypes::get_actions(
             &menu_types,

@@ -1394,6 +1394,11 @@ video {
   color: rgb(2 6 23 / var(--tw-text-opacity));
 }
 
+.text-earthyellow {
+  --tw-text-opacity: 1;
+  color: rgb(175 169 21 / var(--tw-text-opacity));
+}
+
 .underline {
   text-decoration-line: underline;
 }

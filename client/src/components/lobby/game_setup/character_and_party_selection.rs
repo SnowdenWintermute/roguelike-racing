@@ -1,3 +1,4 @@
+use crate::components::common_components::atoms::divider::Divider;
 use crate::components::common_components::molocules::text_submit::TextSubmit;
 use crate::components::lobby::game_setup::adventuring_party_lobby_card::AdventuringPartyLobbyCard;
 use crate::components::websocket_manager::send_client_input::send_client_input;
@@ -29,7 +30,11 @@ pub fn character_and_party_selection() -> Html {
         Ok(game) => html!(
             <section class="flex-1 p-4 mr-4 bg-slate-700 border border-slate-400" id="game_list">
                 <div class="mb-2" >
-                    <h2 class="mb-2" >{"Game: "} {game.name}</h2>
+                    <h2 class="text-lg mb-2" >{"Game: "} {game.name}</h2>
+                    <p class="text-ffxipink mb-2" >{"Create a party and some characters. For the best chance of survival, a party of three is suggested."}
+                    </p>
+                    <p class="text-ffxipink mb-2" >{"Invite friends to party together or compete in a race, or you may control all the characters in a party and play solo."}</p>
+                    <Divider />
                     <TextSubmit
                         input_name={"new adventuring party name"}
                         input_placeholder={"New party name..."}

@@ -176,7 +176,7 @@ fn welcome_message() -> Html {
             <li>{"Explore the dungeon and try to reach the lowest floor before the other parties get there"}</li>
         </ul>
         <p>
-            <a class="underline" href="https://discord.gg/MyVPQf2Zzm" >{ "Join us on Discord"  }</a>
+            <a class="underline text-yellow-400" href="https://discord.gg/MyVPQf2Zzm" >{ "Join us on Discord"  }</a>
         </p>
         <p>
             <span>{"Please report issues at "}</span>

@@ -2,11 +2,30 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Roguelike Racing</title>
+    <title>Speed Dungeon</title>
     <link data-trunk href="./style/output.css" rel="css" />
     <link data-trunk rel="copy-dir" href="public/" />
+    <link data-trunk rel="copy-dir" href="assets/" />
     <link rel="icon" type="image/x-icon" href="./public/favicon.ico" />
     <base data-trunk-public-url />
   </head>
-  <body></body>
+
+  <body class="bg-slate-800 h-screen w-screen">
+    <div id="yew" class="absolute z-10 pointer-events-none"></div>
+    <canvas id="bevy" class="!w-screen !h-screen"></canvas>
+    <!-- loading indicator -->
+    <div
+      id="loading-indicator"
+      class="absolute z-20 top-1/2 left-1/2 text-lg text-zinc-300 bg-slate-700 border border-slate-400 p-2 transition-opacity duration-1000 -translate-x-1/2 -translate-y-1/2"
+    ></div>
+    <div id="tailwind-class-creator" class="opacity-0 bg-slate-700" />
+    <link
+      data-trunk
+      rel="rust"
+      href="Cargo.toml"
+      data-wasm-opt="z"
+      data-bin="roguelike-racing-client"
+      data-initializer="src/initializer.mjs"
+    />
+  </body>
 </html>

@@ -23,6 +23,6 @@ fn main() {
         CommChannelPlugin::new(bevy_channel.0.clone(), yew_channel.0.clone());
 
     yew_main(yew_channel.0, bevy_channel.0, shared_state.clone());
-    bevy_main(comm_channel_bevy_plugin, shared_state);
+    // bevy_main(comm_channel_bevy_plugin, shared_state);
     //
 }

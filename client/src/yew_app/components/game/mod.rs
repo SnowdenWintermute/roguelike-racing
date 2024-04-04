@@ -71,26 +71,36 @@ pub fn game() -> Html {
     });
 
     let focused_character = party.characters.get(&game_state.focused_character_id);
+    let show_character_sheet = (game_state.viewing_inventory
+        || game_state.viewing_attribute_point_assignment_menu)
+        && focused_character.is_some();
+
+    let conditional_styles = if show_character_sheet {
+        "justify-end"
+    } else {
+        ""
+    };
 
     html!(
-        <main class="h-screen w-screen bg-slate-800 flex justify-center relative overflow-y-auto">
+        <main class="h-screen w-screen flex justify-center overflow-y-auto relative">
             <TailwindClassLoader />
-            <div class="w-full h-full max-w-[80rem] max-h-[67.5rem] pr-4 pl-4 text-zinc-300 flex flex-col" >
-                // <GameDebug />
-                <CharacterAutofocusManager />
-                <div class="flex-1 flex flex-col mb-2 mt-4 h-[60%] max-h-1/2 overflow-y-auto" >
-                    <TopInfoBar />
-                    <div class="flex flex-grow">
-                        <DungeonRoom party_id={party_id} />
-                        if ( game_state.viewing_inventory || game_state.viewing_attribute_point_assignment_menu ) && focused_character.is_some(){
-                            <CharacterSheet character={focused_character.as_deref().expect("is_some checked").clone()} />
-                        }
-                    </div>
+            <CharacterAutofocusManager />
+            // <GameDebug />
+            <div class="w-full h-full max-h-[calc(0.5625 * 100vw)] text-zinc-300 flex flex-col" >
+                <TopInfoBar />
+                <div class="p-2.5 flex-grow" >
+                    // <DungeonRoom party_id={party_id} />
+                    // <div class="flex max-h-1/2 h-[40%] mt-2 mb-4 overflow-y-auto" >
+                    //     <ContextDependantInformationDisplay />
+                    // </div>
                 </div>
-                <div class="flex max-h-1/2 h-[40%] mt-2 mb-4 overflow-y-auto" >
-                    <ActionMenu />
-                    <ContextDependantInformationDisplay />
-                </div>
+            </div>
+            // Action Menu and Inventory/Equipment/Character sheet container
+            <div class={ format!( "absolute z-31 top-1/2 -translate-y-1/2 w-full p-2.5 text-zinc-300 flex flex-row {}", conditional_styles)}>
+                <ActionMenu />
+                if show_character_sheet {
+                    <CharacterSheet character={focused_character.as_deref().expect("is_some checked").clone()} />
+                }
             </div>
         </main>
     )

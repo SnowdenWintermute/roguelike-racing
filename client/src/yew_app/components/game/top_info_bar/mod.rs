@@ -12,7 +12,7 @@ pub fn game() -> Html {
     let party_option = get_current_party_option(&game_state);
 
     html!(
-    <div class="h-10 w-full mb-4 border border-slate-400 bg-slate-700 flex justify-between" >
+    <div class="h-10 w-full border-b border-slate-400 bg-slate-700 flex justify-between pointer-events-auto" >
     if let Some(party) = party_option {
         <div class="p-2" >
             {"Floor "}{party.current_floor}{", room "}{party.rooms_explored.on_current_floor}

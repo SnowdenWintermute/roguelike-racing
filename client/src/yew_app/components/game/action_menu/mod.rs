@@ -141,7 +141,7 @@ pub fn action_menu(_: &Props) -> Html {
 
     html!(
         <section class="w-[22rem] min-w-[22rem] border border-slate-400 bg-slate-700 mr-4 overflow-y-auto
-        flex flex-col justify-between"
+        flex flex-col justify-between pointer-events-auto"
         >
         <ActionMenuChangeDetectionManager action_menu_button_properties={action_menu_button_properties} />
             <div class="overflow-y-auto flex-grow"

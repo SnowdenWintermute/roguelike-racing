@@ -17,9 +17,9 @@ pub fn paper_doll(props: &Props) -> Html {
     let mut equipment = props.equipment.clone();
 
     html!(
-        <div id="paper-doll" class="flex w-1/2" >
-            <div class="w-1/3" >
-                <div class="h-24 mb-2 flex justify-between items-end" >
+        <div id="paper-doll" class="flex w-[23.75rem] mr-5" >
+            <div class="w-[7.5rem] mr-2.5" >
+                <div class="h-[6.25rem] mb-2.5 flex justify-between items-end" >
                     <PaperDollSlot
                         item_option={equipment.remove(&EquipmentSlots::RightRing)}
                         character_attributes={props.attributes.clone()}
@@ -35,22 +35,22 @@ pub fn paper_doll(props: &Props) -> Html {
                     item_option={equipment.remove(&EquipmentSlots::MainHand)}
                     character_attributes={props.attributes.clone()}
                     slot={EquipmentSlots::MainHand}
-                    class="h-40 max-h-40 w-full " />
+                    class="h-[12.125rem] max-h-[12.125rem] w-full" />
             </div>
-            <div class="w-1/3 mr-2 ml-2" >
+            <div class="w-[7.5rem] mr-2.5" >
                 <PaperDollSlot
                     item_option={equipment.remove(&EquipmentSlots::Head)}
                     character_attributes={props.attributes.clone()}
                     slot={EquipmentSlots::Head}
-                    class="h-24 w-full  mb-2" />
+                    class="h-[6.25rem] w-full mb-2.5" />
                 <PaperDollSlot
                     item_option={equipment.remove(&EquipmentSlots::Body)}
                     character_attributes={props.attributes.clone()}
                     slot={EquipmentSlots::Body}
-                    class="h-40 w-full " />
+                    class="h-[12.125rem] max-h-[12.125rem] w-full" />
             </div>
-            <div class="w-1/3" >
-                <div class="h-24 mb-2 flex justify-end items-end" >
+            <div class="w-[7.5rem]" >
+                <div class="h-[6.25rem] mb-2.5 flex justify-end items-end" >
                     <PaperDollSlot
                         item_option={equipment.remove(&EquipmentSlots::Amulet)}
                         character_attributes={props.attributes.clone()}
@@ -61,7 +61,7 @@ pub fn paper_doll(props: &Props) -> Html {
                     item_option={equipment.remove(&EquipmentSlots::OffHand)}
                     character_attributes={props.attributes.clone()}
                     slot={EquipmentSlots::OffHand}
-                    class="h-40 w-full " />
+                    class="h-[12.125rem] w-full" />
             </div>
         </div>
     )

@@ -1,9 +1,9 @@
-mod consumable_details;
 mod equipment_details;
 mod requirements;
 mod unmet_requirements_calculator;
-use crate::yew_app::components::game::context_dependant_information_display::item_details::consumable_details::ConsumableDetails;
 use crate::yew_app::components::game::context_dependant_information_display::item_details::equipment_details::EquipmentDetails;
+use crate::yew_app::components::game::tailwind_class_loader::SPACING_REM;
+use crate::yew_app::components::game::tailwind_class_loader::SPACING_REM_SMALL;
 use crate::yew_app::store::game_store::set_compared_item;
 use crate::yew_app::store::game_store::GameStore;
 use crate::yew_app::store::ui_store::UIStore;
@@ -56,13 +56,11 @@ pub fn item_details(props: &Props) -> Html {
     };
 
     let display = match &props.item.item_properties {
-        ItemProperties::Consumable(properties) => html!(
-        <ConsumableDetails
-            consumable_properties={properties.clone()}
-            requirements={props.item.requirements.clone()}
-            entity_id={item_id}
-        />
-        ),
+        ItemProperties::Consumable(properties) => {
+            let consumable_combat_action =
+                CombatAction::ConsumableUsed(props.item.entity_properties.id);
+            html!(<ActionDetailsContextInfo combat_action={consumable_combat_action} hide_title={true} />)
+        }
         ItemProperties::Equipment(properties) => html!(
         <EquipmentDetails
               equipment_properties={properties.clone()}
@@ -94,20 +92,18 @@ pub fn item_details(props: &Props) -> Html {
         },
     };
 
-    let consumable_action_option = match &props.item.item_properties {
-        ItemProperties::Consumable(_) => Some(CombatAction::ConsumableUsed(
-            props.item.entity_properties.id,
-        )),
-        ItemProperties::Equipment(_) => None,
+    let compared_display_hide_class = if compared_display_option.is_none() {
+        "opacity-0 h-0 pointer-events-none"
+    } else {
+        ""
     };
 
-    if let Some(combat_action) = consumable_action_option {
-        return html!(<ActionDetailsContextInfo combat_action={combat_action} />);
-    }
-
     html!(
-        <div class="w-full h-full flex">
-            <div class="h-full w-1/2 relative">
+        <div class="flex-grow flex">
+            // ITEM
+            <div class="border border-slate-400 bg-slate-700 min-h-20 max-h-[13.375rem] max-w-1/2 relative overflow-y-auto"
+                style={format!("margin-right: {}rem; width: 50%; padding: {}rem", SPACING_REM_SMALL / 2.0, SPACING_REM)}
+            >
                 <span>
                     {"Item considering"}
                 </span>
@@ -118,19 +114,22 @@ pub fn item_details(props: &Props) -> Html {
                     <img src="public/img/equipment-icons/1h-sword-a.svg" class="h-40 filter" />
                 </div>
             </div>
-            <div class="h-full w-1/2 relative">
-            if let Some(compared_display) = compared_display_option {
-                <span class="flex justify-between pr-2">
-                    {"Currently equipped"}
-                {mod_key_tooltip}
-                </span>
-                <div class="mr-2 mb-1 mt-1 h-[1px] bg-slate-400" />
-                {compared_item_name}
-                {compared_display}
-                <div class="opacity-50 fill-slate-400 h-40 absolute bottom-5 right-3">
-                    <img src="public/img/equipment-icons/1h-sword-a.svg" class="h-40 filter" />
-                </div>
-            }
+            // COMPARED
+            <div class={ format!("border border-slate-400 bg-slate-700 min-h-20 max-h-[13.375rem] max-w-1/2 relative overflow-y-auto {compared_display_hide_class}" )}
+                style={format!("margin-left: {}rem; width: 50%; padding: {}rem", SPACING_REM_SMALL / 2.0, SPACING_REM)}
+            >
+                if let Some(compared_display) = compared_display_option {
+                    <span class="flex justify-between pr-2">
+                        {"Currently equipped"}
+                    {mod_key_tooltip}
+                    </span>
+                    <div class="mr-2 mb-1 mt-1 h-[1px] bg-slate-400" />
+                    {compared_item_name}
+                    {compared_display}
+                    <div class="opacity-50 fill-slate-400 h-40 absolute bottom-5 right-3">
+                        <img src="public/img/equipment-icons/1h-sword-a.svg" class="h-40 filter" />
+                    </div>
+                }
             </div>
         </div>
     )

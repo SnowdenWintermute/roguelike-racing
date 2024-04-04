@@ -139,7 +139,7 @@ pub fn character_attributes(props: &Props) -> Html {
     };
 
     html!(
-        <div class="h-full pl-2 w-1/2">
+        <div class="h-full w-[24.25rem] whitespace-nowrap">
             <div class="font-bold flex justify-between items-center" >
                 <span>
                     {entity_properties.name.clone()}
@@ -252,8 +252,8 @@ fn attribute_list_item(
 
     html!(
         <li class={ format!( "flex justify-between {}", highlight_class  ) }>
-            <span>
-                <span class="inline-block h-6 w-6" >
+            <span class="flex">
+                <span class="inline-block h-6 w-6 whitespace-nowrap text-ellipsis overflow-hidden" >
                     <HoverableTooltipWrapper tooltip_text={AttrValue::from(attribute.get_description().to_string())} >
                         <span class="cursor-help h-full w-full inline-block" >
                             {"ⓘ "}

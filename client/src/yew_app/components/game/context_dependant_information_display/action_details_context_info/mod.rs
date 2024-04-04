@@ -10,6 +10,7 @@ use yewdux::prelude::use_store;
 #[derive(Properties, PartialEq)]
 pub struct Props {
     pub combat_action: CombatAction,
+    pub hide_title: bool,
 }
 
 #[function_component(ActionDetailsContextInfo)]
@@ -76,32 +77,26 @@ pub fn action_details_context_info(props: &Props) -> Html {
     };
 
     html!(
-        <div class="max-w-full w-full h-full flex">
-            <div class="h-full w-1/2 relative">
-                    <span>
-                        {action_name}
-                    </span>
-                    <div class="mr-2 mb-1 mt-1 h-[1px] bg-slate-400" />
-                    {ability_details}
-                    <div>{combat_action_properties.description}</div>
-            </div>
-            <div class="h-full w-1/2 relative pl-2">
-                <span class="flex justify-between pr-2">
-                    {"Useability"}
+        <div>
+            if !props.hide_title {
+                <span>
+                {action_name}
                 </span>
-                <div class="mr-2 mb-1 mt-1 h-[1px] bg-slate-400" />
-                <div>
-                    {"Valid targets: "}{combat_action_properties.valid_target_categories}
-                </div>
-                <div>
-                    {"Targeting schemes: "}{targeting_schemes_text}
-                </div>
-                <div>
-                    {"Usable "}{format!("{}", combat_action_properties.usability_context)}
-                </div>
-                <div class="opacity-50 fill-slate-400 h-40 absolute bottom-5 right-3">
-                    <img src="public/img/equipment-icons/1h-sword-a.svg" class="h-40 filter" />
-                </div>
+                    <div class="mr-2 mb-1 mt-1 h-[1px] bg-slate-400" />
+            }
+            {ability_details}
+            <div>{combat_action_properties.description}</div>
+            <div>
+                {"Valid targets: "}{combat_action_properties.valid_target_categories}
+            </div>
+            <div>
+                {"Targeting schemes: "}{targeting_schemes_text}
+            </div>
+            <div>
+                {"Usable "}{format!("{}", combat_action_properties.usability_context)}
+            </div>
+            <div class="opacity-50 fill-slate-400 h-40 absolute bottom-5 right-3">
+                <img src="public/img/equipment-icons/1h-sword-a.svg" class="h-40 filter" />
             </div>
         </div>
     )

@@ -1,5 +1,13 @@
 use yew::prelude::*;
 
+pub const SPACING_REM: f32 = 0.875;
+pub const SPACING_REM_SMALL: f32 = 0.625;
+pub const PAPER_DOLL_WIDTH: f32 = 23.75;
+pub const CHARACTER_ATTRIBUTES_WIDTH: f32 = 24.25;
+pub const BUTTON_HEIGHT: f32 = 2.5;
+pub const BUTTON_HEIGHT_SMALL: f32 = 1.875;
+pub const ACTION_MENU_WIDTH: f32 = 25.0;
+
 #[function_component(TailwindClassLoader)]
 pub fn tailwind_class_loader() -> Html {
     html!(

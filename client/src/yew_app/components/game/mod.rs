@@ -11,10 +11,13 @@ mod top_info_bar;
 pub mod turn_order_bar;
 use crate::yew_app::components::game::action_menu::ActionMenu;
 use crate::yew_app::components::game::character_autofocus_manager::CharacterAutofocusManager;
+use crate::yew_app::components::game::character_sheet::item_details_viewer::ItemDetailsViewer;
 use crate::yew_app::components::game::character_sheet::CharacterSheet;
 use crate::yew_app::components::game::context_dependant_information_display::ContextDependantInformationDisplay;
 use crate::yew_app::components::game::dungeon_room::DungeonRoom;
 use crate::yew_app::components::game::tailwind_class_loader::TailwindClassLoader;
+use crate::yew_app::components::game::tailwind_class_loader::SPACING_REM;
+use crate::yew_app::components::game::tailwind_class_loader::SPACING_REM_SMALL;
 use crate::yew_app::components::game::top_info_bar::TopInfoBar;
 use crate::yew_app::store::game_store::GameStore;
 use crate::yew_app::store::lobby_store::LobbyStore;
@@ -76,7 +79,7 @@ pub fn game() -> Html {
         && focused_character.is_some();
 
     let conditional_styles = if show_character_sheet {
-        "justify-end"
+        "items-center justify-end"
     } else {
         ""
     };
@@ -88,7 +91,7 @@ pub fn game() -> Html {
             // <GameDebug />
             <div class="w-full h-full max-h-[calc(0.5625 * 100vw)] text-zinc-300 flex flex-col" >
                 <TopInfoBar />
-                <div class="p-2.5 flex-grow" >
+                <div class="p-4 flex-grow" >
                     // <DungeonRoom party_id={party_id} />
                     // <div class="flex max-h-1/2 h-[40%] mt-2 mb-4 overflow-y-auto" >
                     //     <ContextDependantInformationDisplay />
@@ -96,11 +99,16 @@ pub fn game() -> Html {
                 </div>
             </div>
             // Action Menu and Inventory/Equipment/Character sheet container
-            <div class={ format!( "absolute z-31 top-1/2 -translate-y-1/2 w-full p-2.5 text-zinc-300 flex flex-row {}", conditional_styles)}>
-                <ActionMenu />
-                if show_character_sheet {
-                    <CharacterSheet character={focused_character.as_deref().expect("is_some checked").clone()} />
-                }
+            <div class={ format!( "absolute z-31 top-1/2 -translate-y-1/2 w-full p-4 text-zinc-300 flex flex-row {}", conditional_styles)}>
+                <div class="flex flex-col">
+                    <div class="flex">
+                        <div class="flex flex-col flex-grow justify-end">
+                            <ActionMenu />
+                        </div>
+                        <CharacterSheet />
+                    </div>
+                    <ItemDetailsViewer show_character_sheet={show_character_sheet} />
+                </div>
             </div>
         </main>
     )

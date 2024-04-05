@@ -16,6 +16,7 @@ pub enum GameKeys {
     KeysSI,
     KeysDO,
     KeysFP,
+    KeyT,
 }
 
 pub fn set_keyup_listeners(
@@ -108,6 +109,7 @@ fn set_listeners(button_properties: &Vec<ActionMenuButtonProperties>, key_presse
                 GameKeys::KeysSI => vec!["KeyS".to_string(), "KeyI".to_string()],
                 GameKeys::KeysDO => vec!["KeyD".to_string(), "KeyO".to_string()],
                 GameKeys::KeysFP => vec!["KeyF".to_string(), "KeyP".to_string()],
+                GameKeys::KeyT => vec!["KeyT".to_string()],
             }
         } else {
             if properties.should_be_disabled {

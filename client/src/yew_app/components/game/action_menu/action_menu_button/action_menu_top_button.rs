@@ -22,6 +22,7 @@ pub fn action_menu_top_button(props: &Props) -> Html {
         GameKeys::KeysSI => "S",
         GameKeys::KeysDO => "D",
         GameKeys::KeysFP => "F",
+        GameKeys::KeyT => "T",
     };
 
     html!(

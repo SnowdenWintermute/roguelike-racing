@@ -1,12 +1,14 @@
+mod action_menu_change_target_button;
+mod action_menu_numbered_button;
 mod action_menu_top_button;
 pub mod determine_action_button_text;
-use self::action_menu_top_button::ActionMenuTopButton;
-use super::{
-    build_action_button_properties::ActionMenuButtonProperties, ActionButtonPropertiesByCategory,
+use self::{
+    action_menu_change_target_button::ActionMenuChangeTargetButton,
+    action_menu_numbered_button::ActionMenuNumberedButton,
+    action_menu_top_button::ActionMenuTopButton,
 };
-use crate::yew_app::components::game::{
-    action_menu::set_keyup_listeners::GameKeys, tailwind_class_loader::BUTTON_HEIGHT,
-};
+use super::build_action_button_properties::ActionMenuButtonProperties;
+use crate::yew_app::components::game::action_menu::set_keyup_listeners::GameKeys;
 use yew::prelude::*;
 
 pub fn create_action_menu_buttons(
@@ -35,6 +37,7 @@ pub fn create_action_menu_buttons(
             Some(dedicated_key) => match dedicated_key {
                 GameKeys::Cancel
                 | GameKeys::Confirm
+                | GameKeys::KeyT
                 | GameKeys::KeysSI
                 | GameKeys::KeysDO
                 | GameKeys::KeysFP => top_buttons.push(html!(<ActionMenuTopButton 
@@ -51,37 +54,20 @@ pub fn create_action_menu_buttons(
         }
     }
 
+    for button_properties in next_prev_button_properties.iter() {
+        match &button_properties.dedicated_key_option {
+            Some(dedicated_key) => match dedicated_key {
+                GameKeys::Next | GameKeys::Previous => next_prev_buttons.push(html!(
+                <ActionMenuChangeTargetButton
+                    properties={button_properties.clone()}
+                    dedicated_key={dedicated_key.clone()}
+                />
+                )),
+                _ => (),
+            },
+            None => todo!(),
+        }
+    }
+
     (top_buttons, numbered_buttons, next_prev_buttons)
-}
-
-#[derive(Properties, PartialEq)]
-pub struct Props {
-    pub number: i32,
-    pub properties: ActionMenuButtonProperties,
-}
-
-#[function_component(ActionMenuNumberedButton)]
-pub fn action_menu_numbered_button(props: &Props) -> Html {
-    let key_to_show = props.number.clone().to_string();
-
-    html!(
-        <button
-            class="w-full border-b border-r border-l first:border-t border-slate-400 bg-slate-700 flex hover:bg-slate-950 disabled:opacity-50"
-                style={format!("height: {}rem; ", BUTTON_HEIGHT)}
-            onclick={props.properties.click_handler.clone()}
-            onmouseenter={props.properties.mouse_enter_handler.clone()}
-            onmouseleave={props.properties.mouse_leave_handler.clone()}
-            onfocus={props.properties.focus_handler.clone()}
-            onblur={props.properties.blur_handler.clone()}
-            disabled={props.properties.should_be_disabled}
-        >
-            <span class="h-full w-10 !min-w-[2.5rem] border-r border-slate-400
-            flex items-center justify-center mr-2" >
-                {key_to_show}
-            </span>
-            <span class="flex-grow h-full flex items-center whitespace-nowrap overflow-hidden overflow-ellipsis" >
-                {props.properties.text.clone()}
-            </span>
-        </button>
-    )
 }

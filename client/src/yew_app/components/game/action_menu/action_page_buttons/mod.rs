@@ -1,6 +1,6 @@
 pub mod page_turning;
-use crate::yew_app::components::game::action_menu::action_menu_page_buttons::page_turning::next_page;
-use crate::yew_app::components::game::action_menu::action_menu_page_buttons::page_turning::prev_page;
+use crate::yew_app::components::game::action_menu::action_page_buttons::page_turning::next_page;
+use crate::yew_app::components::game::action_menu::action_page_buttons::page_turning::prev_page;
 use crate::yew_app::components::game::tailwind_class_loader::BUTTON_HEIGHT_SMALL;
 use crate::yew_app::store::game_store::GameStore;
 use gloo::events::EventListener;
@@ -14,6 +14,7 @@ use yewdux::prelude::use_store;
 pub struct Props {
     pub number_of_pages: usize,
     pub hidden: bool,
+    // pub next_prev_buttons: Vec<Html>,
 }
 
 #[function_component(ActionPageButtons)]
@@ -97,6 +98,7 @@ pub fn action_page_buttons(props: &Props) -> Html {
         ""
     };
 
+    // PAGES
     html!(
         <ul class={ format!( "flex list-none border border-slate-400 bg-slate-700 w-full justify-between items-center {hidden_style}" )}>
             <button
@@ -118,4 +120,5 @@ pub fn action_page_buttons(props: &Props) -> Html {
             </button>
         </ul>
     )
+    // }
 }

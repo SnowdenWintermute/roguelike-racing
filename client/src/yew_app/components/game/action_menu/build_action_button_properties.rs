@@ -110,6 +110,7 @@ pub fn build_action_button_properties(
                 true => Some(GameKeys::KeysFP),
                 false => Some(GameKeys::KeysFP),
             },
+            GameActions::CycleTargetingScheme => Some(GameKeys::KeyT),
             GameActions::ToggleViewingEquipedItems => Some(GameKeys::KeysDO),
             GameActions::AssignAttributePoint(_) => Some(GameKeys::KeysFP),
             GameActions::UseItem(_) => Some(GameKeys::Confirm),

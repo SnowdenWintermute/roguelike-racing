@@ -15,7 +15,7 @@ use std::collections::HashMap;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
-pub const CHARACTER_SHEET_HEIGHT: f32 = SPACING_REM_SMALL + BUTTON_HEIGHT_SMALL + SPACING_REM;
+// pub const CHARACTER_SHEET_HEIGHT: f32 = SPACING_REM_SMALL + BUTTON_HEIGHT_SMALL + SPACING_REM;
 
 #[function_component(CharacterSheet)]
 pub fn character_sheet() -> Html {

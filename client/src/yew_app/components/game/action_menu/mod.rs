@@ -2,9 +2,10 @@ pub mod action_button_click_handlers;
 pub mod action_button_hover_handlers;
 pub mod action_menu_button;
 mod action_menu_change_detection_manager;
-mod action_menu_page_buttons;
 mod action_menu_page_manager;
+mod action_page_buttons;
 mod build_action_button_properties;
+mod change_target_buttons;
 mod determine_action_menu_buttons_disabled;
 mod determine_menu_actions;
 pub mod enums;
@@ -12,10 +13,11 @@ mod get_game_actions_by_menu_type;
 mod set_keyup_listeners;
 use crate::yew_app::components::game::action_menu::action_menu_button::create_action_menu_buttons;
 use crate::yew_app::components::game::action_menu::action_menu_change_detection_manager::ActionMenuChangeDetectionManager;
-use crate::yew_app::components::game::action_menu::action_menu_page_buttons::page_turning::next_page;
-use crate::yew_app::components::game::action_menu::action_menu_page_buttons::page_turning::prev_page;
-use crate::yew_app::components::game::action_menu::action_menu_page_buttons::ActionPageButtons;
+use crate::yew_app::components::game::action_menu::action_page_buttons::page_turning::next_page;
+use crate::yew_app::components::game::action_menu::action_page_buttons::page_turning::prev_page;
+use crate::yew_app::components::game::action_menu::action_page_buttons::ActionPageButtons;
 use crate::yew_app::components::game::action_menu::build_action_button_properties::ActionMenuButtonProperties;
+use crate::yew_app::components::game::action_menu::change_target_buttons::ChangeTargetButtons;
 use crate::yew_app::components::game::tailwind_class_loader::BUTTON_HEIGHT;
 use crate::yew_app::components::game::tailwind_class_loader::SPACING_REM;
 use crate::yew_app::components::game::tailwind_class_loader::SPACING_REM_SMALL;
@@ -142,7 +144,7 @@ pub fn action_menu(_: &Props) -> Html {
         }
     });
 
-    let (top_action_buttons, numbered_action_buttons, next_prev_buttons) =
+    let (top_action_buttons, numbered_action_buttons, next_prev_action_buttons) =
         create_action_menu_buttons(
             &action_menu_button_properties.top_action_buttons,
             &numbered_button_props_on_current_page.to_vec(),
@@ -165,6 +167,17 @@ pub fn action_menu(_: &Props) -> Html {
                 ref={action_menu_node_ref}
                 onwheel={handle_wheel}
             >
+            {
+                if next_prev_action_buttons.len() > 0 {
+                    html!(
+                        <ChangeTargetButtons
+                        next_prev_buttons={next_prev_action_buttons.clone()}
+                        />
+                        )
+                } else {
+                    html!()
+                }
+            }
                 {numbered_action_buttons}
             </ul>
             {

@@ -19,6 +19,7 @@ use crate::yew_app::components::game::action_menu::build_action_button_propertie
 use crate::yew_app::components::game::tailwind_class_loader::BUTTON_HEIGHT;
 use crate::yew_app::components::game::tailwind_class_loader::BUTTON_HEIGHT_SMALL;
 use crate::yew_app::components::game::tailwind_class_loader::SPACING_REM;
+use crate::yew_app::components::game::tailwind_class_loader::SPACING_REM_SMALL;
 use crate::yew_app::store::game_store::GameStore;
 use common::utils::calculate_number_of_pages;
 use gloo::events::EventListener;
@@ -148,7 +149,9 @@ pub fn action_menu(_: &Props) -> Html {
                  style={format!("margin-right: {}rem; ", SPACING_REM)}
         >
         <ActionMenuChangeDetectionManager action_menu_button_properties={action_menu_button_properties} />
-            <ul class="flex list-none mb-2">
+            <ul class="flex list-none"
+                style={ format!( "margin-bottom: {}rem;" , SPACING_REM_SMALL )}
+            >
                 <button
                     class="border border-slate-400 bg-slate-700 w-40 mr-2.5"
                     style={format!("height: {}rem; ", BUTTON_HEIGHT_SMALL)}
@@ -161,25 +164,18 @@ pub fn action_menu(_: &Props) -> Html {
                 </button>
             </ul>
             <ul class="overflow-y-auto list-none mb-2"
-                style={format!("height: {}rem; ", BUTTON_HEIGHT * 5.0)}
+                style={format!("height: {}rem; ", BUTTON_HEIGHT * PAGE_SIZE as f32)}
                 ref={action_menu_node_ref}
                 onwheel={handle_wheel}
             >
                 {action_buttons}
             </ul>
-            <ul class="flex list-none">
-                <button
-                    class="border border-slate-400 bg-slate-700 w-full"
-                    style={format!("height: {}rem; ", BUTTON_HEIGHT_SMALL)}
-                >
-                </button>
-            </ul>
-            {html!(
-                if cloned_action_button_properties.deref().len() as u8 > PAGE_SIZE {
-                    <ActionPageButtons
-                        number_of_pages={number_of_pages}
-                        />
-                }
+            {
+                html!(
+                <ActionPageButtons
+                    number_of_pages={number_of_pages}
+                    hidden={( cloned_action_button_properties.deref().len() as u8) <= PAGE_SIZE}
+                    />
             )}
         </section>
     )

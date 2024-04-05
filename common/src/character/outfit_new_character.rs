@@ -66,8 +66,8 @@ pub fn outfit_new_character(game: &mut RoguelikeRacerGame, character: &mut Chara
     combatant_properties.inventory.items.push(mp_injector);
 
     // TEST INVENTORY ITEMS
-    // let mut test_items = create_inventory_test_items(game);
-    // combatant_properties.inventory.items.append(&mut test_items);
+    let mut test_items = create_inventory_test_items(game);
+    combatant_properties.inventory.items.append(&mut test_items);
 
     // STARTING EQUIPMENT
     let starting_equipment = create_starting_equipment(

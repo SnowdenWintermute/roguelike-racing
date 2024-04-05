@@ -6,6 +6,7 @@ use super::determine_action_menu_buttons_disabled::determine_action_menu_buttons
 use super::determine_menu_actions::determine_menu_actions;
 use super::enums::GameActions;
 use super::set_keyup_listeners::GameKeys;
+use super::ActionButtonPropertiesByCategory;
 use crate::yew_app::store::alert_store::AlertStore;
 use crate::yew_app::store::game_store::GameStore;
 use crate::yew_app::store::lobby_store::LobbyStore;
@@ -39,9 +40,11 @@ pub fn build_action_button_properties(
     ui_state: Rc<UIStore>,
     lobby_state: Rc<LobbyStore>,
     party: &AdventuringParty,
-) -> Vec<ActionMenuButtonProperties> {
+) -> ActionButtonPropertiesByCategory {
     let new_actions = determine_menu_actions(&game_state, &lobby_state, party);
-    let mut button_properties = Vec::new();
+    let mut numbered_button_properties = Vec::new();
+    let mut top_button_properties = Vec::new();
+    let mut next_prev_button_properties = Vec::new();
 
     for action in new_actions {
         let cloned_websocket_state = websocket_state.clone();
@@ -100,13 +103,15 @@ pub fn build_action_button_properties(
 
         let dedicated_key_option = match action {
             GameActions::SetInventoryOpen(to_set) => match to_set {
-                true => None,
-                false => Some(GameKeys::Cancel),
+                true => Some(GameKeys::KeysSI),
+                false => Some(GameKeys::KeysSI),
             },
             GameActions::SetAssignAttributePointsMenuOpen(to_set) => match to_set {
-                true => None,
-                false => Some(GameKeys::Cancel),
+                true => Some(GameKeys::KeysFP),
+                false => Some(GameKeys::KeysFP),
             },
+            GameActions::ToggleViewingEquipedItems => Some(GameKeys::KeysDO),
+            GameActions::AssignAttributePoint(_) => Some(GameKeys::KeysFP),
             GameActions::UseItem(_) => Some(GameKeys::Confirm),
             GameActions::DeselectItem => Some(GameKeys::Cancel),
             GameActions::UseSelectedCombatAction => Some(GameKeys::Confirm),
@@ -118,7 +123,7 @@ pub fn build_action_button_properties(
             _ => None,
         };
 
-        button_properties.push(ActionMenuButtonProperties {
+        let button_properties = ActionMenuButtonProperties {
             text,
             click_handler,
             mouse_enter_handler,
@@ -126,9 +131,22 @@ pub fn build_action_button_properties(
             focus_handler,
             blur_handler,
             should_be_disabled,
-            dedicated_key_option,
-        })
-    }
+            dedicated_key_option: dedicated_key_option.clone(),
+        };
 
-    button_properties
+        match dedicated_key_option {
+            Some(game_keys) => match &game_keys {
+                GameKeys::Next | GameKeys::Previous => {
+                    next_prev_button_properties.push(button_properties)
+                }
+                _ => top_button_properties.push(button_properties),
+            },
+            None => numbered_button_properties.push(button_properties),
+        }
+    }
+    ActionButtonPropertiesByCategory {
+        top_action_buttons: top_button_properties,
+        numbered_action_buttons: numbered_button_properties,
+        next_prev_action_buttons: next_prev_button_properties,
+    }
 }

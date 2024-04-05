@@ -1,6 +1,5 @@
 use super::enums::GameActions;
 use super::enums::MenuTypes;
-use super::PAGE_SIZE;
 use common::combat::combat_actions::CombatAction;
 use common::combat::combat_actions::CombatActionProperties;
 use common::combatants::abilities::CombatantAbilityNames;
@@ -49,23 +48,14 @@ impl MenuTypes {
                 }
                 MenuTypes::AssignAttributePoints => {
                     menu_items.push(GameActions::SetAssignAttributePointsMenuOpen(false));
-                    let mut num_menu_buttons = 1;
                     for attribute in ATTRIBUTE_POINT_ASSIGNABLE_ATTRIBUTES {
-                        if num_menu_buttons % PAGE_SIZE == 0 {
-                            menu_items.push(GameActions::SetAssignAttributePointsMenuOpen(false));
-                            num_menu_buttons += 1;
-                        }
                         menu_items.push(GameActions::AssignAttributePoint(attribute));
-                        num_menu_buttons += 1;
                     }
                 }
                 MenuTypes::InventoryOpen => {
                     menu_items.push(GameActions::SetInventoryOpen(!inventory_is_open));
                     menu_items.push(GameActions::ToggleViewingEquipedItems);
-                    let mut num_buttons_to_create = 2;
                     if let Some(item_ids) = &item_ids {
-                        num_buttons_to_create += item_ids.0.len();
-                        num_buttons_to_create += item_ids.1.len();
                         let mut consumables_as_vec = item_ids
                             .0
                             .clone()
@@ -73,29 +63,12 @@ impl MenuTypes {
                             .map(|(consumable_type, ids_vec)| (consumable_type, ids_vec))
                             .collect::<Vec<(ConsumableTypes, Vec<u32>)>>();
                         consumables_as_vec.sort_by_key(|item| item.0);
-                        let mut num_menu_buttons = 2;
 
                         for (_, ids) in &consumables_as_vec {
                             menu_items.push(GameActions::SelectItem(ids[0], ids.len() as u16));
-                            num_menu_buttons += 1;
-                            if num_menu_buttons % PAGE_SIZE == 0
-                                && num_menu_buttons != num_buttons_to_create as u8
-                            {
-                                menu_items.push(GameActions::SetInventoryOpen(!inventory_is_open));
-                                num_menu_buttons += 1;
-                                num_buttons_to_create += 1;
-                            }
                         }
                         for id in &item_ids.1 {
                             menu_items.push(GameActions::SelectItem(*id, 1));
-                            num_menu_buttons += 1;
-                            if num_menu_buttons % PAGE_SIZE == 0
-                                && num_menu_buttons != num_buttons_to_create as u8
-                            {
-                                menu_items.push(GameActions::SetInventoryOpen(!inventory_is_open));
-                                num_menu_buttons += 1;
-                                num_buttons_to_create += 1;
-                            }
                         }
                     }
                 }

@@ -1,32 +1,68 @@
+mod action_menu_top_button;
 pub mod determine_action_button_text;
+use self::action_menu_top_button::ActionMenuTopButton;
+use super::{
+    build_action_button_properties::ActionMenuButtonProperties, ActionButtonPropertiesByCategory,
+};
 use crate::yew_app::components::game::{
     action_menu::set_keyup_listeners::GameKeys, tailwind_class_loader::BUTTON_HEIGHT,
 };
-
-use super::build_action_button_properties::ActionMenuButtonProperties;
 use yew::prelude::*;
+
+pub fn create_action_menu_buttons(
+    top_button_properties: &Vec<ActionMenuButtonProperties>,
+    numbered_button_properties_on_current_page: &Vec<ActionMenuButtonProperties>,
+    next_prev_button_properties: &Vec<ActionMenuButtonProperties>,
+) -> (Vec<Html>, Vec<Html>, Vec<Html>) {
+    let mut last_assigned_button_number = 0;
+    let mut numbered_buttons = vec![];
+    let mut top_buttons = vec![];
+    let mut next_prev_buttons = vec![];
+
+    for button_properties in numbered_button_properties_on_current_page.iter() {
+        last_assigned_button_number += 1;
+        Some(last_assigned_button_number);
+        numbered_buttons.push(html!(
+            <ActionMenuNumberedButton
+            properties={button_properties.clone()}
+            number={last_assigned_button_number}
+            />
+        ));
+    }
+
+    for button_properties in top_button_properties.iter() {
+        match &button_properties.dedicated_key_option {
+            Some(dedicated_key) => match dedicated_key {
+                GameKeys::Cancel
+                | GameKeys::Confirm
+                | GameKeys::KeysSI
+                | GameKeys::KeysDO
+                | GameKeys::KeysFP => top_buttons.push(html!(<ActionMenuTopButton 
+                                properties={button_properties.clone()}
+                                dedicated_key={dedicated_key.clone()}
+                                />)),
+                GameKeys::Next | GameKeys::Previous => next_prev_buttons.push(html!(
+                                <ActionMenuTopButton 
+                                   properties={button_properties.clone()}
+                                   dedicated_key={dedicated_key.clone()}
+                                   />)),
+            },
+            None => (),
+        }
+    }
+
+    (top_buttons, numbered_buttons, next_prev_buttons)
+}
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
-    pub number_option: Option<i32>,
+    pub number: i32,
     pub properties: ActionMenuButtonProperties,
 }
 
-#[function_component(ActionMenuButton)]
-pub fn action_menu_button(props: &Props) -> Html {
-    let key_to_show = if let Some(dedicated_key) = &props.properties.dedicated_key_option {
-        match dedicated_key {
-            GameKeys::Cancel => "Esc".to_string(),
-            GameKeys::Confirm => "R".to_string(),
-            GameKeys::Next => "E".to_string(),
-            GameKeys::Previous => "W".to_string(),
-        }
-    } else if let Some(number) = &props.number_option {
-        number.clone().to_string()
-    } else {
-        String::from("")
-    };
-    // let key_to_show = "a".to_string();
+#[function_component(ActionMenuNumberedButton)]
+pub fn action_menu_numbered_button(props: &Props) -> Html {
+    let key_to_show = props.number.clone().to_string();
 
     html!(
         <button

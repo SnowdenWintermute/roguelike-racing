@@ -82,7 +82,7 @@ pub fn action_details_context_info(props: &Props) -> Html {
                 <span>
                 {action_name}
                 </span>
-                    <div class="mr-2 mb-1 mt-1 h-[1px] bg-slate-400" />
+                    <div class="mb-1 mt-1 h-[1px] bg-slate-400" />
             }
             {ability_details}
             <div>{combat_action_properties.description}</div>
@@ -94,9 +94,6 @@ pub fn action_details_context_info(props: &Props) -> Html {
             </div>
             <div>
                 {"Usable "}{format!("{}", combat_action_properties.usability_context)}
-            </div>
-            <div class="opacity-50 fill-slate-400 h-40 absolute bottom-5 right-3">
-                <img src="public/img/equipment-icons/1h-sword-a.svg" class="h-40 filter" />
             </div>
         </div>
     )

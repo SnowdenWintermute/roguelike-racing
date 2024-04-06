@@ -648,6 +648,22 @@ video {
   top: -1.5rem;
 }
 
+.right-full {
+  right: 100%;
+}
+
+.right-0 {
+  right: 0px;
+}
+
+.right-1\/2 {
+  right: 50%;
+}
+
+.left-full {
+  left: 100%;
+}
+
 .z-10 {
   z-index: 10;
 }
@@ -1183,6 +1199,10 @@ video {
 
 .overflow-y-auto {
   overflow-y: auto;
+}
+
+.overflow-x-visible {
+  overflow-x: visible;
 }
 
 .overflow-ellipsis {

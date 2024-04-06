@@ -18,9 +18,11 @@ use crate::yew_app::components::game::action_menu::action_page_buttons::page_tur
 use crate::yew_app::components::game::action_menu::action_page_buttons::ActionPageButtons;
 use crate::yew_app::components::game::action_menu::build_action_button_properties::ActionMenuButtonProperties;
 use crate::yew_app::components::game::action_menu::change_target_buttons::ChangeTargetButtons;
+use crate::yew_app::components::game::context_dependant_information_display::action_details_context_info::ActionDetailsContextInfo;
 use crate::yew_app::components::game::tailwind_class_loader::BUTTON_HEIGHT;
 use crate::yew_app::components::game::tailwind_class_loader::SPACING_REM;
 use crate::yew_app::components::game::tailwind_class_loader::SPACING_REM_SMALL;
+use crate::yew_app::store::game_store::get_focused_character;
 use crate::yew_app::store::game_store::GameStore;
 use common::utils::calculate_number_of_pages;
 use gloo::events::EventListener;
@@ -151,42 +153,77 @@ pub fn action_menu(_: &Props) -> Html {
             &action_menu_button_properties.next_prev_action_buttons,
         );
 
+    let hovered_action_display = if let Some(hovered_action) = &game_state.hovered_action {
+        html!(
+            <div class="absolute top-0 left-full pl-2">
+                <div class="border border-slate-400 bg-slate-700 min-w-[25rem] max-w-[25rem] p-2">
+                    <ActionDetailsContextInfo combat_action={hovered_action.clone()} hide_title={false} />
+                </div>
+            </div>
+        )
+    } else {
+        html!()
+    };
+
+    let selected_action_display = {
+        let mut selected_action_option = None;
+        let focused_character_result = get_focused_character(&game_state);
+        if let Ok(focused_character) = focused_character_result {
+            selected_action_option = focused_character
+                .combatant_properties
+                .selected_combat_action
+                .as_ref();
+        }
+        if let Some(selected_action) = selected_action_option {
+            html!(
+                    <div class="border border-slate-400 bg-slate-700 min-w-[25rem] max-w-[25rem] p-2"
+                        style={format!("height: {}rem; ", BUTTON_HEIGHT * PAGE_SIZE as f32)}
+                    >
+                        <ActionDetailsContextInfo combat_action={selected_action.clone()} hide_title={false} />
+                    </div>
+            )
+        } else {
+            html!()
+        }
+    };
+
     html!(
-        <section class="min-w-[25rem] max-w-[25rem] max-h-fit overflow-y-auto
+        <section class=" max-h-fit
                         flex flex-col justify-between pointer-events-auto"
                  style={format!("margin-right: {}rem; ", SPACING_REM)}
         >
         <ActionMenuChangeDetectionManager action_menu_button_properties={action_menu_button_properties} />
-            <ul class="flex list-none"
+            <ul class="flex list-none min-w-[25rem] max-w-[25rem]"
                 style={ format!( "margin-bottom: {}rem;" , SPACING_REM_SMALL )}
             >
                 {top_action_buttons}
             </ul>
-            <ul class="overflow-y-auto list-none mb-2"
-                style={format!("height: {}rem; ", BUTTON_HEIGHT * PAGE_SIZE as f32)}
-                ref={action_menu_node_ref}
-                onwheel={handle_wheel}
-            >
+                <ul class="list-none relative mb-2"
+                    style={format!("height: {}rem; ", BUTTON_HEIGHT * PAGE_SIZE as f32)}
+                    ref={action_menu_node_ref}
+                    onwheel={handle_wheel}
+                >
+                    {numbered_action_buttons}
+                    {hovered_action_display}
+                    {selected_action_display}
+                </ul>
             {
-                if next_prev_action_buttons.len() > 0 {
-                    html!(
-                        <ChangeTargetButtons
-                        next_prev_buttons={next_prev_action_buttons.clone()}
-                        />
-                        )
-                } else {
-                    html!()
-                }
-            }
-                {numbered_action_buttons}
-            </ul>
-            {
+
+        if next_prev_action_buttons.len() > 0 {
+            html!(
+                <ChangeTargetButtons
+                    next_prev_buttons={next_prev_action_buttons.clone()}
+                />
+            )
+        } else {
                 html!(
                 <ActionPageButtons
-                    number_of_pages={number_of_pages}
-                    hidden={( cloned_action_button_properties.numbered_action_buttons.len() as u8) <= PAGE_SIZE}
+                        number_of_pages={number_of_pages}
+                        hidden={( cloned_action_button_properties.numbered_action_buttons.len() as u8) <= PAGE_SIZE}
                     />
-            )}
+                )
+        }
+        }
         </section>
     )
 }

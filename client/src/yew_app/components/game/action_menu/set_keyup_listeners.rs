@@ -8,15 +8,25 @@ use web_sys::MouseEvent;
 use yew::UseStateHandle;
 
 #[derive(Debug, Clone, PartialEq)]
+pub enum ActionButtonCategories {
+    Top,
+    Numbered,
+    NextPrevious,
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub enum GameKeys {
     Cancel,
     Confirm,
     Next,
     Previous,
-    KeysSI,
-    KeysDO,
-    KeysFP,
-    KeyT,
+    S,
+    I,
+    D,
+    O,
+    F,
+    P,
+    T,
 }
 
 pub fn set_keyup_listeners(
@@ -70,20 +80,25 @@ fn set_keypress_listeners(
     key_pressed: &String,
 ) {
     for (_, properties) in button_properties.iter().enumerate() {
-        let assigned_keys = if let Some(dedicated_key_for_action) = &properties.dedicated_key_option
-        {
-            if properties.should_be_disabled {
-                continue;
-            }
-            match dedicated_key_for_action {
-                GameKeys::Cancel => vec!["Escape".to_string()], // escape key must be set as a keyup, not
-                GameKeys::Next => vec!["ArrowRight".to_string()],
-                GameKeys::Previous => vec!["ArrowLeft".to_string()],
-                _ => vec![],
-            }
-        } else {
-            vec![]
-        };
+        let assigned_keys =
+            if let Some(dedicated_keys_for_action) = &properties.dedicated_keys_option {
+                if properties.should_be_disabled {
+                    continue;
+                }
+                let mut key_names = vec![];
+
+                for key in dedicated_keys_for_action {
+                    match key {
+                        GameKeys::Cancel => key_names.push("Escape".to_string()), // escape key must be set as a keyup, not
+                        GameKeys::Next => key_names.push("ArrowRight".to_string()),
+                        GameKeys::Previous => key_names.push("ArrowLeft".to_string()),
+                        _ => (),
+                    }
+                }
+                key_names
+            } else {
+                vec![]
+            };
         if assigned_keys.contains(&key_pressed) {
             properties
                 .click_handler
@@ -95,31 +110,40 @@ fn set_keypress_listeners(
 fn set_listeners(button_properties: &Vec<ActionMenuButtonProperties>, key_pressed: &String) {
     let mut next_number_to_assign = 1;
     for (_, properties) in button_properties.iter().enumerate() {
-        let assigned_keys = if let Some(dedicated_key_for_action) = &properties.dedicated_key_option
-        {
-            if properties.should_be_disabled {
-                continue;
-            }
-            match dedicated_key_for_action {
-                GameKeys::Cancel => vec![], // escape key must be set as a keyup, not
-                // keypress
-                GameKeys::Confirm => vec!["KeyR".to_string(), "Enter".to_string()],
-                GameKeys::Next => vec!["KeyE".to_string()],
-                GameKeys::Previous => vec!["KeyW".to_string()],
-                GameKeys::KeysSI => vec!["KeyS".to_string(), "KeyI".to_string()],
-                GameKeys::KeysDO => vec!["KeyD".to_string(), "KeyO".to_string()],
-                GameKeys::KeysFP => vec!["KeyF".to_string(), "KeyP".to_string()],
-                GameKeys::KeyT => vec!["KeyT".to_string()],
-            }
-        } else {
-            if properties.should_be_disabled {
+        let assigned_keys =
+            if let Some(dedicated_keys_for_action) = &properties.dedicated_keys_option {
+                if properties.should_be_disabled {
+                    continue;
+                }
+                let mut key_names = vec![];
+                for key in dedicated_keys_for_action {
+                    match key {
+                        GameKeys::Cancel => (), // escape key must be set as a keyup, not
+                        GameKeys::Confirm => {
+                            key_names.push("KeyR".to_string());
+                            key_names.push("Enter".to_string());
+                        }
+                        GameKeys::Next => key_names.push("KeyE".to_string()),
+                        GameKeys::Previous => key_names.push("KeyW".to_string()),
+                        GameKeys::S => key_names.push("KeyS".to_string()),
+                        GameKeys::I => key_names.push("KeyI".to_string()),
+                        GameKeys::D => key_names.push("KeyD".to_string()),
+                        GameKeys::O => key_names.push("KeyO".to_string()),
+                        GameKeys::F => key_names.push("KeyF".to_string()),
+                        GameKeys::P => key_names.push("KeyP".to_string()),
+                        GameKeys::T => key_names.push("KeyT".to_string()),
+                    }
+                }
+                key_names
+            } else {
+                if properties.should_be_disabled {
+                    next_number_to_assign += 1;
+                    continue;
+                }
+                let number_to_assign_as_string = next_number_to_assign.to_string();
                 next_number_to_assign += 1;
-                continue;
-            }
-            let number_to_assign_as_string = next_number_to_assign.to_string();
-            next_number_to_assign += 1;
-            vec![format!("Digit{number_to_assign_as_string}")]
-        };
+                vec![format!("Digit{number_to_assign_as_string}")]
+            };
         if assigned_keys.contains(&key_pressed) {
             properties
                 .click_handler

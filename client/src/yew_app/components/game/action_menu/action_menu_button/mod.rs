@@ -33,38 +33,36 @@ pub fn create_action_menu_buttons(
     }
 
     for button_properties in top_button_properties.iter() {
-        match &button_properties.dedicated_key_option {
-            Some(dedicated_key) => match dedicated_key {
-                GameKeys::Cancel
-                | GameKeys::Confirm
-                | GameKeys::KeyT
-                | GameKeys::KeysSI
-                | GameKeys::KeysDO
-                | GameKeys::KeysFP => top_buttons.push(html!(<ActionMenuTopButton 
+        match &button_properties.category {
+            super::set_keyup_listeners::ActionButtonCategories::Top => {
+                top_buttons.push(html!(<ActionMenuTopButton 
                                 properties={button_properties.clone()}
-                                dedicated_key={dedicated_key.clone()}
-                                />)),
-                GameKeys::Next | GameKeys::Previous => next_prev_buttons.push(html!(
+                                />))
+            }
+            super::set_keyup_listeners::ActionButtonCategories::Numbered => (),
+            super::set_keyup_listeners::ActionButtonCategories::NextPrevious => next_prev_buttons
+                .push(html!(
                                 <ActionMenuTopButton 
                                    properties={button_properties.clone()}
-                                   dedicated_key={dedicated_key.clone()}
                                    />)),
-            },
-            None => (),
         }
     }
 
     for button_properties in next_prev_button_properties.iter() {
-        match &button_properties.dedicated_key_option {
-            Some(dedicated_key) => match dedicated_key {
-                GameKeys::Next | GameKeys::Previous => next_prev_buttons.push(html!(
-                <ActionMenuChangeTargetButton
-                    properties={button_properties.clone()}
-                    dedicated_key={dedicated_key.clone()}
-                />
-                )),
-                _ => (),
-            },
+        match &button_properties.dedicated_keys_option {
+            Some(dedicated_keys) => {
+                for key in dedicated_keys {
+                    match key {
+                        GameKeys::Next | GameKeys::Previous => next_prev_buttons.push(html!(
+                        <ActionMenuChangeTargetButton
+                            properties={button_properties.clone()}
+                            dedicated_key={key.clone()}
+                        />
+                        )),
+                        _ => (),
+                    }
+                }
+            }
             None => todo!(),
         }
     }

@@ -9,20 +9,25 @@ use yew::prelude::*;
 #[derive(Properties, PartialEq)]
 pub struct Props {
     pub properties: ActionMenuButtonProperties,
-    pub dedicated_key: GameKeys,
 }
 
 #[function_component(ActionMenuTopButton)]
 pub fn action_menu_top_button(props: &Props) -> Html {
-    let key_to_show = match props.dedicated_key {
-        GameKeys::Cancel => "Esc",
-        GameKeys::Confirm => "R",
-        GameKeys::Next => "E",
-        GameKeys::Previous => "W",
-        GameKeys::KeysSI => "S",
-        GameKeys::KeysDO => "D",
-        GameKeys::KeysFP => "F",
-        GameKeys::KeyT => "T",
+    let key_to_show = match &props.properties.dedicated_keys_option {
+        Some(keys) => match keys[0] {
+            GameKeys::Cancel => "Esc",
+            GameKeys::Confirm => "R",
+            GameKeys::Next => "E",
+            GameKeys::Previous => "W",
+            GameKeys::S => "S",
+            GameKeys::I => "I",
+            GameKeys::D => "D",
+            GameKeys::O => "O",
+            GameKeys::F => "F",
+            GameKeys::P => "P",
+            GameKeys::T => "T",
+        },
+        None => "",
     };
 
     html!(

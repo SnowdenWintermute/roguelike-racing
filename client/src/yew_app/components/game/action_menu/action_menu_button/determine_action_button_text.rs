@@ -43,9 +43,10 @@ pub fn determine_action_button_text(action: GameActions, game_state: Rc<GameStor
             CombatAction::ConsumableUsed(_) => "Use".to_string(),
         },
         GameActions::LevelUpAbility(_name) => "Level up ability".to_string(),
-        GameActions::SetAssignAttributePointsMenuOpen(_open_status) => {
-            "Assign attributes".to_string()
-        }
+        GameActions::SetAssignAttributePointsMenuOpen(open_status) => match open_status {
+            true => "Assign attributes".to_string(),
+            false => "Go back".to_string(),
+        },
         GameActions::AssignAttributePoint(attribute) => format!("{attribute}"),
         GameActions::CycleTargets(direction) => match direction {
             common::primatives::NextOrPrevious::Next => "Next target".to_string(),

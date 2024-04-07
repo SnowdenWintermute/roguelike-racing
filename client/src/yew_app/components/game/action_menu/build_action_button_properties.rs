@@ -110,7 +110,7 @@ pub fn build_action_button_properties(
                     ActionButtonCategories::Top,
                 ),
                 false => (
-                    Some(Vec::from([GameKeys::S, GameKeys::I, GameKeys::Cancel])),
+                    Some(Vec::from([GameKeys::Cancel, GameKeys::S, GameKeys::I])),
                     ActionButtonCategories::Top,
                 ),
             },
@@ -120,7 +120,7 @@ pub fn build_action_button_properties(
                     ActionButtonCategories::Top,
                 ),
                 false => (
-                    Some(Vec::from([GameKeys::F, GameKeys::P])),
+                    Some(Vec::from([GameKeys::Cancel, GameKeys::F, GameKeys::P])),
                     ActionButtonCategories::Top,
                 ),
             },
@@ -129,10 +129,6 @@ pub fn build_action_button_properties(
             }
             GameActions::ToggleViewingEquipedItems => (
                 Some(Vec::from([GameKeys::D, GameKeys::O])),
-                ActionButtonCategories::Top,
-            ),
-            GameActions::AssignAttributePoint(_) => (
-                Some(Vec::from([GameKeys::F, GameKeys::P])),
                 ActionButtonCategories::Top,
             ),
             GameActions::UseItem(_) => (

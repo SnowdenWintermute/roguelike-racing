@@ -91,7 +91,27 @@ pub fn game() -> Html {
             // <GameDebug />
             <div class="w-full h-full max-h-[calc(0.5625 * 100vw)] text-zinc-300 flex flex-col" >
                 <TopInfoBar />
-                <div class="p-4 flex-grow" >
+                <div class="p-4 flex-grow flex flex-col justify-between">
+                    <div class="w-96 border border-slate-400 bg-slate-700 p-2 flex pointer-events-auto">
+                        <div class="h-20 w-20 mr-2 border border-slate-400 bg-slate-600 rounded-full relative">
+                            <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 h-7 border border-slate-400 bg-slate-700 pr-2 pl-2">
+                                {"14"}
+                            </div>
+                        </div>
+                        <div class="flex-grow">
+                            <div class="mb-1.5 flex justify-between">
+                                <span>
+                                    {"A Very Dangerous Monster"}
+                                </span>
+                                <button>
+                                    {"ⓘ "}
+                                </button>
+                            </div>
+                            <div class="h-5 bg-green-700 w-full mb-1" />
+                            <div class="h-5 bg-blue-700 w-full" />
+                        </div>
+                    </div>
+                    <div class="bg-blue-100 h-10 w-10"/>
                     // <DungeonRoom party_id={party_id} />
                     // <div class="flex max-h-1/2 h-[40%] mt-2 mb-4 overflow-y-auto" >
                     //     <ContextDependantInformationDisplay />

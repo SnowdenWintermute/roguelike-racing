@@ -98,15 +98,6 @@ pub fn action_page_buttons(props: &Props) -> Html {
         ""
     };
 
-    // TARGETING
-    // if props.next_prev_buttons.len() > 0 {
-    //     html!(
-    //     <ul class={ format!( "flex list-none border border-slate-400 bg-slate-700 w-full justify-between items-center" )}>
-    //         {props.next_prev_buttons.clone()}
-    //     </ul>
-    //     )
-    // } else {
-    // PAGES
     html!(
         <ul class={ format!( "flex list-none border border-slate-400 bg-slate-700 w-full justify-between items-center {hidden_style}" )}>
             <button
@@ -116,7 +107,7 @@ pub fn action_page_buttons(props: &Props) -> Html {
                 >
                     {"Previous page (W)"}
             </button >
-            <div class="h-full">
+            <div>
                 {(cloned_current_page_number + 1).to_string()}{"/"}{cloned_number_of_pages.to_string()}
             </div>
             <button

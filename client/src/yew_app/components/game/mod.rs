@@ -3,6 +3,7 @@ mod character_autofocus_manager;
 pub mod character_sheet;
 pub mod combat_log;
 pub mod combatant;
+mod combatant_plaques;
 pub mod context_dependant_information_display;
 pub mod debug;
 mod dungeon_room;
@@ -13,6 +14,7 @@ use crate::yew_app::components::game::action_menu::ActionMenu;
 use crate::yew_app::components::game::character_autofocus_manager::CharacterAutofocusManager;
 use crate::yew_app::components::game::character_sheet::item_details_viewer::ItemDetailsViewer;
 use crate::yew_app::components::game::character_sheet::CharacterSheet;
+use crate::yew_app::components::game::combatant_plaques::combatant_plaque_group::CombatantPlaqueGroup;
 use crate::yew_app::components::game::context_dependant_information_display::ContextDependantInformationDisplay;
 use crate::yew_app::components::game::dungeon_room::DungeonRoom;
 use crate::yew_app::components::game::tailwind_class_loader::TailwindClassLoader;
@@ -21,6 +23,7 @@ use crate::yew_app::components::game::tailwind_class_loader::SPACING_REM_SMALL;
 use crate::yew_app::components::game::top_info_bar::TopInfoBar;
 use crate::yew_app::store::game_store::GameStore;
 use crate::yew_app::store::lobby_store::LobbyStore;
+use common::game::getters::get_ally_ids_and_opponent_ids_option;
 use gloo::events::EventListener;
 use gloo_utils::window;
 use wasm_bindgen::JsCast;
@@ -84,6 +87,24 @@ pub fn game() -> Html {
         ""
     };
 
+    let monster_plaques = {
+        let mut to_return = html!( <div/> );
+        if let Some(battle_id) = party.battle_id {
+            if let Ok((ally_ids, opponent_ids_option)) = get_ally_ids_and_opponent_ids_option(
+                &party.character_positions,
+                game.battles.get(&battle_id),
+                game_state.focused_character_id,
+            ) {
+                if let Some(opponent_ids) = opponent_ids_option {
+                    to_return = html!(
+                    <CombatantPlaqueGroup combatant_ids={opponent_ids} show_experience={false} />
+                    )
+                }
+            };
+        }
+        to_return
+    };
+
     html!(
         <main class="h-screen w-screen flex justify-center overflow-y-auto relative">
             <TailwindClassLoader />
@@ -92,25 +113,7 @@ pub fn game() -> Html {
             <div class="w-full h-full max-h-[calc(0.5625 * 100vw)] text-zinc-300 flex flex-col" >
                 <TopInfoBar />
                 <div class="p-4 flex-grow flex flex-col justify-between">
-                    <div class="w-96 border border-slate-400 bg-slate-700 p-2 flex pointer-events-auto">
-                        <div class="h-20 w-20 mr-2 border border-slate-400 bg-slate-600 rounded-full relative">
-                            <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 h-7 border border-slate-400 bg-slate-700 pr-2 pl-2">
-                                {"14"}
-                            </div>
-                        </div>
-                        <div class="flex-grow">
-                            <div class="mb-1.5 flex justify-between">
-                                <span>
-                                    {"A Very Dangerous Monster"}
-                                </span>
-                                <button>
-                                    {"ⓘ "}
-                                </button>
-                            </div>
-                            <div class="h-5 bg-green-700 w-full mb-1" />
-                            <div class="h-5 bg-blue-700 w-full" />
-                        </div>
-                    </div>
+                    { monster_plaques }
                     <div class="bg-blue-100 h-10 w-10"/>
                     // <DungeonRoom party_id={party_id} />
                     // <div class="flex max-h-1/2 h-[40%] mt-2 mb-4 overflow-y-auto" >

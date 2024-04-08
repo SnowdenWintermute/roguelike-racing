@@ -6,7 +6,7 @@ mod combatant_is_targeted;
 mod focus_character_button;
 mod process_next_action_result_in_combatant_event_queue;
 mod process_next_animation_in_combatant_animation_queue;
-mod value_bar;
+pub mod value_bar;
 use crate::yew_app::components::common_components::atoms::hoverable_tooltip_wrapper::HoverableTooltipWrapper;
 use crate::yew_app::components::common_components::atoms::targeting_indicator::TargetingIndicator;
 use crate::yew_app::components::game::combatant::combatant_animation_manager::CombatantAnimationManager;

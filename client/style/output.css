@@ -765,6 +765,10 @@ video {
   display: none;
 }
 
+.aspect-square {
+  aspect-ratio: 1 / 1;
+}
+
 .\!h-screen {
   height: 100vh !important;
 }
@@ -1482,6 +1486,14 @@ video {
   padding-top: 1rem;
 }
 
+.pl-1\.5 {
+  padding-left: 0.375rem;
+}
+
+.pr-1\.5 {
+  padding-right: 0.375rem;
+}
+
 .text-left {
   text-align: left;
 }
@@ -1494,6 +1506,11 @@ video {
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
 .font-bold {

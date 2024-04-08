@@ -87,18 +87,18 @@ pub fn game() -> Html {
         ""
     };
 
-    let monster_plaques = {
-        let mut to_return = html!( <div/> );
+    let (ally_character_plaques, monster_plaques) = {
+        let mut to_return = (html!(), html!( <div/> ));
         if let Some(battle_id) = party.battle_id {
             if let Ok((ally_ids, opponent_ids_option)) = get_ally_ids_and_opponent_ids_option(
                 &party.character_positions,
                 game.battles.get(&battle_id),
                 game_state.focused_character_id,
             ) {
+                to_return.0 =
+                    html!(<CombatantPlaqueGroup combatant_ids={ally_ids} show_experience={true} />);
                 if let Some(opponent_ids) = opponent_ids_option {
-                    to_return = html!(
-                    <CombatantPlaqueGroup combatant_ids={opponent_ids} show_experience={false} />
-                    )
+                    to_return.1 = html!(<CombatantPlaqueGroup combatant_ids={opponent_ids} show_experience={false} />)
                 }
             };
         }
@@ -113,8 +113,13 @@ pub fn game() -> Html {
             <div class="w-full h-full max-h-[calc(0.5625 * 100vw)] text-zinc-300 flex flex-col" >
                 <TopInfoBar />
                 <div class="p-4 flex-grow flex flex-col justify-between">
-                    { monster_plaques }
-                    <div class="bg-blue-100 h-10 w-10"/>
+                    {monster_plaques}
+                    // <div class="flex">
+                    // // <div class="h-[16rem] w-[23rem] border border-slate-400 bg-slate-700">
+                    //     {"combat log placeholder"}
+                    // </div>
+                    {ally_character_plaques}
+                    // </div>
                     // <DungeonRoom party_id={party_id} />
                     // <div class="flex max-h-1/2 h-[40%] mt-2 mb-4 overflow-y-auto" >
                     //     <ContextDependantInformationDisplay />

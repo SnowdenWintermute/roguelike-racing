@@ -2,6 +2,7 @@ use yew::prelude::*;
 
 pub const SPACING_REM: f32 = 0.875;
 pub const SPACING_REM_SMALL: f32 = 0.625;
+pub const SPACING_REM_XS: f32 = 0.5;
 // pub const PAPER_DOLL_WIDTH: f32 = 23.75;
 // pub const CHARACTER_ATTRIBUTES_WIDTH: f32 = 24.25;
 pub const BUTTON_HEIGHT: f32 = 2.5;
@@ -22,6 +23,7 @@ pub fn tailwind_class_loader() -> Html {
         <div class="border-t-green-600" />
         <div class="border-green-600" />
         <div class="border-green-700" />
+        <div class="text-slate-700" />
     </>
     )
 }

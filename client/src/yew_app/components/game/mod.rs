@@ -88,15 +88,16 @@ pub fn game() -> Html {
     };
 
     let (ally_character_plaques, monster_plaques) = {
-        let mut to_return = (html!(), html!( <div/> ));
+        let mut to_return = (
+            html!( <CombatantPlaqueGroup combatant_ids={party.character_positions.clone()} show_experience={true} /> ),
+            html!( <div/> ),
+        );
         if let Some(battle_id) = party.battle_id {
             if let Ok((ally_ids, opponent_ids_option)) = get_ally_ids_and_opponent_ids_option(
                 &party.character_positions,
                 game.battles.get(&battle_id),
                 game_state.focused_character_id,
             ) {
-                to_return.0 =
-                    html!(<CombatantPlaqueGroup combatant_ids={ally_ids} show_experience={true} />);
                 if let Some(opponent_ids) = opponent_ids_option {
                     to_return.1 = html!(<CombatantPlaqueGroup combatant_ids={opponent_ids} show_experience={false} />)
                 }

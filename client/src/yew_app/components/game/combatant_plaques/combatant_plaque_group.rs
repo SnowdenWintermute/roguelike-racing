@@ -15,7 +15,7 @@ pub fn combatant_plaque_group(props: &Props) -> Html {
         .iter()
         .map(|id| {
             html!(
-                <li class="mr-4 last:mr-0">
+                <li class="mr-4 last:mr-0 box-border">
                     <CombatantPlaque combatant_id={id} show_experience={props.show_experience} />
                 </li>
             )

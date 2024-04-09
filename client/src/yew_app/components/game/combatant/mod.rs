@@ -1,13 +1,12 @@
 mod combatant_animation_manager;
 pub mod combatant_class_icon;
-mod combatant_is_ally;
+pub mod combatant_is_ally;
 pub mod combatant_is_selected;
 pub mod combatant_is_targeted;
 mod focus_character_button;
 mod process_next_action_result_in_combatant_event_queue;
 mod process_next_animation_in_combatant_animation_queue;
 pub mod value_bar;
-use crate::yew_app::components::common_components::atoms::hoverable_tooltip_wrapper::HoverableTooltipWrapper;
 use crate::yew_app::components::common_components::atoms::targeting_indicator::TargetingIndicator;
 use crate::yew_app::components::game::combatant::combatant_animation_manager::CombatantAnimationManager;
 use crate::yew_app::components::game::combatant::focus_character_button::FocusCharacterButton;
@@ -111,12 +110,12 @@ pub fn combatant(props: &Props) -> Html {
             if targeted_by.len() > 0 {
                 <div class="absolute top-[-1.5rem] left-1/2 -translate-x-1/2 z-20
                             flex" >
-                            {targeted_by.iter().map(|combatant_id_and_with_what| html!(
-                                        <TargetingIndicator
-                                            combat_action={combatant_id_and_with_what.1.clone()}
-                                            />
-                            )).collect::<Html>()}
-                    </div>
+                        {targeted_by.iter().map(|combatant_id_and_with_what| html!(
+                                    <TargetingIndicator
+                                        combat_action={combatant_id_and_with_what.1.clone()}
+                                        />
+                        )).collect::<Html>()}
+                </div>
             }
             if is_active_combatant {
                 <div class={format!("absolute z-50 top-1/2 -translate-y-1/2 {}

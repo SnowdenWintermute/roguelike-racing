@@ -113,7 +113,6 @@ pub fn action_menu(_: &Props) -> Html {
         },
     );
 
-    let cloned_button_props_on_current_page = numbered_button_props_on_current_page.clone();
     let cloned_action_button_properties = action_menu_button_properties.clone();
     let num_actions = cloned_action_button_properties
         .numbered_action_buttons
@@ -188,7 +187,7 @@ pub fn action_menu(_: &Props) -> Html {
     };
 
     html!(
-        <section class=" max-h-fit
+        <section class=" max-h-fit max-w-[25rem]
                         flex flex-col justify-between pointer-events-auto"
                  style={format!("margin-right: {}rem; ", SPACING_REM)}
         >

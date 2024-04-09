@@ -3,12 +3,12 @@ pub mod item_details_viewer;
 mod paper_doll;
 use crate::yew_app::components::game::character_sheet::character_attributes::CharacterAttributes;
 use crate::yew_app::components::game::character_sheet::paper_doll::PaperDoll;
-use crate::yew_app::components::game::tailwind_class_loader::{
-    BUTTON_HEIGHT_SMALL, SPACING_REM, SPACING_REM_SMALL,
-};
-use crate::yew_app::store::game_store::{
-    get_current_party_option, get_focused_character, GameStore,
-};
+use crate::yew_app::components::game::tailwind_class_loader::BUTTON_HEIGHT_SMALL;
+use crate::yew_app::components::game::tailwind_class_loader::SPACING_REM;
+use crate::yew_app::components::game::tailwind_class_loader::SPACING_REM_SMALL;
+use crate::yew_app::store::game_store::get_current_party_option;
+use crate::yew_app::store::game_store::get_focused_character;
+use crate::yew_app::store::game_store::GameStore;
 use common::game::getters::get_character;
 use common::packets::CharacterId;
 use std::collections::HashMap;
@@ -85,7 +85,6 @@ struct Props {
 #[function_component(CharacterSheetCharacterSelectionButton)]
 fn character_sheet_character_selection_button(props: &Props) -> Html {
     let (game_state, game_dispatch) = use_store::<GameStore>();
-    let focused_character_option = get_focused_character(&game_state).ok();
     let game_result = game_state.get_current_game();
     let character_option = {
         let mut to_return = None;

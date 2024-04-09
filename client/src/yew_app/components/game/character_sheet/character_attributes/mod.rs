@@ -100,7 +100,6 @@ pub fn character_attributes(props: &Props) -> Html {
     };
 
     let has_unspent_attribute_points = combatant_properties.unspent_attribute_points > 0;
-    let has_unspent_ability_points = combatant_properties.unspent_ability_points > 0;
     let unspent_attribute_points_display = if has_unspent_attribute_points
         && combatant_properties.controlled_by != CombatantControlledBy::AI
         && *show_attribute_assignment_buttons
@@ -112,15 +111,6 @@ pub fn character_attributes(props: &Props) -> Html {
                     <span>{combatant_properties.unspent_attribute_points}</span>
                 </span>
             </li>
-        )
-    } else {
-        html!()
-    };
-    let unspent_ability_points_display = if has_unspent_ability_points
-        && combatant_properties.controlled_by != CombatantControlledBy::AI
-    {
-        html!(
-            <div class="text-ffxipink" >{"unspent ability points: "}{combatant_properties.unspent_ability_points}</div>
         )
     } else {
         html!()

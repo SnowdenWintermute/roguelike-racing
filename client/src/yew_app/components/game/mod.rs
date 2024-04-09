@@ -9,17 +9,13 @@ pub mod debug;
 mod dungeon_room;
 mod tailwind_class_loader;
 mod top_info_bar;
-pub mod turn_order_bar;
 use crate::yew_app::components::game::action_menu::ActionMenu;
 use crate::yew_app::components::game::character_autofocus_manager::CharacterAutofocusManager;
 use crate::yew_app::components::game::character_sheet::item_details_viewer::ItemDetailsViewer;
 use crate::yew_app::components::game::character_sheet::CharacterSheet;
+use crate::yew_app::components::game::combat_log::CombatLog;
 use crate::yew_app::components::game::combatant_plaques::combatant_plaque_group::CombatantPlaqueGroup;
-use crate::yew_app::components::game::context_dependant_information_display::ContextDependantInformationDisplay;
-use crate::yew_app::components::game::dungeon_room::DungeonRoom;
 use crate::yew_app::components::game::tailwind_class_loader::TailwindClassLoader;
-use crate::yew_app::components::game::tailwind_class_loader::SPACING_REM;
-use crate::yew_app::components::game::tailwind_class_loader::SPACING_REM_SMALL;
 use crate::yew_app::components::game::top_info_bar::TopInfoBar;
 use crate::yew_app::store::game_store::GameStore;
 use crate::yew_app::store::lobby_store::LobbyStore;
@@ -93,7 +89,7 @@ pub fn game() -> Html {
             html!( <div/> ),
         );
         if let Some(battle_id) = party.battle_id {
-            if let Ok((ally_ids, opponent_ids_option)) = get_ally_ids_and_opponent_ids_option(
+            if let Ok((_, opponent_ids_option)) = get_ally_ids_and_opponent_ids_option(
                 &party.character_positions,
                 game.battles.get(&battle_id),
                 game_state.focused_character_id,
@@ -120,8 +116,8 @@ pub fn game() -> Html {
                         </div>
                     </div>
                     <div class="flex flex-wrap justify-between">
-                        <div class="h-[16rem] w-[23rem] min-w-[23rem] border border-slate-400 bg-slate-700">
-                            {"combat log placeholder"}
+                        <div class="h-[14rem] min-w-[23rem] max-w-[26rem] w-full border border-slate-400 bg-slate-700 p-2 pointer-events-auto">
+                            <CombatLog />
                         </div>
                         <div class="flex flex-grow justify-end mt-3.5">
                             <div class="w-fit flex items-end">

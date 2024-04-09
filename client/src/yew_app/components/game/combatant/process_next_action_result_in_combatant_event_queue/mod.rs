@@ -65,7 +65,6 @@ pub fn process_next_action_result_in_combatant_event_queue(
                     | CombatantAbilityNames::Healing => {
                         queue_fire_animations(game_dispatch, combatant_id, new_action_result)
                     }
-                    _ => Ok(()),
                 }
             }
             CombatAction::ConsumableUsed(item_id) => {

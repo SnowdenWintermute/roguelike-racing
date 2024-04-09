@@ -63,7 +63,7 @@ pub fn combatant_plaque(props: &Props) -> Html {
     let unspent_attributes_button = if combatant_properties.unspent_attribute_points > 0 {
         html!(
             <button onclick={handle_unspent_attributes_button_click}
-                class="bg-ffxipink h-5 w-5 border border-slate-950 text-slate-950 text-lg leading-3 ml-1" >
+                class="bg-ffxipink h-5 w-5 border border-slate-400 text-slate-950 text-lg leading-3 ml-1" >
                 { "+" }
             </button>
         )

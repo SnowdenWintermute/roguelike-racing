@@ -25,6 +25,8 @@ pub fn tailwind_class_loader() -> Html {
         <div class="border-green-700" />
         <div class="text-slate-700" />
         <div class="border-lime-500" />
+        <div class="bg-emerald-900" />
+        <div class="bg-amber-900" />
     </>
     )
 }

@@ -10,7 +10,6 @@ use common::packets::client_to_server::PlayerInputs;
 use common::packets::CharacterAndItem;
 use yew::function_component;
 use yew::prelude::*;
-use yew::Html;
 use yewdux::use_store;
 
 #[function_component(ItemsOnGround)]

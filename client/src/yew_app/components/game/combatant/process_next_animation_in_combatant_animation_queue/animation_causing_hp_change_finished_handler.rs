@@ -58,7 +58,7 @@ pub fn animation_causing_hp_change_finished_handler(
             let TargetAndHpChangeResults {
                 target_id,
                 hp_change_result,
-                combat_action,
+                ..
             } = target_and_hp_change_result;
             let game = store.get_current_game_mut()?;
             let (entity_properties, _) = game.get_mut_combatant_by_id(&target_id)?;

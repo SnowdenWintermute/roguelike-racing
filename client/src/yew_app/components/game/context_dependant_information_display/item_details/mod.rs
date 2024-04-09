@@ -56,7 +56,7 @@ pub fn item_details(props: &Props) -> Html {
     };
 
     let display = match &props.item.item_properties {
-        ItemProperties::Consumable(properties) => {
+        ItemProperties::Consumable(_) => {
             let consumable_combat_action =
                 CombatAction::ConsumableUsed(props.item.entity_properties.id);
             html!(<ActionDetailsContextInfo combat_action={consumable_combat_action} hide_title={true} />)

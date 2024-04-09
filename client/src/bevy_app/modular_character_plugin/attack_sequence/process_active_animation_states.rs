@@ -13,7 +13,6 @@ use crate::bevy_app::modular_character_plugin::CombatantsExecutingAttacks;
 use crate::bevy_app::modular_character_plugin::HitRecoveryActivationEvent;
 use crate::bevy_app::modular_character_plugin::HomeLocation;
 use crate::bevy_app::utils::link_animations::AnimationEntityLink;
-use crate::frontend_common::CombatantSpecies;
 use bevy::prelude::*;
 use js_sys::Date;
 

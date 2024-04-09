@@ -47,6 +47,7 @@ pub fn create_action_button_click_handler<'a>(
             game_dispatch.reduce_mut(|game_state| game_state.hovered_entity = None);
             game_dispatch.reduce_mut(|game_state| game_state.compared_item = None);
             game_dispatch.reduce_mut(|game_state| game_state.detailed_entity = None);
+            game_dispatch.reduce_mut(|game_state| game_state.hovered_action = None);
             game_dispatch.reduce_mut(|game_state| game_state.action_menu_current_page_number = 0);
         }),
         GameActions::ToggleViewingEquipedItems => Box::new(move || {

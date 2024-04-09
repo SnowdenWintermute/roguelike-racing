@@ -1,10 +1,8 @@
-use crate::yew_app::{
-    components::game::{
-        context_dependant_information_display::item_details::ItemDetails,
-        tailwind_class_loader::{SPACING_REM, SPACING_REM_SMALL},
-    },
-    store::game_store::{DetailableEntities, GameStore},
-};
+use crate::yew_app::components::game::context_dependant_information_display::item_details::ItemDetails;
+use crate::yew_app::components::game::tailwind_class_loader::SPACING_REM;
+use crate::yew_app::components::game::tailwind_class_loader::SPACING_REM_SMALL;
+use crate::yew_app::store::game_store::DetailableEntities;
+use crate::yew_app::store::game_store::GameStore;
 use yew::prelude::*;
 use yewdux::use_store;
 
@@ -14,7 +12,7 @@ pub struct Props {
 }
 
 #[function_component(ItemDetailsViewer)]
-pub fn item_details_viewer(props: &Props) -> Html {
+pub fn item_details_viewer(_: &Props) -> Html {
     let (game_state, _) = use_store::<GameStore>();
     let detailed_entity = &game_state.detailed_entity;
     let hovered_entity = &game_state.hovered_entity;

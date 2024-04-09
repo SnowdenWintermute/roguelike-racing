@@ -16,7 +16,7 @@ pub struct Props {
 
 #[function_component(DetailedCombatantInfoCard)]
 pub fn detailed_combatant_info_card(props: &Props) -> Html {
-    let (game_state, game_dispatch) = use_store::<GameStore>();
+    let (game_state, _) = use_store::<GameStore>();
     let combatant_detailed_info_ref = use_node_ref();
     let detailed_info_card_position_style = use_state(|| "".to_string());
 
@@ -58,13 +58,6 @@ pub fn detailed_combatant_info_card(props: &Props) -> Html {
     let cloned_combatant_plaque_ref = props.combatant_plaque_ref.clone();
     let cloned_combatant_detailed_info_ref = combatant_detailed_info_ref.clone();
     let cloned_detailed_info_card_position_style = detailed_info_card_position_style.clone();
-    let plaque_option = cloned_combatant_plaque_ref.cast::<HtmlElement>();
-    let detailed_info_option = cloned_combatant_detailed_info_ref.cast::<HtmlElement>();
-    let detailed_entity = game_state.detailed_entity.clone();
-    let detailed_info_height = match detailed_info_option {
-        Some(element) => Some(element.client_height().clone()),
-        None => None,
-    };
 
     use_effect_with(detailed_info_card.is_some(), move |_| {
         let plaque_option = cloned_combatant_plaque_ref.cast::<HtmlElement>();
@@ -78,8 +71,6 @@ pub fn detailed_combatant_info_card(props: &Props) -> Html {
                 .unwrap()
                 .get_bounding_client_rect()
                 .y() as i32;
-            let plaque_width = plaque_option.as_ref().unwrap().client_width();
-            let plaque_height = plaque_option.as_ref().unwrap().client_height();
             let plaque_x = plaque_option
                 .as_ref()
                 .unwrap()
@@ -101,7 +92,6 @@ pub fn detailed_combatant_info_card(props: &Props) -> Html {
             let window_width_i32 = window_width.clone().unwrap().as_f64().unwrap() as i32;
 
             if plaque_x as i32 + detailed_info_width as i32 > window_width_i32 {
-                let overflow = window_width_i32 - (plaque_x as i32 + detailed_info_width as i32);
                 style.push_str(&format!("right: -1px; transform(translateX(-100%))",))
             } else {
                 style.push_str("left: -1px;");

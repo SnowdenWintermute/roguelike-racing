@@ -13,7 +13,6 @@ use crate::bevy_app::modular_character_plugin::HitRecoveryActivationEvent;
 use crate::bevy_app::utils::link_animations::AnimationEntityLink;
 use crate::frontend_common::animation_names::AnimationType;
 use crate::frontend_common::animation_names::CombatantAnimations;
-use crate::frontend_common::CombatantSpecies;
 use bevy::prelude::*;
 use bevy_mod_billboard::BillboardDepth;
 use bevy_mod_billboard::BillboardTextBundle;

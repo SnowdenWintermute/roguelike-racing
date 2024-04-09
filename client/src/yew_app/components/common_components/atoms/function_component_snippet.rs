@@ -1,3 +1,4 @@
+#![allow(unused)]
 use yew::prelude::*;
 
 #[derive(Properties, PartialEq)]

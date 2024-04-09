@@ -7,7 +7,6 @@ use common::combatants::combatant_classes::CombatantClass;
 use common::packets::client_to_server::CharacterCreation;
 use common::packets::client_to_server::GameCreation;
 use common::packets::client_to_server::PlayerInputs;
-use common::packets::server_to_client::AdventuringPartyCreation;
 use std::ops::Deref;
 use yew::prelude::*;
 use yewdux::prelude::use_store;

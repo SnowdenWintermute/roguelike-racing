@@ -114,13 +114,21 @@ pub fn game() -> Html {
             <div class="w-full h-full max-h-[calc(0.5625 * 100vw)] text-zinc-300 flex flex-col" >
                 <TopInfoBar />
                 <div class="p-4 flex-grow flex flex-col justify-between">
-                    {monster_plaques}
-                    // <div class="flex">
-                    // // <div class="h-[16rem] w-[23rem] border border-slate-400 bg-slate-700">
-                    //     {"combat log placeholder"}
-                    // </div>
-                    {ally_character_plaques}
-                    // </div>
+                    <div class="flex justify-end">
+                        <div class="w-fit">
+                            {monster_plaques}
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap justify-between">
+                        <div class="h-[16rem] w-[23rem] min-w-[23rem] border border-slate-400 bg-slate-700">
+                            {"combat log placeholder"}
+                        </div>
+                        <div class="flex flex-grow justify-end mt-3.5">
+                            <div class="w-fit flex items-end">
+                                {ally_character_plaques}
+                            </div>
+                        </div>
+                    </div>
                     // <DungeonRoom party_id={party_id} />
                     // <div class="flex max-h-1/2 h-[40%] mt-2 mb-4 overflow-y-auto" >
                     //     <ContextDependantInformationDisplay />

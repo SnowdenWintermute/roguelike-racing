@@ -23,7 +23,7 @@ pub fn combatant_plaque_group(props: &Props) -> Html {
         .collect::<Html>();
 
     html!(
-        <ul class="w-full flex justify-end items-end list-none">
+        <ul class="w-full flex list-none">
             {plaques}
         </ul>
     )

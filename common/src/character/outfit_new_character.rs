@@ -17,7 +17,7 @@ use crate::items::ItemCategories;
 
 pub fn outfit_new_character(game: &mut RoguelikeRacerGame, character: &mut Character) {
     let combatant_properties = &mut character.combatant_properties;
-    // combatant_properties.unspent_attribute_points = 3;
+    combatant_properties.unspent_attribute_points = 3;
 
     // SET UP STARTING ATTRIBUTES
     let inherent_attributes = &mut combatant_properties.inherent_attributes;

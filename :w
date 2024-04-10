@@ -41,7 +41,6 @@ pub struct ActionButtonPropertiesByCategory {
 }
 
 pub const PAGE_SIZE: u8 = 6;
-
 #[function_component(ActionMenu)]
 pub fn action_menu(_: &Props) -> Html {
     let (game_state, game_dispatch) = use_store::<GameStore>();

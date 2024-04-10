@@ -7,6 +7,8 @@ mod combatant_plaques;
 pub mod context_dependant_information_display;
 pub mod debug;
 mod dungeon_room;
+mod items_on_ground;
+mod ready_up_display;
 mod tailwind_class_loader;
 mod top_info_bar;
 use crate::yew_app::components::game::action_menu::ActionMenu;
@@ -15,6 +17,7 @@ use crate::yew_app::components::game::character_sheet::item_details_viewer::Item
 use crate::yew_app::components::game::character_sheet::CharacterSheet;
 use crate::yew_app::components::game::combat_log::CombatLog;
 use crate::yew_app::components::game::combatant_plaques::combatant_plaque_group::CombatantPlaqueGroup;
+use crate::yew_app::components::game::ready_up_display::ReadyUpDisplay;
 use crate::yew_app::components::game::tailwind_class_loader::TailwindClassLoader;
 use crate::yew_app::components::game::top_info_bar::TopInfoBar;
 use crate::yew_app::store::game_store::GameStore;
@@ -110,6 +113,7 @@ pub fn game() -> Html {
             <div class="w-full h-full max-h-[calc(0.5625 * 100vw)] text-zinc-300 flex flex-col" >
                 <TopInfoBar />
                 <div class="p-4 flex-grow flex flex-col justify-between">
+                    <ReadyUpDisplay />
                     <div class="flex justify-end">
                         <div class="w-fit">
                             {monster_plaques}

@@ -1,4 +1,5 @@
 use crate::yew_app::components::game::context_dependant_information_display::item_details::ItemDetails;
+use crate::yew_app::components::game::items_on_ground::ItemsOnGround;
 use crate::yew_app::components::game::tailwind_class_loader::SPACING_REM;
 use crate::yew_app::components::game::tailwind_class_loader::SPACING_REM_SMALL;
 use crate::yew_app::store::game_store::DetailableEntities;
@@ -60,8 +61,12 @@ pub fn item_details_viewer(_: &Props) -> Html {
              style={format!("padding-top: {}rem; ", SPACING_REM_SMALL)}
             >
             <div class="min-w-[25rem] max-w-[25rem] h-[13.375rem]"
-            style={format!("margin-right: {}rem; ", SPACING_REM)}
-               />
+                 style={format!("margin-right: {}rem; ", SPACING_REM)}
+               >
+               if game_state.viewing_inventory || game_state.viewing_equipped_items {
+                   <ItemsOnGround />
+               }
+           </div>
             {item_details_display}
         </div>
     )

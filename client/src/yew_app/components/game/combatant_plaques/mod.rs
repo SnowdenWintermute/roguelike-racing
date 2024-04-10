@@ -10,6 +10,8 @@ use crate::yew_app::components::game::combatant_plaques::combatant_info_button::
 use crate::yew_app::components::game::combatant_plaques::combatant_value_bars::get_combatant_value_bars;
 use crate::yew_app::components::game::combatant_plaques::detailed_combatant_info_card::DetailedCombatantInfoCard;
 use crate::yew_app::components::game::combatant_plaques::focus_character_button::FocusCharacterButton;
+use crate::yew_app::components::game::tailwind_class_loader::BUTTON_HEIGHT_SMALL;
+use crate::yew_app::store::game_store::get_current_battle_option;
 use crate::yew_app::store::game_store::GameStore;
 use common::packets::CharacterId;
 use web_sys::HtmlElement;
@@ -71,6 +73,12 @@ pub fn combatant_plaque(props: &Props) -> Html {
         html!()
     };
 
+    let battle_option = get_current_battle_option(&game_state);
+    let is_active_combatant = match battle_option {
+        Some(battle) => battle.combatant_is_first_in_turn_order(combatant_id),
+        None => false,
+    };
+
     let focused_class = if *info_button_is_hovered {
         "border-white"
     } else if game_state.focused_character_id == props.combatant_id {
@@ -94,47 +102,64 @@ pub fn combatant_plaque(props: &Props) -> Html {
         html!()
     };
 
+    let is_active_combatant_icon = if is_active_combatant {
+        html!(
+        <div class="h-full border border-slate-400 bg-slate-700 pr-2 pl-2 text-sm pointer-events-auto w-fit">
+            {"taking turn..."}
+        </div>
+        )
+    } else {
+        html!()
+    };
+
     html!(
-    <div class={format!("w-96 h-fit border bg-slate-700 pointer-events-auto flex p-2.5 {focused_class} relative box-border")}
-        ref={combatant_plaque_ref.clone()}
-        >
-        {targeting_indicators}
-         <DetailedCombatantInfoCard
-             combatant_id={combatant_id}
-             combatant_plaque_ref={combatant_plaque_ref.clone()}
-             info_button_is_hovered={info_button_is_hovered.clone()}
-         />
-        <div class="h-full aspect-square mr-2 border border-slate-400 bg-slate-600 rounded-full relative"
-             style={format!("height: {}px;", *portrait_height)}
-        >
-            <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 h-5 border border-slate-400 bg-slate-700 pr-2 pl-2 text-sm flex items-center justify-center">
-                {combatant_properties.level}
+    <div>
+        <div class={format!("w-96 h-fit border bg-slate-700 pointer-events-auto flex p-2.5 {focused_class} relative box-border")}
+            ref={combatant_plaque_ref.clone()}
+            >
+            {targeting_indicators}
+             <DetailedCombatantInfoCard
+                 combatant_id={combatant_id}
+                 combatant_plaque_ref={combatant_plaque_ref.clone()}
+                 info_button_is_hovered={info_button_is_hovered.clone()}
+             />
+            <div class="h-full aspect-square mr-2 border border-slate-400 bg-slate-600 rounded-full relative"
+                 style={format!("height: {}px;", *portrait_height)}
+            >
+                <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 h-5 border border-slate-400 bg-slate-700 pr-2 pl-2 text-sm flex items-center justify-center">
+                    {combatant_properties.level}
+                </div>
+            </div>
+            <div class="flex-grow"
+            ref={name_and_bars_ref}
+            >
+                <div class="mb-1.5 flex justify-between text-lg">
+                    <span>
+                        {entity_properties.name.clone()}
+                        {unspent_attributes_button}
+                    </span>
+                    <span>
+                        <CombatantInfoButton combatant_id={combatant_id} info_button_is_hovered={info_button_is_hovered.clone()} />
+                    </span>
+                </div>
+                <div class="h-5 mb-1">
+                    {hp_bar}
+                </div>
+                <div class="h-5">
+                    {mp_bar}
+                </div>
+                if props.show_experience {
+                    <div class="h-5 mt-1 flex text-sm">
+                        <FocusCharacterButton id={props.combatant_id} />
+                        {experience_bar}
+                    </div>
+                }
             </div>
         </div>
-        <div class="flex-grow"
-        ref={name_and_bars_ref}
-        >
-            <div class="mb-1.5 flex justify-between text-lg">
-                <span>
-                    {entity_properties.name.clone()}
-                    {unspent_attributes_button}
-                </span>
-                <span>
-                    <CombatantInfoButton combatant_id={combatant_id} info_button_is_hovered={info_button_is_hovered.clone()} />
-                </span>
-            </div>
-            <div class="h-5 mb-1">
-                {hp_bar}
-            </div>
-            <div class="h-5">
-                {mp_bar}
-            </div>
-            if props.show_experience {
-                <div class="h-5 mt-1 flex text-sm">
-                    <FocusCharacterButton id={props.combatant_id} />
-                    {experience_bar}
-                </div>
-            }
+        <div
+            class="pt-2"
+            style={format!("height: {}rem", BUTTON_HEIGHT_SMALL)}>
+            {is_active_combatant_icon}
         </div>
     </div>
     )

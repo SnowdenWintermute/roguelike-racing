@@ -7,6 +7,7 @@ mod combatant_plaques;
 pub mod context_dependant_information_display;
 pub mod debug;
 mod dungeon_room;
+mod item_details_viewers;
 mod items_on_ground;
 mod ready_up_display;
 mod tailwind_class_loader;
@@ -17,6 +18,7 @@ use crate::yew_app::components::game::character_sheet::item_details_viewer::Item
 use crate::yew_app::components::game::character_sheet::CharacterSheet;
 use crate::yew_app::components::game::combat_log::CombatLog;
 use crate::yew_app::components::game::combatant_plaques::combatant_plaque_group::CombatantPlaqueGroup;
+use crate::yew_app::components::game::item_details_viewers::ItemDetailsAndComparison;
 use crate::yew_app::components::game::items_on_ground::ItemsOnGround;
 use crate::yew_app::components::game::ready_up_display::ReadyUpDisplay;
 use crate::yew_app::components::game::tailwind_class_loader::TailwindClassLoader;
@@ -155,11 +157,17 @@ pub fn game() -> Html {
                                 <ActionMenu />
                                 if !viewing_character_sheet {
                                     <div class="flex">
-                                        <div class={ "max-w-[25rem] mr-2" }>
-                                            <ItemDetailsViewer />
-                                        </div>
-                                        <div class="max-w-[25rem] w-[25rem] max-h-[13.375rem] h-fit">
-                                            <ItemsOnGround max_height={25.0} />
+                                        // <div class={ "max-w-[25rem] mr-2" }>
+                                        //     // used as spacing, internally this hides itself
+                                        //     <ItemDetailsViewer />
+                                        // </div>
+                                        <div class="max-h-[13.375rem] h-fit flex flex-grow justify-end">
+                                            <div class="mr-2 w-[50rem]">
+                                                <ItemDetailsAndComparison />
+                                            </div>
+                                            <div class="max-w-[25rem] w-[25rem]" >
+                                                <ItemsOnGround max_height={25.0} />
+                                            </div>
                                         </div>
                                     </div>
                                 }

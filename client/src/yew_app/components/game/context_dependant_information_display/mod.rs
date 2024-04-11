@@ -24,7 +24,9 @@ pub fn context_dependant_information_display() -> Html {
             DetailableEntities::Combatant(combatant_properties) => Some(
                 html!(<CombatantDetailsContextInfo combatant_id={combatant_properties.entity_properties.id}/>),
             ),
-            DetailableEntities::Item(item) => Some(html!(<ItemDetails item={item.clone()}  />)),
+            DetailableEntities::Item(item) => {
+                Some(html!(<ItemDetails item={item.clone()} flip_display_order={false} />))
+            }
         },
         None => None,
     };
@@ -41,7 +43,9 @@ pub fn context_dependant_information_display() -> Html {
             DetailableEntities::Combatant(combatant_properties) => Some(
                 html!(<CombatantDetailsContextInfo combatant_id={combatant_properties.entity_properties.id}/>),
             ),
-            DetailableEntities::Item(item) => Some(html!(<ItemDetails item={item.clone()} />)),
+            DetailableEntities::Item(item) => {
+                Some(html!(<ItemDetails item={item.clone()} flip_display_order={false} />))
+            }
         },
         None => {
             let mut to_return = None;

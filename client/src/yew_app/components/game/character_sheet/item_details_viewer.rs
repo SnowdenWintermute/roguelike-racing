@@ -28,13 +28,6 @@ pub fn item_details_viewer() -> Html {
         None => None,
     };
 
-    // DETAIL BOX L
-    // <div class="border border-slate-400 bg-slate-700 min-h-20 max-h-[13.375rem] max-w-1/2"
-    //     style={format!("margin-right: {}rem; width: 50%;", SPACING_REM_SMALL / 2.0)}
-    // >
-    // {item_name}
-    // </div>
-
     let item_option = if let Some(hovered_item_details) = hovered_item_option {
         Some(hovered_item_details)
     } else if let Some(detailed_item_details) = detailed_item_option {
@@ -45,7 +38,7 @@ pub fn item_details_viewer() -> Html {
 
     let item_details_display = if let Some(item) = item_option {
         html!(
-            <ItemDetails item={item} />
+            <ItemDetails item={item} flip_display_order={ false } />
         )
     } else {
         html!()

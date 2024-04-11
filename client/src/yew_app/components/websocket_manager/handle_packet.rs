@@ -1,8 +1,11 @@
+use std::rc::Rc;
+
 use super::adventuring_party_update_handlers::client_party_id_change_handler;
 use super::adventuring_party_update_handlers::handle_adventuring_party_created;
 use super::adventuring_party_update_handlers::handle_character_creation;
 use super::adventuring_party_update_handlers::handle_character_deletion;
 use super::adventuring_party_update_handlers::handle_player_changed_adventuring_party;
+use super::battle_full_update_handler::handle_battle_full_update;
 use super::character_selected_combat_action_handler::character_selected_combat_action_handler;
 use super::dungeon_floor_number_changed_handler::dungeon_floor_number_changed_handler;
 use super::game_full_update_handler::game_full_update_handler;
@@ -15,8 +18,6 @@ use super::handle_raw_action_results::handle_raw_action_results;
 use super::in_game_party_update_handlers::character_cycled_targeting_schemes_handler;
 use super::in_game_party_update_handlers::character_cycled_targets_handler;
 use super::in_game_party_update_handlers::character_spent_attribute_point_handler;
-use super::in_game_party_update_handlers::handle_battle_full_update;
-use super::in_game_party_update_handlers::handle_new_dungeon_room;
 use super::in_game_party_update_handlers::handle_player_toggled_ready_to_descend;
 use super::in_game_party_update_handlers::handle_player_toggled_ready_to_explore;
 use super::in_game_party_update_handlers::new_dungeon_room_types_on_current_floor;
@@ -26,12 +27,14 @@ use super::lobby_update_handlers::handle_game_started;
 use super::lobby_update_handlers::handle_player_toggled_ready;
 use super::lobby_update_handlers::handle_user_joined_game;
 use super::lobby_update_handlers::handle_user_left_game;
+use super::new_dungeon_room_handler::handle_new_dungeon_room;
 use super::new_game_message_handler::new_game_message_handler;
 use super::websocket_channel_packet_handlers::handle_user_joined_websocket_channel;
 use super::websocket_channel_packet_handlers::handle_user_left_websocket_channel;
 use super::websocket_channel_packet_handlers::handle_websocket_channels_full_update;
 use crate::yew_app::components::alerts::set_alert;
 use crate::yew_app::store::alert_store::AlertStore;
+use crate::yew_app::store::bevy_communication_store::BevyCommunicationStore;
 use crate::yew_app::store::game_store::GameStore;
 use crate::yew_app::store::lobby_store::LobbyStore;
 use crate::yew_app::store::websocket_store::WebsocketStore;
@@ -47,6 +50,7 @@ pub fn handle_packet(
     lobby_dispatch: Dispatch<LobbyStore>,
     game_dispatch: Dispatch<GameStore>,
     websocket_dispatch: Dispatch<WebsocketStore>,
+    bevy_communication_dispatch: Dispatch<BevyCommunicationStore>,
 ) -> Result<(), AppError> {
     // log!(format!("data from server: {:#?}", data));
     match data {
@@ -121,7 +125,7 @@ pub fn handle_packet(
             handle_player_toggled_ready_to_explore(game_dispatch, username)
         }
         GameServerUpdatePackets::DungeonRoomUpdate(new_room) => {
-            game_dispatch.reduce_mut(|store| handle_new_dungeon_room(store, new_room))
+            handle_new_dungeon_room(game_dispatch, bevy_communication_dispatch, new_room)
         }
         GameServerUpdatePackets::CharacterSelectedCombatAction(packet) => {
             character_selected_combat_action_handler(game_dispatch, packet)
@@ -139,7 +143,7 @@ pub fn handle_packet(
             handle_combat_turn_results(game_dispatch, packet.turn_results)
         }
         GameServerUpdatePackets::BattleFullUpdate(packet) => {
-            game_dispatch.reduce_mut(|store| handle_battle_full_update(store, packet))
+            handle_battle_full_update(game_dispatch, packet)
         }
         GameServerUpdatePackets::BattleEndReport(packet) => {
             handle_battle_end_report(game_dispatch, websocket_dispatch, packet)

@@ -3,7 +3,8 @@ use web_sys::HtmlElement;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
-use crate::yew_app::{components::alerts::remove_alert, store::alert_store::AlertStore};
+use crate::yew_app::components::alerts::remove_alert;
+use crate::yew_app::store::alert_store::AlertStore;
 
 #[function_component(AlertManager)]
 pub fn alert_manager() -> Html {
@@ -35,7 +36,7 @@ pub fn alert_manager() -> Html {
                 html!{
                     <li>
                         <button id={format!("alert-{}",alert.id.to_string())} class="animate-slide-appear-from-left h-10 mb-2 pl-2 pr-2
-                        border border-slate-400 bg-slate-700 text-zinc-300"
+                        border border-slate-400 bg-slate-700 text-zinc-300 pointer-events-auto"
                         onclick={click_handler_emitter.clone()}
                         >
                             {alert.message.clone()}

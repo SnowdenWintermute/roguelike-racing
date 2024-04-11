@@ -69,62 +69,6 @@ pub fn handle_player_toggled_ready_to_descend(
     })
 }
 
-pub fn handle_new_dungeon_room(
-    game_store: &mut GameStore,
-    packet: DungeonRoom,
-) -> Result<(), AppError> {
-    log!("new dungeon room");
-    if let Some(monsters) = &packet.monsters {
-        for (monster_id, _) in monsters {
-            game_store
-                .action_results_manager
-                .combantant_event_managers
-                .insert(*monster_id, CombatantEventManager::new(*monster_id));
-        }
-    }
-    let party = game_store.get_current_party_mut()?;
-    party.players_ready_to_explore.clear();
-    party.players_ready_to_descend.clear();
-    let current_room_type = packet.room_type;
-    party.current_room = packet;
-    party.rooms_explored.on_current_floor += 1;
-    let num_rooms_explored_on_current_floor = party.rooms_explored.on_current_floor;
-    party.rooms_explored.total += 1;
-    let room_to_reveal = party
-        .client_current_floor_rooms_list
-        .get_mut((num_rooms_explored_on_current_floor - 1).into())
-        .ok_or_else(|| AppError {
-            error_type: common::errors::AppErrorTypes::ClientError,
-            message: error_messages::CLIENT_LIST_MISSING_ROOM_TYPE.to_string(),
-        })?;
-    *room_to_reveal = Some(current_room_type);
-
-    Ok(())
-}
-
-pub fn handle_battle_full_update(
-    game_store: &mut GameStore,
-    battle_option: Option<Battle>,
-) -> Result<(), AppError> {
-    let game = game_store.game.as_mut().ok_or_else(|| AppError {
-        error_type: common::errors::AppErrorTypes::ClientError,
-        message: error_messages::GAME_NOT_FOUND.to_string(),
-    })?;
-    if let Some(battle) = battle_option {
-        game_store.current_battle_id = Some(battle.id);
-        if let Some(party_id) = game_store.current_party_id {
-            let party = get_mut_party(game, party_id)?;
-            party.battle_id = Some(battle.id);
-        }
-
-        game.battles.insert(battle.id, battle);
-    } else {
-        game_store.current_battle_id = None;
-        game.battles = HashMap::new();
-    }
-    Ok(())
-}
-
 pub fn character_cycled_targets_handler(
     game_dispatch: Dispatch<GameStore>,
     packet: CharacterAndDirection,

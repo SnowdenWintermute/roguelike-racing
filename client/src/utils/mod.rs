@@ -2,6 +2,7 @@ use common::combat::magical_elements::MagicalElements;
 use wasm_bindgen::prelude::*;
 use web_sys::window;
 use web_sys::HtmlElement;
+use yew::MouseEvent;
 
 // Import the JavaScript Date object
 #[wasm_bindgen]
@@ -32,7 +33,12 @@ pub fn get_magical_element_tailwind_color(element: &MagicalElements) -> String {
     str.to_string()
 }
 
-pub fn hide_bevy_canvas() {
+pub fn set_bevy_canvas_visibility(visible: bool) {
+    let new_class_name = if visible {
+        "!w-screen !h-screen"
+    } else {
+        "hidden"
+    };
     let bevy_canvas_node = window()
         .unwrap_throw()
         .document()
@@ -40,5 +46,5 @@ pub fn hide_bevy_canvas() {
         .get_element_by_id("bevy")
         .expect("to have the bevy canvas")
         .unchecked_into::<HtmlElement>();
-    bevy_canvas_node.set_class_name("hidden");
+    bevy_canvas_node.set_class_name(new_class_name);
 }

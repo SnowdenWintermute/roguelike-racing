@@ -12,6 +12,7 @@ mod items_on_ground;
 mod ready_up_display;
 mod tailwind_class_loader;
 mod top_info_bar;
+use crate::utils::set_bevy_canvas_visibility;
 use crate::yew_app::components::game::action_menu::ActionMenu;
 use crate::yew_app::components::game::character_autofocus_manager::CharacterAutofocusManager;
 use crate::yew_app::components::game::character_sheet::item_details_viewer::ItemDetailsViewer;
@@ -23,6 +24,7 @@ use crate::yew_app::components::game::items_on_ground::ItemsOnGround;
 use crate::yew_app::components::game::ready_up_display::ReadyUpDisplay;
 use crate::yew_app::components::game::tailwind_class_loader::TailwindClassLoader;
 use crate::yew_app::components::game::top_info_bar::TopInfoBar;
+use crate::yew_app::store::bevy_communication_store::BevyCommunicationStore;
 use crate::yew_app::store::game_store::GameStore;
 use crate::yew_app::store::lobby_store::LobbyStore;
 use common::game::getters::get_ally_ids_and_opponent_ids_option;
@@ -37,6 +39,11 @@ use yewdux::prelude::use_store;
 pub fn game() -> Html {
     let (game_state, game_dispatch) = use_store::<GameStore>();
     let (lobby_state, _) = use_store::<LobbyStore>();
+    let (bevy_communication_state, _) = use_store::<BevyCommunicationStore>();
+    if !bevy_communication_state.bevy_assets_loaded {
+        return html!({ "loading assets" });
+    };
+
     let game = game_state
         .game
         .clone()
@@ -54,6 +61,8 @@ pub fn game() -> Html {
         .get(&party_id)
         .expect("must have a party id")
         .clone();
+
+    use_effect_with((), move |_| set_bevy_canvas_visibility(true));
 
     let cloned_dispatch = game_dispatch.clone();
     let keyup_listener_state = use_state(|| None::<EventListener>);
@@ -142,10 +151,6 @@ pub fn game() -> Html {
                             </div>
                         </div>
                     </div>
-                    // <DungeonRoom party_id={party_id} />
-                    // <div class="flex max-h-1/2 h-[40%] mt-2 mb-4 overflow-y-auto" >
-                    //     <ContextDependantInformationDisplay />
-                    // </div>
                 </div>
             </div>
             // Action Menu and Inventory/Equipment/Character sheet container

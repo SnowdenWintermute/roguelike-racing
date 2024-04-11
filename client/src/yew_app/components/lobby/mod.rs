@@ -4,7 +4,7 @@ pub mod game_setup;
 pub mod lobby_menu;
 pub mod user_list;
 mod welcome_info;
-use crate::utils::hide_bevy_canvas;
+use crate::utils::set_bevy_canvas_visibility;
 use crate::yew_app::components::lobby::game_list::GameList;
 use crate::yew_app::components::lobby::lobby_menu::LobbyMenu;
 use crate::yew_app::components::lobby::user_list::UserList;
@@ -13,7 +13,7 @@ use yew::prelude::*;
 
 #[function_component(Lobby)]
 pub fn lobby() -> Html {
-    use_effect_with((), move |_| hide_bevy_canvas());
+    use_effect_with((), move |_| set_bevy_canvas_visibility(false));
 
     html!(
         <main class="min-h-screen max-h-screen w-screen text-zinc-300 justify-center">

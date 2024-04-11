@@ -1,8 +1,3 @@
-use common::packets::client_to_server::PlayerInputs;
-use common::packets::CharacterAndItem;
-use yew::prelude::*;
-use yewdux::use_store;
-
 use crate::yew_app::components::game::action_menu::action_button_hover_handlers::create_action_mouse_enter_handler;
 use crate::yew_app::components::game::action_menu::action_button_hover_handlers::create_action_mouse_leave_handler;
 use crate::yew_app::components::game::action_menu::enums::GameActions;
@@ -12,6 +7,10 @@ use crate::yew_app::store::game_store::select_item;
 use crate::yew_app::store::game_store::DetailableEntities;
 use crate::yew_app::store::game_store::GameStore;
 use crate::yew_app::store::websocket_store::WebsocketStore;
+use common::packets::client_to_server::PlayerInputs;
+use common::packets::CharacterAndItem;
+use yew::prelude::*;
+use yewdux::use_store;
 
 #[derive(Properties, PartialEq)]
 pub struct ItemOnGroundProps {
@@ -32,6 +31,8 @@ pub fn item_on_ground(props: &ItemOnGroundProps) -> Html {
     let take_item = Callback::from(move |_| {
         cloned_game_dispatch.reduce_mut(|store| {
             store.hovered_entity = None;
+            store.selected_item = None;
+            store.detailed_entity = None;
         });
         send_client_input(
             &cloned_websocket_state.websocket,

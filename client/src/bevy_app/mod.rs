@@ -35,6 +35,7 @@ pub fn bevy_main(comm_channel_plugin: impl Plugin, shared_state: Arc<Mutex<Share
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
                 canvas: Some("#bevy".to_string()),
+                prevent_default_event_handling: false,
                 ..Default::default()
             }),
             ..default()

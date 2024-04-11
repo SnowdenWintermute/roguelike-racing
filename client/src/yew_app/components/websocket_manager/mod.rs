@@ -1,4 +1,5 @@
 mod adventuring_party_update_handlers;
+mod battle_full_update_handler;
 mod character_selected_combat_action_handler;
 mod dungeon_floor_number_changed_handler;
 mod game_full_update_handler;
@@ -12,11 +13,13 @@ mod handle_raw_action_results;
 mod in_game_party_update_handlers;
 mod inventory_management_update_handlers;
 mod lobby_update_handlers;
+mod new_dungeon_room_handler;
 mod new_game_message_handler;
 pub mod send_client_input;
 mod websocket_channel_packet_handlers;
 use crate::yew_app::components::alerts::set_alert;
 use crate::yew_app::store::alert_store::AlertStore;
+use crate::yew_app::store::bevy_communication_store::BevyCommunicationStore;
 use crate::yew_app::store::game_store::GameStore;
 use crate::yew_app::store::lobby_store::LobbyStore;
 use crate::yew_app::store::websocket_store::WebsocketStore;
@@ -44,6 +47,7 @@ pub fn websocket_manager(props: &Props) -> Html {
     let (_, lobby_dispatch) = use_store::<LobbyStore>();
     let (_, game_dispatch) = use_store::<GameStore>();
     let (_, alert_dispatch) = use_store::<AlertStore>();
+    let (_, bevy_communication_dispatch) = use_store::<BevyCommunicationStore>();
     let server_url = props.server_url.clone();
     // log!(format!(
     //     "attempting connection to websocket server: {}",
@@ -70,13 +74,15 @@ pub fn websocket_manager(props: &Props) -> Html {
                                 let cloned_lobby_dispatch = lobby_dispatch.clone();
                                 let cloned_game_dispatch = game_dispatch.clone();
                                 let cloned_websocket_dispatch = cloned_websocket_dispatch.clone();
-
+                                let cloned_bevy_communication_dispatch =
+                                    bevy_communication_dispatch.clone();
                                 handle_packet::handle_packet(
                                     data,
                                     cloned_alert_dispatch,
                                     cloned_lobby_dispatch,
                                     cloned_game_dispatch,
                                     cloned_websocket_dispatch,
+                                    cloned_bevy_communication_dispatch,
                                 )?
                             }
                         } else if let Ok(txt) = e.data().dyn_into::<js_sys::JsString>() {

@@ -1,4 +1,5 @@
 pub mod alerts;
+pub mod bevy_messages_manager;
 pub mod client_consts;
 pub mod common_components;
 pub mod game;

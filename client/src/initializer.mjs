@@ -1,5 +1,8 @@
 export default function myInitializer() {
   const indicator = document.getElementById("loading-indicator");
+  const bevy_canvas = document.getElementById("bevy");
+  bevy_canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+
   return {
     onStart: () => {
       indicator.innerHTML = `Fetching WebAssembly file...`;

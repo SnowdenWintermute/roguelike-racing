@@ -1,5 +1,4 @@
 use yew::prelude::*;
-use yew::Html;
 
 #[function_component(Stairs)]
 pub fn stairs() -> Html {

@@ -5,7 +5,9 @@ use super::action_menu_button::determine_action_button_text::determine_action_bu
 use super::determine_action_menu_buttons_disabled::determine_action_menu_buttons_disabled;
 use super::determine_menu_actions::determine_menu_actions;
 use super::enums::GameActions;
+use super::set_keyup_listeners::ActionButtonCategories;
 use super::set_keyup_listeners::GameKeys;
+use super::ActionButtonPropertiesByCategory;
 use crate::yew_app::store::alert_store::AlertStore;
 use crate::yew_app::store::game_store::GameStore;
 use crate::yew_app::store::lobby_store::LobbyStore;
@@ -28,7 +30,8 @@ pub struct ActionMenuButtonProperties {
     pub mouse_enter_handler: Callback<MouseEvent>,
     pub mouse_leave_handler: Callback<MouseEvent>,
     pub should_be_disabled: bool,
-    pub dedicated_key_option: Option<GameKeys>,
+    pub dedicated_keys_option: Option<Vec<GameKeys>>,
+    pub category: ActionButtonCategories,
 }
 
 pub fn build_action_button_properties(
@@ -39,9 +42,11 @@ pub fn build_action_button_properties(
     ui_state: Rc<UIStore>,
     lobby_state: Rc<LobbyStore>,
     party: &AdventuringParty,
-) -> Vec<ActionMenuButtonProperties> {
+) -> ActionButtonPropertiesByCategory {
     let new_actions = determine_menu_actions(&game_state, &lobby_state, party);
-    let mut button_properties = Vec::new();
+    let mut numbered_button_properties = Vec::new();
+    let mut top_button_properties = Vec::new();
+    let mut next_prev_button_properties = Vec::new();
 
     for action in new_actions {
         let cloned_websocket_state = websocket_state.clone();
@@ -98,27 +103,64 @@ pub fn build_action_button_properties(
         let should_be_disabled =
             determine_action_menu_buttons_disabled(&action, &game_state, &lobby_state);
 
-        let dedicated_key_option = match action {
+        let (dedicated_keys_option, category) = match action {
             GameActions::SetInventoryOpen(to_set) => match to_set {
-                true => None,
-                false => Some(GameKeys::Cancel),
+                true => (
+                    Some(Vec::from([GameKeys::S, GameKeys::I])),
+                    ActionButtonCategories::Top,
+                ),
+                false => (
+                    Some(Vec::from([GameKeys::Cancel, GameKeys::S, GameKeys::I])),
+                    ActionButtonCategories::Top,
+                ),
             },
             GameActions::SetAssignAttributePointsMenuOpen(to_set) => match to_set {
-                true => None,
-                false => Some(GameKeys::Cancel),
+                true => (
+                    Some(Vec::from([GameKeys::F, GameKeys::P])),
+                    ActionButtonCategories::Top,
+                ),
+                false => (
+                    Some(Vec::from([GameKeys::Cancel, GameKeys::F, GameKeys::P])),
+                    ActionButtonCategories::Top,
+                ),
             },
-            GameActions::UseItem(_) => Some(GameKeys::Confirm),
-            GameActions::DeselectItem => Some(GameKeys::Cancel),
-            GameActions::UseSelectedCombatAction => Some(GameKeys::Confirm),
-            GameActions::DeselectCombatAction => Some(GameKeys::Cancel),
+            GameActions::CycleTargetingScheme => {
+                (Some(Vec::from([GameKeys::T])), ActionButtonCategories::Top)
+            }
+            GameActions::ToggleViewingEquipedItems => (
+                Some(Vec::from([GameKeys::D, GameKeys::O])),
+                ActionButtonCategories::Top,
+            ),
+            GameActions::UseItem(_) => (
+                Some(Vec::from([GameKeys::Confirm])),
+                ActionButtonCategories::Top,
+            ),
+            GameActions::DeselectItem => (
+                Some(Vec::from([GameKeys::Cancel])),
+                ActionButtonCategories::Top,
+            ),
+            GameActions::UseSelectedCombatAction => (
+                Some(Vec::from([GameKeys::Confirm])),
+                ActionButtonCategories::Top,
+            ),
+            GameActions::DeselectCombatAction => (
+                Some(Vec::from([GameKeys::Cancel])),
+                ActionButtonCategories::Top,
+            ),
             GameActions::CycleTargets(direction) => match direction {
-                NextOrPrevious::Next => Some(GameKeys::Next),
-                NextOrPrevious::Previous => Some(GameKeys::Previous),
+                NextOrPrevious::Next => (
+                    Some(Vec::from([GameKeys::Next])),
+                    ActionButtonCategories::NextPrevious,
+                ),
+                NextOrPrevious::Previous => (
+                    Some(Vec::from([GameKeys::Previous])),
+                    ActionButtonCategories::NextPrevious,
+                ),
             },
-            _ => None,
+            _ => (None, ActionButtonCategories::Numbered),
         };
 
-        button_properties.push(ActionMenuButtonProperties {
+        let button_properties = ActionMenuButtonProperties {
             text,
             click_handler,
             mouse_enter_handler,
@@ -126,9 +168,21 @@ pub fn build_action_button_properties(
             focus_handler,
             blur_handler,
             should_be_disabled,
-            dedicated_key_option,
-        })
-    }
+            dedicated_keys_option: dedicated_keys_option.clone(),
+            category: category.clone(),
+        };
 
-    button_properties
+        match category {
+            ActionButtonCategories::NextPrevious => {
+                next_prev_button_properties.push(button_properties)
+            }
+            ActionButtonCategories::Top => top_button_properties.push(button_properties),
+            ActionButtonCategories::Numbered => numbered_button_properties.push(button_properties),
+        }
+    }
+    ActionButtonPropertiesByCategory {
+        top_action_buttons: top_button_properties,
+        numbered_action_buttons: numbered_button_properties,
+        next_prev_action_buttons: next_prev_button_properties,
+    }
 }

@@ -103,7 +103,7 @@ pub fn get_current_battle_option<'a>(game_state: &'a GameStore) -> Option<&'a Ba
     }
 }
 
-pub fn _get_current_battle_option_mut<'a>(game_state: &'a mut GameStore) -> Option<&'a mut Battle> {
+pub fn get_current_battle_option_mut<'a>(game_state: &'a mut GameStore) -> Option<&'a mut Battle> {
     let game_option = &mut game_state.game;
     match game_option {
         Some(game) => match game_state.current_party_id {

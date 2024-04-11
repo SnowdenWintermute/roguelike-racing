@@ -44,11 +44,16 @@ pub fn create_action_button_click_handler<'a>(
         GameActions::SetInventoryOpen(status) => Box::new(move || {
             game_dispatch.reduce_mut(|game_state| game_state.viewing_inventory = status.clone());
             game_dispatch.reduce_mut(|game_state| game_state.viewing_equipped_items = false);
+            game_dispatch.reduce_mut(|game_state| game_state.hovered_entity = None);
+            game_dispatch.reduce_mut(|game_state| game_state.compared_item = None);
+            game_dispatch.reduce_mut(|game_state| game_state.detailed_entity = None);
+            game_dispatch.reduce_mut(|game_state| game_state.hovered_action = None);
             game_dispatch.reduce_mut(|game_state| game_state.action_menu_current_page_number = 0);
         }),
         GameActions::ToggleViewingEquipedItems => Box::new(move || {
-            game_dispatch.reduce_mut(|game_state| {
-                game_state.viewing_equipped_items = !game_state.viewing_equipped_items
+            game_dispatch.reduce_mut(|game_store| {
+                game_store.viewing_equipped_items = !game_state.viewing_equipped_items;
+                game_store.action_menu_current_page_number = 0;
             });
         }),
         GameActions::DeselectItem => Box::new(move || {

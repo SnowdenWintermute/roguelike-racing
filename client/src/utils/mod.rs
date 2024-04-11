@@ -1,7 +1,5 @@
 use common::combat::magical_elements::MagicalElements;
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
-use wasm_bindgen::UnwrapThrowExt;
 use web_sys::window;
 use web_sys::HtmlElement;
 

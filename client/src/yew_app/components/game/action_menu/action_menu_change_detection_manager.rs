@@ -1,5 +1,5 @@
+use super::ActionButtonPropertiesByCategory;
 use crate::yew_app::components::game::action_menu::build_action_button_properties::build_action_button_properties;
-use crate::yew_app::components::game::action_menu::build_action_button_properties::ActionMenuButtonProperties;
 use crate::yew_app::store::alert_store::AlertStore;
 use crate::yew_app::store::game_store::get_active_combatant;
 use crate::yew_app::store::game_store::GameStore;
@@ -11,7 +11,7 @@ use yewdux::use_store;
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
-    pub action_menu_button_properties: UseStateHandle<Vec<ActionMenuButtonProperties>>,
+    pub action_menu_button_properties: UseStateHandle<ActionButtonPropertiesByCategory>,
 }
 
 #[function_component(ActionMenuChangeDetectionManager)]
@@ -137,7 +137,7 @@ pub fn action_menu_change_detection_manager(props: &Props) -> Html {
             let party = re_cloned_game_state
                 .get_current_party()
                 .expect("to be in a party");
-            let actions = build_action_button_properties(
+            let action_button_properties_by_category = build_action_button_properties(
                 websocket_state.clone(),
                 cloned_game_state,
                 cloned_game_dispatch,
@@ -146,7 +146,7 @@ pub fn action_menu_change_detection_manager(props: &Props) -> Html {
                 lobby_state,
                 party,
             );
-            cloned_action_menu_button_properties.set(actions);
+            cloned_action_menu_button_properties.set(action_button_properties_by_category);
         },
     );
     html!()

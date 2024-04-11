@@ -1,5 +1,6 @@
 pub mod combat_log_message;
 use self::combat_log_message::CombatLogMessage;
+use crate::yew_app::components::common_components::atoms::divider::Divider;
 use crate::yew_app::store::game_store::GameStore;
 use yew::prelude::*;
 use yewdux::use_store;
@@ -9,8 +10,9 @@ pub fn combat_log() -> Html {
     let (game_state, _) = use_store::<GameStore>();
 
     html!(
-        <div class="h-full flex flex-col">
+        <div class="h-full flex flex-col pointer-events-auto">
             <h3 class="flex-grow-0 flex-shrink" >{"Combat log"}</h3>
+            <Divider />
             <div class="list-none overflow-y-auto
            flex flex-col-reverse flex-1" >
                <ul class="" >

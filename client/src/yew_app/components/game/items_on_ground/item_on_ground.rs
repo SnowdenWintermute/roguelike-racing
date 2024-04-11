@@ -1,52 +1,23 @@
+use common::packets::client_to_server::PlayerInputs;
+use common::packets::CharacterAndItem;
+use yew::prelude::*;
+use yewdux::use_store;
+
 use crate::yew_app::components::game::action_menu::action_button_hover_handlers::create_action_mouse_enter_handler;
 use crate::yew_app::components::game::action_menu::action_button_hover_handlers::create_action_mouse_leave_handler;
 use crate::yew_app::components::game::action_menu::enums::GameActions;
 use crate::yew_app::components::websocket_manager::send_client_input::send_client_input;
-use crate::yew_app::store::game_store::get_current_party_option;
+use crate::yew_app::store::game_store::get_item_on_ground;
+use crate::yew_app::store::game_store::select_item;
+use crate::yew_app::store::game_store::DetailableEntities;
 use crate::yew_app::store::game_store::GameStore;
-use crate::yew_app::store::lobby_store::LobbyStore;
 use crate::yew_app::store::websocket_store::WebsocketStore;
-use common::packets::client_to_server::PlayerInputs;
-use common::packets::CharacterAndItem;
-use yew::function_component;
-use yew::prelude::*;
-use yewdux::use_store;
-
-#[function_component(ItemsOnGround)]
-pub fn items_on_ground() -> Html {
-    let (game_state, _) = use_store::<GameStore>();
-    let (lobby_state, _) = use_store::<LobbyStore>();
-    let party = get_current_party_option(&game_state);
-    if !party.is_some() {
-        return html!({ "no party found" });
-    }
-    let party = party.expect("none checked");
-    let items_to_display = party.current_room.items.clone();
-    let player_owns_character =
-        party.player_owns_character(&lobby_state.username, game_state.focused_character_id);
-
-    html!(
-    <ul id="items on ground"
-        class="list-none overflow-y-auto w-full"
-    >
-        {items_to_display.iter().map(|item|
-            html!(
-                    <ItemOnGround
-                        id={item.entity_properties.id}
-                        name={item.entity_properties.name.clone()}
-                        disabled={!player_owns_character}
-                    />
-                )
-            ).collect::<Html>()}
-    </ul>
-    )
-}
 
 #[derive(Properties, PartialEq)]
 pub struct ItemOnGroundProps {
-    id: u32,
-    name: String,
-    disabled: bool,
+    pub id: u32,
+    pub name: String,
+    pub disabled: bool,
 }
 
 #[function_component(ItemOnGround)]
@@ -103,17 +74,50 @@ pub fn item_on_ground(props: &ItemOnGroundProps) -> Html {
         )()
     });
 
+    let cloned_game_dispatch = game_dispatch.clone();
+    let cloned_game_state = game_state.clone();
+    let handle_click = Callback::from(move |_| {
+        let item_option = get_item_on_ground(&item_id, cloned_game_state.clone()).ok();
+        select_item(cloned_game_dispatch.clone(), item_option);
+    });
+
+    let conditional_classes = {
+        let mut to_return = "";
+        if let Some(detailable) = &game_state.detailed_entity {
+            match detailable {
+                DetailableEntities::Combatant(_) => (),
+                DetailableEntities::Item(detailed_item) => {
+                    if detailed_item.entity_properties.id == item_id {
+                        to_return = "border-yellow-400 hover:border-t"
+                    }
+                }
+            }
+        } else if let Some(detailable) = &game_state.hovered_entity {
+            match detailable {
+                DetailableEntities::Combatant(_) => (),
+                DetailableEntities::Item(detailed_item) => {
+                    if detailed_item.entity_properties.id == item_id {
+                        to_return = "border-white hover:border-t"
+                    }
+                }
+            }
+        } else {
+            to_return = ""
+        }
+        to_return
+    };
+
     html!(
-    <li class="h-10 w-full max-w-full flex border-r border-l border-b border-slate-400 first:border-t
-    hover:border-yellow-400 hover:border-t box-border
-    whitespace-nowrap text-ellipsis overflow-hidden cursor-default"
+        <li class={format!(  "h-10 w-full max-w-full flex border-r border-l border-b border-slate-400 first:border-t
+                      box-border
+                      whitespace-nowrap text-ellipsis overflow-hidden cursor-default {conditional_classes}"  )}
         onmouseenter={mouse_enter_handler}
         onmouseleave={mouse_leave_handler}
         >
         <button
             class="cursor-pointer pr-4 pl-4 box-border
             flex justify-center items-center disabled:opacity-50 disabled:cursor-auto
-            border-slate-400 border-r h-full"
+            border-slate-400 border-r h-full hover:bg-slate-950"
             onclick={take_item}
             onfocus={focus_handler}
             onblur={blur_handler}
@@ -121,12 +125,11 @@ pub fn item_on_ground(props: &ItemOnGroundProps) -> Html {
         >
             {"Take"}
         </button>
-        <div class="flex items-center h-full w-full "
-        >
-            <div class="pl-2 overflow-hidden whitespace-nowrap text-ellipsis ">
+        <button onclick={handle_click} class="flex items-center h-full w-full ">
+            <span class="pl-2 overflow-hidden whitespace-nowrap text-ellipsis ">
                 {&props.name}{" "}
-            </div>
-        </div>
+            </span>
+        </button>
     </li>
     )
 }

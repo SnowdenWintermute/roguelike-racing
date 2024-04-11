@@ -86,13 +86,10 @@ pub fn determine_action_menu_buttons_disabled(
                     .selected_combat_action
                 {
                     let mp_cost = match action {
-                        CombatAction::AbilityUsed(ability_name) => {
-                            let ability_attributes = ability_name.get_attributes();
-                            focused_character
-                                .combatant_properties
-                                .get_ability_cost_if_owned(&ability_name)
-                                .expect("to own the ability")
-                        }
+                        CombatAction::AbilityUsed(ability_name) => focused_character
+                            .combatant_properties
+                            .get_ability_cost_if_owned(&ability_name)
+                            .expect("to own the ability"),
                         CombatAction::ConsumableUsed(_) => 0,
                     };
                     mp_cost as u16 > focused_character.combatant_properties.mana

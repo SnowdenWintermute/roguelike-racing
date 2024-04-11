@@ -3,21 +3,29 @@ mod character_autofocus_manager;
 pub mod character_sheet;
 pub mod combat_log;
 pub mod combatant;
+mod combatant_plaques;
 pub mod context_dependant_information_display;
 pub mod debug;
 mod dungeon_room;
+mod item_details_viewers;
+mod items_on_ground;
+mod ready_up_display;
 mod tailwind_class_loader;
 mod top_info_bar;
-pub mod turn_order_bar;
 use crate::yew_app::components::game::action_menu::ActionMenu;
 use crate::yew_app::components::game::character_autofocus_manager::CharacterAutofocusManager;
+use crate::yew_app::components::game::character_sheet::item_details_viewer::ItemDetailsViewer;
 use crate::yew_app::components::game::character_sheet::CharacterSheet;
-use crate::yew_app::components::game::context_dependant_information_display::ContextDependantInformationDisplay;
-use crate::yew_app::components::game::dungeon_room::DungeonRoom;
+use crate::yew_app::components::game::combat_log::CombatLog;
+use crate::yew_app::components::game::combatant_plaques::combatant_plaque_group::CombatantPlaqueGroup;
+use crate::yew_app::components::game::item_details_viewers::ItemDetailsAndComparison;
+use crate::yew_app::components::game::items_on_ground::ItemsOnGround;
+use crate::yew_app::components::game::ready_up_display::ReadyUpDisplay;
 use crate::yew_app::components::game::tailwind_class_loader::TailwindClassLoader;
 use crate::yew_app::components::game::top_info_bar::TopInfoBar;
 use crate::yew_app::store::game_store::GameStore;
 use crate::yew_app::store::lobby_store::LobbyStore;
+use common::game::getters::get_ally_ids_and_opponent_ids_option;
 use gloo::events::EventListener;
 use gloo_utils::window;
 use wasm_bindgen::JsCast;
@@ -71,25 +79,103 @@ pub fn game() -> Html {
     });
 
     let focused_character = party.characters.get(&game_state.focused_character_id);
+    let show_character_sheet = (game_state.viewing_inventory
+        || game_state.viewing_attribute_point_assignment_menu)
+        && focused_character.is_some();
+
+    let conditional_styles = if show_character_sheet {
+        "items-center justify-end"
+    } else {
+        ""
+    };
+
+    let (ally_character_plaques, monster_plaques) = {
+        let mut to_return = (
+            html!( <CombatantPlaqueGroup combatant_ids={party.character_positions.clone()} show_experience={true} /> ),
+            html!( <div/> ),
+        );
+        if let Some(battle_id) = party.battle_id {
+            if let Ok((_, opponent_ids_option)) = get_ally_ids_and_opponent_ids_option(
+                &party.character_positions,
+                game.battles.get(&battle_id),
+                game_state.focused_character_id,
+            ) {
+                if let Some(opponent_ids) = opponent_ids_option {
+                    to_return.1 = html!(<CombatantPlaqueGroup combatant_ids={opponent_ids} show_experience={false} />)
+                }
+            };
+        }
+        to_return
+    };
+
+    let viewing_character_sheet = game_state.viewing_inventory
+        || game_state.viewing_equipped_items
+        || game_state.viewing_attribute_point_assignment_menu;
+
+    let action_menu_and_character_sheet_container_conditional_classes = if viewing_character_sheet {
+        ""
+    } else {
+        "w-full"
+    };
 
     html!(
-        <main class="h-screen w-screen bg-slate-800 flex justify-center relative overflow-y-auto">
+        <main class="h-screen w-screen flex justify-center overflow-y-auto relative">
             <TailwindClassLoader />
-            <div class="w-full h-full max-w-[80rem] max-h-[67.5rem] pr-4 pl-4 text-zinc-300 flex flex-col" >
-                // <GameDebug />
-                <CharacterAutofocusManager />
-                <div class="flex-1 flex flex-col mb-2 mt-4 h-[60%] max-h-1/2 overflow-y-auto" >
-                    <TopInfoBar />
-                    <div class="flex flex-grow">
-                        <DungeonRoom party_id={party_id} />
-                        if ( game_state.viewing_inventory || game_state.viewing_attribute_point_assignment_menu ) && focused_character.is_some(){
-                            <CharacterSheet character={focused_character.as_deref().expect("is_some checked").clone()} />
-                        }
+            <CharacterAutofocusManager />
+            // <GameDebug />
+            <div class="w-full h-full max-h-[calc(0.5625 * 100vw)] text-zinc-300 flex flex-col" >
+                <TopInfoBar />
+                <div class="p-4 flex-grow flex flex-col justify-between">
+                    <ReadyUpDisplay />
+                    <div class="flex justify-end">
+                        <div class="w-fit">
+                            {monster_plaques}
+                        </div>
                     </div>
+                    <div class="flex flex-wrap justify-between">
+                        <div class="h-[14rem] min-w-[23rem] max-w-[26rem] w-full border border-slate-400 bg-slate-700 p-2 pointer-events-auto">
+                            <CombatLog />
+                        </div>
+                        <div class="flex flex-grow justify-end mt-3.5">
+                            <div class="w-fit flex items-end">
+                                {ally_character_plaques}
+                            </div>
+                        </div>
+                    </div>
+                    // <DungeonRoom party_id={party_id} />
+                    // <div class="flex max-h-1/2 h-[40%] mt-2 mb-4 overflow-y-auto" >
+                    //     <ContextDependantInformationDisplay />
+                    // </div>
                 </div>
-                <div class="flex max-h-1/2 h-[40%] mt-2 mb-4 overflow-y-auto" >
-                    <ActionMenu />
-                    <ContextDependantInformationDisplay />
+            </div>
+            // Action Menu and Inventory/Equipment/Character sheet container
+            <div class={ format!( "absolute z-31 top-1/2 -translate-y-1/2 w-full p-4 text-zinc-300 flex flex-row {}", conditional_styles)}>
+                <div class={ format!("flex flex-col {}", action_menu_and_character_sheet_container_conditional_classes)}>
+                    <div class="flex">
+                        <div class="flex flex-col flex-grow justify-end">
+                            <div class="flex justify-between">
+                                <ActionMenu />
+                                if !viewing_character_sheet {
+                                    <div class="flex">
+                                        // <div class={ "max-w-[25rem] mr-2" }>
+                                        //     // used as spacing, internally this hides itself
+                                        //     <ItemDetailsViewer />
+                                        // </div>
+                                        <div class="max-h-[13.375rem] h-fit flex flex-grow justify-end">
+                                            <div class="mr-2 w-[50rem]">
+                                                <ItemDetailsAndComparison />
+                                            </div>
+                                            <div class="max-w-[25rem] w-[25rem]" >
+                                                <ItemsOnGround max_height={25.0} />
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <CharacterSheet />
+                    </div>
+                    <ItemDetailsViewer />
                 </div>
             </div>
         </main>

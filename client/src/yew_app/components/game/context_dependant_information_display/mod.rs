@@ -1,7 +1,7 @@
-mod action_details_context_info;
-mod combatant_details_context_info;
+pub mod action_details_context_info;
+pub mod combatant_details_context_info;
 mod damage_type_badge;
-mod item_details;
+pub mod item_details;
 use crate::yew_app::components::game::combat_log::CombatLog;
 use crate::yew_app::components::game::context_dependant_information_display::combatant_details_context_info::CombatantDetailsContextInfo;
 use crate::yew_app::components::game::context_dependant_information_display::item_details::ItemDetails;
@@ -24,15 +24,18 @@ pub fn context_dependant_information_display() -> Html {
             DetailableEntities::Combatant(combatant_properties) => Some(
                 html!(<CombatantDetailsContextInfo combatant_id={combatant_properties.entity_properties.id}/>),
             ),
-            DetailableEntities::Item(item) => Some(html!(<ItemDetails item={item.clone()}  />)),
+            DetailableEntities::Item(item) => {
+                Some(html!(<ItemDetails item={item.clone()} flip_display_order={false} />))
+            }
         },
         None => None,
     };
 
     if hovered_tab.is_none() && game_state.hovered_action.is_some() {
         let hovered_action = game_state.hovered_action.clone().expect("checked");
-        hovered_tab =
-            Some(html!(<ActionDetailsContextInfo combat_action={hovered_action.clone()} />))
+        hovered_tab = Some(
+            html!(<ActionDetailsContextInfo combat_action={hovered_action.clone()} hide_title={false} />),
+        )
     }
 
     let detailed_tab = match detailed_entity {
@@ -40,7 +43,9 @@ pub fn context_dependant_information_display() -> Html {
             DetailableEntities::Combatant(combatant_properties) => Some(
                 html!(<CombatantDetailsContextInfo combatant_id={combatant_properties.entity_properties.id}/>),
             ),
-            DetailableEntities::Item(item) => Some(html!(<ItemDetails item={item.clone()} />)),
+            DetailableEntities::Item(item) => {
+                Some(html!(<ItemDetails item={item.clone()} flip_display_order={false} />))
+            }
         },
         None => {
             let mut to_return = None;
@@ -51,7 +56,7 @@ pub fn context_dependant_information_display() -> Html {
                     .selected_combat_action;
                 if let Some(selected_action) = selected_action_option {
                     to_return = Some(
-                        html!(<ActionDetailsContextInfo combat_action={selected_action.clone()} />),
+                        html!(<ActionDetailsContextInfo combat_action={selected_action.clone()} hide_title={false} />),
                     )
                 }
             }

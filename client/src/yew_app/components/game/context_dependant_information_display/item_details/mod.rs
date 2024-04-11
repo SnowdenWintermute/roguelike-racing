@@ -95,13 +95,13 @@ pub fn item_details(props: &Props) -> Html {
     let compared_display_hide_class = if compared_display_option.is_none() {
         "opacity-0 h-0 pointer-events-none"
     } else {
-        ""
+        "pointer-events-auto"
     };
 
     html!(
         <div class="flex-grow flex">
             // ITEM
-            <div class="border border-slate-400 bg-slate-700 min-h-20 max-h-[13.375rem] max-w-1/2 relative overflow-y-auto"
+            <div class="border border-slate-400 bg-slate-700 min-h-20 max-h-[13.375rem] max-w-1/2 relative overflow-y-auto pointer-events-auto"
                 style={format!("margin-right: {}rem; width: 50%; padding: {}rem", SPACING_REM_SMALL / 2.0, SPACING_REM)}
             >
                 <span>

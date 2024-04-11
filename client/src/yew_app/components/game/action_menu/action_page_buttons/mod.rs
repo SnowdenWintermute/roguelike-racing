@@ -99,7 +99,8 @@ pub fn action_page_buttons(props: &Props) -> Html {
     };
 
     html!(
-        <ul class={ format!( "flex list-none border border-slate-400 bg-slate-700 w-full justify-between items-center {hidden_style}" )}>
+        <ul class={ format!( "flex list-none border border-slate-400 bg-slate-700 w-full justify-between items-center
+                            pointer-events-auto {hidden_style}" )}>
             <button
                 onclick={prev_page_callback}
                 class="pr-2 pl-2"

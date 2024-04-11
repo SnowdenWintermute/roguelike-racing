@@ -1,9 +1,6 @@
-use crate::yew_app::components::game::{
-    action_menu::{
-        build_action_button_properties::ActionMenuButtonProperties, set_keyup_listeners::GameKeys,
-    },
-    tailwind_class_loader::BUTTON_HEIGHT_SMALL,
-};
+use crate::yew_app::components::game::action_menu::build_action_button_properties::ActionMenuButtonProperties;
+use crate::yew_app::components::game::action_menu::set_keyup_listeners::GameKeys;
+use crate::yew_app::components::game::tailwind_class_loader::BUTTON_HEIGHT_SMALL;
 use yew::prelude::*;
 
 #[derive(Properties, PartialEq)]
@@ -23,7 +20,7 @@ pub fn action_menu_numbered_button(props: &Props) -> Html {
     html!(
 
     <button
-        class="pr-2 pl-2"
+        class="pr-2 pl-2 pointer-events-auto"
         style={format!("height: {}rem; ", BUTTON_HEIGHT_SMALL)}
         onclick={props.properties.click_handler.clone()}
         onmouseenter={props.properties.mouse_enter_handler.clone()}

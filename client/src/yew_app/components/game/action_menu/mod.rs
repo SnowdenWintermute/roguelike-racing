@@ -188,8 +188,7 @@ pub fn action_menu(_: &Props) -> Html {
     };
 
     html!(
-        <section class=" max-h-fit max-w-[25rem]
-                        flex flex-col justify-between pointer-events-auto"
+        <section class=" max-h-fit max-w-[25rem] flex flex-col justify-between"
                  style={format!("margin-right: {}rem; ", SPACING_REM)}
         >
         <ActionMenuChangeDetectionManager action_menu_button_properties={action_menu_button_properties} />
@@ -198,8 +197,11 @@ pub fn action_menu(_: &Props) -> Html {
             >
                 {top_action_buttons}
             </ul>
-                <ul class="list-none relative mb-2"
-                    style={format!("height: {}rem; ", BUTTON_HEIGHT * PAGE_SIZE as f32)}
+            <div
+                class="mb-2"
+                style={format!("height: {}rem; ", BUTTON_HEIGHT * PAGE_SIZE as f32)}
+            >
+                <ul class="list-none relative pointer-events-auto"
                     ref={action_menu_node_ref}
                     onwheel={handle_wheel}
                 >
@@ -207,6 +209,7 @@ pub fn action_menu(_: &Props) -> Html {
                     {hovered_action_display}
                     {selected_action_display}
                 </ul>
+            </div>
             {
 
         if next_prev_action_buttons.len() > 0 {

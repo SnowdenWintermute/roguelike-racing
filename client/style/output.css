@@ -660,6 +660,10 @@ video {
   top: -1.5rem;
 }
 
+.right-0 {
+  right: 0px;
+}
+
 .z-10 {
   z-index: 10;
 }
@@ -974,6 +978,10 @@ video {
 
 .w-60 {
   width: 15rem;
+}
+
+.w-\[25rem\] {
+  width: 25rem;
 }
 
 .\!min-w-\[2\.5rem\] {
@@ -1667,6 +1675,11 @@ video {
 .hover\:border-yellow-400:hover {
   --tw-border-opacity: 1;
   border-color: rgb(250 204 21 / var(--tw-border-opacity));
+}
+
+.hover\:border-white:hover {
+  --tw-border-opacity: 1;
+  border-color: rgb(255 255 255 / var(--tw-border-opacity));
 }
 
 .hover\:bg-slate-950:hover {

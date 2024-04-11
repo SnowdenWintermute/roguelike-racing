@@ -17,6 +17,7 @@ use crate::yew_app::components::game::character_sheet::item_details_viewer::Item
 use crate::yew_app::components::game::character_sheet::CharacterSheet;
 use crate::yew_app::components::game::combat_log::CombatLog;
 use crate::yew_app::components::game::combatant_plaques::combatant_plaque_group::CombatantPlaqueGroup;
+use crate::yew_app::components::game::items_on_ground::ItemsOnGround;
 use crate::yew_app::components::game::ready_up_display::ReadyUpDisplay;
 use crate::yew_app::components::game::tailwind_class_loader::TailwindClassLoader;
 use crate::yew_app::components::game::top_info_bar::TopInfoBar;
@@ -105,6 +106,16 @@ pub fn game() -> Html {
         to_return
     };
 
+    let viewing_character_sheet = game_state.viewing_inventory
+        || game_state.viewing_equipped_items
+        || game_state.viewing_attribute_point_assignment_menu;
+
+    let action_menu_and_character_sheet_container_conditional_classes = if viewing_character_sheet {
+        ""
+    } else {
+        "w-full"
+    };
+
     html!(
         <main class="h-screen w-screen flex justify-center overflow-y-auto relative">
             <TailwindClassLoader />
@@ -137,14 +148,26 @@ pub fn game() -> Html {
             </div>
             // Action Menu and Inventory/Equipment/Character sheet container
             <div class={ format!( "absolute z-31 top-1/2 -translate-y-1/2 w-full p-4 text-zinc-300 flex flex-row {}", conditional_styles)}>
-                <div class="flex flex-col">
+                <div class={ format!("flex flex-col {}", action_menu_and_character_sheet_container_conditional_classes)}>
                     <div class="flex">
                         <div class="flex flex-col flex-grow justify-end">
-                            <ActionMenu />
+                            <div class="flex justify-between">
+                                <ActionMenu />
+                                if !viewing_character_sheet {
+                                    <div class="flex">
+                                        <div class={ "max-w-[25rem] mr-2" }>
+                                            <ItemDetailsViewer />
+                                        </div>
+                                        <div class="max-w-[25rem] w-[25rem] max-h-[13.375rem] h-fit">
+                                            <ItemsOnGround max_height={25.0} />
+                                        </div>
+                                    </div>
+                                }
+                            </div>
                         </div>
                         <CharacterSheet />
                     </div>
-                    <ItemDetailsViewer show_character_sheet={show_character_sheet} />
+                    <ItemDetailsViewer />
                 </div>
             </div>
         </main>

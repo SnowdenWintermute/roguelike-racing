@@ -7,13 +7,8 @@ use crate::yew_app::store::game_store::GameStore;
 use yew::prelude::*;
 use yewdux::use_store;
 
-#[derive(Properties, PartialEq)]
-pub struct Props {
-    pub show_character_sheet: bool,
-}
-
 #[function_component(ItemDetailsViewer)]
-pub fn item_details_viewer(_: &Props) -> Html {
+pub fn item_details_viewer() -> Html {
     let (game_state, _) = use_store::<GameStore>();
     let detailed_entity = &game_state.detailed_entity;
     let hovered_entity = &game_state.hovered_entity;
@@ -56,18 +51,28 @@ pub fn item_details_viewer(_: &Props) -> Html {
         html!()
     };
 
+    let viewing_character_sheet = game_state.viewing_inventory
+        || game_state.viewing_equipped_items
+        || game_state.viewing_attribute_point_assignment_menu;
+
     html!(
-        <div class="flex pointer-events-auto"
+        <div class="flex"
              style={format!("padding-top: {}rem; ", SPACING_REM_SMALL)}
             >
             <div class="min-w-[25rem] max-w-[25rem] h-[13.375rem]"
                  style={format!("margin-right: {}rem; ", SPACING_REM)}
                >
-               if game_state.viewing_inventory || game_state.viewing_equipped_items {
-                   <ItemsOnGround />
+               if viewing_character_sheet {
+                   <div class="max-h-[13.375rem]">
+                       <ItemsOnGround max_height={13.375} />
+                   </div>
+               } else {
+                   <div class="max-h-[13.375rem]" />
                }
            </div>
-            {item_details_display}
+           if viewing_character_sheet {
+               {item_details_display}
+           }
         </div>
     )
 }

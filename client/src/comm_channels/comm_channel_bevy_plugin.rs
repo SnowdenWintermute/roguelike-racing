@@ -2,8 +2,8 @@ use super::BevyReceiver;
 use super::BevyTransmitter;
 use super::CharacterPartSelectionEvent;
 use super::CharacterSpawnEvent;
+use super::DespawnCombatantModelEvent;
 use super::MessageFromYew;
-use super::SelectAnimationEvent;
 use super::StartAttackSequenceEvent;
 use super::YewTransmitter;
 use bevy::prelude::*;
@@ -28,7 +28,7 @@ impl Plugin for CommChannelPlugin {
             .insert_resource(self.bevy_transmitter.clone())
             .init_resource::<Events<CharacterPartSelectionEvent>>()
             .init_resource::<Events<CharacterSpawnEvent>>()
-            .init_resource::<Events<SelectAnimationEvent>>()
+            .init_resource::<Events<DespawnCombatantModelEvent>>()
             .init_resource::<Events<StartAttackSequenceEvent>>()
             .add_systems(PreUpdate, handle_yew_messages);
     }
@@ -38,7 +38,7 @@ fn handle_yew_messages(
     mut bevy_receiver: ResMut<BevyReceiver>,
     mut part_selection_event_writer: EventWriter<CharacterPartSelectionEvent>,
     mut spawn_combatant_event_writer: EventWriter<CharacterSpawnEvent>,
-    mut select_animation_event_writer: EventWriter<SelectAnimationEvent>,
+    mut select_animation_event_writer: EventWriter<DespawnCombatantModelEvent>,
     mut attack_sequence_event_writer: EventWriter<StartAttackSequenceEvent>,
 ) {
     if let Ok(message_from_yew) = bevy_receiver.try_recv() {
@@ -57,8 +57,8 @@ fn handle_yew_messages(
                     species,
                 ));
             }
-            MessageFromYew::SelectAnimation(animation_name) => {
-                select_animation_event_writer.send(SelectAnimationEvent(animation_name));
+            MessageFromYew::DespawnCombatantModel(combatant_id) => {
+                select_animation_event_writer.send(DespawnCombatantModelEvent(combatant_id));
             }
             MessageFromYew::ExecuteAttackSequence(attack_command) => {
                 attack_sequence_event_writer.send(StartAttackSequenceEvent(attack_command));

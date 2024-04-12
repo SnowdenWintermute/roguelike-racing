@@ -2,7 +2,6 @@ use self::assign_skeleton_bones_to_combatants::assign_skeleton_bones_to_combatan
 use self::attack_sequence::handle_attack_sequence_start_requests;
 use self::attack_sequence::process_active_animation_states::process_active_animation_states;
 use self::attack_sequence::start_combatant_hit_recoveries::start_combatant_hit_recoveries;
-use self::handle_animation_change_requests::handle_animation_change_requests;
 use self::notify_yew_that_assets_are_loaded::notify_yew_that_assets_are_loaded;
 use self::part_change_plugin::PartChangePlugin;
 use self::register_animations::register_animations;
@@ -20,7 +19,6 @@ mod assemble_parts;
 mod assign_skeleton_bones_to_combatants;
 mod attack_sequence;
 mod draw_aabbs;
-mod handle_animation_change_requests;
 mod notify_yew_that_assets_are_loaded;
 pub mod part_change_plugin;
 mod register_animations;
@@ -79,7 +77,7 @@ impl Plugin for ModularCharacterPlugin {
                     assign_skeleton_bones_to_combatants,
                     link_animations,
                     run_animations,
-                    handle_animation_change_requests,
+                    // handle_animation_change_requests,
                     // draw_directional_gizmos,
                     handle_attack_sequence_start_requests,
                     process_active_animation_states,

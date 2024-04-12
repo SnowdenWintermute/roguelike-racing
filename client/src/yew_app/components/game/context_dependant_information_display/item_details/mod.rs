@@ -190,7 +190,7 @@ fn item_display(props: &ItemDisplayProps) -> Html {
     html!(
     <div class={ format!("border border-slate-400 bg-slate-700 h-[13.375rem] max-h-[13.375rem] pointer-events-auto
                          max-w-1/2 relative overflow-y-auto {}", props.extra_classes )}
-        style={format!("margin-{}: {}rem; width: 50%; padding: {}rem", props.margin_side, SPACING_REM_SMALL / 2.0, SPACING_REM)}
+        style={format!("margin-{}: {}rem; width: 50%; padding: {}rem; scrollbar-gutter: stable;", props.margin_side, SPACING_REM_SMALL / 2.0, SPACING_REM)}
     >
             <span class="flex justify-between pr-2">
                 {props.title.clone()}

@@ -17,7 +17,7 @@ use tokio::sync::broadcast;
 pub enum MessageFromYew {
     SelectCharacterPart(CharacterPartSelection),
     SpawnCharacterWithHomeLocation(CombatantId, HomeLocation, CombatantSpecies),
-    SelectAnimation(CharacterAnimationSelection),
+    DespawnCombatantModel(CombatantId),
     ExecuteAttackSequence(AttackCommand),
 }
 #[derive(Clone, Debug, Event)]
@@ -27,7 +27,7 @@ pub struct CharacterPartSelectionEvent(pub CharacterPartSelection);
 pub struct CharacterSpawnEvent(pub CombatantId, pub HomeLocation, pub CombatantSpecies);
 
 #[derive(Clone, Debug, Event)]
-pub struct SelectAnimationEvent(pub CharacterAnimationSelection);
+pub struct DespawnCombatantModelEvent(pub CombatantId);
 
 #[derive(Clone, Debug, Event)]
 pub struct StartAttackSequenceEvent(pub AttackCommand);

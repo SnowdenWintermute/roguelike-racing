@@ -32,6 +32,14 @@ pub struct DespawnCombatantModelEvent(pub CombatantId);
 #[derive(Clone, Debug, Event)]
 pub struct StartAttackSequenceEvent(pub AttackCommand);
 
+#[derive(Clone, Debug, PartialEq, Default)]
+pub struct CameraPosition {
+    pub focus: Vec3,
+    pub alpha: Option<f32>,
+    pub beta: Option<f32>,
+    pub radius: Option<f32>,
+}
+
 // BEVY MESSAGES
 #[derive(Debug, Clone, PartialEq)]
 pub enum MessageFromBevy {
@@ -39,6 +47,7 @@ pub enum MessageFromBevy {
     AnimationsAvailable(HashSet<String>),
     CombatantSpawned(CombatantId),
     AssetsLoaded,
+    CameraPosition(CameraPosition),
 }
 // CHANNELS
 #[derive(Clone, Resource, Deref)]

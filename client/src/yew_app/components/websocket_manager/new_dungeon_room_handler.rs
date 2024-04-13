@@ -48,7 +48,7 @@ pub fn handle_new_dungeon_room(
                             monster_home_location.clone(),
                             species,
                         ))
-                        .expect("could not send event");
+                        .expect("to send message");
                     Ok(())
                 })?;
                 monster_home_location.0.translation.x += COMBATANT_POSITION_SPACING_SIDE;
@@ -72,6 +72,9 @@ pub fn handle_new_dungeon_room(
 
             for character_id in cloned_character_positions {
                 let species = CombatantSpecies::Humanoid;
+                transmitter
+                    .send(MessageFromYew::DespawnCombatantModel(
+                        character_id)).expect("to send message");
 
                 transmitter
                     .send(MessageFromYew::SpawnCharacterWithHomeLocation(

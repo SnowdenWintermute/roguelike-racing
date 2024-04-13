@@ -1,3 +1,4 @@
+pub mod camera_position_display;
 use crate::yew_app::store::game_store::GameStore;
 use yew::prelude::*;
 use yewdux::prelude::use_store;

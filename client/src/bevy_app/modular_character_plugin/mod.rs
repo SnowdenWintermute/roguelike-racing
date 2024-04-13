@@ -2,6 +2,7 @@ use self::assign_skeleton_bones_to_combatants::assign_skeleton_bones_to_combatan
 use self::attack_sequence::handle_attack_sequence_start_requests;
 use self::attack_sequence::process_active_animation_states::process_active_animation_states;
 use self::attack_sequence::start_combatant_hit_recoveries::start_combatant_hit_recoveries;
+use self::handle_despawn_combatant_model_events::handle_despawn_combatant_model_events;
 use self::notify_yew_that_assets_are_loaded::notify_yew_that_assets_are_loaded;
 use self::part_change_plugin::PartChangePlugin;
 use self::register_animations::register_animations;
@@ -10,6 +11,7 @@ use self::spawn_combatant::spawn_combatants;
 use self::update_scene_aabbs::update_scene_aabbs_on_changed_children;
 use super::utils::link_animations::link_animations;
 use crate::bevy_app::asset_loader_plugin::AssetLoaderState;
+use crate::comm_channels::DespawnCombatantModelEvent;
 use crate::frontend_common::CombatantSpecies;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
@@ -19,6 +21,7 @@ mod assemble_parts;
 mod assign_skeleton_bones_to_combatants;
 mod attack_sequence;
 mod draw_aabbs;
+mod handle_despawn_combatant_model_events;
 mod notify_yew_that_assets_are_loaded;
 pub mod part_change_plugin;
 mod register_animations;
@@ -61,6 +64,7 @@ impl Plugin for ModularCharacterPlugin {
             .init_resource::<Animations>()
             .init_resource::<CombatantsExecutingAttacks>()
             .init_resource::<Events<HitRecoveryActivationEvent>>()
+            .init_resource::<Events<DespawnCombatantModelEvent>>()
             // .init_::<CombatantsExecutingAttacks>()
             .add_plugins(PartChangePlugin)
             .add_systems(
@@ -74,6 +78,7 @@ impl Plugin for ModularCharacterPlugin {
                 Update,
                 (
                     spawn_combatants,
+                    handle_despawn_combatant_model_events,
                     assign_skeleton_bones_to_combatants,
                     link_animations,
                     run_animations,

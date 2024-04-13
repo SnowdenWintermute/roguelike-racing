@@ -36,10 +36,6 @@ pub fn set_keyup_listeners(
     keyup_listener_state: UseStateHandle<Option<EventListener>>,
     keypress_listener_state: UseStateHandle<Option<EventListener>>,
 ) {
-    log!("updating key listeners");
-    log!(format!("updating key listeners {:?}", {
-        &numbered_button_properties_on_current_page
-    }));
     let cloned_top_button_properties = top_button_properties.clone();
     let cloned_numbered_button_properties_on_current_page =
         numbered_button_properties_on_current_page.clone();

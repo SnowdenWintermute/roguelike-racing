@@ -86,6 +86,8 @@ pub fn bevy_messages_manager(props: &Props) -> Html {
                         // info!("setting assets loaded");
                         cloned_dispatch.reduce_mut(|store| store.bevy_assets_loaded = true)
                     }
+                    MessageFromBevy::CameraPosition(camera_position) => cloned_dispatch
+                        .reduce_mut(|store| store.camera_position = camera_position.clone()),
                     _ => (), // MessageFromBevy::PartNames(part_names) => cloned_dispatch
                              //     .reduce_mut(|store| store.parts_available = part_names.clone()),
                              // MessageFromBevy::AnimationsAvailable(animation_names) => cloned_dispatch

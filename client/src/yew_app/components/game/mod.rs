@@ -19,6 +19,7 @@ use crate::yew_app::components::game::character_sheet::item_details_viewer::Item
 use crate::yew_app::components::game::character_sheet::CharacterSheet;
 use crate::yew_app::components::game::combat_log::CombatLog;
 use crate::yew_app::components::game::combatant_plaques::combatant_plaque_group::CombatantPlaqueGroup;
+use crate::yew_app::components::game::debug::camera_position_display::CameraPositionDisplay;
 use crate::yew_app::components::game::item_details_viewers::ItemDetailsAndComparison;
 use crate::yew_app::components::game::items_on_ground::ItemsOnGround;
 use crate::yew_app::components::game::ready_up_display::ReadyUpDisplay;

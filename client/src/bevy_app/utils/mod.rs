@@ -4,6 +4,8 @@ pub mod link_animations;
 mod mark_scenes_as_loaded;
 pub mod paint_cubes_on_scene_children;
 pub mod print_scene_tree;
+pub mod rotate_transform_toward_target;
+pub mod translate_transform_toward_target;
 
 use bevy::prelude::*;
 pub fn zero_transform(entity: Entity, transforms: &mut Query<&mut Transform>) {

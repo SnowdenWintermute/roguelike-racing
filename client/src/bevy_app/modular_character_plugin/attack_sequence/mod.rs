@@ -23,7 +23,6 @@ use crate::comm_channels::StartAttackSequenceEvent;
 use crate::frontend_common::animation_names::AnimationType;
 use crate::frontend_common::animation_names::CombatantAnimations;
 use crate::frontend_common::AttackCommand;
-use crate::frontend_common::CombatantSpecies;
 use bevy::prelude::*;
 use js_sys::Date;
 use std::time::Duration;

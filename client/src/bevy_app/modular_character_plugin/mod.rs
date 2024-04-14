@@ -1,5 +1,3 @@
-use std::collections::VecDeque;
-
 use self::assign_skeleton_bones_to_combatants::assign_skeleton_bones_to_combatants;
 use self::attack_sequence::handle_attack_sequence_start_requests;
 use self::attack_sequence::process_active_animation_states::process_active_animation_states;
@@ -16,9 +14,10 @@ use crate::bevy_app::asset_loader_plugin::AssetLoaderState;
 use crate::comm_channels::DespawnCombatantModelEvent;
 use crate::frontend_common::CombatantSpecies;
 use bevy::prelude::*;
-use bevy::utils::HashMap;
-use bevy::utils::HashSet;
 use common::combat::CombatTurnResult;
+use std::collections::HashMap;
+use std::collections::HashSet;
+use std::collections::VecDeque;
 pub mod animation_manager_component;
 mod assemble_parts;
 mod assign_skeleton_bones_to_combatants;
@@ -28,6 +27,7 @@ mod handle_combat_turn_results;
 mod handle_despawn_combatant_model_events;
 mod notify_yew_that_assets_are_loaded;
 pub mod part_change_plugin;
+mod process_combatant_model_actions;
 mod register_animations;
 mod run_animations;
 mod spawn_combatant;

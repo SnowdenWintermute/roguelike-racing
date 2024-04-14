@@ -1,7 +1,10 @@
+use super::handle_combat_turn_results::combatant_model_actions::CombatantModelActions;
+use crate::bevy_app::modular_character_plugin::handle_combat_turn_results::combatant_model_actions::CombatantModelActionProgressTracker;
 use super::CombatantId;
 use bevy::math::u64;
 use bevy::prelude::*;
 use std::collections::HashMap;
+use std::collections::VecDeque;
 
 pub type Timestamp = u64;
 
@@ -25,7 +28,8 @@ pub struct HpChangeNumber {
 
 #[derive(Component, Default)]
 pub struct AnimationManagerComponent {
-    pub active_states: HashMap<ActionSequenceStates, Option<Timestamp>>,
+    pub model_action_queue: VecDeque<CombatantModelActions>,
+    pub active_model_actions: HashMap<CombatantModelActions, CombatantModelActionProgressTracker>,
     pub destination: Option<Transform>,
     pub last_location: Option<Transform>,
     pub target_rotation: Option<Quat>,

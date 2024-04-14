@@ -6,6 +6,7 @@ use super::DespawnCombatantModelEvent;
 use super::MessageFromYew;
 use super::StartAttackSequenceEvent;
 use super::YewTransmitter;
+use crate::bevy_app::modular_character_plugin::TurnResultsQueue;
 use bevy::prelude::*;
 
 pub struct CommChannelPlugin {
@@ -40,6 +41,7 @@ fn handle_yew_messages(
     mut spawn_combatant_event_writer: EventWriter<CharacterSpawnEvent>,
     mut select_animation_event_writer: EventWriter<DespawnCombatantModelEvent>,
     mut attack_sequence_event_writer: EventWriter<StartAttackSequenceEvent>,
+    mut turn_results_queue: ResMut<TurnResultsQueue>,
 ) {
     if let Ok(message_from_yew) = bevy_receiver.try_recv() {
         match message_from_yew {
@@ -62,6 +64,9 @@ fn handle_yew_messages(
             }
             MessageFromYew::ExecuteAttackSequence(attack_command) => {
                 attack_sequence_event_writer.send(StartAttackSequenceEvent(attack_command));
+            }
+            MessageFromYew::NewTurnResults(mut turn_results) => {
+                turn_results_queue.0.append(&mut turn_results);
             }
         }
     }

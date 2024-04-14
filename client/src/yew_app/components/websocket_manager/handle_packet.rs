@@ -1,5 +1,3 @@
-use std::rc::Rc;
-
 use super::adventuring_party_update_handlers::client_party_id_change_handler;
 use super::adventuring_party_update_handlers::handle_adventuring_party_created;
 use super::adventuring_party_update_handlers::handle_character_creation;
@@ -140,7 +138,7 @@ pub fn handle_packet(
             handle_raw_action_results(game_dispatch, packet)
         }
         GameServerUpdatePackets::CombatTurnResults(packet) => {
-            handle_combat_turn_results(game_dispatch, packet.turn_results)
+            handle_combat_turn_results(bevy_communication_dispatch, packet.turn_results)
         }
         GameServerUpdatePackets::BattleFullUpdate(packet) => {
             handle_battle_full_update(game_dispatch, packet)

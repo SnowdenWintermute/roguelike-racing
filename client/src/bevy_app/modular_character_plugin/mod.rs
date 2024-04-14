@@ -1,3 +1,5 @@
+use std::collections::VecDeque;
+
 use self::assign_skeleton_bones_to_combatants::assign_skeleton_bones_to_combatants;
 use self::attack_sequence::handle_attack_sequence_start_requests;
 use self::attack_sequence::process_active_animation_states::process_active_animation_states;
@@ -16,11 +18,13 @@ use crate::frontend_common::CombatantSpecies;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
 use bevy::utils::HashSet;
+use common::combat::CombatTurnResult;
 pub mod animation_manager_component;
 mod assemble_parts;
 mod assign_skeleton_bones_to_combatants;
 mod attack_sequence;
 mod draw_aabbs;
+mod handle_combat_turn_results;
 mod handle_despawn_combatant_model_events;
 mod notify_yew_that_assets_are_loaded;
 pub mod part_change_plugin;
@@ -47,6 +51,11 @@ pub struct AttachedPartsReparentedEntities {
 }
 #[derive(Resource, Default)]
 pub struct CombatantsExecutingAttacks(HashSet<CombatantId>);
+
+#[derive(Resource, Default)]
+pub struct TurnResultsQueue(pub VecDeque<CombatTurnResult>);
+#[derive(Resource, Default)]
+pub struct CurrentTurnResultProcessing(pub Option<CombatTurnResult>);
 
 #[derive(Default, Debug, Clone, Component)]
 pub struct HomeLocation(pub Transform);

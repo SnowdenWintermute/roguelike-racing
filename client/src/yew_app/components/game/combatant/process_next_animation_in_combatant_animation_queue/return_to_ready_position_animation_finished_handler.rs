@@ -40,7 +40,7 @@ pub fn return_to_ready_position_animation_finished_handler(
                 }
                 Ok(())
             })?;
-            send_next_turn_result_to_combatant_event_manager(game_dispatch)?
+            // send_next_turn_result_to_combatant_event_manager(game_dispatch)?
         }
         Ok(())
     } else {

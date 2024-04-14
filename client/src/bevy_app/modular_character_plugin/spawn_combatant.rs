@@ -15,6 +15,8 @@ use bevy::prelude::*;
 use bevy::utils::HashMap;
 use bevy::utils::HashSet;
 use bevy_mod_billboard::BillboardTextBundle;
+use common::combat::ActionResult;
+use std::collections::VecDeque;
 
 // CHARACTER COMPONENTS
 #[derive(Component)]
@@ -27,6 +29,14 @@ pub struct CombatantMainArmatureEntityLink(pub Entity);
 pub struct MainSkeletonEntity(pub Entity);
 #[derive(Component, Debug)]
 pub struct MainSkeletonBonesAndArmature(pub HashMap<String, Entity>, pub Entity);
+#[derive(Debug)]
+pub struct CombatantActionResultsManager {
+    pub associated_combatant_id: u32,
+    pub action_result_queue: VecDeque<ActionResult>,
+    pub current_action_result_processing: Option<ActionResult>,
+}
+#[derive(Component, Debug)]
+pub struct CombatantActionResultManagerComponent(pub CombatantActionResultsManager);
 /// Queue of part entities waiting for spawn. Using Vec in case multiple part scenes get queued
 /// from part change requests before they are spawned
 #[derive(Component, Default)]

@@ -97,6 +97,7 @@ pub fn bevy_messages_manager(props: &Props) -> Html {
                              // }
                 }
             }
+            // @TODO PERF don't reallocate a vec every time, instead try to mutate it
             cloned_queued_bevy_messages_state.set(Vec::new());
         },
     );

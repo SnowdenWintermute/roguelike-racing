@@ -2,14 +2,15 @@ pub mod comm_channel_bevy_plugin;
 use crate::bevy_app::modular_character_plugin::CombatantId;
 use crate::bevy_app::modular_character_plugin::HomeLocation;
 use crate::frontend_common::AttackCommand;
-use crate::frontend_common::CharacterAnimationSelection;
 use crate::frontend_common::CharacterPartSelection;
 use crate::frontend_common::CombatantSpecies;
 use crate::frontend_common::PartsByName;
 use bevy::prelude::*;
 use broadcast::Receiver;
 use broadcast::Sender;
+use common::combat::CombatTurnResult;
 use std::collections::HashSet;
+use std::collections::VecDeque;
 use tokio::sync::broadcast;
 
 // YEW MESSAGES
@@ -19,6 +20,7 @@ pub enum MessageFromYew {
     SpawnCharacterWithHomeLocation(CombatantId, HomeLocation, CombatantSpecies),
     DespawnCombatantModel(CombatantId),
     ExecuteAttackSequence(AttackCommand),
+    NewTurnResults(VecDeque<CombatTurnResult>),
 }
 #[derive(Clone, Debug, Event)]
 pub struct CharacterPartSelectionEvent(pub CharacterPartSelection);

@@ -1,31 +1,23 @@
-use crate::bevy_app::modular_character_plugin::animation_manager_component::ActionSequenceStates;
 use crate::bevy_app::modular_character_plugin::animation_manager_component::AnimationManagerComponent;
+use crate::bevy_app::modular_character_plugin::handle_combat_turn_results::combatant_model_actions::CombatantModelActions;
 use crate::bevy_app::modular_character_plugin::Animations;
 use crate::bevy_app::utils::rotate_transform_toward_target::rotate_transform_toward_target;
 use crate::bevy_app::utils::translate_transform_toward_target::translate_transform_toward_target;
-use crate::frontend_common::animation_names::AnimationType;
-use crate::frontend_common::animation_names::CombatantAnimations;
 use crate::frontend_common::CombatantSpecies;
 use bevy::math::u64;
 use bevy::prelude::*;
-use std::time::Duration;
 
 const TIME_TO_TRANSLATE: u64 = 1500;
 const TIME_TO_ROTATE: u64 = 1000;
-const PERCENT_DISTANCE_TO_START_WEAPON_SWING: f32 = 0.8;
+const PERCENT_DISTANCE_TO_START_TRANSITION: f32 = 0.8;
 
-pub fn process_combatant_approaching_melee_target(
+pub fn combatant_approaching_melee_target_processor(
     skeleton_entity_transform: &mut Transform,
     animation_manager: &mut AnimationManagerComponent,
     home_location: &Transform,
     elapsed: u64,
-    animation_player: &mut AnimationPlayer,
-    animations: &Res<Animations>,
-    current_time: u64,
-    species: &CombatantSpecies,
 ) {
-    // approaching
-    // - move toward destination
+    // move toward destination
     let percent_distance_travelled = translate_transform_toward_target(
         skeleton_entity_transform,
         home_location,
@@ -42,29 +34,45 @@ pub fn process_combatant_approaching_melee_target(
             TIME_TO_ROTATE,
         );
     }
-    // - if within threshold and if not already swinging, activate swinging state
-    if percent_distance_travelled >= PERCENT_DISTANCE_TO_START_WEAPON_SWING
-        && !animation_manager
-            .active_states
-            .contains_key(&ActionSequenceStates::Swinging)
-    {
+
+    let transition_started = animation_manager
+        .active_model_actions
+        .get(&CombatantModelActions::ApproachMeleeTarget)
+        .expect("this model action to be active")
+        .transition_started;
+
+    if percent_distance_travelled >= PERCENT_DISTANCE_TO_START_TRANSITION && !transition_started {
+        // start next model action and mark this one's transition as started
+        animation_manager.start_next_model_action(
+            animation_player_links,
+            animation_players,
+            animations,
+            skeleton_entity,
+            combatant_species,
+        );
         animation_manager
-            .active_states
-            .insert(ActionSequenceStates::Swinging, Some(current_time));
+            .active_model_actions
+            .get_mut(&CombatantModelActions::ApproachMeleeTarget)
+            .expect("this model action to be active")
+            .transition_started = true;
 
-        let attack_anim_name = species.animation_name(AnimationType::Attack);
+        // animation_manager
+        //     .active_model_actions
+        //     .insert(ActionSequenceStates::Swinging, Some(current_time));
 
-        // - start playing swing animation
-        let animation_handle = animations
-            .0
-            .get(&attack_anim_name)
-            .expect("to have this animation");
-        animation_player.play_with_transition(animation_handle.clone(), Duration::from_millis(500));
+        // let attack_anim_name = species.animation_name(AnimationType::Attack);
+
+        // // - start playing swing animation
+        // let animation_handle = animations
+        //     .0
+        //     .get(&attack_anim_name)
+        //     .expect("to have this animation");
+        // animation_player.play_with_transition(animation_handle.clone(), Duration::from_millis(500));
     }
     // - if reached destination, deactivate approaching
     if percent_distance_travelled >= 1.0 {
         animation_manager
-            .active_states
-            .remove(&ActionSequenceStates::ApproachingTarget);
+            .active_model_actions
+            .remove(&CombatantModelActions::ApproachMeleeTarget);
     }
 }

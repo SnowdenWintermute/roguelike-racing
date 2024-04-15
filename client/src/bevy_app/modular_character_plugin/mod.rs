@@ -24,7 +24,7 @@ mod assign_skeleton_bones_to_combatants;
 mod attack_sequence;
 mod draw_aabbs;
 mod handle_combat_turn_results;
-mod handle_despawn_combatant_model_events;
+pub mod handle_despawn_combatant_model_events;
 mod notify_yew_that_assets_are_loaded;
 pub mod part_change_plugin;
 mod process_combatant_model_actions;

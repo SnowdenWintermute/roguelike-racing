@@ -1,5 +1,4 @@
 mod approaching_melee_target;
-mod translate_transform_toward_target;
 use super::animation_manager_component::AnimationManagerComponent;
 use super::handle_combat_turn_results::combatant_model_actions::CombatantModelActionProgressTracker;
 use super::handle_combat_turn_results::combatant_model_actions::CombatantModelActions;
@@ -12,11 +11,13 @@ use super::Animations;
 use super::CombatantsById;
 use crate::bevy_app::utils::link_animations::AnimationEntityLink;
 use bevy::prelude::*;
+use js_sys::Date;
 
 pub fn process_combatant_model_actions(
     combatants_by_id: Res<CombatantsById>,
     mut combatants: Query<(
         &CombatantIdComponent,
+        &CombatantSpeciesComponent,
         &MainSkeletonEntity,
         &HitboxRadius,
         &mut AnimationManagerComponent,
@@ -25,17 +26,29 @@ pub fn process_combatant_model_actions(
     species_query: Query<&CombatantSpeciesComponent>,
     animation_player_links: Query<&AnimationEntityLink>,
     mut animation_players: Query<&mut AnimationPlayer>,
-    transforms: Query<&mut Transform>,
     animations: Res<Animations>,
+    transforms: Query<&mut Transform>,
 ) {
     for (
         id_component,
+        combatant_species_component,
         skeleton_entity,
         hitbox_radius,
-        animation_manager_component,
+        mut animation_manager_component,
         action_result_manager,
     ) in &mut combatants
     {
+        // if no active actions, take the next one
+        if animation_manager_component.active_model_actions.len() < 1 {
+            animation_manager_component.start_next_model_action(
+                &animation_player_links,
+                &mut animation_players,
+                &animations,
+                skeleton_entity.0,
+                combatant_species_component.0.clone(),
+            );
+        }
+        // process all active actions
         for model_action in &animation_manager_component.active_model_actions {
             process_model_action(&model_action.0, &model_action.1);
         }

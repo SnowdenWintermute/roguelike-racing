@@ -1,4 +1,3 @@
-pub mod animation_names;
 use crate::bevy_app::modular_character_plugin::CombatantId;
 use std::collections::HashSet;
 

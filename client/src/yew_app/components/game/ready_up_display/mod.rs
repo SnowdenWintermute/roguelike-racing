@@ -9,7 +9,7 @@ use yewdux::use_store;
 
 #[function_component(ReadyUpDisplay)]
 pub fn ready_up_display() -> Html {
-    let (game_state, game_dispatch) = use_store::<GameStore>();
+    let (game_state, _) = use_store::<GameStore>();
     let (websocket_state, _) = use_store::<WebsocketStore>();
     let (lobby_state, _) = use_store::<LobbyStore>();
 
@@ -17,11 +17,11 @@ pub fn ready_up_display() -> Html {
         .game
         .clone()
         .expect("component only shown if game exists");
-    let player = game
-        .players
-        .get(&lobby_state.username)
-        .expect("a player should exist by the username stored on the client")
-        .clone();
+    // let player = game
+    //     .players
+    //     .get(&lobby_state.username)
+    //     .expect("a player should exist by the username stored on the client")
+    //     .clone();
 
     let party_id = game_state.current_party_id.expect("must have party id");
 
@@ -31,7 +31,7 @@ pub fn ready_up_display() -> Html {
         .expect("must have a party id")
         .clone();
 
-    let players_ready_to_descend_option =
+    let _players_ready_to_descend_option =
         if party.current_room.room_type == DungeonRoomTypes::Stairs {
             Some(party.players_ready_to_descend.clone())
         } else {

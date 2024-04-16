@@ -1,10 +1,8 @@
 use super::handle_combat_turn_results::combatant_model_actions::get_animation_name_from_model_action;
 use super::handle_combat_turn_results::combatant_model_actions::CombatantModelActions;
 use super::Animations;
-use crate::frontend_common::animation_names::CombatantAnimations;
 use crate::bevy_app::modular_character_plugin::handle_combat_turn_results::combatant_model_actions::CombatantModelActionProgressTracker;
 use crate::bevy_app::utils::link_animations::AnimationEntityLink;
-use crate::frontend_common::animation_names::AnimationType;
 use crate::frontend_common::CombatantSpecies;
 use super::CombatantId;
 use bevy::math::u64;
@@ -55,11 +53,12 @@ impl AnimationManagerComponent {
         animation_players: &mut Query<&mut AnimationPlayer>,
         animations: &Res<Animations>,
         skeleton_entity: Entity,
-        combatant_species: CombatantSpecies,
+        combatant_species: &CombatantSpecies,
+        transition_duration_ms: u64,
     ) {
         if let Some(model_action) = self.model_action_queue.pop_front() {
             self.active_model_actions.insert(
-                model_action,
+                model_action.clone(),
                 CombatantModelActionProgressTracker {
                     time_started: Date::new_0().get_time() as u64,
                     transition_started: false,
@@ -81,7 +80,10 @@ impl AnimationManagerComponent {
                     .get(&animation_name)
                     .expect("to be looking up a valid animation");
                 animation_player
-                    .play_with_transition(animation_handle.clone(), Duration::from_millis(500))
+                    .play_with_transition(
+                        animation_handle.clone(),
+                        Duration::from_millis(transition_duration_ms),
+                    )
                     .repeat();
             };
         }

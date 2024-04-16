@@ -12,7 +12,6 @@ use common::dungeon_rooms::DungeonRoom;
 use common::errors::AppError;
 use common::errors::AppErrorTypes;
 use std::f32::consts::PI;
-use std::rc::Rc;
 use yewdux::Dispatch;
 
 pub fn handle_new_dungeon_room(
@@ -28,7 +27,7 @@ pub fn handle_new_dungeon_room(
                 COMBATANT_POSITION_SPACING_BETWEEN_ROWS / 2.0,
             ));
 
-            for (monster_id, monster) in monsters {
+            for (monster_id, _) in monsters {
                 game_store
                     .action_results_manager
                     .combantant_event_managers
@@ -73,8 +72,8 @@ pub fn handle_new_dungeon_room(
             for character_id in cloned_character_positions {
                 let species = CombatantSpecies::Humanoid;
                 transmitter
-                    .send(MessageFromYew::DespawnCombatantModel(
-                        character_id)).expect("to send message");
+                    .send(MessageFromYew::DespawnCombatantModel(character_id))
+                    .expect("to send message");
 
                 transmitter
                     .send(MessageFromYew::SpawnCharacterWithHomeLocation(

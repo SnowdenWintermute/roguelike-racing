@@ -13,7 +13,7 @@ const SHOWN_CLASSES: &str = "w-10 mr-2 last:mr-0";
 
 #[function_component(TurnOrderTrackerIcon)]
 pub fn turn_order_tracker_icon(props: &Props) -> Html {
-    let (game_state, game_dispatch) = use_store::<GameStore>();
+    let (game_state, _) = use_store::<GameStore>();
     let pre_removal_classes_state = use_state(|| SHOWN_CLASSES.to_string());
     let transition_style = use_state(|| "transition: width 1s;");
     // let timer_state = use_state(|| None);

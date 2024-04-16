@@ -2,7 +2,6 @@ use common::combat::magical_elements::MagicalElements;
 use wasm_bindgen::prelude::*;
 use web_sys::window;
 use web_sys::HtmlElement;
-use yew::MouseEvent;
 
 // Import the JavaScript Date object
 #[wasm_bindgen]

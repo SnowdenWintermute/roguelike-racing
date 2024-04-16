@@ -1,8 +1,7 @@
 use crate::bevy_app::modular_character_plugin::animation_manager_component::Timestamp;
-use crate::frontend_common::animation_names::AnimationType;
 use crate::frontend_common::CombatantSpecies;
 
-#[derive(Hash, Eq, PartialEq, Debug)]
+#[derive(Hash, Eq, PartialEq, Debug, Clone)]
 pub enum CombatantModelActions {
     ApproachMeleeTarget,
     ReturnHome,
@@ -10,8 +9,12 @@ pub enum CombatantModelActions {
     TurnToFaceTarget,
     AttackMeleeMainHand,
     AttackMeleeOffHand,
+    HitRecovery,
+    Death,
+    Idle,
 }
 
+#[derive(Debug, Clone)]
 pub struct CombatantModelActionProgressTracker {
     pub time_started: Timestamp,
     pub transition_started: bool,
@@ -20,21 +23,18 @@ pub struct CombatantModelActionProgressTracker {
 pub fn get_animation_name_from_model_action(
     species: &CombatantSpecies,
     model_action: &CombatantModelActions,
-) -> Option<str> {
-    match species {
+) -> Option<String> {
+    let to_return = match species {
         CombatantSpecies::Humanoid => match model_action {
             CombatantModelActions::ApproachMeleeTarget => Some("Run"),
-            CombatantModelActions::ReturnHome => todo!(),
-            CombatantModelActions::Recenter => todo!(),
-            CombatantModelActions::TurnToFaceTarget => todo!(),
-            CombatantModelActions::AttackMeleeMainHand => todo!(),
-            CombatantModelActions::AttackMeleeOffHand => todo!(),
-            // AnimationType::Run => "Run",
-            // AnimationType::HitRecovery => "HitRecieve",
-            // AnimationType::Death => "Death",
-            // AnimationType::Idle => "Idle_Sword",
-            // AnimationType::Attack => "Sword_Slash",
-            // AnimationType::ReturningToHome => "Run_Back",
+            CombatantModelActions::ReturnHome => Some("Run_Back"),
+            CombatantModelActions::Recenter => Some("Run"),
+            CombatantModelActions::TurnToFaceTarget => Some("Run"),
+            CombatantModelActions::AttackMeleeMainHand => Some("Sword_Slash"),
+            CombatantModelActions::AttackMeleeOffHand => Some("Sword_Slash"),
+            CombatantModelActions::HitRecovery => Some("HitRecieve"),
+            CombatantModelActions::Death => Some("Death"),
+            CombatantModelActions::Idle => Some("Idle_Sword"),
         },
         CombatantSpecies::Wasp => match model_action {
             CombatantModelActions::ApproachMeleeTarget => todo!(),
@@ -43,6 +43,9 @@ pub fn get_animation_name_from_model_action(
             CombatantModelActions::TurnToFaceTarget => todo!(),
             CombatantModelActions::AttackMeleeMainHand => todo!(),
             CombatantModelActions::AttackMeleeOffHand => todo!(),
+            CombatantModelActions::HitRecovery => todo!(),
+            CombatantModelActions::Death => todo!(),
+            CombatantModelActions::Idle => todo!(),
             // AnimationType::Run => "Wasp_Flying",
             // AnimationType::HitRecovery => "Wasp_Death",
             // AnimationType::Death => "Wasp_Death",
@@ -51,37 +54,19 @@ pub fn get_animation_name_from_model_action(
             // AnimationType::ReturningToHome => "Wasp_Flying",
         },
         CombatantSpecies::Frog => match model_action {
-            CombatantModelActions::ApproachMeleeTarget => todo!(),
-            CombatantModelActions::ReturnHome => todo!(),
-            CombatantModelActions::Recenter => todo!(),
-            CombatantModelActions::TurnToFaceTarget => todo!(),
-            CombatantModelActions::AttackMeleeMainHand => todo!(),
-            CombatantModelActions::AttackMeleeOffHand => todo!(),
-            // AnimationType::Run => "Frog_Jump",
-            // AnimationType::HitRecovery => "Frog_Jump",
-            // AnimationType::Death => "Frog_Death",
-            // AnimationType::Idle => "Frog_Idle",
-            // AnimationType::Attack => "Frog_Attack",
-            // AnimationType::ReturningToHome => "Frog_Jump",
+            CombatantModelActions::ApproachMeleeTarget => Some("Frog_Jump"),
+            CombatantModelActions::ReturnHome => Some("Frog_Jump"),
+            CombatantModelActions::Recenter => Some("Frog_Idle"),
+            CombatantModelActions::TurnToFaceTarget => Some("Frog_Jump"),
+            CombatantModelActions::AttackMeleeMainHand => Some("Frog_Attack"),
+            CombatantModelActions::AttackMeleeOffHand => Some("Frog_Attack"),
+            CombatantModelActions::HitRecovery => Some("Frog_Jump"),
+            CombatantModelActions::Death => Some("Frog_Death"),
+            CombatantModelActions::Idle => Some("Frog_Idle"),
         },
-    }
-
-    // to_return.to_string()
-}
-
-impl CombatantModelActions {
-    pub fn get_associated_animation_name(&self, species: CombatantSpecies) -> String {
-        match self {
-            CombatantModelActions::ApproachMeleeTarget => match species {
-                CombatantSpecies::Humanoid => todo!(),
-                CombatantSpecies::Wasp => todo!(),
-                CombatantSpecies::Frog => todo!(),
-            },
-            CombatantModelActions::ReturnHome => todo!(),
-            CombatantModelActions::Recenter => todo!(),
-            CombatantModelActions::TurnToFaceTarget => todo!(),
-            CombatantModelActions::AttackMeleeMainHand => todo!(),
-            CombatantModelActions::AttackMeleeOffHand => todo!(),
-        }
+    };
+    match to_return {
+        Some(str) => Some(str.to_string()),
+        None => None,
     }
 }

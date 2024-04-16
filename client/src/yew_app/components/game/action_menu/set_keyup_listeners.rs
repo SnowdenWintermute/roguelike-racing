@@ -1,5 +1,4 @@
 use super::build_action_button_properties::ActionMenuButtonProperties;
-use gloo::console::log;
 use gloo::events::EventListener;
 use gloo_utils::window;
 use wasm_bindgen::JsCast;

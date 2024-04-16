@@ -98,7 +98,10 @@ pub fn enqueue_model_actions_from_action_results(
                     .push_back(CombatantModelActions::ReturnHome);
                 animation_manager
                     .model_action_queue
-                    .push_back(CombatantModelActions::Recenter)
+                    .push_back(CombatantModelActions::Recenter);
+                animation_manager
+                    .model_action_queue
+                    .push_back(CombatantModelActions::Idle);
             }
         }
     }

@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 /// returns percent of complete translation toward destination as a value between 0.0 and 1.0
 pub fn translate_transform_toward_target(
-    mut transform_to_translate: &mut Transform,
+    transform_to_translate: &mut Transform,
     start_location: &Transform,
     destination: &Transform,
     elapsed: u64,

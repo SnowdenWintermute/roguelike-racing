@@ -1,4 +1,3 @@
-use super::asset_loader_plugin::AssetLoaderState;
 use crate::comm_channels::BevyTransmitter;
 use crate::comm_channels::CameraPosition;
 use crate::comm_channels::MessageFromBevy;

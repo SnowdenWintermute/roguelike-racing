@@ -7,12 +7,12 @@ use bevy_panorbit_camera::PanOrbitCamera;
 pub struct CameraPlugin;
 impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, spawn_camera)
-            // .add_systems(
-            //     OnEnter(AssetLoaderState::Done),
-            //     set_up_camera_position_text_nodes,
-            // )
-            .add_systems(Update, update_camera_position_text);
+        app.add_systems(Startup, spawn_camera);
+        // .add_systems(
+        //     OnEnter(AssetLoaderState::Done),
+        //     set_up_camera_position_text_nodes,
+        // )
+        // .add_systems(Update, update_camera_position_text);
     }
 }
 

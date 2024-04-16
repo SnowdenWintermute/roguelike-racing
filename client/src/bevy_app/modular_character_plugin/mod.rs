@@ -1,10 +1,14 @@
 use self::assign_skeleton_bones_to_combatants::assign_skeleton_bones_to_combatants;
+use self::handle_combat_turn_results::enqueue_model_actions_from_action_results::enqueue_model_actions_from_action_results;
+use self::handle_combat_turn_results::start_processing_next_action_results::start_processing_next_action_results;
+use self::handle_combat_turn_results::start_processing_next_turn_result::start_processing_next_turn_result_in_queue;
 // use self::attack_sequence::handle_attack_sequence_start_requests;
 // use self::attack_sequence::process_active_animation_states::process_active_animation_states;
 // use self::attack_sequence::start_combatant_hit_recoveries::start_combatant_hit_recoveries;
 use self::handle_despawn_combatant_model_events::handle_despawn_combatant_model_events;
 use self::notify_yew_that_assets_are_loaded::notify_yew_that_assets_are_loaded;
 use self::part_change_plugin::PartChangePlugin;
+use self::process_combatant_model_actions::process_combatant_model_actions;
 use self::register_animations::register_animations;
 // use self::run_animations::run_animations;
 use self::spawn_combatant::spawn_combatants;
@@ -75,6 +79,7 @@ impl Plugin for ModularCharacterPlugin {
             .init_resource::<Events<HitRecoveryActivationEvent>>()
             .init_resource::<Events<DespawnCombatantModelEvent>>()
             .init_resource::<TurnResultsQueue>()
+            .init_resource::<CurrentTurnResultProcessing>()
             // .init_::<CombatantsExecutingAttacks>()
             .add_plugins(PartChangePlugin)
             .add_systems(
@@ -98,6 +103,10 @@ impl Plugin for ModularCharacterPlugin {
                     // process_active_animation_states,
                     // start_combatant_hit_recoveries,
                     update_scene_aabbs_on_changed_children,
+                    start_processing_next_turn_result_in_queue,
+                    start_processing_next_action_results,
+                    enqueue_model_actions_from_action_results,
+                    process_combatant_model_actions,
                 )
                     .run_if(in_state(AssetLoaderState::Done)),
             )

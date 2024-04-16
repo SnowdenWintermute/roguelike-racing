@@ -22,10 +22,17 @@ pub fn start_processing_next_turn_result_in_queue(
         .expect("assigned above")
         .action_results
     {
+        info!(
+            "searching for action result user combatant by id: {:?}",
+            action_result.user_id
+        );
+        info!("combatants by id: {:?}", combatants_by_id.0);
         if let Some(action_user_entity) = combatants_by_id.0.get(&action_result.user_id) {
+            info!("found action_user_entity");
             if let Ok(mut action_result_manager) =
                 combatant_action_result_managers.get_mut(*action_user_entity)
             {
+                info!("pushed action result");
                 action_result_manager
                     .action_result_queue
                     .push_back(action_result.clone());

@@ -18,5 +18,6 @@ pub fn start_processing_next_action_results(
         }
         action_result_manager.current_action_result_processing =
             action_result_manager.action_result_queue.pop_front();
+        info!("new current action result");
     }
 }

@@ -59,7 +59,7 @@ pub fn enqueue_model_actions_from_action_results(
                         .get(skeleton_entity.0)
                         .expect("the skeleton to have a transform");
                     if ability_name.get_attributes().is_melee
-                        && home_location.0.translation != current_transform.translation
+                        && home_location.0.translation == current_transform.translation
                     {
                         enqueue_approach_melee_target_model_action(
                             current_action_result_processing,
@@ -99,10 +99,12 @@ pub fn enqueue_model_actions_from_action_results(
                 animation_manager
                     .model_action_queue
                     .push_back(CombatantModelActions::Recenter);
-                animation_manager
-                    .model_action_queue
-                    .push_back(CombatantModelActions::Idle);
             }
+
+            info!(
+                "enqueued model actions {:?}",
+                animation_manager.model_action_queue
+            );
         }
     }
 }

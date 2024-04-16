@@ -9,6 +9,9 @@ use bevy::prelude::*;
 use broadcast::Receiver;
 use broadcast::Sender;
 use common::combat::CombatTurnResult;
+use common::items::equipment::EquipmentSlots;
+use common::items::Item;
+use std::collections::HashMap;
 use std::collections::HashSet;
 use std::collections::VecDeque;
 use tokio::sync::broadcast;
@@ -17,7 +20,12 @@ use tokio::sync::broadcast;
 #[derive(Debug, Clone)]
 pub enum MessageFromYew {
     SelectCharacterPart(CharacterPartSelection),
-    SpawnCharacterWithHomeLocation(CombatantId, HomeLocation, CombatantSpecies),
+    SpawnCharacterWithHomeLocation(
+        CombatantId,
+        HomeLocation,
+        CombatantSpecies,
+        HashMap<EquipmentSlots, Item>,
+    ),
     DespawnCombatantModel(CombatantId),
     ExecuteAttackSequence(AttackCommand),
     NewTurnResults(VecDeque<CombatTurnResult>),
@@ -26,7 +34,12 @@ pub enum MessageFromYew {
 pub struct CharacterPartSelectionEvent(pub CharacterPartSelection);
 
 #[derive(Clone, Debug, Event)]
-pub struct CharacterSpawnEvent(pub CombatantId, pub HomeLocation, pub CombatantSpecies);
+pub struct CharacterSpawnEvent(
+    pub CombatantId,
+    pub HomeLocation,
+    pub CombatantSpecies,
+    pub HashMap<EquipmentSlots, Item>,
+);
 
 #[derive(Clone, Debug, Event)]
 pub struct DespawnCombatantModelEvent(pub CombatantId);

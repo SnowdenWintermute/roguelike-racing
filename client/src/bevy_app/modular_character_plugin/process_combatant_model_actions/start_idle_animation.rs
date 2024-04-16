@@ -12,25 +12,23 @@ pub fn start_idle_animation(
     species: &CombatantSpecies,
     skeleton_entity: Entity,
 ) {
-    info!("no model actions active, playing idle animation");
-    let animation_player_entity_link = animation_player_links
-        .get(skeleton_entity)
-        .expect("skeleton to have animation player link");
-    let mut animation_player = animation_players
-        .get_mut(animation_player_entity_link.0)
-        .expect("to have an animation player on the main skeleton");
+    if let Ok(animation_player_entity_link) = animation_player_links.get(skeleton_entity) {
+        let mut animation_player = animation_players
+            .get_mut(animation_player_entity_link.0)
+            .expect("to have an animation player on the main skeleton");
 
-    if let Some(idle_animation_name) =
-        get_animation_name_from_model_action(&species, &CombatantModelActions::Idle)
-    {
-        animation_player
-            .play(
-                animations
-                    .0
-                    .get(&idle_animation_name)
-                    .expect("to have an animation by this name")
-                    .clone_weak(),
-            )
-            .repeat();
+        if let Some(idle_animation_name) =
+            get_animation_name_from_model_action(&species, &CombatantModelActions::Idle)
+        {
+            animation_player
+                .play(
+                    animations
+                        .0
+                        .get(&idle_animation_name)
+                        .expect("to have an animation by this name")
+                        .clone_weak(),
+                )
+                .repeat();
+        };
     };
 }

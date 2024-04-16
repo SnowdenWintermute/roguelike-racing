@@ -1,4 +1,5 @@
-use bevy::{prelude::*, utils::HashMap};
+use bevy::prelude::*;
+use std::collections::HashMap;
 
 pub fn attach_holdable(
     commands: &mut Commands,

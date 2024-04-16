@@ -12,10 +12,12 @@ use crate::frontend_common::CharacterPartCategories;
 use crate::frontend_common::CombatantSpecies;
 use bevy::gltf::Gltf;
 use bevy::prelude::*;
-use bevy::utils::HashMap;
-use bevy::utils::HashSet;
 use bevy_mod_billboard::BillboardTextBundle;
 use common::combat::ActionResult;
+use common::items::equipment::EquipmentSlots;
+use common::items::Item;
+use std::collections::HashMap;
+use std::collections::HashSet;
 use std::collections::VecDeque;
 
 // CHARACTER COMPONENTS
@@ -35,6 +37,8 @@ pub struct CombatantActionResultsManagerComponent {
     pub action_result_queue: VecDeque<ActionResult>,
     pub current_action_result_processing: Option<ActionResult>,
 }
+#[derive(Component, Debug, Default)]
+pub struct CombatantEquipment(pub HashMap<EquipmentSlots, Item>);
 /// Queue of part entities waiting for spawn. Using Vec in case multiple part scenes get queued
 /// from part change requests before they are spawned
 #[derive(Component, Default)]
@@ -59,6 +63,7 @@ pub fn spawn_combatants(
         let character_id = event.0;
         let home_location = &event.1;
         let species = &event.2;
+        let equipment = event.3.clone();
 
         let file_name = match species {
             CombatantSpecies::Humanoid => "main_skeleton.glb",
@@ -83,6 +88,7 @@ pub fn spawn_combatants(
             skeleton_handle,
             file_name.to_string(),
             species.clone(),
+            equipment,
         )
     }
 }
@@ -99,6 +105,7 @@ pub fn spawn_combatant(
     skeleton_handle: &Handle<Gltf>,
     file_name: String,
     species: CombatantSpecies,
+    equipment: HashMap<EquipmentSlots, Item>,
 ) {
     // - spawn skeleton and store its entity id on the character
 
@@ -126,6 +133,7 @@ pub fn spawn_combatant(
         AnimationManagerComponent::default(),
         CombatantActionResultsManagerComponent::default(),
         HitboxRadius(0.7),
+        CombatantEquipment(equipment),
     ));
 
     let character_entity = character_entity_commands.id();

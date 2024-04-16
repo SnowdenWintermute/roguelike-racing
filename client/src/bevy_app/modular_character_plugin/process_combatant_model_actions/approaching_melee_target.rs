@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::bevy_app::modular_character_plugin::animation_manager_component::AnimationManagerComponent;
 use crate::bevy_app::modular_character_plugin::handle_combat_turn_results::combatant_model_actions::CombatantModelActions;
 use crate::bevy_app::modular_character_plugin::Animations;
@@ -7,6 +9,8 @@ use crate::bevy_app::utils::translate_transform_toward_target::translate_transfo
 use crate::frontend_common::CombatantSpecies;
 use bevy::math::u64;
 use bevy::prelude::*;
+use common::items::equipment::EquipmentSlots;
+use common::items::Item;
 
 const TIME_TO_TRANSLATE: u64 = 1500;
 const TIME_TO_ROTATE: u64 = 1000;
@@ -16,12 +20,14 @@ pub fn combatant_approaching_melee_target_processor(
     skeleton_entity_transform: &mut Transform,
     skeleton_entity: Entity,
     combatant_species: &CombatantSpecies,
+    equipment: &HashMap<EquipmentSlots, Item>,
     animation_manager: &mut AnimationManagerComponent,
     home_location: &Transform,
     elapsed: u64,
     animations: &Res<Animations>,
     animation_players: &mut Query<&mut AnimationPlayer>,
     animation_player_links: &Query<&AnimationEntityLink>,
+    transition_started: bool,
 ) {
     // move toward destination
     let percent_distance_travelled = translate_transform_toward_target(
@@ -41,12 +47,6 @@ pub fn combatant_approaching_melee_target_processor(
         );
     }
 
-    let transition_started = animation_manager
-        .active_model_actions
-        .get(&CombatantModelActions::ApproachMeleeTarget)
-        .expect("this model action to be active")
-        .transition_started;
-
     if percent_distance_travelled >= PERCENT_DISTANCE_TO_START_TRANSITION && !transition_started {
         // start next model action and mark this one's transition as started
         animation_manager.start_next_model_action(
@@ -55,6 +55,7 @@ pub fn combatant_approaching_melee_target_processor(
             animations,
             skeleton_entity,
             combatant_species,
+            equipment,
             500,
         );
         animation_manager

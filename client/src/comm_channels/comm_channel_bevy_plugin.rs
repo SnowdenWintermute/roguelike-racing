@@ -52,11 +52,13 @@ fn handle_yew_messages(
                 character_id,
                 home_location,
                 species,
+                equipment,
             ) => {
                 spawn_combatant_event_writer.send(CharacterSpawnEvent(
                     character_id,
                     home_location,
                     species,
+                    equipment,
                 ));
             }
             MessageFromYew::DespawnCombatantModel(combatant_id) => {

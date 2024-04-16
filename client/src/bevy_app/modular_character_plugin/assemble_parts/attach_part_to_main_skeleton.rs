@@ -3,7 +3,7 @@ use crate::bevy_app::utils::collect_hierarchy::get_all_named_entities_in_hierarc
 use crate::bevy_app::utils::find_child_with_name_containing::find_child_with_name_containing;
 use crate::bevy_app::utils::zero_transform;
 use bevy::prelude::*;
-use bevy::utils::HashMap;
+use std::collections::HashMap;
 
 pub fn attach_part_to_main_skeleton(
     commands: &mut Commands,

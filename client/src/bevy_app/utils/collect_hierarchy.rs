@@ -1,5 +1,5 @@
-use bevy::{prelude::*, utils::HashMap};
-
+use bevy::prelude::*;
+use std::collections::HashMap;
 pub fn get_all_named_entities_in_hierarchy(
     all_entities_with_children: &Query<&Children>,
     names: &Query<&Name>,

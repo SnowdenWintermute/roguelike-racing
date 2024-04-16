@@ -8,7 +8,8 @@ use self::handle_combat_turn_results::start_processing_next_turn_result::start_p
 use self::handle_despawn_combatant_model_events::handle_despawn_combatant_model_events;
 use self::notify_yew_that_assets_are_loaded::notify_yew_that_assets_are_loaded;
 use self::part_change_plugin::PartChangePlugin;
-use self::process_combatant_model_actions::process_combatant_model_actions;
+use self::process_combatant_model_actions::process_active_model_actions::process_active_model_actions;
+use self::process_combatant_model_actions::start_new_model_actions_or_idle::start_new_model_actions_or_idle;
 use self::register_animations::register_animations;
 // use self::run_animations::run_animations;
 use self::spawn_combatant::spawn_combatants;
@@ -106,7 +107,8 @@ impl Plugin for ModularCharacterPlugin {
                     start_processing_next_turn_result_in_queue,
                     start_processing_next_action_results,
                     enqueue_model_actions_from_action_results,
-                    process_combatant_model_actions,
+                    start_new_model_actions_or_idle,
+                    process_active_model_actions,
                 )
                     .run_if(in_state(AssetLoaderState::Done)),
             )

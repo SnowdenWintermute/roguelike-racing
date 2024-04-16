@@ -1,7 +1,7 @@
 use crate::bevy_app::utils::collect_hierarchy::get_all_named_entities_in_hierarchy;
 use crate::bevy_app::utils::find_child_with_name_containing::find_child_with_name_containing;
 use bevy::prelude::*;
-use bevy::utils::HashMap;
+use std::collections::HashMap;
 
 pub fn get_main_skeleton_bones_and_armature(
     main_skeleton_entity: &Entity,

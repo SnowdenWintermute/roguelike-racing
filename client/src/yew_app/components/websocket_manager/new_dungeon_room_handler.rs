@@ -27,7 +27,7 @@ pub fn handle_new_dungeon_room(
                 COMBATANT_POSITION_SPACING_BETWEEN_ROWS / 2.0,
             ));
 
-            for (monster_id, _) in monsters {
+            for (monster_id, monster) in monsters {
                 game_store
                     .action_results_manager
                     .combantant_event_managers
@@ -46,6 +46,7 @@ pub fn handle_new_dungeon_room(
                             *monster_id,
                             monster_home_location.clone(),
                             species,
+                            monster.combatant_properties.equipment.clone(),
                         ))
                         .expect("to send message");
                     Ok(())
@@ -74,12 +75,16 @@ pub fn handle_new_dungeon_room(
                 transmitter
                     .send(MessageFromYew::DespawnCombatantModel(character_id))
                     .expect("to send message");
+                let (_, combatant_properties) = party
+                    .get_combatant_by_id(&character_id)
+                    .expect("to have the combatant in the party");
 
                 transmitter
                     .send(MessageFromYew::SpawnCharacterWithHomeLocation(
                         character_id,
                         character_home_location.clone(),
                         species,
+                        combatant_properties.equipment.clone(),
                     ))
                     .expect("could not send event");
                 character_home_location.0.translation.x += COMBATANT_POSITION_SPACING_SIDE;

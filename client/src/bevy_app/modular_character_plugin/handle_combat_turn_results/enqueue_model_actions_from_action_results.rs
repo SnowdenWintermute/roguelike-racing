@@ -1,3 +1,5 @@
+use super::combatant_model_actions::CombatantModelActions;
+use super::enqueue_approach_melee_target_model_action::enqueue_approach_melee_target_model_action;
 use crate::bevy_app::modular_character_plugin::animation_manager_component::AnimationManagerComponent;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantActionResultsManagerComponent;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::HitboxRadius;
@@ -7,30 +9,6 @@ use crate::bevy_app::modular_character_plugin::HomeLocation;
 use bevy::prelude::*;
 use common::combat::combat_actions::CombatAction;
 use common::combatants::abilities::CombatantAbilityNames;
-
-use super::combatant_model_actions::CombatantModelActions;
-use super::enqueue_approach_melee_target_model_action::enqueue_approach_melee_target_model_action;
-// queue up appropriate combatant_model_actions
-// if is_melee && current_transform == home_point {
-// combatant_model_actions.push_back(ApproachMeleeTarget(u32))
-// }
-//
-// push model action corresponding to ability_used
-//
-// if action_result_manager.0.queue.len() == 0 {
-// combatant_model_actions.push_back(ReturnHome(u32))
-// combatant_model_actions.push_back(Recenter(u32))
-// }
-//
-// to process combatant_model_actions
-// apply transform changes / animations / floating numbers
-// when external_effect condition reached, enqueue combatant_model_action on external
-// entities
-// when transition condition reached, start the next combatant_model_action
-// when end condition reached, remove combatant_model_action from combatant
-// active_model_actions
-//
-//
 
 pub fn enqueue_model_actions_from_action_results(
     mut combatants: Query<

@@ -1,20 +1,17 @@
-use crate::{
-    bevy_app::modular_character_plugin::{
-        assemble_parts::{
-            attach_holdable::attach_holdable,
-            attach_part_to_main_skeleton::attach_part_to_main_skeleton,
-        },
-        part_change_plugin::despawn_attached_part::despawn_attached_part,
-        spawn_combatant::{
-            CharacterAttachedPartScenes, CombatantIdComponent, CharacterPartScenesAwaitingSpawn,
-            MainSkeletonBonesAndArmature, MainSkeletonEntity,
-        },
-        spawn_scenes::{SceneLoaded, SceneName},
-        AttachedPartsReparentedEntities,
-    },
-    frontend_common::CharacterPartCategories,
-};
-use bevy::{prelude::*, scene::SceneInstance};
+use crate::bevy_app::modular_character_plugin::assemble_parts::attach_holdable::attach_holdable;
+use crate::bevy_app::modular_character_plugin::assemble_parts::attach_part_to_main_skeleton::attach_part_to_main_skeleton;
+use crate::bevy_app::modular_character_plugin::part_change_plugin::despawn_attached_part::despawn_attached_part;
+use crate::bevy_app::modular_character_plugin::spawn_combatant::CharacterAttachedPartScenes;
+use crate::bevy_app::modular_character_plugin::spawn_combatant::CharacterPartScenesAwaitingSpawn;
+use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantIdComponent;
+use crate::bevy_app::modular_character_plugin::spawn_combatant::MainSkeletonBonesAndArmature;
+use crate::bevy_app::modular_character_plugin::spawn_combatant::MainSkeletonEntity;
+use crate::bevy_app::modular_character_plugin::spawn_scenes::SceneLoaded;
+use crate::bevy_app::modular_character_plugin::spawn_scenes::SceneName;
+use crate::bevy_app::modular_character_plugin::AttachedPartsReparentedEntities;
+use crate::frontend_common::CharacterPartCategories;
+use bevy::prelude::*;
+use bevy::scene::SceneInstance;
 
 pub fn attach_newly_loaded_part_scenes(
     mut commands: Commands,

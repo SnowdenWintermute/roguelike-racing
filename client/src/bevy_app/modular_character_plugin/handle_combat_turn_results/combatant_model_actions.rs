@@ -10,6 +10,7 @@ pub enum CombatantModelActions {
     AttackMeleeMainHand,
     AttackMeleeOffHand,
     HitRecovery,
+    Evade,
     Death,
     Idle,
 }
@@ -35,6 +36,7 @@ pub fn get_animation_name_from_model_action(
             CombatantModelActions::HitRecovery => Some("HitRecieve"),
             CombatantModelActions::Death => Some("Death"),
             CombatantModelActions::Idle => Some("Idle_Sword"),
+            CombatantModelActions::Evade => None,
         },
         CombatantSpecies::Wasp => match model_action {
             CombatantModelActions::ApproachMeleeTarget => todo!(),
@@ -46,6 +48,7 @@ pub fn get_animation_name_from_model_action(
             CombatantModelActions::HitRecovery => todo!(),
             CombatantModelActions::Death => todo!(),
             CombatantModelActions::Idle => todo!(),
+            CombatantModelActions::Evade => todo!(),
             // AnimationType::Run => "Wasp_Flying",
             // AnimationType::HitRecovery => "Wasp_Death",
             // AnimationType::Death => "Wasp_Death",
@@ -63,6 +66,7 @@ pub fn get_animation_name_from_model_action(
             CombatantModelActions::HitRecovery => Some("Frog_Jump"),
             CombatantModelActions::Death => Some("Frog_Death"),
             CombatantModelActions::Idle => Some("Frog_Idle"),
+            CombatantModelActions::Evade => None,
         },
     };
     match to_return {

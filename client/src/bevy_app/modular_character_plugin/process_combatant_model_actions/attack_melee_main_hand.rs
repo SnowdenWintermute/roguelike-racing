@@ -1,8 +1,8 @@
 use std::collections::HashMap;
-use crate::bevy_app::modular_character_plugin::animation_manager_component::AnimationManagerComponent;
+use crate::bevy_app::modular_character_plugin::animation_manager_component::{AnimationManagerComponent, HpChangeNumber};
 use crate::bevy_app::modular_character_plugin::handle_combat_turn_results::combatant_model_actions::{get_animation_name_from_model_action, CombatantModelActions};
 use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantActionResultsManagerComponent;
-use crate::bevy_app::modular_character_plugin::Animations;
+use crate::bevy_app::modular_character_plugin::{Animations, CombatantsById};
 use crate::bevy_app::utils::link_animations::AnimationEntityLink;
 use crate::bevy_app::utils::rotate_transform_toward_target::rotate_transform_toward_target;
 use crate::bevy_app::utils::translate_transform_toward_target::translate_transform_toward_target;
@@ -24,7 +24,9 @@ pub fn attacking_with_melee_main_hand_processor(
     action_result_manager: &mut CombatantActionResultsManagerComponent,
     home_location: &Transform,
     elapsed: u64,
+    combatants_by_id: &Res<CombatantsById>,
     animations: &Res<Animations>,
+    animation_managers: &mut Query<&mut AnimationManagerComponent>,
     animation_players: &mut Query<&mut AnimationPlayer>,
     animation_player_links: &Query<&AnimationEntityLink>,
     assets_animation_clips: &Res<Assets<AnimationClip>>,
@@ -69,21 +71,52 @@ pub fn attacking_with_melee_main_hand_processor(
             .get_mut(&CombatantModelActions::ApproachMeleeTarget)
             .expect("this model action to be active")
             .transition_started = true;
-        //   push hit recovery model_action to target
-        //   send message to yew to update target's hp
+
+        let current_action = action_result_manager
+            .current_action_result_processing
+            .as_ref()
+            .expect("to have a current action result processing");
+
+        if let Some(hp_changes) = &current_action.hp_changes_by_entity_id {
+            for (entity_id, hp_change) in hp_changes {
+                let target_entity = combatants_by_id
+                    .0
+                    .get(entity_id)
+                    .expect("to have registered the entity");
+                let mut target_animation_manager = animation_managers
+                    .get_mut(*target_entity)
+                    .expect("combatant entity to have an animation manager");
+                //   push hit recovery model_action to target
+                target_animation_manager
+                    .model_action_queue
+                    .push_back(CombatantModelActions::HitRecovery);
+                // target_animation_manager.hp_change_numbers
+                // .push(HpChangeNumber { value: todo!(), home_location: todo!(), destination: todo!(), entity: todo!(), time_started: todo!() })
+
+                //   send message to yew to update target's hp
+                // MessageFromBevy::HpChangeById()
+            }
+            if let Some(misses) = &current_action.misses_by_entity_id {
+                for entity_id in misses {
+                    let target_entity = combatants_by_id
+                        .0
+                        .get(entity_id)
+                        .expect("to have registered the entity");
+                    let mut target_animation_manager = animation_managers
+                        .get_mut(*target_entity)
+                        .expect("combatant entity to have an animation manager");
+                    target_animation_manager
+                        .model_action_queue
+                        .push_back(CombatantModelActions::Evade);
+                }
+            }
+        }
     }
 
-    // if animation time completed, remove this from active animations
-    //
-    //
-    // let anim_name = species.animation_name(AnimationType::Attack);
-    // // - if duration threshold passed, activate returning
-    // let animation_handle = animations
-    //     .0
-    //     .get(&anim_name)
-    //     .expect("to have this animation registered");
-    // let animation_clip = assets_animation_clips
-    //     .get(animation_handle)
-    //     .expect("to have the clip");
-    // let percent_completed = animation_player.elapsed() / animation_clip.duration();
+    // if animation time completed, remove this from active model actions
+    if percent_completed >= 1.0 {
+        animation_manager
+            .active_model_actions
+            .remove(&CombatantModelActions::AttackMeleeMainHand);
+    }
 }

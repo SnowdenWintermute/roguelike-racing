@@ -5,6 +5,7 @@ use crate::frontend_common::AttackCommand;
 use crate::frontend_common::CharacterPartSelection;
 use crate::frontend_common::CombatantSpecies;
 use crate::frontend_common::PartsByName;
+use crate::yew_app::components::mesh_manager::HpChange;
 use bevy::prelude::*;
 use broadcast::Receiver;
 use broadcast::Sender;
@@ -27,7 +28,6 @@ pub enum MessageFromYew {
         HashMap<EquipmentSlots, Item>,
     ),
     DespawnCombatantModel(CombatantId),
-    ExecuteAttackSequence(AttackCommand),
     NewTurnResults(VecDeque<CombatTurnResult>),
 }
 #[derive(Clone, Debug, Event)]
@@ -43,9 +43,6 @@ pub struct CharacterSpawnEvent(
 
 #[derive(Clone, Debug, Event)]
 pub struct DespawnCombatantModelEvent(pub CombatantId);
-
-#[derive(Clone, Debug, Event)]
-pub struct StartAttackSequenceEvent(pub AttackCommand);
 
 #[derive(Clone, Debug, PartialEq, Default)]
 pub struct CameraPosition {
@@ -63,6 +60,7 @@ pub enum MessageFromBevy {
     CombatantSpawned(CombatantId),
     AssetsLoaded,
     CameraPosition(CameraPosition),
+    HpChangeById(CombatantId, u32),
 }
 // CHANNELS
 #[derive(Clone, Resource, Deref)]

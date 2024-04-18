@@ -17,9 +17,13 @@ impl Plugin for CameraPlugin {
 }
 
 fn spawn_camera(mut commands: Commands) {
-    commands.spawn((
+    let entity_commands = commands.spawn((
         Camera3dBundle {
             transform: Transform::from_xyz(0.0, 0.0, 3.0),
+            camera: Camera {
+                is_active: true,
+                ..Default::default()
+            },
             ..Default::default()
         },
         PanOrbitCamera {

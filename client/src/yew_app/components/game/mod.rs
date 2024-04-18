@@ -12,6 +12,7 @@ mod items_on_ground;
 mod ready_up_display;
 mod tailwind_class_loader;
 mod top_info_bar;
+use crate::comm_channels::MessageFromYew;
 use crate::utils::set_bevy_canvas_visibility;
 use crate::yew_app::components::game::action_menu::ActionMenu;
 use crate::yew_app::components::game::character_autofocus_manager::CharacterAutofocusManager;
@@ -28,10 +29,12 @@ use crate::yew_app::store::bevy_communication_store::BevyCommunicationStore;
 use crate::yew_app::store::game_store::GameStore;
 use crate::yew_app::store::lobby_store::LobbyStore;
 use common::game::getters::get_ally_ids_and_opponent_ids_option;
+use gloo::console::log;
 use gloo::events::EventListener;
 use gloo_utils::window;
 use wasm_bindgen::JsCast;
 use wasm_bindgen::UnwrapThrowExt;
+use yew::html::SendAsMessage;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
@@ -43,6 +46,14 @@ pub fn game() -> Html {
     if !bevy_communication_state.bevy_assets_loaded {
         return html!({ "loading assets" });
     };
+    let cloned_bevy_communication_state = bevy_communication_state.clone();
+    let transmitter_option = bevy_communication_state.transmitter_option.clone();
+    use_effect_with(transmitter_option, move |_| {
+        if let Some(transmitter) = cloned_bevy_communication_state.transmitter_option.clone() {
+            let _result = transmitter.send(MessageFromYew::SetBevyRendering(true));
+            log!("set bevy to start rendering")
+        }
+    });
 
     let game = game_state
         .game

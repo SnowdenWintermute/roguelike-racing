@@ -32,6 +32,7 @@ pub struct HpChangeNumber {
     pub destination: Transform,
     pub entity: Entity,
     pub time_started: u64,
+    pub color_option: Option<Vec3>,
 }
 
 #[derive(Component, Default)]
@@ -83,7 +84,7 @@ impl AnimationManagerComponent {
                     .get(&animation_name)
                     .expect("to be looking up a valid animation");
                 animation_player
-                    .play_with_transition(
+                    .start_with_transition(
                         animation_handle.clone(),
                         Duration::from_millis(transition_duration_ms),
                     )

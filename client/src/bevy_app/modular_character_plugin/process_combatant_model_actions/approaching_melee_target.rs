@@ -17,11 +17,12 @@ const TIME_TO_ROTATE: u64 = 1000;
 const PERCENT_DISTANCE_TO_START_TRANSITION: f32 = 0.8;
 
 pub fn combatant_approaching_melee_target_processor(
+    entity: Entity,
     skeleton_entity_transform: &mut Transform,
     skeleton_entity: Entity,
     combatant_species: &CombatantSpecies,
     equipment: &HashMap<EquipmentSlots, Item>,
-    animation_manager: &mut AnimationManagerComponent,
+    animation_managers: &mut Query<&mut AnimationManagerComponent>,
     home_location: &Transform,
     elapsed: u64,
     animations: &Res<Animations>,
@@ -29,6 +30,9 @@ pub fn combatant_approaching_melee_target_processor(
     animation_player_links: &Query<&AnimationEntityLink>,
     transition_started: bool,
 ) {
+    let mut animation_manager = animation_managers
+        .get_mut(entity)
+        .expect("to have an animation manager");
     // move toward destination
     let percent_distance_travelled = translate_transform_toward_target(
         skeleton_entity_transform,

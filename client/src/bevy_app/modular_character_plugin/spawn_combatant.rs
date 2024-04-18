@@ -36,6 +36,7 @@ pub struct CombatantActionResultsManagerComponent {
     pub associated_combatant_id: u32,
     pub action_result_queue: VecDeque<ActionResult>,
     pub current_action_result_processing: Option<ActionResult>,
+    pub done_enqueueing_model_actions_for_current_action_result: bool,
 }
 #[derive(Component, Debug, Default)]
 pub struct CombatantEquipment(pub HashMap<EquipmentSlots, Item>);

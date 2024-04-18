@@ -10,6 +10,7 @@ pub enum CombatantModelActions {
     AttackMeleeMainHand,
     AttackMeleeOffHand,
     HitRecovery,
+    // ShowingFloatingText,
     Evade,
     Death,
     Idle,

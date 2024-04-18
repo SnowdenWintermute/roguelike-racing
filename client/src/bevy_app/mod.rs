@@ -10,6 +10,8 @@ use self::plane_plugin::PlanePlugin;
 use crate::SharedState;
 use bevy::asset::AssetMetaCheck;
 use bevy::prelude::*;
+use bevy::render::Render;
+use bevy::render::RenderSet;
 use bevy::winit::UpdateMode;
 use bevy::winit::WinitSettings;
 use bevy_mod_billboard::plugin::BillboardPlugin;
@@ -19,6 +21,13 @@ use std::sync::Mutex;
 
 #[derive(Resource)]
 pub struct SharedResource(Arc<Mutex<SharedState>>);
+
+#[derive(States, Clone, Eq, PartialEq, Default, Hash, Debug)]
+pub enum BevyAppState {
+    #[default]
+    PausedAndHidden,
+    Running,
+}
 
 pub fn bevy_main(comm_channel_plugin: impl Plugin, shared_state: Arc<Mutex<SharedState>>) {
     App::new()
@@ -40,6 +49,11 @@ pub fn bevy_main(comm_channel_plugin: impl Plugin, shared_state: Arc<Mutex<Share
             }),
             ..default()
         }))
+        .init_state::<BevyAppState>()
+        .configure_sets(
+            Render,
+            RenderSet::Render.run_if(in_state(BevyAppState::Running)),
+        )
         .add_plugins(comm_channel_plugin)
         .insert_resource(SharedResource(shared_state))
         .add_plugins(PlanePlugin)

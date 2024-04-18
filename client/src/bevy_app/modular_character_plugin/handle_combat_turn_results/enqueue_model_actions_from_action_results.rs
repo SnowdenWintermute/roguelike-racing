@@ -13,7 +13,7 @@ use common::combatants::abilities::CombatantAbilityNames;
 pub fn enqueue_model_actions_from_action_results(
     mut combatants: Query<
         (
-            &CombatantActionResultsManagerComponent,
+            &mut CombatantActionResultsManagerComponent,
             &mut AnimationManagerComponent,
             &MainSkeletonEntity,
             &HomeLocation,
@@ -24,9 +24,12 @@ pub fn enqueue_model_actions_from_action_results(
     combatants_by_id: Res<CombatantsById>,
     transforms: Query<&Transform>,
 ) {
-    for (action_result_manager, mut animation_manager, skeleton_entity, home_location) in
+    for (mut action_result_manager, mut animation_manager, skeleton_entity, home_location) in
         &mut combatants
     {
+        if action_result_manager.done_enqueueing_model_actions_for_current_action_result {
+            continue;
+        }
         if let Some(current_action_result_processing) =
             &action_result_manager.current_action_result_processing
         {
@@ -78,6 +81,8 @@ pub fn enqueue_model_actions_from_action_results(
                     .model_action_queue
                     .push_back(CombatantModelActions::Recenter);
             }
+
+            action_result_manager.done_enqueueing_model_actions_for_current_action_result = true;
 
             info!(
                 "enqueued model actions {:?}",

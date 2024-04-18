@@ -15,6 +15,7 @@ use self::register_animations::register_animations;
 use self::spawn_combatant::spawn_combatants;
 use self::update_scene_aabbs::update_scene_aabbs_on_changed_children;
 use super::utils::link_animations::link_animations;
+use super::BevyAppState;
 use crate::bevy_app::asset_loader_plugin::AssetLoaderState;
 use crate::comm_channels::DespawnCombatantModelEvent;
 use crate::frontend_common::CombatantSpecies;
@@ -110,7 +111,8 @@ impl Plugin for ModularCharacterPlugin {
                     start_new_model_actions_or_idle,
                     process_active_model_actions,
                 )
-                    .run_if(in_state(AssetLoaderState::Done)),
+                    .run_if(in_state(AssetLoaderState::Done))
+                    .run_if(in_state(BevyAppState::Running)),
             )
             .add_systems(
                 OnEnter(AssetLoaderState::Done),

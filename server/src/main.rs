@@ -22,6 +22,7 @@ async fn game_server_route(
     server: web::Data<Addr<websocket_server::game_server::GameServer>>,
 ) -> Result<HttpResponse, Error> {
     let mut rng = rand::thread_rng();
+    //
     ws::start(
         WebsocketActor {
             id: rng.gen::<u32>(),

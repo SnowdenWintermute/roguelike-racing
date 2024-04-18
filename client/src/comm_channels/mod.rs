@@ -29,6 +29,7 @@ pub enum MessageFromYew {
     ),
     DespawnCombatantModel(CombatantId),
     NewTurnResults(VecDeque<CombatTurnResult>),
+    SetBevyRendering(bool),
 }
 #[derive(Clone, Debug, Event)]
 pub struct CharacterPartSelectionEvent(pub CharacterPartSelection);
@@ -60,7 +61,7 @@ pub enum MessageFromBevy {
     CombatantSpawned(CombatantId),
     AssetsLoaded,
     CameraPosition(CameraPosition),
-    HpChangeById(CombatantId, u32),
+    HpChangeById(CombatantId, i16),
 }
 // CHANNELS
 #[derive(Clone, Resource, Deref)]

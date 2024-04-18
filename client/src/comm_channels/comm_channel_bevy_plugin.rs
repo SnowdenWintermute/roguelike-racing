@@ -6,6 +6,7 @@ use super::DespawnCombatantModelEvent;
 use super::MessageFromYew;
 use super::YewTransmitter;
 use crate::bevy_app::modular_character_plugin::TurnResultsQueue;
+use crate::bevy_app::BevyAppState;
 use bevy::prelude::*;
 
 pub struct CommChannelPlugin {
@@ -39,6 +40,8 @@ fn handle_yew_messages(
     mut spawn_combatant_event_writer: EventWriter<CharacterSpawnEvent>,
     mut select_animation_event_writer: EventWriter<DespawnCombatantModelEvent>,
     mut turn_results_queue: ResMut<TurnResultsQueue>,
+    mut next_state: ResMut<NextState<BevyAppState>>,
+    mut camera_query: Query<&mut Camera>,
 ) {
     if let Ok(message_from_yew) = bevy_receiver.try_recv() {
         match message_from_yew {
@@ -64,6 +67,10 @@ fn handle_yew_messages(
             MessageFromYew::NewTurnResults(mut turn_results) => {
                 turn_results_queue.0.append(&mut turn_results);
             }
+            MessageFromYew::SetBevyRendering(should_be_rendering) => match should_be_rendering {
+                true => next_state.set(BevyAppState::Running),
+                false => next_state.set(BevyAppState::PausedAndHidden),
+            },
         }
     }
 }

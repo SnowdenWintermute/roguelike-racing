@@ -1,4 +1,4 @@
-use crate::bevy_app::modular_character_plugin::animation_manager_component::AnimationManagerComponent;
+use crate::bevy_app::modular_character_plugin::animation_manager_component::TransformManager;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::HitboxRadius;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::MainSkeletonEntity;
 use crate::bevy_app::modular_character_plugin::update_scene_aabbs::SceneAabb;
@@ -7,7 +7,7 @@ use bevy::prelude::*;
 pub fn draw_directional_gizmos(
     combatants: Query<(
         &MainSkeletonEntity,
-        &AnimationManagerComponent,
+        &TransformManager,
         &HitboxRadius,
     )>,
     scene_aabbs: Query<&SceneAabb>,

@@ -1,6 +1,7 @@
-use super::combatant_model_actions::CombatantModelActions;
 use super::enqueue_approach_melee_target_model_action::enqueue_approach_melee_target_model_action;
-use crate::bevy_app::modular_character_plugin::animation_manager_component::AnimationManagerComponent;
+use crate::bevy_app::modular_character_plugin::process_combatant_model_actions::model_actions::CombatantModelActions;
+use crate::bevy_app::modular_character_plugin::process_combatant_model_actions::ModelActionQueue;
+use crate::bevy_app::modular_character_plugin::process_combatant_model_actions::TransformManager;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantActionResultsManagerComponent;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::HitboxRadius;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::MainSkeletonEntity;
@@ -14,7 +15,8 @@ pub fn enqueue_model_actions_from_action_results(
     mut combatants: Query<
         (
             &mut CombatantActionResultsManagerComponent,
-            &mut AnimationManagerComponent,
+            &mut TransformManager,
+            &mut ModelActionQueue,
             &MainSkeletonEntity,
             &HomeLocation,
         ),
@@ -24,8 +26,13 @@ pub fn enqueue_model_actions_from_action_results(
     combatants_by_id: Res<CombatantsById>,
     transforms: Query<&Transform>,
 ) {
-    for (mut action_result_manager, mut animation_manager, skeleton_entity, home_location) in
-        &mut combatants
+    for (
+        mut action_result_manager,
+        mut transform_manager,
+        mut model_action_queue,
+        skeleton_entity,
+        home_location,
+    ) in &mut combatants
     {
         if action_result_manager.done_enqueueing_model_actions_for_current_action_result {
             continue;
@@ -44,7 +51,8 @@ pub fn enqueue_model_actions_from_action_results(
                     {
                         enqueue_approach_melee_target_model_action(
                             current_action_result_processing,
-                            &mut animation_manager,
+                            &mut transform_manager,
+                            &mut model_action_queue,
                             &combatants_by_id.0,
                             skeleton_entity.0,
                             &target_combatants,
@@ -67,27 +75,27 @@ pub fn enqueue_model_actions_from_action_results(
                         CombatantAbilityNames::Healing => todo!(),
                     };
 
-                    animation_manager.model_action_queue.push_back(model_action)
+                    model_action_queue.0.push_back(model_action)
                 }
                 CombatAction::ConsumableUsed(_) => todo!(),
             }
 
             // if this is the last action in the action_results_queue, send their model home
             if action_result_manager.action_result_queue.len() < 1 {
-                animation_manager
-                    .model_action_queue
+                model_action_queue
+                    .0
                     .push_back(CombatantModelActions::ReturnHome);
-                animation_manager
-                    .model_action_queue
+                model_action_queue
+                    .0
                     .push_back(CombatantModelActions::Recenter);
             }
 
             action_result_manager.done_enqueueing_model_actions_for_current_action_result = true;
 
-            info!(
-                "enqueued model actions {:?}",
-                animation_manager.model_action_queue
-            );
+            // info!(
+            //     "enqueued model actions {:?}",
+            //     model_action_queue.0.model_action_queue
+            // );
         }
     }
 }

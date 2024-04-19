@@ -1,6 +1,6 @@
 use super::rotate_transform_toward_target::rotate_transform_toward_target;
 use crate::bevy_app::modular_character_plugin::animation_manager_component::ActionSequenceStates;
-use crate::bevy_app::modular_character_plugin::animation_manager_component::AnimationManagerComponent;
+use crate::bevy_app::modular_character_plugin::animation_manager_component::TransformManager;
 use bevy::math::u64;
 use bevy::prelude::*;
 
@@ -8,7 +8,7 @@ pub const TIME_TO_RECENTER: u64 = 1000;
 
 pub fn process_combatant_recentering(
     skeleton_entity_transform: &mut Transform,
-    animation_manager: &mut AnimationManagerComponent,
+    animation_manager: &mut TransformManager,
     home_location: &Transform,
     elapsed: u64,
 ) {

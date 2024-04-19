@@ -1,5 +1,5 @@
 use crate::bevy_app::modular_character_plugin::animation_manager_component::ActionSequenceStates;
-use crate::bevy_app::modular_character_plugin::animation_manager_component::AnimationManagerComponent;
+use crate::bevy_app::modular_character_plugin::animation_manager_component::TransformManager;
 use crate::bevy_app::modular_character_plugin::Animations;
 use crate::frontend_common::animation_names::AnimationType;
 use crate::frontend_common::animation_names::CombatantAnimations;
@@ -10,7 +10,7 @@ pub const TIME_TO_SHOW_HP_CHANGE_NUMBER: u64 = 1000;
 
 pub fn process_combatant_hit_recovery(
     commands: &mut Commands,
-    animation_manager: &mut AnimationManagerComponent,
+    animation_manager: &mut TransformManager,
     current_time: u64,
     animation_player: &mut AnimationPlayer,
     animations: &Res<Animations>,

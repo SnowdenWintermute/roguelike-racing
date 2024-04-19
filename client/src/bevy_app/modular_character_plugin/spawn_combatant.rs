@@ -1,4 +1,6 @@
-use super::animation_manager_component::AnimationManagerComponent;
+use super::process_combatant_model_actions::ActiveModelActions;
+use super::process_combatant_model_actions::ModelActionQueue;
+use super::process_combatant_model_actions::TransformManager;
 use super::spawn_scenes::spawn_scene;
 use super::CombatantId;
 use super::CombatantsById;
@@ -131,7 +133,9 @@ pub fn spawn_combatant(
         CharacterAttachedPartScenes(HashMap::new()),
         CharacterPartScenesAwaitingSpawn(HashMap::new()),
         home_location,
-        AnimationManagerComponent::default(),
+        TransformManager::default(),
+        ModelActionQueue::default(),
+        ActiveModelActions::default(),
         CombatantActionResultsManagerComponent::default(),
         HitboxRadius(0.7),
         CombatantEquipment(equipment),

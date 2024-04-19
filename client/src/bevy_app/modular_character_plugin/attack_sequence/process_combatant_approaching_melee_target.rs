@@ -1,7 +1,7 @@
 use super::rotate_transform_toward_target::rotate_transform_toward_target;
 use super::translate_transform_toward_target::translate_transform_toward_target;
 use crate::bevy_app::modular_character_plugin::animation_manager_component::ActionSequenceStates;
-use crate::bevy_app::modular_character_plugin::animation_manager_component::AnimationManagerComponent;
+use crate::bevy_app::modular_character_plugin::animation_manager_component::TransformManager;
 use crate::bevy_app::modular_character_plugin::Animations;
 use crate::frontend_common::animation_names::AnimationType;
 use crate::frontend_common::animation_names::CombatantAnimations;
@@ -16,7 +16,7 @@ const PERCENT_DISTANCE_TO_START_WEAPON_SWING: f32 = 0.8;
 
 pub fn process_combatant_approaching_melee_target(
     skeleton_entity_transform: &mut Transform,
-    animation_manager: &mut AnimationManagerComponent,
+    animation_manager: &mut TransformManager,
     home_location: &Transform,
     elapsed: u64,
     animation_player: &mut AnimationPlayer,

@@ -4,7 +4,7 @@ use super::process_combatant_recentering::process_combatant_recentering;
 use super::process_combatant_returning_to_home_position::process_combatant_returning_to_home_position;
 use super::process_combatant_swinging_weapons::process_combatant_swinging_weapons;
 use crate::bevy_app::modular_character_plugin::animation_manager_component::ActionSequenceStates;
-use crate::bevy_app::modular_character_plugin::animation_manager_component::AnimationManagerComponent;
+use crate::bevy_app::modular_character_plugin::animation_manager_component::TransformManager;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantSpeciesComponent;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::MainSkeletonEntity;
 use crate::bevy_app::modular_character_plugin::Animations;
@@ -21,7 +21,7 @@ pub fn process_active_animation_states(
     combatants_by_id: Res<CombatantsById>,
     mut combatants: Query<(
         &MainSkeletonEntity,
-        &mut AnimationManagerComponent,
+        &mut TransformManager,
         &HomeLocation,
     )>,
     species_query: Query<&CombatantSpeciesComponent>,

@@ -10,7 +10,7 @@
 // pub mod start_combatant_hit_recoveries;
 // mod translate_transform_toward_target;
 // use super::animation_manager_component::ActionSequenceStates;
-// use super::animation_manager_component::AnimationManagerComponent;
+// use super::animation_manager_component::TransformManager;
 // use super::spawn_combatant::CombatantIdComponent;
 // use super::spawn_combatant::CombatantSpeciesComponent;
 // use super::spawn_combatant::HitboxRadius;
@@ -32,7 +32,7 @@
 //     mut combatants: Query<(
 //         &CombatantIdComponent,
 //         &MainSkeletonEntity,
-//         &mut AnimationManagerComponent,
+//         &mut TransformManager,
 //         &HitboxRadius,
 //     )>,
 //     species_query: Query<&CombatantSpeciesComponent>,

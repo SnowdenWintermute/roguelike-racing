@@ -1,5 +1,9 @@
-use crate::bevy_app::modular_character_plugin::animation_manager_component::Timestamp;
 use crate::frontend_common::CombatantSpecies;
+use common::items::equipment::EquipmentSlots;
+use common::items::Item;
+use std::collections::HashMap;
+
+use super::Timestamp;
 
 #[derive(Hash, Eq, PartialEq, Debug, Clone)]
 pub enum CombatantModelActions {
@@ -25,6 +29,7 @@ pub struct CombatantModelActionProgressTracker {
 pub fn get_animation_name_from_model_action(
     species: &CombatantSpecies,
     model_action: &CombatantModelActions,
+    equipment: &HashMap<EquipmentSlots, Item>,
 ) -> Option<String> {
     let to_return = match species {
         CombatantSpecies::Humanoid => match model_action {

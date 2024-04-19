@@ -1,5 +1,5 @@
 use crate::bevy_app::modular_character_plugin::animation_manager_component::ActionSequenceStates;
-use crate::bevy_app::modular_character_plugin::animation_manager_component::AnimationManagerComponent;
+use crate::bevy_app::modular_character_plugin::animation_manager_component::TransformManager;
 use crate::bevy_app::modular_character_plugin::Animations;
 use crate::bevy_app::modular_character_plugin::HitRecoveryActivationEvent;
 use crate::frontend_common::animation_names::AnimationType;
@@ -13,7 +13,7 @@ pub const SWORD_SLASH_PERCENT_COMPLETE_TRANSITION_THRESHOLD: f32 = 0.65;
 pub const SWORD_SLASH_HIT_ACTIVATION_PERCENT_COMPLETION: f32 = 0.45;
 
 pub fn process_combatant_swinging_weapons(
-    animation_manager: &mut AnimationManagerComponent,
+    animation_manager: &mut TransformManager,
     home_location: &Transform,
     animation_player: &mut AnimationPlayer,
     animations: &Res<Animations>,

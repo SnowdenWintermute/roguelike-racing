@@ -1,6 +1,6 @@
 // use crate::bevy_app::{
 //     modular_character_plugin::{
-//         animation_manager_component::AnimationManagerComponent,
+//         animation_manager_component::TransformManager,
 //         spawn_combatant::MainSkeletonEntity, Animations, CombatantsById,
 //         CombatantsExecutingAttacks, HomeLocation,
 //     },
@@ -19,7 +19,7 @@
 //     combatants_by_id: Res<CombatantsById>,
 //     mut combatants: Query<(
 //         &MainSkeletonEntity,
-//         &mut AnimationManagerComponent,
+//         &mut TransformManager,
 //         &HomeLocation,
 //     )>,
 //     mut transforms: Query<&mut Transform>,

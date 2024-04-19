@@ -2,16 +2,12 @@ use self::assign_skeleton_bones_to_combatants::assign_skeleton_bones_to_combatan
 use self::handle_combat_turn_results::enqueue_model_actions_from_action_results::enqueue_model_actions_from_action_results;
 use self::handle_combat_turn_results::start_processing_next_action_results::start_processing_next_action_results;
 use self::handle_combat_turn_results::start_processing_next_turn_result::start_processing_next_turn_result_in_queue;
-// use self::attack_sequence::handle_attack_sequence_start_requests;
-// use self::attack_sequence::process_active_animation_states::process_active_animation_states;
-// use self::attack_sequence::start_combatant_hit_recoveries::start_combatant_hit_recoveries;
 use self::handle_despawn_combatant_model_events::handle_despawn_combatant_model_events;
 use self::notify_yew_that_assets_are_loaded::notify_yew_that_assets_are_loaded;
 use self::part_change_plugin::PartChangePlugin;
 use self::process_combatant_model_actions::process_active_model_actions::process_active_model_actions;
 use self::process_combatant_model_actions::start_new_model_actions_or_idle::start_new_model_actions_or_idle;
 use self::register_animations::register_animations;
-// use self::run_animations::run_animations;
 use self::spawn_combatant::spawn_combatants;
 use self::update_scene_aabbs::update_scene_aabbs_on_changed_children;
 use super::utils::link_animations::link_animations;
@@ -24,7 +20,6 @@ use common::combat::CombatTurnResult;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::collections::VecDeque;
-pub mod animation_manager_component;
 mod assemble_parts;
 mod assign_skeleton_bones_to_combatants;
 mod attack_sequence;
@@ -55,8 +50,6 @@ pub struct CombatantsById(pub HashMap<CombatantId, Entity>);
 pub struct AttachedPartsReparentedEntities {
     parts_and_entities: HashMap<Entity, Vec<Entity>>,
 }
-#[derive(Resource, Default)]
-pub struct CombatantsExecutingAttacks(HashSet<CombatantId>);
 
 #[derive(Resource, Default)]
 pub struct TurnResultsQueue(pub VecDeque<CombatTurnResult>);
@@ -68,7 +61,10 @@ pub struct HomeLocation(pub Transform);
 
 // EVENTS
 #[derive(Clone, Debug, Event)]
-pub struct HitRecoveryActivationEvent(Vec<(CombatantId, u16)>);
+pub struct StartNextModelActionEvent {
+    entity: Entity,
+    transition_duration_ms: u64,
+}
 
 pub struct ModularCharacterPlugin;
 impl Plugin for ModularCharacterPlugin {
@@ -77,8 +73,7 @@ impl Plugin for ModularCharacterPlugin {
             .init_resource::<CombatantsById>()
             .init_resource::<SkeletonsAwaitingCombatantAssignment>()
             .init_resource::<Animations>()
-            .init_resource::<CombatantsExecutingAttacks>()
-            .init_resource::<Events<HitRecoveryActivationEvent>>()
+            .init_resource::<Events<StartNextModelActionEvent>>()
             .init_resource::<Events<DespawnCombatantModelEvent>>()
             .init_resource::<TurnResultsQueue>()
             .init_resource::<CurrentTurnResultProcessing>()

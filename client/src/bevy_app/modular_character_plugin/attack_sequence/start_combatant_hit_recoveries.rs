@@ -1,6 +1,6 @@
 use crate::bevy_app::asset_loader_plugin::MyAssets;
 use crate::bevy_app::modular_character_plugin::animation_manager_component::ActionSequenceStates;
-use crate::bevy_app::modular_character_plugin::animation_manager_component::AnimationManagerComponent;
+use crate::bevy_app::modular_character_plugin::animation_manager_component::TransformManager;
 use crate::bevy_app::modular_character_plugin::animation_manager_component::HpChangeNumber;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantMainArmatureEntityLink;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantSpeciesComponent;
@@ -24,7 +24,7 @@ pub fn start_combatant_hit_recoveries(
     combatants_by_id: Res<CombatantsById>,
     mut combatants: Query<(
         &MainSkeletonEntity,
-        &mut AnimationManagerComponent,
+        &mut TransformManager,
         &CombatantMainArmatureEntityLink,
     )>,
     species_query: Query<&CombatantSpeciesComponent>,

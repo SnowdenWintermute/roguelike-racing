@@ -5,6 +5,7 @@ use self::handle_combat_turn_results::start_processing_next_turn_result::start_p
 use self::handle_despawn_combatant_model_events::handle_despawn_combatant_model_events;
 use self::notify_yew_that_assets_are_loaded::notify_yew_that_assets_are_loaded;
 use self::part_change_plugin::PartChangePlugin;
+use self::process_combatant_model_actions::handle_start_next_model_action_events::handle_start_next_model_action_events;
 use self::process_combatant_model_actions::process_active_model_actions::process_active_model_actions;
 use self::process_combatant_model_actions::start_new_model_actions_or_idle::start_new_model_actions_or_idle;
 use self::register_animations::register_animations;
@@ -105,6 +106,7 @@ impl Plugin for ModularCharacterPlugin {
                     enqueue_model_actions_from_action_results,
                     start_new_model_actions_or_idle,
                     process_active_model_actions,
+                    handle_start_next_model_action_events,
                 )
                     .run_if(in_state(AssetLoaderState::Done))
                     .run_if(in_state(BevyAppState::Running)),

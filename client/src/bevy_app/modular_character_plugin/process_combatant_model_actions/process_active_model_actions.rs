@@ -21,6 +21,7 @@ use crate::bevy_app::modular_character_plugin::HomeLocation;
 use crate::bevy_app::modular_character_plugin::StartNextModelActionEvent;
 use crate::bevy_app::utils::link_animations::AnimationEntityLink;
 use crate::comm_channels::BevyTransmitter;
+use bevy::ecs::query::QueryData;
 use bevy::ecs::system::SystemParam;
 use bevy::prelude::*;
 use js_sys::Date;
@@ -31,6 +32,24 @@ use std::collections::HashMap;
 // check percent completed and activate next action if beyond threshold
 // if done, remove from active_model_actions
 
+#[derive(QueryData)]
+#[query_data(mutable)]
+pub struct ModelActionCombatantQueryStruct {
+    pub entity: Entity,
+    pub main_skeleton_bones_and_armature: &'static MainSkeletonBonesAndArmature, // to ensure skeleton is assigned already
+    pub armature_link: &'static CombatantMainArmatureEntityLink,
+    pub combatant_id_component: &'static CombatantIdComponent,
+    pub skeleton_entity: &'static MainSkeletonEntity,
+    pub hitbox_radius: &'static HitboxRadius,
+    pub home_location: &'static HomeLocation,
+    pub species_component: &'static CombatantSpeciesComponent,
+    pub action_results_manager: &'static mut CombatantActionResultsManagerComponent,
+    pub equipment: &'static CombatantEquipment,
+    pub transform_manager: &'static mut TransformManager,
+    pub model_action_queue: &'static mut ModelActionQueue,
+    pub active_model_actions: &'static mut ActiveModelActions,
+}
+
 #[derive(SystemParam)]
 pub struct ModelActionSystemParams<'w, 's> {
     pub animations: Res<'w, Animations>,
@@ -38,25 +57,7 @@ pub struct ModelActionSystemParams<'w, 's> {
     pub animation_player_links: Query<'w, 's, &'static AnimationEntityLink>,
     pub assets_animation_clips: Res<'w, Assets<AnimationClip>>,
     pub transforms: Query<'w, 's, &'static mut Transform>,
-    pub combatants_query: Query<
-        'w,
-        's,
-        (
-            Entity,
-            &'static MainSkeletonBonesAndArmature, // to ensure skeleton is assigned already
-            &'static CombatantMainArmatureEntityLink,
-            &'static CombatantIdComponent,
-            &'static MainSkeletonEntity,
-            &'static HitboxRadius,
-            &'static HomeLocation,
-            &'static CombatantSpeciesComponent,
-            &'static mut CombatantActionResultsManagerComponent,
-            &'static CombatantEquipment,
-            &'static mut TransformManager,
-            &'static mut ModelActionQueue,
-            &'static mut ActiveModelActions,
-        ),
-    >,
+    pub combatants_query: Query<'w, 's, ModelActionCombatantQueryStruct>,
 }
 
 pub fn process_active_model_actions(
@@ -70,8 +71,9 @@ pub fn process_active_model_actions(
 ) {
     let mut actions_to_add_by_entity: HashMap<Entity, Vec<CombatantModelActions>> = HashMap::new();
     let mut entities_and_active_model_actions = Vec::new();
-    for (entity, .., active_model_actions) in &model_action_params.combatants_query {
-        entities_and_active_model_actions.push((entity, active_model_actions.0.clone()));
+    for combatant in &model_action_params.combatants_query {
+        entities_and_active_model_actions
+            .push((combatant.entity, combatant.active_model_actions.0.clone()));
     }
 
     for (entity, active_model_actions) in entities_and_active_model_actions.into_iter() {

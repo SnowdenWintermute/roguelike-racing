@@ -1,5 +1,7 @@
 use super::model_actions::CombatantModelActions;
-use super::process_active_model_actions::ModelActionSystemParams;
+use super::process_active_model_actions::{
+    ModelActionCombatantQueryStructItem, ModelActionSystemParams,
+};
 use crate::bevy_app::modular_character_plugin::StartNextModelActionEvent;
 use crate::bevy_app::utils::rotate_transform_toward_target::rotate_transform_toward_target;
 use crate::bevy_app::utils::translate_transform_toward_target::translate_transform_toward_target;
@@ -18,21 +20,13 @@ pub fn combatant_approaching_melee_target_processor(
     model_actions_to_remove: &mut Vec<CombatantModelActions>,
     start_next_model_action_event_writer: &mut EventWriter<StartNextModelActionEvent>,
 ) {
-    let (
-        _,
-        _,
-        _,
-        _,
+    let ModelActionCombatantQueryStructItem {
         skeleton_entity,
-        _,
         home_location,
-        _,
-        _,
-        _,
         transform_manager,
-        _,
         mut active_model_actions,
-    ) = model_action_params
+        ..
+    } = model_action_params
         .combatants_query
         .get_mut(entity)
         .expect("to have this entity in the query");

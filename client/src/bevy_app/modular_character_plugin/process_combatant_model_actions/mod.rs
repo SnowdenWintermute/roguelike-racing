@@ -15,6 +15,8 @@ use std::time::Duration;
 use super::Animations;
 mod approaching_melee_target;
 mod attack_melee_main_hand;
+pub mod get_percent_animation_completed;
+pub mod handle_start_next_model_action_events;
 mod hit_recovery;
 pub mod model_actions;
 pub mod process_active_model_actions;

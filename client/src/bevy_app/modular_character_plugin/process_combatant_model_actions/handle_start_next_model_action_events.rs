@@ -1,11 +1,11 @@
-use super::{ActiveModelActions, ModelActionQueue};
-use crate::bevy_app::{
-    modular_character_plugin::{
-        spawn_combatant::{CombatantEquipment, CombatantSpeciesComponent, MainSkeletonEntity},
-        Animations, StartNextModelActionEvent,
-    },
-    utils::link_animations::AnimationEntityLink,
-};
+use super::ActiveModelActions;
+use super::ModelActionQueue;
+use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantEquipment;
+use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantSpeciesComponent;
+use crate::bevy_app::modular_character_plugin::spawn_combatant::MainSkeletonEntity;
+use crate::bevy_app::modular_character_plugin::Animations;
+use crate::bevy_app::modular_character_plugin::StartNextModelActionEvent;
+use crate::bevy_app::utils::link_animations::AnimationEntityLink;
 use bevy::prelude::*;
 
 pub fn handle_start_next_model_action_events(

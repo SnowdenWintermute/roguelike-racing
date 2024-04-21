@@ -57,6 +57,7 @@ pub struct ModelActionSystemParams<'w, 's> {
     pub animation_player_links: Query<'w, 's, &'static AnimationEntityLink>,
     pub assets_animation_clips: Res<'w, Assets<AnimationClip>>,
     pub transforms: Query<'w, 's, &'static mut Transform>,
+    pub combatants_by_id: Res<'w, CombatantsById>,
     pub combatants_query: Query<'w, 's, ModelActionCombatantQueryStruct>,
 }
 
@@ -64,7 +65,6 @@ pub fn process_active_model_actions(
     mut commands: Commands,
     mut model_action_params: ModelActionSystemParams,
     mut start_next_model_action_event_writer: EventWriter<StartNextModelActionEvent>,
-    combatants_by_id: Res<CombatantsById>,
     asset_pack: Res<MyAssets>,
     scenes_with_aabbs: Query<&SceneAabb>,
     bevy_transmitter: Res<BevyTransmitter>,
@@ -77,7 +77,6 @@ pub fn process_active_model_actions(
     }
 
     for (entity, active_model_actions) in entities_and_active_model_actions.into_iter() {
-        let mut active_actions_to_remove: Vec<CombatantModelActions> = Vec::new();
         for (model_action, model_action_progress_tracker) in active_model_actions {
             let now = Date::new_0().get_time() as u64;
             let elapsed = now - model_action_progress_tracker.time_started;
@@ -89,7 +88,6 @@ pub fn process_active_model_actions(
                         elapsed,
                         transition_started,
                         &mut model_action_params,
-                        &mut active_actions_to_remove,
                         &mut start_next_model_action_event_writer,
                     )
                 }

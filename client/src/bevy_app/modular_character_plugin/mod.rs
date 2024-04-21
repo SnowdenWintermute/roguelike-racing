@@ -5,9 +5,11 @@ use self::handle_combat_turn_results::start_processing_next_turn_result::start_p
 use self::handle_despawn_combatant_model_events::handle_despawn_combatant_model_events;
 use self::notify_yew_that_assets_are_loaded::notify_yew_that_assets_are_loaded;
 use self::part_change_plugin::PartChangePlugin;
+use self::process_combatant_model_actions::handle_new_attack_reaction_events::AttackResult;
 use self::process_combatant_model_actions::handle_start_next_model_action_events::handle_start_next_model_action_events;
 use self::process_combatant_model_actions::process_active_model_actions::process_active_model_actions;
 use self::process_combatant_model_actions::start_new_model_actions_or_idle::start_new_model_actions_or_idle;
+use self::process_combatant_model_actions::FloatingTextType;
 use self::register_animations::register_animations;
 use self::spawn_combatant::spawn_combatants;
 use self::update_scene_aabbs::update_scene_aabbs_on_changed_children;
@@ -66,6 +68,11 @@ pub struct StartNextModelActionEvent {
     entity: Entity,
     transition_duration_ms: u64,
 }
+#[derive(Clone, Debug, Event)]
+pub struct StartNewAttackReactionEvent {
+    entity_id: CombatantId,
+    attack_result: AttackResult,
+}
 
 pub struct ModularCharacterPlugin;
 impl Plugin for ModularCharacterPlugin {
@@ -75,6 +82,7 @@ impl Plugin for ModularCharacterPlugin {
             .init_resource::<SkeletonsAwaitingCombatantAssignment>()
             .init_resource::<Animations>()
             .init_resource::<Events<StartNextModelActionEvent>>()
+            .init_resource::<Events<StartNewAttackReactionEvent>>()
             .init_resource::<Events<DespawnCombatantModelEvent>>()
             .init_resource::<TurnResultsQueue>()
             .init_resource::<CurrentTurnResultProcessing>()

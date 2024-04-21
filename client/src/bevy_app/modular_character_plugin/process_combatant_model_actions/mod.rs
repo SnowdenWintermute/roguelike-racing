@@ -16,6 +16,7 @@ use super::Animations;
 mod approaching_melee_target;
 mod attack_melee_main_hand;
 pub mod get_percent_animation_completed;
+pub mod handle_new_attack_reaction_events;
 pub mod handle_start_next_model_action_events;
 mod hit_recovery;
 pub mod model_actions;
@@ -27,7 +28,7 @@ pub type Timestamp = u64;
 
 #[derive(Debug, Clone)]
 pub enum FloatingTextType {
-    Number(u16),
+    Number(i16),
     Text(String),
 }
 

@@ -1,7 +1,6 @@
 use super::model_actions::CombatantModelActions;
-use super::process_active_model_actions::{
-    ModelActionCombatantQueryStructItem, ModelActionSystemParams,
-};
+use super::process_active_model_actions::ModelActionCombatantQueryStructItem;
+use super::process_active_model_actions::ModelActionSystemParams;
 use crate::bevy_app::modular_character_plugin::StartNextModelActionEvent;
 use crate::bevy_app::utils::rotate_transform_toward_target::rotate_transform_toward_target;
 use crate::bevy_app::utils::translate_transform_toward_target::translate_transform_toward_target;
@@ -17,7 +16,6 @@ pub fn combatant_approaching_melee_target_processor(
     elapsed: u64,
     transition_started: bool,
     model_action_params: &mut ModelActionSystemParams,
-    model_actions_to_remove: &mut Vec<CombatantModelActions>,
     start_next_model_action_event_writer: &mut EventWriter<StartNextModelActionEvent>,
 ) {
     let ModelActionCombatantQueryStructItem {
@@ -34,7 +32,7 @@ pub fn combatant_approaching_melee_target_processor(
         .transforms
         .get_mut(skeleton_entity.0)
         .expect("their skeleton to have a transform");
-    // move toward destination
+
     let percent_distance_travelled = translate_transform_toward_target(
         &mut skeleton_entity_transform,
         &home_location.0,
@@ -53,7 +51,6 @@ pub fn combatant_approaching_melee_target_processor(
     }
 
     if percent_distance_travelled >= PERCENT_DISTANCE_TO_START_TRANSITION && !transition_started {
-        // start next model action and mark this one's transition as started
         start_next_model_action_event_writer.send(StartNextModelActionEvent {
             entity,
             transition_duration_ms: 500,
@@ -65,8 +62,10 @@ pub fn combatant_approaching_melee_target_processor(
             .expect("this model action to be active")
             .transition_started = true;
     }
-    // - if reached destination, deactivate approaching
+
     if percent_distance_travelled >= 1.0 {
-        model_actions_to_remove.push(CombatantModelActions::ApproachMeleeTarget);
+        active_model_actions
+            .0
+            .remove(&CombatantModelActions::ApproachMeleeTarget);
     }
 }

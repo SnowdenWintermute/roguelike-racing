@@ -11,7 +11,7 @@ use common::combat::ActionResult;
 use std::collections::HashMap;
 
 pub fn enqueue_approach_melee_target_model_action(
-    current_action_result_processing: &ActionResult,
+    action_result: &ActionResult,
     transform_manager: &mut TransformManager,
     model_action_queue: &mut ModelActionQueue,
     combatants_by_id: &HashMap<CombatantId, Entity>,
@@ -19,7 +19,7 @@ pub fn enqueue_approach_melee_target_model_action(
     target_combatants: &Query<(&MainSkeletonEntity, &HitboxRadius)>,
     transforms: &Query<&Transform>,
 ) {
-    let target_id_option = match &current_action_result_processing.targets {
+    let target_id_option = match &action_result.targets {
         CombatActionTarget::Single(combatant_id) => Some(combatant_id),
         CombatActionTarget::Group(group) => match group {
             FriendOrFoe::Friendly => None,

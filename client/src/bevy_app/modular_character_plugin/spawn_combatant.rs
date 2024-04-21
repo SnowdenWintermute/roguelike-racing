@@ -20,7 +20,6 @@ use common::items::equipment::EquipmentSlots;
 use common::items::Item;
 use std::collections::HashMap;
 use std::collections::HashSet;
-use std::collections::VecDeque;
 
 // CHARACTER COMPONENTS
 #[derive(Component)]
@@ -34,14 +33,9 @@ pub struct MainSkeletonEntity(pub Entity);
 #[derive(Component, Debug)]
 pub struct MainSkeletonBonesAndArmature(pub HashMap<String, Entity>, pub Entity);
 #[derive(Component, Debug, Default)]
-pub struct CombatantActionResultsManagerComponent {
-    pub associated_combatant_id: u32,
-    pub action_result_queue: VecDeque<ActionResult>,
-    pub current_action_result_processing: Option<ActionResult>,
-    pub done_enqueueing_model_actions_for_current_action_result: bool,
-}
-#[derive(Component, Debug, Default)]
 pub struct CombatantEquipment(pub HashMap<EquipmentSlots, Item>);
+#[derive(Component, Debug, Default)]
+pub struct ActionResultsProcessing(pub Vec<ActionResult>);
 /// Queue of part entities waiting for spawn. Using Vec in case multiple part scenes get queued
 /// from part change requests before they are spawned
 #[derive(Component, Default)]
@@ -136,9 +130,9 @@ pub fn spawn_combatant(
         TransformManager::default(),
         ModelActionQueue::default(),
         ActiveModelActions::default(),
-        CombatantActionResultsManagerComponent::default(),
         HitboxRadius(0.7),
         CombatantEquipment(equipment),
+        ActionResultsProcessing::default(),
     ));
 
     let character_entity = character_entity_commands.id();

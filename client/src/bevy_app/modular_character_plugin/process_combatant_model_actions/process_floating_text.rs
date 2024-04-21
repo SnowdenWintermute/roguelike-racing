@@ -1,30 +1,44 @@
+use super::FloatingTextComponent;
 use bevy::prelude::*;
+use js_sys::Date;
 
-pub fn process_floating_text() {
-    let mut all_numbers_completed = true;
-    for (i, hp_change_number) in animation_manager
-        .hp_change_numbers
-        .clone()
-        .iter()
-        .enumerate()
-    {
-        if let Ok(mut transform) = transforms.get_mut(hp_change_number.entity) {
-            let elapsed = current_time - hp_change_number.time_started;
-            let number_showing_percent_completed =
-                elapsed as f32 / TIME_TO_SHOW_HP_CHANGE_NUMBER as f32;
+const FLOATING_TEXT_TIME_TO_LIVE: f32 = 2000.0;
 
-            transform.translation = hp_change_number.home_location.translation.lerp(
-                hp_change_number.destination.translation,
-                number_showing_percent_completed,
-            );
+pub fn process_floating_text(
+    mut commands: Commands,
+    mut floating_text_query: Query<(Entity, &mut FloatingTextComponent)>,
+    mut transforms: Query<&mut Transform>,
+) {
+    let current_time = Date::new_0().get_time() as u64;
 
-            if number_showing_percent_completed >= 1.0 {
-                animation_manager.hp_change_numbers.remove(i);
-                let billboard_entity_commands = commands.entity(hp_change_number.entity);
-                billboard_entity_commands.despawn_recursive();
-            } else {
-                all_numbers_completed = false;
-            }
-        };
+    for (i, (entity, mut floating_text_component)) in floating_text_query.iter_mut().enumerate() {
+        let mut indices_to_remove = Vec::new();
+        for floating_text in floating_text_component.0.iter() {
+            if let Ok(mut transform) = transforms.get_mut(floating_text.billboard_entity) {
+                let elapsed = current_time - floating_text.time_started;
+                let percent_complete = elapsed as f32 / FLOATING_TEXT_TIME_TO_LIVE as f32;
+
+                transform.translation = floating_text
+                    .home_location
+                    .translation
+                    .lerp(floating_text.destination.translation, percent_complete);
+
+                if percent_complete >= 1.0 {
+                    indices_to_remove.push(i);
+                }
+            };
+        }
+
+        for i in indices_to_remove {
+            info!("removing a billboard");
+            let removed = floating_text_component.0.remove(i);
+            let billboard_entity_commands = commands.entity(removed.billboard_entity);
+            billboard_entity_commands.despawn_recursive();
+        }
+
+        if floating_text_component.0.len() == 0 {
+            info!("removing a floating text component");
+            commands.entity(entity).remove::<FloatingTextComponent>();
+        }
     }
 }

@@ -1,7 +1,7 @@
 use crate::bevy_app::asset_loader_plugin::MyAssets;
 use crate::bevy_app::modular_character_plugin::animation_manager_component::ActionSequenceStates;
-use crate::bevy_app::modular_character_plugin::animation_manager_component::TransformManager;
 use crate::bevy_app::modular_character_plugin::animation_manager_component::HpChangeNumber;
+use crate::bevy_app::modular_character_plugin::animation_manager_component::TransformManager;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantMainArmatureEntityLink;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantSpeciesComponent;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::MainSkeletonEntity;

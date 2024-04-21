@@ -1,4 +1,5 @@
 mod asset_loader_plugin;
+pub mod bevy_app_consts;
 mod camera_plugin;
 pub mod modular_character_plugin;
 mod plane_plugin;

@@ -45,6 +45,9 @@ pub struct CharacterSpawnEvent(
 #[derive(Clone, Debug, Event)]
 pub struct DespawnCombatantModelEvent(pub CombatantId);
 
+#[derive(Clone, Debug, Event)]
+pub struct ProcessNextTurnResultEvent;
+
 #[derive(Clone, Debug, PartialEq, Default)]
 pub struct CameraPosition {
     pub focus: Vec3,
@@ -62,6 +65,7 @@ pub enum MessageFromBevy {
     AssetsLoaded,
     CameraPosition(CameraPosition),
     HpChangeById(CombatantId, i16),
+    CombatantEvadedAttack(CombatantId),
 }
 // CHANNELS
 #[derive(Clone, Resource, Deref)]

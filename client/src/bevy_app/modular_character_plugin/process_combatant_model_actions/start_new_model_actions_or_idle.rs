@@ -8,7 +8,6 @@ use crate::bevy_app::utils::link_animations::AnimationEntityLink;
 use bevy::prelude::*;
 use super::ActiveModelActions;
 use super::ModelActionQueue;
-use super::TransformManager;
 
 pub fn start_new_model_actions_or_idle(
     mut combatants: Query<
@@ -21,6 +20,7 @@ pub fn start_new_model_actions_or_idle(
         ),
         Or<(
             Changed<ModelActionQueue>,
+            Changed<ActiveModelActions>,
             Added<MainSkeletonBonesAndArmature>,
         )>,
     >,
@@ -40,6 +40,7 @@ pub fn start_new_model_actions_or_idle(
         let species = species_query
             .get(skeleton_entity.0)
             .expect("skeleton to have a species");
+        info!("model action queue: {:#?}", model_action_queue.0);
         if model_action_queue.0.len() > 0 && active_model_actions.0.len() == 0 {
             // if no active actions take the next one
             info!("got new actions, starting the first one");

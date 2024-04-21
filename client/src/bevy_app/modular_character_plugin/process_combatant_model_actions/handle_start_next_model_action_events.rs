@@ -14,12 +14,12 @@ pub fn handle_start_next_model_action_events(
         &mut ActiveModelActions,
         &mut ModelActionQueue,
         &MainSkeletonEntity,
-        &CombatantSpeciesComponent,
         &CombatantEquipment,
     )>,
     animations: Res<Animations>,
     mut animation_players: Query<&mut AnimationPlayer>,
     animation_player_links: Query<&AnimationEntityLink>,
+    species_query: Query<&CombatantSpeciesComponent>,
 ) {
     for event in start_next_model_action_event_reader.read() {
         let StartNextModelActionEvent {
@@ -27,10 +27,14 @@ pub fn handle_start_next_model_action_events(
             transition_duration_ms,
         } = event;
 
-        let (mut active_model_actions, mut model_action_queue, skeleton_entity, species, equipment) =
+        let (mut active_model_actions, mut model_action_queue, skeleton_entity, equipment) =
             combatants
                 .get_mut(*entity)
                 .expect("entity to have a model action queue");
+
+        let species = species_query
+            .get(skeleton_entity.0)
+            .expect("the skeleton to have a species");
 
         model_action_queue.start_next_model_action(
             &mut active_model_actions,

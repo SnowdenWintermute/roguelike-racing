@@ -1,12 +1,12 @@
+use super::animation_only_model_action_processor::animation_only_model_action_processor;
 use super::approaching_melee_target::combatant_approaching_melee_target_processor;
-use super::attack_melee_main_hand::attacking_with_melee_main_hand_processor;
-use super::hit_recovery::hit_recovery_processor;
+use super::attack_melee::attacking_with_melee_processor;
 use super::model_actions::CombatantModelActions;
 use super::ActiveModelActions;
+use super::FloatingTextComponent;
 use super::ModelActionQueue;
 use super::TransformManager;
-use crate::bevy_app::asset_loader_plugin::MyAssets;
-use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantActionResultsManagerComponent;
+use crate::bevy_app::modular_character_plugin::spawn_combatant::ActionResultsProcessing;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantEquipment;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantIdComponent;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantMainArmatureEntityLink;
@@ -14,23 +14,16 @@ use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantSpecies
 use crate::bevy_app::modular_character_plugin::spawn_combatant::HitboxRadius;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::MainSkeletonBonesAndArmature;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::MainSkeletonEntity;
-use crate::bevy_app::modular_character_plugin::update_scene_aabbs::SceneAabb;
 use crate::bevy_app::modular_character_plugin::Animations;
 use crate::bevy_app::modular_character_plugin::CombatantsById;
 use crate::bevy_app::modular_character_plugin::HomeLocation;
+use crate::bevy_app::modular_character_plugin::StartNewAttackReactionEvent;
 use crate::bevy_app::modular_character_plugin::StartNextModelActionEvent;
 use crate::bevy_app::utils::link_animations::AnimationEntityLink;
-use crate::comm_channels::BevyTransmitter;
 use bevy::ecs::query::QueryData;
 use bevy::ecs::system::SystemParam;
 use bevy::prelude::*;
 use js_sys::Date;
-use std::collections::HashMap;
-
-// check for new active_model_actions
-// if newly activated, start the associated animation
-// check percent completed and activate next action if beyond threshold
-// if done, remove from active_model_actions
 
 #[derive(QueryData)]
 #[query_data(mutable)]
@@ -42,12 +35,12 @@ pub struct ModelActionCombatantQueryStruct {
     pub skeleton_entity: &'static MainSkeletonEntity,
     pub hitbox_radius: &'static HitboxRadius,
     pub home_location: &'static HomeLocation,
-    pub species_component: &'static CombatantSpeciesComponent,
-    pub action_results_manager: &'static mut CombatantActionResultsManagerComponent,
     pub equipment: &'static CombatantEquipment,
     pub transform_manager: &'static mut TransformManager,
     pub model_action_queue: &'static mut ModelActionQueue,
+    pub action_results_processing: &'static mut ActionResultsProcessing,
     pub active_model_actions: &'static mut ActiveModelActions,
+    pub floating_text_option: Option<&'static mut FloatingTextComponent>,
 }
 
 #[derive(SystemParam)]
@@ -59,17 +52,14 @@ pub struct ModelActionSystemParams<'w, 's> {
     pub transforms: Query<'w, 's, &'static mut Transform>,
     pub combatants_by_id: Res<'w, CombatantsById>,
     pub combatants_query: Query<'w, 's, ModelActionCombatantQueryStruct>,
+    pub species_query: Query<'w, 's, &'static CombatantSpeciesComponent>,
 }
 
 pub fn process_active_model_actions(
-    mut commands: Commands,
     mut model_action_params: ModelActionSystemParams,
     mut start_next_model_action_event_writer: EventWriter<StartNextModelActionEvent>,
-    asset_pack: Res<MyAssets>,
-    scenes_with_aabbs: Query<&SceneAabb>,
-    bevy_transmitter: Res<BevyTransmitter>,
+    mut start_new_attack_reaction_event_writer: EventWriter<StartNewAttackReactionEvent>,
 ) {
-    let mut actions_to_add_by_entity: HashMap<Entity, Vec<CombatantModelActions>> = HashMap::new();
     let mut entities_and_active_model_actions = Vec::new();
     for combatant in &model_action_params.combatants_query {
         entities_and_active_model_actions
@@ -94,52 +84,26 @@ pub fn process_active_model_actions(
                 CombatantModelActions::ReturnHome => todo!(),
                 CombatantModelActions::Recenter => todo!(),
                 CombatantModelActions::TurnToFaceTarget => todo!(),
-                CombatantModelActions::AttackMeleeMainHand => {
-                    // attacking_with_melee_main_hand_processor(
-                    //     &mut commands,
-                    //     entity,
-                    //     &mut skeleton_entity_transform,
-                    //     skeleton_entity.0,
-                    //     &species.0,
-                    //     &equipment_component.0,
-                    //     &mut action_result_manager,
-                    //     &home_location.0,
-                    //     elapsed,
-                    //     &combatants_by_id,
-                    //     &animations,
-                    //     &mut animation_managers,
-                    //     &mut animation_players,
-                    //     &animation_player_links,
-                    //     &assets_animation_clips,
-                    //     &asset_pack,
-                    //     &scenes_with_aabbs,
-                    //     &main_armature_links,
-                    //     &main_skeleton_links,
-                    //     transition_started,
-                    //     &bevy_transmitter,
-                    // )
+                CombatantModelActions::AttackMeleeMainHand
+                | CombatantModelActions::AttackMeleeOffHand => attacking_with_melee_processor(
+                    entity,
+                    elapsed,
+                    transition_started,
+                    &mut model_action_params,
+                    &mut start_next_model_action_event_writer,
+                    &mut start_new_attack_reaction_event_writer,
+                    &model_action,
+                ),
+                CombatantModelActions::HitRecovery | CombatantModelActions::Evade => {
+                    animation_only_model_action_processor(
+                        entity,
+                        elapsed,
+                        &mut model_action_params,
+                        &model_action,
+                    )
                 }
-                CombatantModelActions::AttackMeleeOffHand => todo!(),
-                CombatantModelActions::HitRecovery => todo!(),
-                // hit_recovery_processor(
-                // &mut commands,
-                // entity,
-                // &skeleton_entity_transform.clone(),
-                // skeleton_entity.0,
-                // &species.0,
-                // &mut animation_managers,
-                // &mut transforms,
-                // elapsed,
-                // now,
-                // &animations,
-                // &mut animation_players,
-                // &animation_player_links,
-                // &assets_animation_clips,
-                // transition_started,
-                // ),
                 CombatantModelActions::Death => todo!(),
                 CombatantModelActions::Idle => todo!(),
-                CombatantModelActions::Evade => info!("evaded"),
             }
         }
     }

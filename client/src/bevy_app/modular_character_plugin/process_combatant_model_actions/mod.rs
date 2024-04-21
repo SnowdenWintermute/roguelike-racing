@@ -1,6 +1,7 @@
 use self::model_actions::get_animation_name_from_model_action;
 use self::model_actions::CombatantModelActionProgressTracker;
 use self::model_actions::CombatantModelActions;
+use super::Animations;
 use crate::bevy_app::utils::link_animations::AnimationEntityLink;
 use crate::frontend_common::CombatantSpecies;
 use bevy::math::u64;
@@ -11,36 +12,21 @@ use js_sys::Date;
 use std::collections::HashMap;
 use std::collections::VecDeque;
 use std::time::Duration;
-
-use super::Animations;
+mod animation_only_model_action_processor;
 mod approaching_melee_target;
-mod attack_melee_main_hand;
+mod attack_melee;
+mod enqueue_approach_melee_target_model_action;
 pub mod get_percent_animation_completed;
 pub mod handle_new_attack_reaction_events;
 pub mod handle_start_next_model_action_events;
-mod hit_recovery;
 pub mod model_actions;
 pub mod process_active_model_actions;
+pub mod process_floating_text;
+pub mod process_next_turn_result_event_handler;
 mod start_idle_animation;
 pub mod start_new_model_actions_or_idle;
 
 pub type Timestamp = u64;
-
-#[derive(Debug, Clone)]
-pub enum FloatingTextType {
-    Number(i16),
-    Text(String),
-}
-
-#[derive(Debug, Clone)]
-pub struct FloatingText {
-    pub value: FloatingTextType,
-    pub home_location: Transform,
-    pub destination: Transform,
-    pub entity: Entity,
-    pub time_started: u64,
-    pub color_option: Option<Vec3>,
-}
 
 #[derive(Component, Default)]
 pub struct TransformManager {
@@ -48,6 +34,15 @@ pub struct TransformManager {
     pub last_location: Option<Transform>,
     pub target_rotation: Option<Quat>,
     pub last_rotation: Option<Quat>,
+}
+
+pub struct FloatingText {
+    value: String,
+    home_location: Transform,
+    destination: Transform,
+    billboard_entity: Entity,
+    time_started: Timestamp,
+    color: Vec3,
 }
 
 #[derive(Component, Default)]

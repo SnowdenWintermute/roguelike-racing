@@ -1,56 +1,62 @@
 use super::enqueue_approach_melee_target_model_action::enqueue_approach_melee_target_model_action;
-use crate::bevy_app::modular_character_plugin::process_combatant_model_actions::model_actions::CombatantModelActions;
-use crate::bevy_app::modular_character_plugin::process_combatant_model_actions::ModelActionQueue;
-use crate::bevy_app::modular_character_plugin::process_combatant_model_actions::TransformManager;
-use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantActionResultsManagerComponent;
+use super::model_actions::CombatantModelActions;
+use super::ModelActionQueue;
+use super::TransformManager;
+use crate::bevy_app::modular_character_plugin::spawn_combatant::ActionResultsProcessing;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::HitboxRadius;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::MainSkeletonEntity;
 use crate::bevy_app::modular_character_plugin::CombatantsById;
 use crate::bevy_app::modular_character_plugin::HomeLocation;
+use crate::bevy_app::modular_character_plugin::TurnResultsQueue;
 use bevy::prelude::*;
 use common::combat::combat_actions::CombatAction;
+use common::combat::CombatTurnResult;
 use common::combatants::abilities::CombatantAbilityNames;
 
-pub fn enqueue_model_actions_from_action_results(
-    mut combatants: Query<
-        (
-            &mut CombatantActionResultsManagerComponent,
-            &mut TransformManager,
-            &mut ModelActionQueue,
-            &MainSkeletonEntity,
-            &HomeLocation,
-        ),
-        Changed<CombatantActionResultsManagerComponent>,
-    >,
-    target_combatants: Query<(&MainSkeletonEntity, &HitboxRadius)>,
+pub fn process_next_turn_result_event_handler(
+    mut turn_results_queue: ResMut<TurnResultsQueue>,
     combatants_by_id: Res<CombatantsById>,
+    mut combatants: Query<(
+        &mut TransformManager,
+        &mut ModelActionQueue,
+        &mut ActionResultsProcessing,
+        &MainSkeletonEntity,
+        &HomeLocation,
+    )>,
+    target_combatants: Query<(&MainSkeletonEntity, &HitboxRadius)>,
     transforms: Query<&Transform>,
 ) {
-    for (
-        mut action_result_manager,
-        mut transform_manager,
-        mut model_action_queue,
-        skeleton_entity,
-        home_location,
-    ) in &mut combatants
+    if let Some(CombatTurnResult {
+        combatant_id,
+        action_results,
+    }) = turn_results_queue.0.pop_front()
     {
-        if action_result_manager.done_enqueueing_model_actions_for_current_action_result {
-            continue;
-        }
-        if let Some(current_action_result_processing) =
-            &action_result_manager.current_action_result_processing
-        {
-            match &current_action_result_processing.action {
+        let combatant_entity = combatants_by_id
+            .0
+            .get(&combatant_id)
+            .expect("to have registered the entity");
+
+        let (
+            mut transform_manager,
+            mut model_action_queue,
+            mut action_results_processing,
+            skeleton_entity,
+            home_location,
+        ) = combatants
+            .get_mut(*combatant_entity)
+            .expect("to have the entity");
+
+        // enqueue model actions from action result
+        for (i, action_result) in action_results.into_iter().enumerate() {
+            match &action_result.action {
                 CombatAction::AbilityUsed(ability_name) => {
                     // if melee, queue up the approach model action
                     let current_transform = transforms
                         .get(skeleton_entity.0)
                         .expect("the skeleton to have a transform");
-                    if ability_name.get_attributes().is_melee
-                        && home_location.0.translation == current_transform.translation
-                    {
+                    if ability_name.get_attributes().is_melee && i == 0 {
                         enqueue_approach_melee_target_model_action(
-                            current_action_result_processing,
+                            &action_result,
                             &mut transform_manager,
                             &mut model_action_queue,
                             &combatants_by_id.0,
@@ -79,23 +85,15 @@ pub fn enqueue_model_actions_from_action_results(
                 }
                 CombatAction::ConsumableUsed(_) => todo!(),
             }
-
-            // if this is the last action in the action_results_queue, send their model home
-            if action_result_manager.action_result_queue.len() < 1 {
-                model_action_queue
-                    .0
-                    .push_back(CombatantModelActions::ReturnHome);
-                model_action_queue
-                    .0
-                    .push_back(CombatantModelActions::Recenter);
-            }
-
-            action_result_manager.done_enqueueing_model_actions_for_current_action_result = true;
-
-            // info!(
-            //     "enqueued model actions {:?}",
-            //     model_action_queue.0.model_action_queue
-            // );
+            // to be removed and read by relevant actions that need the damage/targets info etc
+            action_results_processing.0.push(action_result)
         }
-    }
+
+        model_action_queue
+            .0
+            .push_back(CombatantModelActions::ReturnHome);
+        model_action_queue
+            .0
+            .push_back(CombatantModelActions::Recenter);
+    };
 }

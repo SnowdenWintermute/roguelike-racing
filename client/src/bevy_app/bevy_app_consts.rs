@@ -1,0 +1,1 @@
+pub const UNKNOWN_ANIMATION_DURATION: u64 = 500;

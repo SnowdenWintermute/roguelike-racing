@@ -3,38 +3,40 @@ use super::model_actions::get_animation_name_from_model_action;
 use super::model_actions::CombatantModelActions;
 use super::process_active_model_actions::ModelActionCombatantQueryStructItem;
 use super::process_active_model_actions::ModelActionSystemParams;
+use crate::bevy_app::bevy_app_consts::UNKNOWN_ANIMATION_DURATION;
 use crate::bevy_app::modular_character_plugin::process_combatant_model_actions::handle_new_attack_reaction_events::AttackResult;
 use crate::bevy_app::modular_character_plugin::StartNewAttackReactionEvent;
 use crate::bevy_app::modular_character_plugin::StartNextModelActionEvent;
 use bevy::math::u64;
 use bevy::prelude::*;
 
-pub const UNKNOWN_ANIMATION_DURATION: u64 = 500;
 pub const MH_MELEE_ANIMATION_DURATION_TRANSITION_THRESHOLD: f32 = 0.65;
 
-pub fn attacking_with_melee_main_hand_processor(
+pub fn attacking_with_melee_processor(
     entity: Entity,
     elapsed: u64,
     transition_started: bool,
     model_action_params: &mut ModelActionSystemParams,
     start_next_model_action_event_writer: &mut EventWriter<StartNextModelActionEvent>,
     start_new_attack_reaction_event_writer: &mut EventWriter<StartNewAttackReactionEvent>,
+    model_action: &CombatantModelActions,
 ) {
     let ModelActionCombatantQueryStructItem {
         skeleton_entity,
         equipment,
-        species_component,
         ..
     } = model_action_params
         .combatants_query
         .get_mut(entity)
         .expect("to have this entity in the query");
+    let species_component = model_action_params
+        .species_query
+        .get(skeleton_entity.0)
+        .expect("the skeleton to have a species");
     // check percent completed of animation
-    let percent_completed = if let Some(animation_name) = get_animation_name_from_model_action(
-        &species_component.0,
-        &CombatantModelActions::AttackMeleeMainHand,
-        &equipment.0,
-    ) {
+    let percent_completed = if let Some(animation_name) =
+        get_animation_name_from_model_action(&species_component.0, model_action, &equipment.0)
+    {
         get_percent_animation_completed(
             &skeleton_entity.0,
             &model_action_params.animation_player_links,
@@ -60,14 +62,14 @@ pub fn attacking_with_melee_main_hand_processor(
         combatant
             .active_model_actions
             .0
-            .get_mut(&CombatantModelActions::AttackMeleeMainHand)
+            .get_mut(&model_action)
             .expect("this model action to be active")
             .transition_started = true;
 
         let current_action = combatant
-            .action_results_manager
-            .current_action_result_processing
-            .as_ref()
+            .action_results_processing
+            .0
+            .pop()
             .expect("to have a current action result processing");
 
         if let Some(hp_changes) = &current_action.hp_changes_by_entity_id {
@@ -93,9 +95,6 @@ pub fn attacking_with_melee_main_hand_processor(
             .combatants_query
             .get_mut(entity)
             .expect("to have the combatant");
-        combatant
-            .active_model_actions
-            .0
-            .remove(&CombatantModelActions::AttackMeleeMainHand);
+        combatant.active_model_actions.0.remove(&model_action);
     }
 }

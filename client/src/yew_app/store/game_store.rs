@@ -47,6 +47,7 @@ impl DetailableEntities {
 pub struct GameStore {
     pub game: Option<RoguelikeRacerGame>,
     pub action_results_manager: ActionResultsManager,
+    pub combatants_animating: HashSet<u32>,
     pub current_party_id: Option<u32>,
     pub current_battle_id: Option<u32>,
     pub current_battle_end_report: Option<BattleEndReportPacket>,

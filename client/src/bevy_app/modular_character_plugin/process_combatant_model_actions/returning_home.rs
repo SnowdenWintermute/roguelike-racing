@@ -18,6 +18,7 @@ pub fn combatant_returning_to_home_position_home_processor(
     process_next_turn_result_event_writer: &mut EventWriter<ProcessNextTurnResultEvent>,
 ) {
     let ModelActionCombatantQueryStructItem {
+        combatant_id_component,
         skeleton_entity,
         home_location,
         transform_manager,
@@ -58,6 +59,7 @@ pub fn combatant_returning_to_home_position_home_processor(
             .0
             .remove(&CombatantModelActions::ReturnHome);
 
-        process_next_turn_result_event_writer.send(ProcessNextTurnResultEvent);
+        process_next_turn_result_event_writer
+            .send(ProcessNextTurnResultEvent(Some(combatant_id_component.0)));
     }
 }

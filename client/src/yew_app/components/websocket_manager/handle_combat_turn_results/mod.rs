@@ -1,5 +1,6 @@
 use crate::comm_channels::MessageFromYew;
 use crate::yew_app::store::bevy_communication_store::BevyCommunicationStore;
+use crate::yew_app::store::game_store::GameStore;
 use common::app_consts::error_messages;
 use common::combat::CombatTurnResult;
 use common::errors::AppError;
@@ -7,6 +8,7 @@ use yewdux::Dispatch;
 
 pub fn handle_combat_turn_results(
     bevy_communication_dispatch: Dispatch<BevyCommunicationStore>,
+    game_dispatch: Dispatch<GameStore>,
     turn_results: Vec<CombatTurnResult>,
 ) -> Result<(), AppError> {
     bevy_communication_dispatch.reduce_mut(|store| {

@@ -1,20 +1,14 @@
 pub mod comm_channel_bevy_plugin;
 use crate::bevy_app::modular_character_plugin::CombatantId;
-use crate::bevy_app::modular_character_plugin::HitPoints;
 use crate::bevy_app::modular_character_plugin::HomeLocation;
-use crate::frontend_common::AttackCommand;
 use crate::frontend_common::CharacterPartSelection;
 use crate::frontend_common::CombatantSpecies;
 use crate::frontend_common::PartsByName;
-use crate::yew_app::components::mesh_manager::HpChange;
 use bevy::prelude::*;
 use broadcast::Receiver;
 use broadcast::Sender;
 use common::combat::CombatTurnResult;
 use common::combatants::CombatantProperties;
-use common::items::equipment::EquipmentSlots;
-use common::items::Item;
-use std::collections::HashMap;
 use std::collections::HashSet;
 use std::collections::VecDeque;
 use tokio::sync::broadcast;
@@ -47,8 +41,9 @@ pub struct CharacterSpawnEvent(
 #[derive(Clone, Debug, Event)]
 pub struct DespawnCombatantModelEvent(pub CombatantId);
 
+pub type IdOfCombatantTurnJustFinished = u32;
 #[derive(Clone, Debug, Event)]
-pub struct ProcessNextTurnResultEvent;
+pub struct ProcessNextTurnResultEvent(pub Option<IdOfCombatantTurnJustFinished>);
 
 #[derive(Clone, Debug, PartialEq, Default)]
 pub struct CameraPosition {
@@ -74,6 +69,8 @@ pub enum MessageFromBevy {
     CameraPosition(CameraPosition),
     HpChangeById(HpChangeMessageFromBevy),
     CombatantEvadedAttack(CombatantId),
+    FinishedProcessingTurnResult(CombatantId),
+    FinishedProcessingModelActions(CombatantId),
 }
 // CHANNELS
 #[derive(Clone, Resource, Deref)]

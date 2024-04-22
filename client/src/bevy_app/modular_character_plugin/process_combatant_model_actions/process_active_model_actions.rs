@@ -109,16 +109,15 @@ pub fn process_active_model_actions(
                     &mut start_new_attack_reaction_event_writer,
                     &model_action,
                 ),
-                CombatantModelActions::HitRecovery | CombatantModelActions::Evade => {
-                    animation_only_model_action_processor(
-                        entity,
-                        elapsed,
-                        &mut model_action_params,
-                        &model_action,
-                    )
-                }
-                CombatantModelActions::Death => todo!(),
-                CombatantModelActions::Idle => todo!(),
+                CombatantModelActions::HitRecovery
+                | CombatantModelActions::Evade
+                | CombatantModelActions::Death => animation_only_model_action_processor(
+                    entity,
+                    elapsed,
+                    &mut model_action_params,
+                    &model_action,
+                ),
+                CombatantModelActions::Idle => (),
             }
         }
     }

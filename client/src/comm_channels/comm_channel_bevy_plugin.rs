@@ -69,7 +69,7 @@ fn handle_yew_messages(
             }
             MessageFromYew::NewTurnResults(mut turn_results) => {
                 turn_results_queue.0.append(&mut turn_results);
-                process_next_turn_result_event_writer.send(ProcessNextTurnResultEvent);
+                process_next_turn_result_event_writer.send(ProcessNextTurnResultEvent(None));
                 // ON TURN RESULTS
                 // put turn results in queue
                 // emit event to process next turn result

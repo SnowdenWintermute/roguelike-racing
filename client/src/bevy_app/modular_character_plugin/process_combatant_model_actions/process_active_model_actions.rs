@@ -9,9 +9,9 @@ use super::FloatingTextComponent;
 use super::ModelActionQueue;
 use super::TransformManager;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::ActionResultsProcessing;
-use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantEquipment;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantIdComponent;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantMainArmatureEntityLink;
+use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantPropertiesComponent;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantSpeciesComponent;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::HitboxRadius;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::MainSkeletonBonesAndArmature;
@@ -38,7 +38,7 @@ pub struct ModelActionCombatantQueryStruct {
     pub skeleton_entity: &'static MainSkeletonEntity,
     pub hitbox_radius: &'static HitboxRadius,
     pub home_location: &'static HomeLocation,
-    pub equipment: &'static CombatantEquipment,
+    pub combatant_properties_component: &'static mut CombatantPropertiesComponent,
     pub transform_manager: &'static mut TransformManager,
     pub model_action_queue: &'static mut ModelActionQueue,
     pub action_results_processing: &'static mut ActionResultsProcessing,

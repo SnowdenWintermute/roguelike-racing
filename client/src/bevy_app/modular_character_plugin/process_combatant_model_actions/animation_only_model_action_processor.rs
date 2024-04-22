@@ -14,7 +14,7 @@ pub fn animation_only_model_action_processor(
 ) {
     let ModelActionCombatantQueryStructItem {
         skeleton_entity,
-        equipment,
+        combatant_properties_component,
         mut active_model_actions,
         ..
     } = model_action_params
@@ -26,9 +26,11 @@ pub fn animation_only_model_action_processor(
         .get(skeleton_entity.0)
         .expect("the skeleton to have a species");
     // check percent completed of animation
-    let percent_completed = if let Some(animation_name) =
-        get_animation_name_from_model_action(&species_component.0, model_action, &equipment.0)
-    {
+    let percent_completed = if let Some(animation_name) = get_animation_name_from_model_action(
+        &species_component.0,
+        model_action,
+        &combatant_properties_component.0,
+    ) {
         get_percent_animation_completed(
             &skeleton_entity.0,
             &model_action_params.animation_player_links,

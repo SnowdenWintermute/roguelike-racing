@@ -1,5 +1,5 @@
 use crate::bevy_app::modular_character_plugin::process_combatant_model_actions::start_idle_animation::start_idle_animation;
-use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantEquipment;
+use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantPropertiesComponent;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantSpeciesComponent;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::MainSkeletonBonesAndArmature;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::MainSkeletonEntity;
@@ -14,7 +14,7 @@ pub fn start_new_model_actions_or_idle(
         (
             &MainSkeletonBonesAndArmature, // to ensure skeleton is assigned already
             &MainSkeletonEntity,
-            &CombatantEquipment,
+            &CombatantPropertiesComponent,
             &mut ActiveModelActions,
             &mut ModelActionQueue,
         ),
@@ -32,7 +32,7 @@ pub fn start_new_model_actions_or_idle(
     for (
         _,
         skeleton_entity,
-        equipment_component,
+        combatant_properties_component,
         mut active_model_actions,
         mut model_action_queue,
     ) in &mut combatants
@@ -51,7 +51,7 @@ pub fn start_new_model_actions_or_idle(
                 &animations,
                 skeleton_entity.0,
                 &species.0,
-                &equipment_component.0,
+                &combatant_properties_component.0,
                 500,
             );
         } else if active_model_actions.0.len() == 0 {
@@ -62,7 +62,7 @@ pub fn start_new_model_actions_or_idle(
                 &animations,
                 &species.0,
                 skeleton_entity.0,
-                &equipment_component.0,
+                &combatant_properties_component.0,
             );
         }
     }

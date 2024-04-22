@@ -6,6 +6,7 @@ use crate::bevy_app::asset_loader_plugin::MyAssets;
 use crate::bevy_app::modular_character_plugin::update_scene_aabbs::SceneAabb;
 use crate::bevy_app::modular_character_plugin::StartNewAttackReactionEvent;
 use crate::comm_channels::BevyTransmitter;
+use crate::comm_channels::HpChangeMessageFromBevy;
 use crate::comm_channels::MessageFromBevy;
 use bevy::prelude::*;
 use bevy_mod_billboard::BillboardDepth;
@@ -30,6 +31,7 @@ pub fn handle_new_attack_reaction_events(
         let StartNewAttackReactionEvent {
             entity_id,
             attack_result,
+            causer_id,
         } = event;
 
         let target_entity = model_action_params
@@ -44,15 +46,28 @@ pub fn handle_new_attack_reaction_events(
 
         let (text, color) = match attack_result {
             AttackResult::HpChange(number) => {
+                target_combatant
+                    .combatant_properties_component
+                    .0
+                    .change_hp(*number);
+                let new_model_action =
+                    if target_combatant.combatant_properties_component.0.hit_points == 0 {
+                        CombatantModelActions::Death
+                    } else {
+                        CombatantModelActions::HitRecovery
+                    };
                 // start hit recovery model action
                 target_combatant
                     .model_action_queue
                     .0
-                    .push_back(CombatantModelActions::HitRecovery);
+                    .push_back(new_model_action);
                 // send message to yew
-                let _result = bevy_transmitter
-                    .0
-                    .send(MessageFromBevy::HpChangeById(*entity_id, *number));
+                let _result = bevy_transmitter.0.send(MessageFromBevy::HpChangeById(
+                    HpChangeMessageFromBevy {
+                        combatant_id: *entity_id,
+                        hp_change: *number,
+                    },
+                ));
                 // return text to float
                 (
                     number.abs().to_string(),

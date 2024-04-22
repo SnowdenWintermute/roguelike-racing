@@ -1,7 +1,10 @@
+mod hp_change_message_handler;
+use self::hp_change_message_handler::hp_change_message_handler;
 use crate::comm_channels::BevyTransmitter;
 use crate::comm_channels::MessageFromBevy;
 use crate::comm_channels::YewTransmitter;
 use crate::yew_app::store::bevy_communication_store::BevyCommunicationStore;
+use crate::yew_app::store::game_store::GameStore;
 use gloo::console::log;
 use std::ops::Deref;
 use yew::platform::spawn_local;
@@ -24,6 +27,7 @@ impl PartialEq for Props {
 #[function_component(BevyMessagesManager)]
 pub fn bevy_messages_manager(props: &Props) -> Html {
     let (_, dispatch) = use_store::<BevyCommunicationStore>();
+    let (_, game_dispatch) = use_store::<GameStore>();
     let Props {
         bevy_transmitter,
         yew_transmitter,
@@ -75,6 +79,7 @@ pub fn bevy_messages_manager(props: &Props) -> Html {
     // DEQUEUE AND HANDLE MESSAGES
     let cloned_queued_bevy_messages_state = queued_bevy_messages_state.clone();
     let cloned_dispatch = dispatch.clone();
+    let cloned_game_dispatch = game_dispatch.clone();
     use_effect_with(
         cloned_queued_bevy_messages_state.clone(),
         move |cloned_queued_bevy_messages_state| {
@@ -88,6 +93,13 @@ pub fn bevy_messages_manager(props: &Props) -> Html {
                     }
                     MessageFromBevy::CameraPosition(camera_position) => cloned_dispatch
                         .reduce_mut(|store| store.camera_position = camera_position.clone()),
+                    MessageFromBevy::HpChangeById(hp_change_message) => {
+                        let _result = hp_change_message_handler(
+                            cloned_game_dispatch.clone(),
+                            hp_change_message.combatant_id,
+                            hp_change_message.hp_change,
+                        );
+                    }
                     _ => (), // MessageFromBevy::PartNames(part_names) => cloned_dispatch
                              //     .reduce_mut(|store| store.parts_available = part_names.clone()),
                              // MessageFromBevy::AnimationsAvailable(animation_names) => cloned_dispatch

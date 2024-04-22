@@ -36,6 +36,7 @@ pub mod spawn_scenes;
 mod update_scene_aabbs;
 
 pub type CombatantId = u32;
+pub type HitPoints = i16;
 
 // RESOURCES
 #[derive(Resource, Debug, Default)]
@@ -69,6 +70,7 @@ pub struct StartNextModelActionEvent {
 pub struct StartNewAttackReactionEvent {
     entity_id: CombatantId,
     attack_result: AttackResult,
+    causer_id: CombatantId,
 }
 
 pub struct ModularCharacterPlugin;

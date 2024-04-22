@@ -1,6 +1,6 @@
 use super::ActiveModelActions;
 use super::ModelActionQueue;
-use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantEquipment;
+use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantPropertiesComponent;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantSpeciesComponent;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::MainSkeletonEntity;
 use crate::bevy_app::modular_character_plugin::Animations;
@@ -14,7 +14,7 @@ pub fn handle_start_next_model_action_events(
         &mut ActiveModelActions,
         &mut ModelActionQueue,
         &MainSkeletonEntity,
-        &CombatantEquipment,
+        &CombatantPropertiesComponent,
     )>,
     animations: Res<Animations>,
     mut animation_players: Query<&mut AnimationPlayer>,
@@ -27,10 +27,14 @@ pub fn handle_start_next_model_action_events(
             transition_duration_ms,
         } = event;
 
-        let (mut active_model_actions, mut model_action_queue, skeleton_entity, equipment) =
-            combatants
-                .get_mut(*entity)
-                .expect("entity to have a model action queue");
+        let (
+            mut active_model_actions,
+            mut model_action_queue,
+            skeleton_entity,
+            combatant_properties_component,
+        ) = combatants
+            .get_mut(*entity)
+            .expect("entity to have a model action queue");
 
         let species = species_query
             .get(skeleton_entity.0)
@@ -43,7 +47,7 @@ pub fn handle_start_next_model_action_events(
             &animations,
             skeleton_entity.0,
             &species.0,
-            &equipment.0,
+            &combatant_properties_component.0,
             *transition_duration_ms,
         );
     }

@@ -6,8 +6,7 @@ use crate::bevy_app::utils::link_animations::AnimationEntityLink;
 use crate::frontend_common::CombatantSpecies;
 use bevy::math::u64;
 use bevy::prelude::*;
-use common::items::equipment::EquipmentSlots;
-use common::items::Item;
+use common::combatants::CombatantProperties;
 use js_sys::Date;
 use std::collections::HashMap;
 use std::collections::VecDeque;
@@ -65,7 +64,7 @@ impl ModelActionQueue {
         animations: &Res<Animations>,
         skeleton_entity: Entity,
         combatant_species: &CombatantSpecies,
-        equipment: &HashMap<EquipmentSlots, Item>,
+        combatant_properties: &CombatantProperties,
         transition_duration_ms: u64,
     ) {
         if let Some(model_action) = self.0.pop_front() {
@@ -78,9 +77,11 @@ impl ModelActionQueue {
             );
             // start animation if any
 
-            if let Some(animation_name) =
-                get_animation_name_from_model_action(&combatant_species, &model_action, &equipment)
-            {
+            if let Some(animation_name) = get_animation_name_from_model_action(
+                &combatant_species,
+                &model_action,
+                &combatant_properties,
+            ) {
                 let animation_player_link = animation_player_links
                     .get(skeleton_entity)
                     .expect("to have linked the skeleton to it's animation player");

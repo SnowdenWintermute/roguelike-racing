@@ -16,8 +16,7 @@ use bevy::gltf::Gltf;
 use bevy::prelude::*;
 use bevy_mod_billboard::BillboardTextBundle;
 use common::combat::ActionResult;
-use common::items::equipment::EquipmentSlots;
-use common::items::Item;
+use common::combatants::CombatantProperties;
 use std::collections::HashMap;
 use std::collections::HashSet;
 
@@ -32,8 +31,8 @@ pub struct CombatantMainArmatureEntityLink(pub Entity);
 pub struct MainSkeletonEntity(pub Entity);
 #[derive(Component, Debug)]
 pub struct MainSkeletonBonesAndArmature(pub HashMap<String, Entity>, pub Entity);
-#[derive(Component, Debug, Default)]
-pub struct CombatantEquipment(pub HashMap<EquipmentSlots, Item>);
+#[derive(Component, Debug)]
+pub struct CombatantPropertiesComponent(pub CombatantProperties);
 #[derive(Component, Debug, Default)]
 pub struct ActionResultsProcessing(pub Vec<ActionResult>);
 /// Queue of part entities waiting for spawn. Using Vec in case multiple part scenes get queued
@@ -60,7 +59,7 @@ pub fn spawn_combatants(
         let character_id = event.0;
         let home_location = &event.1;
         let species = &event.2;
-        let equipment = event.3.clone();
+        let combatant_properties = event.3.clone();
 
         let file_name = match species {
             CombatantSpecies::Humanoid => "main_skeleton.glb",
@@ -85,7 +84,7 @@ pub fn spawn_combatants(
             skeleton_handle,
             file_name.to_string(),
             species.clone(),
-            equipment,
+            combatant_properties,
         )
     }
 }
@@ -102,7 +101,7 @@ pub fn spawn_combatant(
     skeleton_handle: &Handle<Gltf>,
     file_name: String,
     species: CombatantSpecies,
-    equipment: HashMap<EquipmentSlots, Item>,
+    combatant_properties: CombatantProperties,
 ) {
     // - spawn skeleton and store its entity id on the character
 
@@ -131,7 +130,7 @@ pub fn spawn_combatant(
         ModelActionQueue::default(),
         ActiveModelActions::default(),
         HitboxRadius(0.7),
-        CombatantEquipment(equipment),
+        CombatantPropertiesComponent(combatant_properties),
         ActionResultsProcessing::default(),
     ));
 

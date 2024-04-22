@@ -1,5 +1,6 @@
 pub mod comm_channel_bevy_plugin;
 use crate::bevy_app::modular_character_plugin::CombatantId;
+use crate::bevy_app::modular_character_plugin::HitPoints;
 use crate::bevy_app::modular_character_plugin::HomeLocation;
 use crate::frontend_common::AttackCommand;
 use crate::frontend_common::CharacterPartSelection;
@@ -10,6 +11,7 @@ use bevy::prelude::*;
 use broadcast::Receiver;
 use broadcast::Sender;
 use common::combat::CombatTurnResult;
+use common::combatants::CombatantProperties;
 use common::items::equipment::EquipmentSlots;
 use common::items::Item;
 use std::collections::HashMap;
@@ -25,7 +27,7 @@ pub enum MessageFromYew {
         CombatantId,
         HomeLocation,
         CombatantSpecies,
-        HashMap<EquipmentSlots, Item>,
+        CombatantProperties,
     ),
     DespawnCombatantModel(CombatantId),
     NewTurnResults(VecDeque<CombatTurnResult>),
@@ -39,7 +41,7 @@ pub struct CharacterSpawnEvent(
     pub CombatantId,
     pub HomeLocation,
     pub CombatantSpecies,
-    pub HashMap<EquipmentSlots, Item>,
+    pub CombatantProperties,
 );
 
 #[derive(Clone, Debug, Event)]
@@ -56,6 +58,12 @@ pub struct CameraPosition {
     pub radius: Option<f32>,
 }
 
+#[derive(Clone, Debug, PartialEq)]
+pub struct HpChangeMessageFromBevy {
+    pub combatant_id: CombatantId,
+    pub hp_change: i16,
+}
+
 // BEVY MESSAGES
 #[derive(Debug, Clone, PartialEq)]
 pub enum MessageFromBevy {
@@ -64,7 +72,7 @@ pub enum MessageFromBevy {
     CombatantSpawned(CombatantId),
     AssetsLoaded,
     CameraPosition(CameraPosition),
-    HpChangeById(CombatantId, i16),
+    HpChangeById(HpChangeMessageFromBevy),
     CombatantEvadedAttack(CombatantId),
 }
 // CHANNELS

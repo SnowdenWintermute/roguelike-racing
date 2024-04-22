@@ -1,9 +1,6 @@
-use crate::frontend_common::CombatantSpecies;
-use common::items::equipment::EquipmentSlots;
-use common::items::Item;
-use std::collections::HashMap;
-
 use super::Timestamp;
+use crate::frontend_common::CombatantSpecies;
+use common::combatants::CombatantProperties;
 
 #[derive(Hash, Eq, PartialEq, Debug, Clone)]
 pub enum CombatantModelActions {
@@ -29,7 +26,7 @@ pub struct CombatantModelActionProgressTracker {
 pub fn get_animation_name_from_model_action(
     species: &CombatantSpecies,
     model_action: &CombatantModelActions,
-    equipment: &HashMap<EquipmentSlots, Item>,
+    combatant_properties: &CombatantProperties,
 ) -> Option<String> {
     let to_return = match species {
         CombatantSpecies::Humanoid => match model_action {

@@ -23,7 +23,7 @@ pub fn attacking_with_melee_processor(
 ) {
     let ModelActionCombatantQueryStructItem {
         skeleton_entity,
-        equipment,
+        combatant_properties_component,
         ..
     } = model_action_params
         .combatants_query
@@ -34,9 +34,11 @@ pub fn attacking_with_melee_processor(
         .get(skeleton_entity.0)
         .expect("the skeleton to have a species");
     // check percent completed of animation
-    let percent_completed = if let Some(animation_name) =
-        get_animation_name_from_model_action(&species_component.0, model_action, &equipment.0)
-    {
+    let percent_completed = if let Some(animation_name) = get_animation_name_from_model_action(
+        &species_component.0,
+        model_action,
+        &combatant_properties_component.0,
+    ) {
         get_percent_animation_completed(
             &skeleton_entity.0,
             &model_action_params.animation_player_links,
@@ -77,6 +79,7 @@ pub fn attacking_with_melee_processor(
                 start_new_attack_reaction_event_writer.send(StartNewAttackReactionEvent {
                     entity_id: *entity_id,
                     attack_result: AttackResult::HpChange(*hp_change),
+                    causer_id: combatant.combatant_id_component.0,
                 });
             }
         }
@@ -85,6 +88,7 @@ pub fn attacking_with_melee_processor(
                 start_new_attack_reaction_event_writer.send(StartNewAttackReactionEvent {
                     entity_id: *entity_id,
                     attack_result: AttackResult::Evade,
+                    causer_id: combatant.combatant_id_component.0,
                 });
             }
         }

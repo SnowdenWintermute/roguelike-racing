@@ -2,6 +2,8 @@ use super::animation_only_model_action_processor::animation_only_model_action_pr
 use super::approaching_melee_target::combatant_approaching_melee_target_processor;
 use super::attack_melee::attacking_with_melee_processor;
 use super::model_actions::CombatantModelActions;
+use super::recentering::combatant_recentering_processor;
+use super::returning_home::combatant_returning_to_home_position_home_processor;
 use super::ActiveModelActions;
 use super::FloatingTextComponent;
 use super::ModelActionQueue;
@@ -20,6 +22,7 @@ use crate::bevy_app::modular_character_plugin::HomeLocation;
 use crate::bevy_app::modular_character_plugin::StartNewAttackReactionEvent;
 use crate::bevy_app::modular_character_plugin::StartNextModelActionEvent;
 use crate::bevy_app::utils::link_animations::AnimationEntityLink;
+use crate::comm_channels::ProcessNextTurnResultEvent;
 use bevy::ecs::query::QueryData;
 use bevy::ecs::system::SystemParam;
 use bevy::prelude::*;
@@ -59,6 +62,7 @@ pub fn process_active_model_actions(
     mut model_action_params: ModelActionSystemParams,
     mut start_next_model_action_event_writer: EventWriter<StartNextModelActionEvent>,
     mut start_new_attack_reaction_event_writer: EventWriter<StartNewAttackReactionEvent>,
+    mut process_next_turn_result_event_writer: EventWriter<ProcessNextTurnResultEvent>,
 ) {
     let mut entities_and_active_model_actions = Vec::new();
     for combatant in &model_action_params.combatants_query {
@@ -81,8 +85,19 @@ pub fn process_active_model_actions(
                         &mut start_next_model_action_event_writer,
                     )
                 }
-                CombatantModelActions::ReturnHome => todo!(),
-                CombatantModelActions::Recenter => todo!(),
+                CombatantModelActions::ReturnHome => {
+                    combatant_returning_to_home_position_home_processor(
+                        entity,
+                        elapsed,
+                        transition_started,
+                        &mut model_action_params,
+                        &mut start_next_model_action_event_writer,
+                        &mut process_next_turn_result_event_writer,
+                    )
+                }
+                CombatantModelActions::Recenter => {
+                    combatant_recentering_processor(entity, elapsed, &mut model_action_params)
+                }
                 CombatantModelActions::TurnToFaceTarget => todo!(),
                 CombatantModelActions::AttackMeleeMainHand
                 | CombatantModelActions::AttackMeleeOffHand => attacking_with_melee_processor(

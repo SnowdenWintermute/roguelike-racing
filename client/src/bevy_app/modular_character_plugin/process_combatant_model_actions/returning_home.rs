@@ -2,26 +2,25 @@ use super::model_actions::CombatantModelActions;
 use super::process_active_model_actions::ModelActionCombatantQueryStructItem;
 use super::process_active_model_actions::ModelActionSystemParams;
 use crate::bevy_app::modular_character_plugin::StartNextModelActionEvent;
-use crate::bevy_app::utils::rotate_transform_toward_target::rotate_transform_toward_target;
 use crate::bevy_app::utils::translate_transform_toward_target::translate_transform_toward_target;
-use bevy::math::u64;
+use crate::comm_channels::ProcessNextTurnResultEvent;
 use bevy::prelude::*;
 
-const TIME_TO_TRANSLATE: u64 = 1500;
-const TIME_TO_ROTATE: u64 = 1000;
-const PERCENT_DISTANCE_TO_START_TRANSITION: f32 = 0.8;
+const TIME_TO_RETURN: u64 = 1000;
+const PERCENT_DISTANCE_TO_START_IDLE: f32 = 0.8;
 
-pub fn combatant_approaching_melee_target_processor(
+pub fn combatant_returning_to_home_position_home_processor(
     entity: Entity,
     elapsed: u64,
     transition_started: bool,
     model_action_params: &mut ModelActionSystemParams,
     start_next_model_action_event_writer: &mut EventWriter<StartNextModelActionEvent>,
+    process_next_turn_result_event_writer: &mut EventWriter<ProcessNextTurnResultEvent>,
 ) {
     let ModelActionCombatantQueryStructItem {
         skeleton_entity,
         home_location,
-        mut transform_manager,
+        transform_manager,
         mut active_model_actions,
         ..
     } = model_action_params
@@ -32,42 +31,33 @@ pub fn combatant_approaching_melee_target_processor(
         .transforms
         .get_mut(skeleton_entity.0)
         .expect("their skeleton to have a transform");
-
     let percent_distance_travelled = translate_transform_toward_target(
         &mut skeleton_entity_transform,
+        &transform_manager
+            .last_location
+            .expect("to have saved the prev location"),
         &home_location.0,
-        &mut transform_manager.destination.expect("a destination"),
         elapsed,
-        TIME_TO_TRANSLATE,
+        TIME_TO_RETURN,
     );
-    if let Some(target_rotation) = transform_manager.target_rotation {
-        rotate_transform_toward_target(
-            &mut skeleton_entity_transform,
-            &home_location.0.rotation,
-            &target_rotation,
-            elapsed,
-            TIME_TO_ROTATE,
-        );
-    }
 
-    if percent_distance_travelled >= PERCENT_DISTANCE_TO_START_TRANSITION && !transition_started {
+    if percent_distance_travelled >= PERCENT_DISTANCE_TO_START_IDLE && !transition_started {
         start_next_model_action_event_writer.send(StartNextModelActionEvent {
             entity,
             transition_duration_ms: 500,
         });
-
         active_model_actions
             .0
-            .get_mut(&CombatantModelActions::ApproachMeleeTarget)
+            .get_mut(&CombatantModelActions::ReturnHome)
             .expect("this model action to be active")
             .transition_started = true;
     }
 
     if percent_distance_travelled >= 1.0 {
-        transform_manager.last_location = transform_manager.destination.take();
-        transform_manager.destination = Some(home_location.0.clone());
         active_model_actions
             .0
-            .remove(&CombatantModelActions::ApproachMeleeTarget);
+            .remove(&CombatantModelActions::ReturnHome);
+
+        process_next_turn_result_event_writer.send(ProcessNextTurnResultEvent);
     }
 }

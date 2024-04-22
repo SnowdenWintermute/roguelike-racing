@@ -1,13 +1,15 @@
 use std::collections::HashMap;
+use std::time::Duration;
 
+use super::model_actions::get_animation_name_from_model_action;
+use super::model_actions::CombatantModelActions;
 use crate::bevy_app::modular_character_plugin::Animations;
 use crate::bevy_app::utils::link_animations::AnimationEntityLink;
 use crate::frontend_common::CombatantSpecies;
 use bevy::animation::AnimationPlayer;
 use bevy::prelude::*;
-use common::items::{equipment::EquipmentSlots, Item};
-
-use super::model_actions::{get_animation_name_from_model_action, CombatantModelActions};
+use common::items::equipment::EquipmentSlots;
+use common::items::Item;
 
 pub fn start_idle_animation(
     animation_player_links: &Query<&AnimationEntityLink>,
@@ -26,12 +28,13 @@ pub fn start_idle_animation(
             get_animation_name_from_model_action(&species, &CombatantModelActions::Idle, equipment)
         {
             animation_player
-                .play(
+                .start_with_transition(
                     animations
                         .0
                         .get(&idle_animation_name)
                         .expect("to have an animation by this name")
                         .clone_weak(),
+                    Duration::from_millis(500),
                 )
                 .repeat();
         };

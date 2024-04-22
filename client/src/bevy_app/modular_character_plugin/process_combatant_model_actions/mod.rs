@@ -23,6 +23,8 @@ pub mod model_actions;
 pub mod process_active_model_actions;
 pub mod process_floating_text;
 pub mod process_next_turn_result_event_handler;
+mod recentering;
+mod returning_home;
 mod start_idle_animation;
 pub mod start_new_model_actions_or_idle;
 

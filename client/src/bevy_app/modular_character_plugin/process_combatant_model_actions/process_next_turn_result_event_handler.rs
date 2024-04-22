@@ -51,9 +51,6 @@ pub fn process_next_turn_result_event_handler(
             match &action_result.action {
                 CombatAction::AbilityUsed(ability_name) => {
                     // if melee, queue up the approach model action
-                    let current_transform = transforms
-                        .get(skeleton_entity.0)
-                        .expect("the skeleton to have a transform");
                     if ability_name.get_attributes().is_melee && i == 0 {
                         enqueue_approach_melee_target_model_action(
                             &action_result,
@@ -95,5 +92,7 @@ pub fn process_next_turn_result_event_handler(
         model_action_queue
             .0
             .push_back(CombatantModelActions::Recenter);
+    } else {
+        // no more turn results, tell yew to have the combatants take their next turn
     };
 }

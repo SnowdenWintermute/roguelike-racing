@@ -26,6 +26,7 @@ pub fn start_idle_animation(
             &CombatantModelActions::Idle,
             &combatant_properties,
         ) {
+            animation_player.resume();
             animation_player
                 .start_with_transition(
                     animations

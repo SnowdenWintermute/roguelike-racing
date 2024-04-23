@@ -10,8 +10,8 @@ pub enum CombatantModelActions {
     TurnToFaceTarget,
     AttackMeleeMainHand,
     AttackMeleeOffHand,
+    CastSpell,
     HitRecovery,
-    // ShowingFloatingText,
     Evade,
     Death,
     Idle,
@@ -40,6 +40,7 @@ pub fn get_animation_name_from_model_action(
             CombatantModelActions::Death => Some("Death"),
             CombatantModelActions::Idle => Some("Idle_Sword"),
             CombatantModelActions::Evade => None,
+            CombatantModelActions::CastSpell => None,
         },
         CombatantSpecies::Wasp => match model_action {
             CombatantModelActions::ApproachMeleeTarget
@@ -52,6 +53,7 @@ pub fn get_animation_name_from_model_action(
             CombatantModelActions::AttackMeleeOffHand
             | CombatantModelActions::AttackMeleeMainHand => Some("Wasp_Attack"),
             CombatantModelActions::Death => Some("Wasp_Death"),
+            CombatantModelActions::CastSpell => None,
         },
         CombatantSpecies::Frog => match model_action {
             CombatantModelActions::ApproachMeleeTarget => Some("Frog_Jump"),
@@ -64,6 +66,7 @@ pub fn get_animation_name_from_model_action(
             CombatantModelActions::Death => Some("Frog_Death"),
             CombatantModelActions::Idle => Some("Frog_Idle"),
             CombatantModelActions::Evade => None,
+            CombatantModelActions::CastSpell => None,
         },
     };
     match to_return {

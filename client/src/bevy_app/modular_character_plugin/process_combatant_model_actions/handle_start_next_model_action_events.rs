@@ -4,6 +4,7 @@ use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantPropert
 use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantSpeciesComponent;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::MainSkeletonEntity;
 use crate::bevy_app::modular_character_plugin::Animations;
+use crate::bevy_app::modular_character_plugin::StartNewFloatingTextEvent;
 use crate::bevy_app::modular_character_plugin::StartNextModelActionEvent;
 use crate::bevy_app::utils::link_animations::AnimationEntityLink;
 use bevy::prelude::*;
@@ -20,6 +21,7 @@ pub fn handle_start_next_model_action_events(
     mut animation_players: Query<&mut AnimationPlayer>,
     animation_player_links: Query<&AnimationEntityLink>,
     species_query: Query<&CombatantSpeciesComponent>,
+    mut start_new_floating_text_event_writer: EventWriter<StartNewFloatingTextEvent>,
 ) {
     for event in start_next_model_action_event_reader.read() {
         let StartNextModelActionEvent {
@@ -44,7 +46,9 @@ pub fn handle_start_next_model_action_events(
             &mut active_model_actions,
             &animation_player_links,
             &mut animation_players,
+            &mut start_new_floating_text_event_writer,
             &animations,
+            *entity,
             skeleton_entity.0,
             &species.0,
             &combatant_properties_component.0,

@@ -2,7 +2,7 @@ use super::FloatingTextComponent;
 use bevy::prelude::*;
 use js_sys::Date;
 
-const FLOATING_TEXT_TIME_TO_LIVE: f32 = 2000.0;
+pub const FLOATING_TEXT_TIME_TO_LIVE_DEFAULT: f32 = 2000.0;
 
 pub fn process_floating_text(
     mut commands: Commands,
@@ -16,7 +16,7 @@ pub fn process_floating_text(
         for floating_text in floating_text_component.0.iter() {
             if let Ok(mut transform) = transforms.get_mut(floating_text.billboard_entity) {
                 let elapsed = current_time - floating_text.time_started;
-                let percent_complete = elapsed as f32 / FLOATING_TEXT_TIME_TO_LIVE as f32;
+                let percent_complete = elapsed as f32 / floating_text.time_to_live as f32;
 
                 transform.translation = floating_text
                     .home_location

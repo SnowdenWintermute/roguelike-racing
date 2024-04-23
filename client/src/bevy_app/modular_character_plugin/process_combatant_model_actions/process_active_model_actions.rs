@@ -118,6 +118,7 @@ pub fn process_active_model_actions(
                     &model_action,
                 ),
                 CombatantModelActions::Idle => (),
+                CombatantModelActions::CastSpell => todo!(),
             }
         }
     }

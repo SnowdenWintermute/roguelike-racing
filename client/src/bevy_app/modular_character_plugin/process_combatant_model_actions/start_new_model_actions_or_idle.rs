@@ -4,6 +4,7 @@ use crate::bevy_app::modular_character_plugin::spawn_combatant::CombatantSpecies
 use crate::bevy_app::modular_character_plugin::spawn_combatant::MainSkeletonBonesAndArmature;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::MainSkeletonEntity;
 use crate::bevy_app::modular_character_plugin::Animations;
+use crate::bevy_app::modular_character_plugin::StartNewFloatingTextEvent;
 use crate::bevy_app::utils::link_animations::AnimationEntityLink;
 use bevy::prelude::*;
 use super::ActiveModelActions;
@@ -12,6 +13,7 @@ use super::ModelActionQueue;
 pub fn start_new_model_actions_or_idle(
     mut combatants: Query<
         (
+            Entity,
             &MainSkeletonBonesAndArmature, // to ensure skeleton is assigned already
             &MainSkeletonEntity,
             &CombatantPropertiesComponent,
@@ -28,8 +30,10 @@ pub fn start_new_model_actions_or_idle(
     mut animation_players: Query<&mut AnimationPlayer>,
     animation_player_links: Query<&AnimationEntityLink>,
     animations: Res<Animations>,
+    mut start_new_floating_text_event_writer: EventWriter<StartNewFloatingTextEvent>,
 ) {
     for (
+        entity,
         _,
         skeleton_entity,
         combatant_properties_component,
@@ -46,7 +50,9 @@ pub fn start_new_model_actions_or_idle(
                 &mut active_model_actions,
                 &animation_player_links,
                 &mut animation_players,
+                &mut start_new_floating_text_event_writer,
                 &animations,
+                entity,
                 skeleton_entity.0,
                 &species.0,
                 &combatant_properties_component.0,

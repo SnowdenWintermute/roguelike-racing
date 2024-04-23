@@ -4,6 +4,8 @@ use self::notify_yew_that_assets_are_loaded::notify_yew_that_assets_are_loaded;
 use self::part_change_plugin::PartChangePlugin;
 use self::process_combatant_model_actions::handle_new_attack_reaction_events::handle_new_attack_reaction_events;
 use self::process_combatant_model_actions::handle_new_attack_reaction_events::AttackResult;
+use self::process_combatant_model_actions::handle_start_floating_text_events;
+use self::process_combatant_model_actions::handle_start_floating_text_events::handle_start_floating_text_events;
 use self::process_combatant_model_actions::handle_start_next_model_action_events::handle_start_next_model_action_events;
 use self::process_combatant_model_actions::process_active_model_actions::process_active_model_actions;
 use self::process_combatant_model_actions::process_floating_text::process_floating_text;
@@ -70,6 +72,14 @@ pub struct StartNewAttackReactionEvent {
     attack_result: AttackResult,
     causer_id: EntityId,
 }
+#[derive(Clone, Debug, Event)]
+pub struct StartNewFloatingTextEvent {
+    combatant_entity: Entity,
+    text: String,
+    color: Vec3,
+    distance_to_travel: f32,
+    time_to_live: u64,
+}
 
 pub struct ModularCharacterPlugin;
 impl Plugin for ModularCharacterPlugin {
@@ -80,6 +90,7 @@ impl Plugin for ModularCharacterPlugin {
             .init_resource::<Animations>()
             .init_resource::<Events<StartNextModelActionEvent>>()
             .init_resource::<Events<StartNewAttackReactionEvent>>()
+            .init_resource::<Events<StartNewFloatingTextEvent>>()
             .init_resource::<Events<DespawnCombatantModelEvent>>()
             .init_resource::<TurnResultsQueue>()
             .init_resource::<CurrentTurnResultProcessing>()
@@ -104,6 +115,7 @@ impl Plugin for ModularCharacterPlugin {
                     start_new_model_actions_or_idle,
                     handle_start_next_model_action_events,
                     handle_new_attack_reaction_events,
+                    handle_start_floating_text_events,
                     process_floating_text,
                     process_active_model_actions,
                 )

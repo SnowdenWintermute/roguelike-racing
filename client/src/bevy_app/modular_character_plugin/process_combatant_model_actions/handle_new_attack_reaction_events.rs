@@ -1,17 +1,12 @@
 use super::model_actions::CombatantModelActions;
 use super::process_active_model_actions::ModelActionSystemParams;
-use super::FloatingText;
-use super::FloatingTextComponent;
-use crate::bevy_app::asset_loader_plugin::MyAssets;
-use crate::bevy_app::modular_character_plugin::update_scene_aabbs::SceneAabb;
+use super::process_floating_text::FLOATING_TEXT_TIME_TO_LIVE_DEFAULT;
 use crate::bevy_app::modular_character_plugin::StartNewAttackReactionEvent;
+use crate::bevy_app::modular_character_plugin::StartNewFloatingTextEvent;
 use crate::comm_channels::messages_from_bevy::HpChangeMessageFromBevy;
 use crate::comm_channels::messages_from_bevy::MessageFromBevy;
 use crate::comm_channels::BevyTransmitter;
 use bevy::prelude::*;
-use bevy_mod_billboard::BillboardDepth;
-use bevy_mod_billboard::BillboardTextBundle;
-use js_sys::Date;
 
 #[derive(Debug, Clone)]
 pub enum AttackResult {
@@ -20,12 +15,10 @@ pub enum AttackResult {
 }
 
 pub fn handle_new_attack_reaction_events(
-    mut commands: Commands,
     mut start_new_attack_reactions_event_reader: EventReader<StartNewAttackReactionEvent>,
     bevy_transmitter: ResMut<BevyTransmitter>,
     mut model_action_params: ModelActionSystemParams,
-    asset_pack: Res<MyAssets>,
-    scenes_with_aabbs: Query<&SceneAabb>,
+    mut start_new_floating_text_event_writer: EventWriter<StartNewFloatingTextEvent>,
 ) {
     for event in start_new_attack_reactions_event_reader.read() {
         let StartNewAttackReactionEvent {
@@ -92,56 +85,12 @@ pub fn handle_new_attack_reaction_events(
                 (String::from("Evaded"), Vec3::new(1.0, 1.0, 1.0))
             }
         };
-
-        let font_handle = asset_pack
-            .font_files
-            .get("FiraSans-Regular.ttf")
-            .expect("to have loaded the font");
-
-        let main_armature_entity_link = target_combatant.armature_link;
-        let main_armature_scene_aabb = scenes_with_aabbs
-            .get(main_armature_entity_link.0)
-            .expect("to have an aabb for the main armature");
-        let mut hp_change_text_start_location = Transform::from_xyz(0.0, 0.0, 0.0);
-        hp_change_text_start_location.translation.y = main_armature_scene_aabb.max.y * 0.75;
-
-        let billboard_entity_commands = commands.spawn(BillboardTextBundle {
-            transform: hp_change_text_start_location.with_scale(Vec3::splat(0.0125)),
-            text: Text::from_sections([TextSection {
-                value: format!("{}", text),
-                style: TextStyle {
-                    font_size: 50.0,
-                    font: font_handle.clone(),
-                    color: Color::rgb_from_array(color),
-                },
-            }]),
-            billboard_depth: BillboardDepth(false),
-            ..Default::default()
-        });
-        let billboard_entity = billboard_entity_commands.id();
-
-        let target_skeleton_entity = target_combatant.skeleton_entity.0;
-        let mut target_skeleton_commands = commands.entity(target_skeleton_entity);
-        target_skeleton_commands.add_child(billboard_entity);
-
-        let mut destination = hp_change_text_start_location.clone();
-        destination.translation.y = main_armature_scene_aabb.max.y + 1.5;
-
-        let new_floating_text = FloatingText {
-            value: text,
-            home_location: hp_change_text_start_location,
-            destination,
-            billboard_entity,
-            time_started: Date::new_0().get_time() as u64,
+        start_new_floating_text_event_writer.send(StartNewFloatingTextEvent {
+            combatant_entity: *target_entity,
+            text,
             color,
-        };
-
-        if let Some(mut floating_text_component) = target_combatant.floating_text_option {
-            floating_text_component.0.push(new_floating_text);
-        } else {
-            commands
-                .entity(*target_entity)
-                .insert(FloatingTextComponent(Vec::from([new_floating_text])));
-        }
+            distance_to_travel: 1.5,
+            time_to_live: FLOATING_TEXT_TIME_TO_LIVE_DEFAULT as u64,
+        });
     }
 }

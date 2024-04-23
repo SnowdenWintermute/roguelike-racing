@@ -91,9 +91,9 @@ pub fn process_next_turn_result_event_handler(
                                 CombatantModelActions::AttackMeleeOffHand
                             }
                             CombatantAbilityNames::AttackRangedMainhand => todo!(),
-                            CombatantAbilityNames::Fire => todo!(),
-                            CombatantAbilityNames::Ice => todo!(),
-                            CombatantAbilityNames::Healing => todo!(),
+                            CombatantAbilityNames::Fire
+                            | CombatantAbilityNames::Ice
+                            | CombatantAbilityNames::Healing => CombatantModelActions::CastSpell,
                         };
 
                         model_action_queue.0.push_back(model_action)

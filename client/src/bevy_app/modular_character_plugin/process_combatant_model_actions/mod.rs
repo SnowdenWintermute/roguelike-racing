@@ -2,6 +2,8 @@ use self::model_actions::get_animation_name_from_model_action;
 use self::model_actions::CombatantModelActionProgressTracker;
 use self::model_actions::CombatantModelActions;
 use super::Animations;
+use super::StartNewFloatingTextEvent;
+use crate::bevy_app::bevy_app_consts::UNKNOWN_ANIMATION_DURATION;
 use crate::bevy_app::utils::link_animations::AnimationEntityLink;
 use crate::frontend_common::CombatantSpecies;
 use bevy::math::u64;
@@ -17,6 +19,7 @@ mod attack_melee;
 mod enqueue_approach_melee_target_model_action;
 pub mod get_percent_animation_completed;
 pub mod handle_new_attack_reaction_events;
+pub mod handle_start_floating_text_events;
 pub mod handle_start_next_model_action_events;
 pub mod model_actions;
 pub mod process_active_model_actions;
@@ -44,6 +47,7 @@ pub struct FloatingText {
     billboard_entity: Entity,
     time_started: Timestamp,
     color: Vec3,
+    time_to_live: u64,
 }
 
 #[derive(Component, Default)]
@@ -61,7 +65,9 @@ impl ModelActionQueue {
         active_model_actions: &mut ActiveModelActions,
         animation_player_links: &Query<&AnimationEntityLink>,
         animation_players: &mut Query<&mut AnimationPlayer>,
+        start_new_floating_text_event_writer: &mut EventWriter<StartNewFloatingTextEvent>,
         animations: &Res<Animations>,
+        combatant_entity: Entity,
         skeleton_entity: Entity,
         combatant_species: &CombatantSpecies,
         combatant_properties: &CombatantProperties,
@@ -83,17 +89,18 @@ impl ModelActionQueue {
                 _ => false,
             };
 
+            let animation_player_link = animation_player_links
+                .get(skeleton_entity)
+                .expect("to have linked the skeleton to it's animation player");
+            let mut animation_player = animation_players
+                .get_mut(animation_player_link.0)
+                .expect("to have a valid animation player entity in the link");
             if let Some(animation_name) = get_animation_name_from_model_action(
                 &combatant_species,
                 &model_action,
                 &combatant_properties,
             ) {
-                let animation_player_link = animation_player_links
-                    .get(skeleton_entity)
-                    .expect("to have linked the skeleton to it's animation player");
-                let mut animation_player = animation_players
-                    .get_mut(animation_player_link.0)
-                    .expect("to have a valid animation player entity in the link");
+                animation_player.resume();
                 let animation_handle = animations
                     .0
                     .get(&animation_name)
@@ -105,6 +112,16 @@ impl ModelActionQueue {
                 if should_repeat {
                     animation_player.repeat();
                 }
+            } else {
+                animation_player.pause();
+                // show missing animation billboard
+                start_new_floating_text_event_writer.send(StartNewFloatingTextEvent {
+                    combatant_entity,
+                    text: "Missing Animation".to_string(),
+                    color: Vec3::from([1.0, 1.0, 1.0]),
+                    distance_to_travel: 0.0,
+                    time_to_live: UNKNOWN_ANIMATION_DURATION,
+                });
             };
         }
     }

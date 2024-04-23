@@ -38,7 +38,6 @@ pub fn start_combatant_hit_recoveries(
 ) {
     let current_time = Date::new_0().get_time() as u64;
     for event in hit_recovery_activation_event_reader.read() {
-        info!("read hit recovery event");
         let HitRecoveryActivationEvent(targets_and_damages) = event;
         for (target_id, damage) in targets_and_damages {
             combatants_with_active_action_states.0.insert(*target_id);

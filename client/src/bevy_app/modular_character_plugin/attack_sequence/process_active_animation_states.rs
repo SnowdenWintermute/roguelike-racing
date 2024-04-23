@@ -19,11 +19,7 @@ use js_sys::Date;
 pub fn process_active_animation_states(
     mut commands: Commands,
     combatants_by_id: Res<CombatantsById>,
-    mut combatants: Query<(
-        &MainSkeletonEntity,
-        &mut TransformManager,
-        &HomeLocation,
-    )>,
+    mut combatants: Query<(&MainSkeletonEntity, &mut TransformManager, &HomeLocation)>,
     species_query: Query<&CombatantSpeciesComponent>,
     mut transforms: Query<&mut Transform>,
     mut combatants_with_active_action_states: ResMut<CombatantsExecutingAttacks>,
@@ -63,7 +59,6 @@ pub fn process_active_animation_states(
 
         let active_states = animation_manager.active_states.clone();
 
-        // info!("active states: {:#?}", active_states);
         for (active_state, time_started_option) in active_states {
             match active_state {
                 ActionSequenceStates::ApproachingTarget => {

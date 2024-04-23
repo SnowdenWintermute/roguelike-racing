@@ -20,6 +20,5 @@ pub fn send_part_names_to_yew(asset_pack: Res<MyAssets>, transmitter: ResMut<Bev
         part_names.weapons.insert(name.clone());
     }
 
-    // info!("sent part names :{:?}", part_names);
     let _ = transmitter.send(MessageFromBevy::PartNames(part_names));
 }

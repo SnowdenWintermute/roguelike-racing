@@ -28,8 +28,6 @@ pub fn enqueue_approach_melee_target_model_action(
         CombatActionTarget::All => None,
     };
 
-    info!("target id option: {:?}", target_id_option);
-
     if let Some(target_id) = target_id_option {
         model_action_queue
             .0
@@ -58,7 +56,6 @@ pub fn enqueue_approach_melee_target_model_action(
         let direction =
             (combatant_transformm.translation - target_transformm.translation).normalize();
         let destination = target_transformm.translation + direction * cloned_target_hitbox_radius.0;
-        info!("destination: {:?}", destination);
         transform_manager.destination = Some(Transform::from_xyz(
             destination[0],
             destination[1],

@@ -33,7 +33,7 @@ impl RoguelikeRacerGame {
         let mh_weapon_option = EquipmentProperties::get_weapon_equipment_properties_option_from_equipment_properties_option(mh_equipment_option);
         let oh_weapon_option = EquipmentProperties::get_weapon_equipment_properties_option_from_equipment_properties_option(oh_equipment_option);
 
-        let mh_attack_ends_turn = EquipmentProperties::is_shield(oh_equipment_option)
+        let mut mh_attack_ends_turn = EquipmentProperties::is_shield(oh_equipment_option)
             || if let Some(mh_weapon_properties) = mh_weapon_option {
                 mh_weapon_properties.is_two_handed()
             } else {
@@ -76,6 +76,20 @@ impl RoguelikeRacerGame {
             )),
         )?;
 
+        // targets were killed, don't calc off hand swing
+        let mut all_damaged_targets_died = true;
+        if let Some(hp_changes) = &mh_attack_result.hp_changes_by_entity_id {
+            for (combatant_id, hp_change) in hp_changes {
+                if let Ok((_, combatant_properties)) = self.get_combatant_by_id(&combatant_id) {
+                    if combatant_properties.hit_points as i16 + *hp_change > 0 {
+                        all_damaged_targets_died = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        mh_attack_ends_turn = mh_attack_ends_turn | all_damaged_targets_died;
         mh_attack_result.ends_turn = mh_attack_ends_turn;
         action_results.push(mh_attack_result);
 

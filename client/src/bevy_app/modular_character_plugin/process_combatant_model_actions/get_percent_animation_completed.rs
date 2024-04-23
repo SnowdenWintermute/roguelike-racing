@@ -1,6 +1,5 @@
-use crate::bevy_app::{
-    modular_character_plugin::Animations, utils::link_animations::AnimationEntityLink,
-};
+use crate::bevy_app::modular_character_plugin::Animations;
+use crate::bevy_app::utils::link_animations::AnimationEntityLink;
 use bevy::prelude::*;
 
 pub fn get_percent_animation_completed(

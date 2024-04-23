@@ -47,7 +47,7 @@ pub fn character_sheet() -> Html {
         game_state.viewing_inventory || game_state.viewing_attribute_point_assignment_menu;
 
     let conditional_styles = if show_character_sheet {
-        ""
+        "overflow-scroll"
     } else {
         "opacity-0 w-0 overflow-hidden"
     };

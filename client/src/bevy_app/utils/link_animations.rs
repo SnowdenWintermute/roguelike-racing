@@ -30,8 +30,6 @@ pub fn link_animations(
             &all_entities_with_parents_query,
         );
 
-        // info!("linking to top parent entity: {:?}", top_entity);
-
         // If the top parent has an animation config ref then link the player to the config
         if animations_entity_link_query.get(top_entity).is_ok() {
             warn!("Problem with multiple animation players for the same top parent");

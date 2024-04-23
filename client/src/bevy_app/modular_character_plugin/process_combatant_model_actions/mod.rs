@@ -76,6 +76,12 @@ impl ModelActionQueue {
                 },
             );
             // start animation if any
+            let should_repeat = match model_action {
+                CombatantModelActions::ApproachMeleeTarget
+                | CombatantModelActions::Recenter
+                | CombatantModelActions::ReturnHome => true,
+                _ => false,
+            };
 
             if let Some(animation_name) = get_animation_name_from_model_action(
                 &combatant_species,
@@ -92,12 +98,13 @@ impl ModelActionQueue {
                     .0
                     .get(&animation_name)
                     .expect("to be looking up a valid animation");
-                animation_player
-                    .start_with_transition(
-                        animation_handle.clone(),
-                        Duration::from_millis(transition_duration_ms),
-                    )
-                    .repeat();
+                animation_player.start_with_transition(
+                    animation_handle.clone(),
+                    Duration::from_millis(transition_duration_ms),
+                );
+                if should_repeat {
+                    animation_player.repeat();
+                }
             };
         }
     }

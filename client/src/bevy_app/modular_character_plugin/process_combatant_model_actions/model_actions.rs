@@ -42,22 +42,16 @@ pub fn get_animation_name_from_model_action(
             CombatantModelActions::Evade => None,
         },
         CombatantSpecies::Wasp => match model_action {
-            CombatantModelActions::ApproachMeleeTarget => todo!(),
-            CombatantModelActions::ReturnHome => todo!(),
-            CombatantModelActions::Recenter => todo!(),
-            CombatantModelActions::TurnToFaceTarget => todo!(),
-            CombatantModelActions::AttackMeleeMainHand => todo!(),
-            CombatantModelActions::AttackMeleeOffHand => todo!(),
-            CombatantModelActions::HitRecovery => todo!(),
-            CombatantModelActions::Death => todo!(),
-            CombatantModelActions::Idle => todo!(),
-            CombatantModelActions::Evade => todo!(),
-            // AnimationType::Run => "Wasp_Flying",
-            // AnimationType::HitRecovery => "Wasp_Death",
-            // AnimationType::Death => "Wasp_Death",
-            // AnimationType::Idle => "Wasp_Flying",
-            // AnimationType::Attack => "Wasp_Attack",
-            // AnimationType::ReturningToHome => "Wasp_Flying",
+            CombatantModelActions::ApproachMeleeTarget
+            | CombatantModelActions::ReturnHome
+            | CombatantModelActions::TurnToFaceTarget
+            | CombatantModelActions::Idle
+            | CombatantModelActions::Evade
+            | CombatantModelActions::Recenter => Some("Wasp_Flying"),
+            CombatantModelActions::HitRecovery => None,
+            CombatantModelActions::AttackMeleeOffHand
+            | CombatantModelActions::AttackMeleeMainHand => Some("Wasp_Attack"),
+            CombatantModelActions::Death => Some("Wasp_Death"),
         },
         CombatantSpecies::Frog => match model_action {
             CombatantModelActions::ApproachMeleeTarget => Some("Frog_Jump"),

@@ -107,7 +107,6 @@
 //                 .expect("to have the clip");
 //             let percent_completed =
 //                 (animation_player.elapsed() * SPEED_MODIFIER) / animation_clip.duration();
-//             info!("percent completed: {:?}", percent_completed);
 //             if percent_completed >= 0.65 {
 //                 animation_manager.last_location = animation_manager.destination.take();
 //                 animation_manager.destination = Some(home_location.0);
@@ -126,7 +125,6 @@
 //                 .get_mut(skeleton_entity.0)
 //                 .expect("to have the transform");
 //             let percent_of_complete_translation = clamped_elapsed as f32 / TIME_TO_RETURN as f32;
-//             info!("percent of completed: {percent_of_complete_translation}");
 //             combatant_transform.translation = animation_manager
 //                 .last_location
 //                 .expect("to have a last location")

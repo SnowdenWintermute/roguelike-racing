@@ -1,8 +1,10 @@
 #![allow(unused)]
-use bevy::{prelude::*, scene::SceneInstance};
+use bevy::prelude::*;
+use bevy::scene::SceneInstance;
 use gloo::console::info;
 
-use crate::bevy_app::modular_character_plugin::spawn_scenes::{SceneLoaded, SceneName};
+use crate::bevy_app::modular_character_plugin::spawn_scenes::SceneLoaded;
+use crate::bevy_app::modular_character_plugin::spawn_scenes::SceneName;
 
 pub fn mark_scenes_as_loaded(
     mut commands: Commands,
@@ -13,7 +15,6 @@ pub fn mark_scenes_as_loaded(
         if scene_manager.instance_is_ready(**instance) {
             commands.entity(entity).insert(SceneLoaded);
             let name = &scene_name.0;
-            info!(format!("marked scene as loaded: {} {:?}", name, entity));
         }
     }
 }

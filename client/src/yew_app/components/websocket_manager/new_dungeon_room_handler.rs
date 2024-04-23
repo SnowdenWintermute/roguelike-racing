@@ -39,7 +39,7 @@ pub fn handle_new_dungeon_room(
                             error_type: AppErrorTypes::ClientError,
                             message: error_messages::NO_YEW_TRANSMITTER_TO_BEVY.to_string(),
                         })?;
-                    let species = CombatantSpecies::Frog;
+                    let species = CombatantSpecies::Wasp;
 
                     transmitter
                         .send(MessageFromYew::SpawnCharacterWithHomeLocation(

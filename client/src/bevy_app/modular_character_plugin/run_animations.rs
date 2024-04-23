@@ -19,7 +19,6 @@
 //             .expect("to have an animation player on the main skeleton");
 
 //         let idle_animation_name = species.0.animation_name(AnimationType::Idle);
-//         info!("RUNNING ANIMATIONS, {idle_animation_name}");
 
 //         animation_player
 //             .play(

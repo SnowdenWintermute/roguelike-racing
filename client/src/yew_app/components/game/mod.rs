@@ -139,7 +139,7 @@ pub fn game() -> Html {
     };
 
     html!(
-        <main class="h-screen w-screen flex justify-center overflow-y-auto relative">
+        <main class="h-screen w-screen flex justify-center relative">
             <TailwindClassLoader />
             <CharacterAutofocusManager />
             // <GameDebug />
@@ -166,17 +166,13 @@ pub fn game() -> Html {
             </div>
             // Action Menu and Inventory/Equipment/Character sheet container
             <div class={ format!( "absolute z-31 top-1/2 -translate-y-1/2 w-full p-4 text-zinc-300 flex flex-row {}", conditional_styles)}>
-                <div class={ format!("flex flex-col {}", action_menu_and_character_sheet_container_conditional_classes)}>
+                <div class={ format!("flex flex-col {} max-w-full", action_menu_and_character_sheet_container_conditional_classes)}>
                     <div class="flex">
-                        <div class="flex flex-col flex-grow justify-end">
-                            <div class="flex justify-between">
+                        <div class="flex flex-col flex-grow justify-end max-w-full">
+                            <div class="flex justify-between overflow-auto">
                                 <ActionMenu />
                                 if !viewing_character_sheet {
-                                    <div class="flex">
-                                        // <div class={ "max-w-[25rem] mr-2" }>
-                                        //     // used as spacing, internally this hides itself
-                                        //     <ItemDetailsViewer />
-                                        // </div>
+                                    <div class="flex overflow-auto">
                                         <div class="max-h-[13.375rem] h-fit flex flex-grow justify-end">
                                             <div class="mr-2 w-[50rem]">
                                                 <ItemDetailsAndComparison />

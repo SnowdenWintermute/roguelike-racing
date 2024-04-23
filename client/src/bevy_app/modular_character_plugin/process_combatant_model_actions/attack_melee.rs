@@ -10,7 +10,7 @@ use crate::bevy_app::modular_character_plugin::StartNextModelActionEvent;
 use bevy::math::u64;
 use bevy::prelude::*;
 
-pub const MH_MELEE_ANIMATION_DURATION_TRANSITION_THRESHOLD: f32 = 0.65;
+pub const MH_MELEE_ANIMATION_DURATION_TRANSITION_THRESHOLD: f32 = 0.55;
 
 pub fn attacking_with_melee_processor(
     entity: Entity,
@@ -52,7 +52,6 @@ pub fn attacking_with_melee_processor(
     };
 
     if percent_completed > MH_MELEE_ANIMATION_DURATION_TRANSITION_THRESHOLD && !transition_started {
-        info!("starting transition from mh melee attack");
         start_next_model_action_event_writer.send(StartNextModelActionEvent {
             entity,
             transition_duration_ms: 500,

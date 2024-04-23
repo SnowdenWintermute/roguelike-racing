@@ -92,7 +92,6 @@ pub fn bevy_messages_manager(props: &Props) -> Html {
                 // log!(format!("processing message {:?}", message));
                 match message {
                     MessageFromBevy::AssetsLoaded => {
-                        // info!("setting assets loaded");
                         cloned_dispatch.reduce_mut(|store| store.bevy_assets_loaded = true)
                     }
                     MessageFromBevy::CameraPosition(camera_position) => cloned_dispatch

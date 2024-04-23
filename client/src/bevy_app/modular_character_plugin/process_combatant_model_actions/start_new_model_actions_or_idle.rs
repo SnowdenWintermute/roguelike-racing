@@ -40,10 +40,8 @@ pub fn start_new_model_actions_or_idle(
         let species = species_query
             .get(skeleton_entity.0)
             .expect("skeleton to have a species");
-        info!("model action queue: {:#?}", model_action_queue.0);
         if model_action_queue.0.len() > 0 && active_model_actions.0.len() == 0 {
             // if no active actions take the next one
-            info!("got new actions, starting the first one");
             model_action_queue.start_next_model_action(
                 &mut active_model_actions,
                 &animation_player_links,
@@ -55,7 +53,9 @@ pub fn start_new_model_actions_or_idle(
                 500,
             );
         } else if active_model_actions.0.len() == 0 {
-            info!("starting idle animation");
+            if combatant_properties_component.0.hit_points == 0 {
+                continue;
+            }
             start_idle_animation(
                 &animation_player_links,
                 &mut animation_players,

@@ -32,7 +32,6 @@ impl SceneAabb {
     fn merge_aabb(&mut self, aabb: &Aabb, global_transform: &GlobalTransform) {
         let min = aabb.min();
         let max = aabb.max();
-        // info!(format!("merging child aabb"));
         let corners = [
             global_transform.transform_point(Vec3::new(max.x, max.y, max.z)),
             global_transform.transform_point(Vec3::new(min.x, max.y, max.z)),
@@ -48,7 +47,7 @@ impl SceneAabb {
             let gt = corner.cmpgt(self.max);
             let lt = corner.cmplt(self.min);
 
-            debug!("corner {:?}, gt {:?}, lt {:?}", corner, lt, gt);
+            // debug!("corner {:?}, gt {:?}, lt {:?}", corner, lt, gt);
 
             if gt.x {
                 self.max.x = corner.x;
@@ -109,6 +108,5 @@ pub fn update_scene_aabb(
         scene_aabb.merge_aabb(bb, transform);
     }
 
-    // info!(format!("Scene Entity {:?}, AABB {:?}", entity, scene_aabb));
     commands.entity(entity).insert(scene_aabb);
 }

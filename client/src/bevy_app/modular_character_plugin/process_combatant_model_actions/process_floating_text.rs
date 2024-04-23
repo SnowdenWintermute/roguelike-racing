@@ -30,14 +30,12 @@ pub fn process_floating_text(
         }
 
         for i in indices_to_remove {
-            info!("removing a billboard");
             let removed = floating_text_component.0.remove(i);
             let billboard_entity_commands = commands.entity(removed.billboard_entity);
             billboard_entity_commands.despawn_recursive();
         }
 
         if floating_text_component.0.len() == 0 {
-            info!("removing a floating text component");
             commands.entity(entity).remove::<FloatingTextComponent>();
         }
     }

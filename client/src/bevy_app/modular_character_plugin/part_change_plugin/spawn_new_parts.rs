@@ -24,7 +24,6 @@ pub fn spawn_new_parts(
     assets_gltf: Res<Assets<Gltf>>,
 ) {
     for event in part_selection_event_reader.read() {
-        info!("part spawner read part selection event: {:#?}", event);
         let file_name = &event.0.name;
         let category = &event.0.category;
 
@@ -34,10 +33,6 @@ pub fn spawn_new_parts(
             .0
             .get(&event.0.character_id)
             .expect("to have a character by this id");
-        info!(
-            "spawning part for character id: {}, entity: {:?}",
-            character_id, character_entity
-        );
         // ensure it has an assigned skeleton
 
         if let Ok((_, _, mut parts_awaiting_spawn, _)) =
@@ -81,7 +76,6 @@ pub fn spawn_part(
         HomeLocation::default(),
     )
     .expect("to spawn the scene");
-    // info!("spawned part scene: {:?}", part_scene_entity);
 
     parts_awaiting_spawn
         .0

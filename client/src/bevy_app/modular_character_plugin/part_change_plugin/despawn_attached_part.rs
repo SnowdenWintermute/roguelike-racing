@@ -7,7 +7,6 @@ pub fn despawn_attached_part(
     attached_parts_reparented_entities: &mut ResMut<AttachedPartsReparentedEntities>,
 ) {
     // remove it from the scene_entities_by_name register
-    info!("despawing {:?}", part_scene_entity);
     // remove any entities in the scene that weren't reparented during part attachment
     let part_scene_entity_commands = commands.entity(*part_scene_entity);
     part_scene_entity_commands.despawn_recursive();

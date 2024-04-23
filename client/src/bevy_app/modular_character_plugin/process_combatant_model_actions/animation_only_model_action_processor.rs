@@ -43,7 +43,7 @@ pub fn animation_only_model_action_processor(
         elapsed as f32 / UNKNOWN_ANIMATION_DURATION as f32
     };
 
-    if percent_completed >= 1.0 {
+    if percent_completed >= 0.9 {
         let removed = active_model_actions.0.remove(model_action);
         info!(
             "removing model action {:?}, got removed: {:?}",

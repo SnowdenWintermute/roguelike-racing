@@ -3,18 +3,18 @@ use crate::bevy_app::modular_character_plugin::process_combatant_model_actions::
 use crate::bevy_app::modular_character_plugin::process_combatant_model_actions::TransformManager;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::HitboxRadius;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::MainSkeletonEntity;
-use crate::bevy_app::modular_character_plugin::CombatantId;
 use bevy::prelude::*;
 use common::combat::combat_actions::CombatActionTarget;
 use common::combat::combat_actions::FriendOrFoe;
 use common::combat::ActionResult;
+use common::primatives::EntityId;
 use std::collections::HashMap;
 
 pub fn enqueue_approach_melee_target_model_action(
     action_result: &ActionResult,
     transform_manager: &mut TransformManager,
     model_action_queue: &mut ModelActionQueue,
-    combatants_by_id: &HashMap<CombatantId, Entity>,
+    combatants_by_id: &HashMap<EntityId, Entity>,
     skeleton_entity: Entity,
     target_combatants: &Query<(&MainSkeletonEntity, &HitboxRadius)>,
     transforms: &Query<&Transform>,

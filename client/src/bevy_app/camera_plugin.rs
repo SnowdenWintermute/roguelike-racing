@@ -1,6 +1,6 @@
+use crate::comm_channels::messages_from_bevy::CameraPosition;
+use crate::comm_channels::messages_from_bevy::MessageFromBevy;
 use crate::comm_channels::BevyTransmitter;
-use crate::comm_channels::CameraPosition;
-use crate::comm_channels::MessageFromBevy;
 use bevy::prelude::*;
 use bevy_panorbit_camera::PanOrbitCamera;
 

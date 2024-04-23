@@ -1,9 +1,9 @@
+use super::messages_from_yew::MessageFromYew;
 use super::BevyReceiver;
 use super::BevyTransmitter;
 use super::CharacterPartSelectionEvent;
 use super::CharacterSpawnEvent;
 use super::DespawnCombatantModelEvent;
-use super::MessageFromYew;
 use super::ProcessNextTurnResultEvent;
 use super::YewTransmitter;
 use crate::bevy_app::modular_character_plugin::TurnResultsQueue;

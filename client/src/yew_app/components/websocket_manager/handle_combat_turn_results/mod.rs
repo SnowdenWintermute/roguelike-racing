@@ -1,4 +1,4 @@
-use crate::comm_channels::MessageFromYew;
+use crate::comm_channels::messages_from_yew::MessageFromYew;
 use crate::yew_app::store::bevy_communication_store::BevyCommunicationStore;
 use crate::yew_app::store::game_store::GameStore;
 use common::app_consts::error_messages;

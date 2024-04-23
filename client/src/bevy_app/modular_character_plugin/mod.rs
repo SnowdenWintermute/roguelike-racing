@@ -19,6 +19,7 @@ use crate::comm_channels::DespawnCombatantModelEvent;
 use crate::frontend_common::CombatantSpecies;
 use bevy::prelude::*;
 use common::combat::CombatTurnResult;
+use common::primatives::EntityId;
 use std::collections::HashMap;
 use std::collections::VecDeque;
 mod assemble_parts;
@@ -35,18 +36,15 @@ mod spawn_combatant;
 pub mod spawn_scenes;
 mod update_scene_aabbs;
 
-pub type CombatantId = u32;
 pub type HitPoints = i16;
 
 // RESOURCES
 #[derive(Resource, Debug, Default)]
-pub struct SkeletonsAwaitingCombatantAssignment(
-    pub HashMap<CombatantId, (Entity, CombatantSpecies)>,
-);
+pub struct SkeletonsAwaitingCombatantAssignment(pub HashMap<EntityId, (Entity, CombatantSpecies)>);
 #[derive(Resource, Debug, Default)]
 pub struct Animations(pub HashMap<String, Handle<AnimationClip>>);
 #[derive(Resource, Debug, Default)]
-pub struct CombatantsById(pub HashMap<CombatantId, Entity>);
+pub struct CombatantsById(pub HashMap<EntityId, Entity>);
 #[derive(Resource, Default)]
 pub struct AttachedPartsReparentedEntities {
     parts_and_entities: HashMap<Entity, Vec<Entity>>,
@@ -68,9 +66,9 @@ pub struct StartNextModelActionEvent {
 }
 #[derive(Clone, Debug, Event)]
 pub struct StartNewAttackReactionEvent {
-    entity_id: CombatantId,
+    entity_id: EntityId,
     attack_result: AttackResult,
-    causer_id: CombatantId,
+    causer_id: EntityId,
 }
 
 pub struct ModularCharacterPlugin;

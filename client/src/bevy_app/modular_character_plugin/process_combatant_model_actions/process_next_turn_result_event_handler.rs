@@ -5,12 +5,11 @@ use super::TransformManager;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::ActionResultsProcessing;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::HitboxRadius;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::MainSkeletonEntity;
-use crate::bevy_app::modular_character_plugin::CombatantId;
 use crate::bevy_app::modular_character_plugin::CombatantsById;
 use crate::bevy_app::modular_character_plugin::HomeLocation;
 use crate::bevy_app::modular_character_plugin::TurnResultsQueue;
+use crate::comm_channels::messages_from_bevy::MessageFromBevy;
 use crate::comm_channels::BevyTransmitter;
-use crate::comm_channels::MessageFromBevy;
 use crate::comm_channels::ProcessNextTurnResultEvent;
 use bevy::prelude::*;
 use common::combat::combat_actions::CombatAction;
@@ -44,6 +43,10 @@ pub fn process_next_turn_result_event_handler(
             action_results,
         }) = turn_results_queue.0.pop_front()
         {
+            let _result = bevy_transmitter
+                .0
+                .send(MessageFromBevy::StartedProcessingTurnResult(combatant_id));
+
             let combatant_entity = combatants_by_id
                 .0
                 .get(&combatant_id)

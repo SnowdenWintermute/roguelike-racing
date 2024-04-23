@@ -1,8 +1,8 @@
 use super::Animations;
 use crate::bevy_app::asset_loader_plugin::AssetLoaderState;
 use crate::bevy_app::asset_loader_plugin::MyAssets;
+use crate::comm_channels::messages_from_bevy::MessageFromBevy;
 use crate::comm_channels::BevyTransmitter;
-use crate::comm_channels::MessageFromBevy;
 use bevy::gltf::Gltf;
 use bevy::prelude::*;
 use std::collections::HashSet;

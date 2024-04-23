@@ -1,11 +1,12 @@
 use core::fmt;
-
 use serde::Deserialize;
 use serde::Serialize;
 
+pub type EntityId = u32;
+
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct EntityProperties {
-    pub id: u32,
+    pub id: EntityId,
     pub name: String,
 }
 

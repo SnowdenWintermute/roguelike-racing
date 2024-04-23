@@ -1,5 +1,5 @@
-use crate::comm_channels::CameraPosition;
-use crate::comm_channels::MessageFromBevy;
+use crate::comm_channels::messages_from_bevy::CameraPosition;
+use crate::comm_channels::messages_from_bevy::MessageFromBevy;
 use crate::comm_channels::YewTransmitter;
 use yewdux::Store;
 

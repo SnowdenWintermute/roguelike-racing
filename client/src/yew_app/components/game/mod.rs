@@ -12,7 +12,7 @@ mod items_on_ground;
 mod ready_up_display;
 mod tailwind_class_loader;
 mod top_info_bar;
-use crate::comm_channels::MessageFromYew;
+use crate::comm_channels::messages_from_yew::MessageFromYew;
 use crate::utils::set_bevy_canvas_visibility;
 use crate::yew_app::components::game::action_menu::ActionMenu;
 use crate::yew_app::components::game::character_autofocus_manager::CharacterAutofocusManager;

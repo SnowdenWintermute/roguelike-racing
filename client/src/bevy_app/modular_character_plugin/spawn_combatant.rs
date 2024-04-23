@@ -2,14 +2,13 @@ use super::process_combatant_model_actions::ActiveModelActions;
 use super::process_combatant_model_actions::ModelActionQueue;
 use super::process_combatant_model_actions::TransformManager;
 use super::spawn_scenes::spawn_scene;
-use super::CombatantId;
 use super::CombatantsById;
 use super::HomeLocation;
 use super::SkeletonsAwaitingCombatantAssignment;
 use crate::bevy_app::asset_loader_plugin::MyAssets;
+use crate::comm_channels::messages_from_bevy::MessageFromBevy;
 use crate::comm_channels::BevyTransmitter;
 use crate::comm_channels::CharacterSpawnEvent;
-use crate::comm_channels::MessageFromBevy;
 use crate::frontend_common::CharacterPartCategories;
 use crate::frontend_common::CombatantSpecies;
 use bevy::gltf::Gltf;
@@ -17,6 +16,7 @@ use bevy::prelude::*;
 use bevy_mod_billboard::BillboardTextBundle;
 use common::combat::ActionResult;
 use common::combatants::CombatantProperties;
+use common::primatives::EntityId;
 use std::collections::HashMap;
 use std::collections::HashSet;
 
@@ -96,7 +96,7 @@ pub fn spawn_combatant(
     characters_by_id: &mut ResMut<CombatantsById>,
     skeletons_awaiting_combatant_assignment: &mut ResMut<SkeletonsAwaitingCombatantAssignment>,
     home_location: HomeLocation,
-    character_id: CombatantId,
+    character_id: EntityId,
     transmitter: &ResMut<BevyTransmitter>,
     skeleton_handle: &Handle<Gltf>,
     file_name: String,

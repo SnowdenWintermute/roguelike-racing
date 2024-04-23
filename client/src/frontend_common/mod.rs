@@ -1,4 +1,4 @@
-use crate::bevy_app::modular_character_plugin::CombatantId;
+use common::primatives::EntityId;
 use std::collections::HashSet;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -20,21 +20,21 @@ pub struct PartsByName {
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct CharacterPartSelection {
-    pub character_id: CombatantId,
+    pub character_id: EntityId,
     pub name: String,
     pub category: CharacterPartCategories,
 }
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct CharacterAnimationSelection {
-    pub character_id: CombatantId,
+    pub character_id: EntityId,
     pub name: String,
 }
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct AttackCommand {
-    pub combatant_id: CombatantId,
-    pub target_id: CombatantId,
+    pub combatant_id: EntityId,
+    pub target_id: EntityId,
 }
 
 #[derive(Debug, Clone, PartialEq)]

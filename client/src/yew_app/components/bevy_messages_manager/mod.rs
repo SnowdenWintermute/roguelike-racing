@@ -1,9 +1,11 @@
 mod finished_processing_turn;
 mod hp_change_message_handler;
+mod started_processing_turn_result;
 use self::finished_processing_turn::finished_processing_turn;
 use self::hp_change_message_handler::hp_change_message_handler;
+use self::started_processing_turn_result::started_processing_turn_result;
+use crate::comm_channels::messages_from_bevy::MessageFromBevy;
 use crate::comm_channels::BevyTransmitter;
-use crate::comm_channels::MessageFromBevy;
 use crate::comm_channels::YewTransmitter;
 use crate::yew_app::store::bevy_communication_store::BevyCommunicationStore;
 use crate::yew_app::store::game_store::GameStore;
@@ -101,6 +103,10 @@ pub fn bevy_messages_manager(props: &Props) -> Html {
                             hp_change_message.combatant_id,
                             hp_change_message.hp_change,
                         );
+                    }
+                    MessageFromBevy::StartedProcessingTurnResult(combatant_id) => {
+                        let _result =
+                            started_processing_turn_result(game_dispatch.clone(), *combatant_id);
                     }
                     MessageFromBevy::FinishedProcessingTurnResult(combatant_id) => {
                         let _result =

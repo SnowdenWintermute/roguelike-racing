@@ -1,5 +1,5 @@
 use crate::bevy_app::modular_character_plugin::HomeLocation;
-use crate::comm_channels::MessageFromYew;
+use crate::comm_channels::messages_from_yew::MessageFromYew;
 use crate::frontend_common::CombatantSpecies;
 use crate::yew_app::components::mesh_manager::CombatantEventManager;
 use crate::yew_app::store::bevy_communication_store::BevyCommunicationStore;

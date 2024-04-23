@@ -1,8 +1,7 @@
-use crate::{
-    bevy_app::asset_loader_plugin::MyAssets,
-    comm_channels::{BevyTransmitter, MessageFromBevy},
-    frontend_common::PartsByName,
-};
+use crate::bevy_app::asset_loader_plugin::MyAssets;
+use crate::comm_channels::messages_from_bevy::MessageFromBevy;
+use crate::comm_channels::BevyTransmitter;
+use crate::frontend_common::PartsByName;
 use bevy::prelude::*;
 
 pub fn send_part_names_to_yew(asset_pack: Res<MyAssets>, transmitter: ResMut<BevyTransmitter>) {

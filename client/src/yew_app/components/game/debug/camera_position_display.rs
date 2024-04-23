@@ -1,4 +1,4 @@
-use crate::comm_channels::CameraPosition;
+use crate::comm_channels::messages_from_bevy::CameraPosition;
 use crate::yew_app::store::bevy_communication_store::BevyCommunicationStore;
 use yew::prelude::*;
 use yewdux::use_store;

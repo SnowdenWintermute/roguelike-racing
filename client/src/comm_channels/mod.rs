@@ -1,77 +1,36 @@
 pub mod comm_channel_bevy_plugin;
-use crate::bevy_app::modular_character_plugin::CombatantId;
+pub mod messages_from_bevy;
+pub mod messages_from_yew;
+use self::messages_from_bevy::MessageFromBevy;
+use self::messages_from_yew::MessageFromYew;
 use crate::bevy_app::modular_character_plugin::HomeLocation;
 use crate::frontend_common::CharacterPartSelection;
 use crate::frontend_common::CombatantSpecies;
-use crate::frontend_common::PartsByName;
 use bevy::prelude::*;
 use broadcast::Receiver;
 use broadcast::Sender;
-use common::combat::CombatTurnResult;
 use common::combatants::CombatantProperties;
-use std::collections::HashSet;
-use std::collections::VecDeque;
+use common::primatives::EntityId;
 use tokio::sync::broadcast;
 
-// YEW MESSAGES
-#[derive(Debug, Clone)]
-pub enum MessageFromYew {
-    SelectCharacterPart(CharacterPartSelection),
-    SpawnCharacterWithHomeLocation(
-        CombatantId,
-        HomeLocation,
-        CombatantSpecies,
-        CombatantProperties,
-    ),
-    DespawnCombatantModel(CombatantId),
-    NewTurnResults(VecDeque<CombatTurnResult>),
-    SetBevyRendering(bool),
-}
 #[derive(Clone, Debug, Event)]
 pub struct CharacterPartSelectionEvent(pub CharacterPartSelection);
 
 #[derive(Clone, Debug, Event)]
 pub struct CharacterSpawnEvent(
-    pub CombatantId,
+    pub EntityId,
     pub HomeLocation,
     pub CombatantSpecies,
     pub CombatantProperties,
 );
 
 #[derive(Clone, Debug, Event)]
-pub struct DespawnCombatantModelEvent(pub CombatantId);
+pub struct DespawnCombatantModelEvent(pub EntityId);
 
 pub type IdOfCombatantTurnJustFinished = u32;
 #[derive(Clone, Debug, Event)]
 pub struct ProcessNextTurnResultEvent(pub Option<IdOfCombatantTurnJustFinished>);
 
-#[derive(Clone, Debug, PartialEq, Default)]
-pub struct CameraPosition {
-    pub focus: Vec3,
-    pub alpha: Option<f32>,
-    pub beta: Option<f32>,
-    pub radius: Option<f32>,
-}
-
-#[derive(Clone, Debug, PartialEq)]
-pub struct HpChangeMessageFromBevy {
-    pub combatant_id: CombatantId,
-    pub hp_change: i16,
-}
-
-// BEVY MESSAGES
-#[derive(Debug, Clone, PartialEq)]
-pub enum MessageFromBevy {
-    PartNames(PartsByName),
-    AnimationsAvailable(HashSet<String>),
-    CombatantSpawned(CombatantId),
-    AssetsLoaded,
-    CameraPosition(CameraPosition),
-    HpChangeById(HpChangeMessageFromBevy),
-    CombatantEvadedAttack(CombatantId),
-    FinishedProcessingTurnResult(CombatantId),
-    FinishedProcessingModelActions(CombatantId),
-}
 // CHANNELS
 #[derive(Clone, Resource, Deref)]
 pub struct YewTransmitter(pub Sender<MessageFromYew>);

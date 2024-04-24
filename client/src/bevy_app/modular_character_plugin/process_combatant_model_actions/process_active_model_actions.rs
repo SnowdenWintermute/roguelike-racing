@@ -1,6 +1,6 @@
 use super::animation_only_model_action_processor::animation_only_model_action_processor;
-use super::approaching_melee_target::combatant_approaching_melee_target_processor;
-use super::attack_melee::attacking_with_melee_processor;
+use super::approaching_destination::combatant_approaching_destination_processor;
+use super::model_action_causing_damage_processor::model_action_causing_damage_processor;
 use super::model_actions::CombatantModelActions;
 use super::recentering::combatant_recentering_processor;
 use super::returning_home::combatant_returning_to_home_position_home_processor;
@@ -76,8 +76,8 @@ pub fn process_active_model_actions(
             let elapsed = now - model_action_progress_tracker.time_started;
             let transition_started = model_action_progress_tracker.transition_started;
             match model_action {
-                CombatantModelActions::ApproachMeleeTarget => {
-                    combatant_approaching_melee_target_processor(
+                CombatantModelActions::ApproachDestination => {
+                    combatant_approaching_destination_processor(
                         entity,
                         elapsed,
                         transition_started,
@@ -100,7 +100,8 @@ pub fn process_active_model_actions(
                 }
                 CombatantModelActions::TurnToFaceTarget => todo!(),
                 CombatantModelActions::AttackMeleeMainHand
-                | CombatantModelActions::AttackMeleeOffHand => attacking_with_melee_processor(
+                | CombatantModelActions::AttackMeleeOffHand
+                | CombatantModelActions::CastSpell => model_action_causing_damage_processor(
                     entity,
                     elapsed,
                     transition_started,
@@ -118,7 +119,6 @@ pub fn process_active_model_actions(
                     &model_action,
                 ),
                 CombatantModelActions::Idle => (),
-                CombatantModelActions::CastSpell => todo!(),
             }
         }
     }

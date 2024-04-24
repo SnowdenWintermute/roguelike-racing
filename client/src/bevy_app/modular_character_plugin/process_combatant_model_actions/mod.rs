@@ -14,19 +14,19 @@ use std::collections::HashMap;
 use std::collections::VecDeque;
 use std::time::Duration;
 mod animation_only_model_action_processor;
-mod approaching_melee_target;
-mod attack_melee;
-mod enqueue_approach_melee_target_model_action;
+mod approaching_destination;
 pub mod get_percent_animation_completed;
 pub mod handle_new_attack_reaction_events;
 pub mod handle_start_floating_text_events;
 pub mod handle_start_next_model_action_events;
+mod model_action_causing_damage_processor;
 pub mod model_actions;
 pub mod process_active_model_actions;
 pub mod process_floating_text;
 pub mod process_next_turn_result_event_handler;
 mod recentering;
 mod returning_home;
+mod set_melee_target_destination_transform_and_rotation;
 mod start_idle_animation;
 pub mod start_new_model_actions_or_idle;
 
@@ -83,7 +83,7 @@ impl ModelActionQueue {
             );
             // start animation if any
             let should_repeat = match model_action {
-                CombatantModelActions::ApproachMeleeTarget
+                CombatantModelActions::ApproachDestination
                 | CombatantModelActions::Recenter
                 | CombatantModelActions::ReturnHome => true,
                 _ => false,

@@ -1,5 +1,3 @@
-use crate::bevy_app::modular_character_plugin::process_combatant_model_actions::model_actions::CombatantModelActions;
-use crate::bevy_app::modular_character_plugin::process_combatant_model_actions::ModelActionQueue;
 use crate::bevy_app::modular_character_plugin::process_combatant_model_actions::TransformManager;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::HitboxRadius;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::MainSkeletonEntity;
@@ -10,10 +8,9 @@ use common::combat::ActionResult;
 use common::primatives::EntityId;
 use std::collections::HashMap;
 
-pub fn enqueue_approach_melee_target_model_action(
+pub fn set_melee_target_destination_transform_and_rotation(
     action_result: &ActionResult,
     transform_manager: &mut TransformManager,
-    model_action_queue: &mut ModelActionQueue,
     combatants_by_id: &HashMap<EntityId, Entity>,
     skeleton_entity: Entity,
     target_combatants: &Query<(&MainSkeletonEntity, &HitboxRadius)>,
@@ -29,10 +26,6 @@ pub fn enqueue_approach_melee_target_model_action(
     };
 
     if let Some(target_id) = target_id_option {
-        model_action_queue
-            .0
-            .push_back(CombatantModelActions::ApproachMeleeTarget);
-
         // set destination
         // get locations of combatant and target
         let target_entity = combatants_by_id
@@ -43,28 +36,28 @@ pub fn enqueue_approach_melee_target_model_action(
             .expect("to have the combatant");
 
         let cloned_target_hitbox_radius = target_hitbox_radius.clone();
-        let target_transformm = transforms
+        let target_transform = transforms
             .get(target_skeleton_entity.0)
             .expect("to have the transformm")
             .clone();
-        let combatant_transformm = transforms
+        let combatant_transform = transforms
             .get(skeleton_entity)
             .expect("to have the transformm")
             .clone();
 
         // Calculate destination
         let direction =
-            (combatant_transformm.translation - target_transformm.translation).normalize();
-        let destination = target_transformm.translation + direction * cloned_target_hitbox_radius.0;
+            (combatant_transform.translation - target_transform.translation).normalize();
+        let destination = target_transform.translation + direction * cloned_target_hitbox_radius.0;
         transform_manager.destination = Some(Transform::from_xyz(
             destination[0],
             destination[1],
             destination[2],
         ));
 
-        let up = *combatant_transformm.up().clone();
+        let up = *combatant_transform.up().clone();
         transform_manager.target_rotation = Some(
-            combatant_transformm
+            combatant_transform
                 .looking_at(
                     transform_manager
                         .destination

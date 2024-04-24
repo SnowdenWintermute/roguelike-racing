@@ -4,7 +4,7 @@ use common::combatants::CombatantProperties;
 
 #[derive(Hash, Eq, PartialEq, Debug, Clone)]
 pub enum CombatantModelActions {
-    ApproachMeleeTarget,
+    ApproachDestination,
     ReturnHome,
     Recenter,
     TurnToFaceTarget,
@@ -30,7 +30,7 @@ pub fn get_animation_name_from_model_action(
 ) -> Option<String> {
     let to_return = match species {
         CombatantSpecies::Humanoid => match model_action {
-            CombatantModelActions::ApproachMeleeTarget => Some("Run"),
+            CombatantModelActions::ApproachDestination => Some("Run"),
             CombatantModelActions::ReturnHome => Some("Run_Back"),
             CombatantModelActions::Recenter => Some("Run"),
             CombatantModelActions::TurnToFaceTarget => Some("Run"),
@@ -43,7 +43,7 @@ pub fn get_animation_name_from_model_action(
             CombatantModelActions::CastSpell => None,
         },
         CombatantSpecies::Wasp => match model_action {
-            CombatantModelActions::ApproachMeleeTarget
+            CombatantModelActions::ApproachDestination
             | CombatantModelActions::ReturnHome
             | CombatantModelActions::TurnToFaceTarget
             | CombatantModelActions::Idle
@@ -56,7 +56,7 @@ pub fn get_animation_name_from_model_action(
             CombatantModelActions::CastSpell => None,
         },
         CombatantSpecies::Frog => match model_action {
-            CombatantModelActions::ApproachMeleeTarget => Some("Frog_Jump"),
+            CombatantModelActions::ApproachDestination => Some("Frog_Jump"),
             CombatantModelActions::ReturnHome => Some("Frog_Jump"),
             CombatantModelActions::Recenter => Some("Frog_Idle"),
             CombatantModelActions::TurnToFaceTarget => Some("Frog_Jump"),

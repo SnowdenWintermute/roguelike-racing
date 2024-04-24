@@ -11,7 +11,7 @@ const TIME_TO_TRANSLATE: u64 = 1500;
 const TIME_TO_ROTATE: u64 = 1000;
 const PERCENT_DISTANCE_TO_START_TRANSITION: f32 = 0.8;
 
-pub fn combatant_approaching_melee_target_processor(
+pub fn combatant_approaching_destination_processor(
     entity: Entity,
     elapsed: u64,
     transition_started: bool,
@@ -58,7 +58,7 @@ pub fn combatant_approaching_melee_target_processor(
 
         active_model_actions
             .0
-            .get_mut(&CombatantModelActions::ApproachMeleeTarget)
+            .get_mut(&CombatantModelActions::ApproachDestination)
             .expect("this model action to be active")
             .transition_started = true;
     }
@@ -68,6 +68,6 @@ pub fn combatant_approaching_melee_target_processor(
         transform_manager.destination = Some(home_location.0.clone());
         active_model_actions
             .0
-            .remove(&CombatantModelActions::ApproachMeleeTarget);
+            .remove(&CombatantModelActions::ApproachDestination);
     }
 }

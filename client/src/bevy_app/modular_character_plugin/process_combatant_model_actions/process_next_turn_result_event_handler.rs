@@ -1,5 +1,5 @@
-use super::enqueue_approach_melee_target_model_action::enqueue_approach_melee_target_model_action;
 use super::model_actions::CombatantModelActions;
+use super::set_melee_target_destination_transform_and_rotation::set_melee_target_destination_transform_and_rotation;
 use super::ModelActionQueue;
 use super::TransformManager;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::ActionResultsProcessing;
@@ -64,19 +64,23 @@ pub fn process_next_turn_result_event_handler(
 
             // enqueue model actions from action result
             for (i, action_result) in action_results.into_iter().enumerate() {
+                // will set the destination below based on melee action or not
+                model_action_queue
+                    .0
+                    .push_back(CombatantModelActions::ApproachDestination);
+
                 match &action_result.action {
                     CombatAction::AbilityUsed(ability_name) => {
                         // if melee, queue up the approach model action
                         if ability_name.get_attributes().is_melee && i == 0 {
-                            enqueue_approach_melee_target_model_action(
+                            set_melee_target_destination_transform_and_rotation(
                                 &action_result,
                                 &mut transform_manager,
-                                &mut model_action_queue,
                                 &combatants_by_id.0,
                                 skeleton_entity.0,
                                 &target_combatants,
                                 &transforms,
-                            )
+                            );
                         }
                         let model_action = match ability_name {
                             // attack is only used by the client to show a generic menu option which is
@@ -102,6 +106,14 @@ pub fn process_next_turn_result_event_handler(
                 }
                 // to be removed and read by relevant actions that need the damage/targets info etc
                 action_results_processing.0.push(action_result)
+            }
+
+            // if no destination was set, make it the home location
+            if transform_manager.destination.is_none() {
+                transform_manager.destination = Some(home_location.0);
+            }
+            if transform_manager.target_rotation.is_none() {
+                transform_manager.target_rotation = Some(home_location.0.rotation)
             }
 
             model_action_queue

@@ -12,7 +12,7 @@ use bevy::prelude::*;
 
 pub const MH_MELEE_ANIMATION_DURATION_TRANSITION_THRESHOLD: f32 = 0.55;
 
-pub fn attacking_with_melee_processor(
+pub fn model_action_causing_damage_processor(
     entity: Entity,
     elapsed: u64,
     transition_started: bool,

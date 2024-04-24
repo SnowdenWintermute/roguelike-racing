@@ -120,13 +120,15 @@ pub fn spawn_combatant(
         .0
         .insert(character_id, (skeleton_entity, species.clone()));
 
+    let transform_manager = TransformManager::new(home_location.clone());
+
     let character_entity_commands = commands.spawn((
         CombatantIdComponent(character_id),
         MainSkeletonEntity(skeleton_entity),
         CharacterAttachedPartScenes(HashMap::new()),
         CharacterPartScenesAwaitingSpawn(HashMap::new()),
         home_location,
-        TransformManager::default(),
+        transform_manager,
         ModelActionQueue::default(),
         ActiveModelActions::default(),
         HitboxRadius(0.7),

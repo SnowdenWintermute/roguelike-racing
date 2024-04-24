@@ -4,7 +4,6 @@ use self::notify_yew_that_assets_are_loaded::notify_yew_that_assets_are_loaded;
 use self::part_change_plugin::PartChangePlugin;
 use self::process_combatant_model_actions::handle_new_attack_reaction_events::handle_new_attack_reaction_events;
 use self::process_combatant_model_actions::handle_new_attack_reaction_events::AttackResult;
-use self::process_combatant_model_actions::handle_start_floating_text_events;
 use self::process_combatant_model_actions::handle_start_floating_text_events::handle_start_floating_text_events;
 use self::process_combatant_model_actions::handle_start_next_model_action_events::handle_start_next_model_action_events;
 use self::process_combatant_model_actions::process_active_model_actions::process_active_model_actions;
@@ -26,7 +25,6 @@ use std::collections::HashMap;
 use std::collections::VecDeque;
 mod assemble_parts;
 mod assign_skeleton_bones_to_combatants;
-mod attack_sequence;
 mod draw_aabbs;
 pub mod handle_despawn_combatant_model_events;
 mod notify_yew_that_assets_are_loaded;
@@ -37,8 +35,6 @@ mod run_animations;
 mod spawn_combatant;
 pub mod spawn_scenes;
 mod update_scene_aabbs;
-
-pub type HitPoints = i16;
 
 // RESOURCES
 #[derive(Resource, Debug, Default)]

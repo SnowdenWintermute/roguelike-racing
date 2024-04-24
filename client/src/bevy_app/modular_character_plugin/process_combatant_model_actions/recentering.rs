@@ -14,7 +14,7 @@ pub fn combatant_recentering_processor(
     let ModelActionCombatantQueryStructItem {
         skeleton_entity,
         home_location,
-        mut transform_manager,
+        transform_manager,
         mut active_model_actions,
         ..
     } = model_action_params
@@ -25,12 +25,14 @@ pub fn combatant_recentering_processor(
         .transforms
         .get_mut(skeleton_entity.0)
         .expect("their skeleton to have a transform");
+    let target_rotation = match &transform_manager.target_rotation {
+        Some(rotation) => rotation,
+        None => &home_location.0.rotation,
+    };
     let percent_rotated = rotate_transform_toward_target(
         &mut skeleton_entity_transform,
-        &transform_manager
-            .target_rotation
-            .expect("to have saved the location"),
         &home_location.0.rotation,
+        target_rotation,
         elapsed,
         TIME_TO_RECENTER,
     );
@@ -39,8 +41,5 @@ pub fn combatant_recentering_processor(
         active_model_actions
             .0
             .remove(&CombatantModelActions::Recenter);
-
-        transform_manager.last_location = None;
-        transform_manager.destination = None;
     }
 }

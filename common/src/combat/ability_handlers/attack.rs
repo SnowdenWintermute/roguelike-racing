@@ -76,7 +76,7 @@ impl RoguelikeRacerGame {
             )),
         )?;
 
-        // targets were killed, don't calc off hand swing
+        // if targets were killed, don't calc off hand swing
         let mut all_damaged_targets_died = true;
         if let Some(hp_changes) = &mh_attack_result.hp_changes_by_entity_id {
             for (combatant_id, hp_change) in hp_changes {
@@ -87,6 +87,9 @@ impl RoguelikeRacerGame {
                     }
                 }
             }
+        }
+        if let Some(_) = &mh_attack_result.misses_by_entity_id {
+            all_damaged_targets_died = false;
         }
 
         mh_attack_ends_turn = mh_attack_ends_turn | all_damaged_targets_died;

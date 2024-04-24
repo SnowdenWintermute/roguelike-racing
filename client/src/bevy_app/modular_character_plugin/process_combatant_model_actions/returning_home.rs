@@ -20,7 +20,6 @@ pub fn combatant_returning_to_home_position_home_processor(
     let ModelActionCombatantQueryStructItem {
         combatant_id_component,
         skeleton_entity,
-        home_location,
         transform_manager,
         mut active_model_actions,
         ..
@@ -32,14 +31,15 @@ pub fn combatant_returning_to_home_position_home_processor(
         .transforms
         .get_mut(skeleton_entity.0)
         .expect("their skeleton to have a transform");
+
     let percent_distance_travelled = translate_transform_toward_target(
         &mut skeleton_entity_transform,
+        &transform_manager.last_location,
         &transform_manager
-            .last_location
-            .expect("to have saved the prev location"),
-        &home_location.0,
+            .destination
+            .expect("to have set the destination"),
         elapsed,
-        TIME_TO_RETURN,
+        TIME_TO_RETURN as f32,
     );
 
     if percent_distance_travelled >= PERCENT_DISTANCE_TO_START_IDLE && !transition_started {

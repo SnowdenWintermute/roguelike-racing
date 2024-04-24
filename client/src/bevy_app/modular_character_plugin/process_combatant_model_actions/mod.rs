@@ -2,7 +2,9 @@ use self::model_actions::get_animation_name_from_model_action;
 use self::model_actions::CombatantModelActionProgressTracker;
 use self::model_actions::CombatantModelActions;
 use super::Animations;
+use super::HomeLocation;
 use super::StartNewFloatingTextEvent;
+use crate::bevy_app::bevy_app_consts::COMBATANT_TIME_TO_TRAVEL_ONE_METER;
 use crate::bevy_app::bevy_app_consts::UNKNOWN_ANIMATION_DURATION;
 use crate::bevy_app::utils::link_animations::AnimationEntityLink;
 use crate::frontend_common::CombatantSpecies;
@@ -35,9 +37,38 @@ pub type Timestamp = u64;
 #[derive(Component, Default)]
 pub struct TransformManager {
     pub destination: Option<Transform>,
-    pub last_location: Option<Transform>,
+    pub last_location: Transform,
     pub target_rotation: Option<Quat>,
     pub last_rotation: Option<Quat>,
+    pub distance_last_location_to_destination: f32,
+    pub time_to_translate: f32,
+}
+
+impl TransformManager {
+    pub fn new(home_location: HomeLocation) -> Self {
+        TransformManager {
+            last_location: home_location.0,
+            ..Default::default()
+        }
+    }
+
+    pub fn set_destination(
+        &mut self,
+        current_transform: Transform,
+        destination: Option<Transform>,
+    ) {
+        self.last_location = current_transform;
+        self.destination = destination;
+
+        if let Some(destination) = &self.destination {
+            self.distance_last_location_to_destination = self
+                .last_location
+                .translation
+                .distance(destination.translation);
+            self.time_to_translate =
+                COMBATANT_TIME_TO_TRAVEL_ONE_METER * self.distance_last_location_to_destination;
+        }
+    }
 }
 
 pub struct FloatingText {

@@ -7,7 +7,6 @@ use crate::bevy_app::utils::translate_transform_toward_target::translate_transfo
 use bevy::math::u64;
 use bevy::prelude::*;
 
-const TIME_TO_TRANSLATE: u64 = 1500;
 const TIME_TO_ROTATE: u64 = 1000;
 const PERCENT_DISTANCE_TO_START_TRANSITION: f32 = 0.8;
 
@@ -33,12 +32,14 @@ pub fn combatant_approaching_destination_processor(
         .get_mut(skeleton_entity.0)
         .expect("their skeleton to have a transform");
 
+    let destination = &mut transform_manager.destination.expect("a destination");
+
     let percent_distance_travelled = translate_transform_toward_target(
         &mut skeleton_entity_transform,
-        &home_location.0,
-        &mut transform_manager.destination.expect("a destination"),
+        &transform_manager.last_location,
+        destination,
         elapsed,
-        TIME_TO_TRANSLATE,
+        transform_manager.time_to_translate,
     );
     if let Some(target_rotation) = transform_manager.target_rotation {
         rotate_transform_toward_target(
@@ -64,8 +65,17 @@ pub fn combatant_approaching_destination_processor(
     }
 
     if percent_distance_travelled >= 1.0 {
-        transform_manager.last_location = transform_manager.destination.take();
-        transform_manager.destination = Some(home_location.0.clone());
+        let combatant_transform = model_action_params
+            .transforms
+            .get(skeleton_entity.0)
+            .expect("to have the transform");
+        info!(
+            "setting destination, current translation: {:?}, home_location translation :{:?}",
+            combatant_transform.translation, home_location.0.translation
+        );
+        transform_manager
+            .set_destination(combatant_transform.clone(), Some(home_location.0.clone()));
+
         active_model_actions
             .0
             .remove(&CombatantModelActions::ApproachDestination);

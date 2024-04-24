@@ -48,12 +48,11 @@ pub fn set_melee_target_destination_transform_and_rotation(
         // Calculate destination
         let direction =
             (combatant_transform.translation - target_transform.translation).normalize();
-        let destination = target_transform.translation + direction * cloned_target_hitbox_radius.0;
-        transform_manager.destination = Some(Transform::from_xyz(
-            destination[0],
-            destination[1],
-            destination[2],
-        ));
+        let destination_vec =
+            target_transform.translation + direction * cloned_target_hitbox_radius.0;
+        let destination_transform = Some(Transform::from_translation(destination_vec));
+
+        transform_manager.set_destination(combatant_transform.clone(), destination_transform);
 
         let up = *combatant_transform.up().clone();
         transform_manager.target_rotation = Some(

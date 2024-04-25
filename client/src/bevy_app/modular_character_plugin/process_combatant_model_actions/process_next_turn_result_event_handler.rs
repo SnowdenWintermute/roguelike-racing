@@ -1,5 +1,6 @@
 use super::model_actions::CombatantModelActions;
 use super::set_melee_target_destination_transform_and_rotation::set_melee_target_destination_transform_and_rotation;
+use super::set_non_melee_ability_destination_transform_and_rotation::set_non_melee_ability_destination_transform_and_rotation;
 use super::ModelActionQueue;
 use super::TransformManager;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::ActionResultsProcessing;
@@ -82,20 +83,28 @@ pub fn process_next_turn_result_event_handler(
                                     &transforms,
                                 );
                             } else {
+                                set_non_melee_ability_destination_transform_and_rotation(
+                                    &action_result,
+                                    &mut transform_manager,
+                                    &combatants_by_id.0,
+                                    skeleton_entity.0,
+                                    &target_combatants,
+                                    &transforms,
+                                )
                                 // if no destination was set, make it the home location
-                                if transform_manager.destination.is_none() {
-                                    let combatant_transform = transforms
-                                        .get(skeleton_entity.0)
-                                        .expect("to have the transformm")
-                                        .clone();
-                                    transform_manager.set_destination(
-                                        combatant_transform.clone(),
-                                        Some(home_location.0.clone()),
-                                    );
-                                }
-                                if transform_manager.target_rotation.is_none() {
-                                    transform_manager.set_target_rotation(None)
-                                }
+                                // if transform_manager.destination.is_none() {
+                                //     let combatant_transform = transforms
+                                //         .get(skeleton_entity.0)
+                                //         .expect("to have the transformm")
+                                //         .clone();
+                                //     transform_manager.set_destination(
+                                //         combatant_transform.clone(),
+                                //         Some(home_location.0.clone()),
+                                //     );
+                                // }
+                                // if transform_manager.target_rotation.is_none() {
+                                //     transform_manager.set_target_rotation(None)
+                                // }
                             }
                         }
                         let model_action = match ability_name {

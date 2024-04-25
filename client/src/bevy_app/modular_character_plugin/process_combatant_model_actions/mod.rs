@@ -30,6 +30,7 @@ pub mod process_next_turn_result_event_handler;
 mod recentering;
 mod returning_home;
 mod set_melee_target_destination_transform_and_rotation;
+mod set_non_melee_ability_destination_transform_and_rotation;
 mod start_idle_animation;
 pub mod start_new_model_actions_or_idle;
 

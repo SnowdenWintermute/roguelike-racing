@@ -11,9 +11,9 @@ pub fn process_floating_text(
 ) {
     let current_time = Date::new_0().get_time() as u64;
 
-    for (i, (entity, mut floating_text_component)) in floating_text_query.iter_mut().enumerate() {
-        let mut indices_to_remove = Vec::new();
-        for floating_text in floating_text_component.0.iter() {
+    for (entity, mut floating_text_component) in floating_text_query.iter_mut() {
+        let mut floating_text_entities_to_remove = Vec::new();
+        for (billboard_entity, floating_text) in floating_text_component.0.iter() {
             if let Ok(mut transform) = transforms.get_mut(floating_text.billboard_entity) {
                 let elapsed = current_time - floating_text.time_started;
                 let percent_complete = elapsed as f32 / floating_text.time_to_live as f32;
@@ -24,14 +24,14 @@ pub fn process_floating_text(
                     .lerp(floating_text.destination.translation, percent_complete);
 
                 if percent_complete >= 1.0 {
-                    indices_to_remove.push(i);
+                    floating_text_entities_to_remove.push(*billboard_entity);
                 }
             };
         }
 
-        for i in indices_to_remove {
-            let removed = floating_text_component.0.remove(i);
-            let billboard_entity_commands = commands.entity(removed.billboard_entity);
+        for billboard_entity in floating_text_entities_to_remove {
+            floating_text_component.0.remove(&billboard_entity);
+            let billboard_entity_commands = commands.entity(billboard_entity);
             billboard_entity_commands.despawn_recursive();
         }
 

@@ -102,18 +102,20 @@ impl Plugin for ModularCharacterPlugin {
             .add_systems(
                 Update,
                 (
-                    spawn_combatants,
-                    handle_despawn_combatant_model_events,
-                    assign_skeleton_bones_to_combatants,
-                    link_animations,
-                    update_scene_aabbs_on_changed_children,
-                    process_next_turn_result_event_handler,
-                    start_new_model_actions_or_idle,
+                    (
+                        spawn_combatants,
+                        handle_despawn_combatant_model_events,
+                        assign_skeleton_bones_to_combatants,
+                        link_animations,
+                        update_scene_aabbs_on_changed_children,
+                        process_next_turn_result_event_handler,
+                        start_new_model_actions_or_idle,
+                        process_active_model_actions,
+                    ),
                     handle_start_next_model_action_events,
                     handle_new_attack_reaction_events,
                     handle_start_floating_text_events,
-                    process_floating_text,
-                    process_active_model_actions,
+                    process_floating_text.chain(),
                 )
                     .run_if(in_state(AssetLoaderState::Done))
                     .run_if(in_state(BevyAppState::Running)),

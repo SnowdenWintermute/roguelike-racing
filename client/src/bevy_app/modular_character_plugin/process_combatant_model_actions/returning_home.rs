@@ -6,7 +6,6 @@ use crate::bevy_app::utils::translate_transform_toward_target::translate_transfo
 use crate::comm_channels::ProcessNextTurnResultEvent;
 use bevy::prelude::*;
 
-const TIME_TO_RETURN: u64 = 1000;
 const PERCENT_DISTANCE_TO_START_IDLE: f32 = 0.8;
 
 pub fn combatant_returning_to_home_position_home_processor(
@@ -60,8 +59,8 @@ pub fn combatant_returning_to_home_position_home_processor(
             .0
             .remove(&CombatantModelActions::ReturnHome);
 
-        transform_manager.target_rotation = Some(home_location.0.rotation);
-        transform_manager.set_destination(home_location.0, None);
+        transform_manager.set_target_rotation(Some(home_location.0.rotation));
+        transform_manager.set_destination(skeleton_entity_transform.clone(), Some(home_location.0));
 
         process_next_turn_result_event_writer
             .send(ProcessNextTurnResultEvent(Some(combatant_id_component.0)));

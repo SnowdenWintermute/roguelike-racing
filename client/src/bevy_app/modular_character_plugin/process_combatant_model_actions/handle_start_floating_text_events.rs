@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use super::process_active_model_actions::ModelActionSystemParams;
 use super::FloatingText;
 use super::FloatingTextComponent;
@@ -76,11 +78,16 @@ pub fn handle_start_floating_text_events(
         };
 
         if let Some(mut floating_text_component) = combatant.floating_text_option {
-            floating_text_component.0.push(new_floating_text);
+            floating_text_component
+                .0
+                .insert(billboard_entity, new_floating_text);
         } else {
             commands
                 .entity(*combatant_entity)
-                .insert(FloatingTextComponent(Vec::from([new_floating_text])));
+                .insert(FloatingTextComponent(HashMap::from([(
+                    billboard_entity,
+                    new_floating_text,
+                )])));
         }
     }
 }

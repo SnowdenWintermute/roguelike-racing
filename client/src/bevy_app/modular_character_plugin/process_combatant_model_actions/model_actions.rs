@@ -32,7 +32,7 @@ pub fn get_animation_name_from_model_action(
         CombatantSpecies::Humanoid => match model_action {
             CombatantModelActions::ApproachDestination => Some("Run"),
             CombatantModelActions::ReturnHome => Some("Run_Back"),
-            CombatantModelActions::Recenter => Some("Run"),
+            CombatantModelActions::Recenter => Some("Idle"),
             CombatantModelActions::TurnToFaceTarget => Some("Run"),
             CombatantModelActions::AttackMeleeMainHand => Some("Sword_Slash"),
             CombatantModelActions::AttackMeleeOffHand => Some("Sword_Slash"),

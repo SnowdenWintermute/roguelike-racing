@@ -55,7 +55,7 @@ pub fn set_melee_target_destination_transform_and_rotation(
         transform_manager.set_destination(combatant_transform.clone(), destination_transform);
 
         let up = *combatant_transform.up().clone();
-        transform_manager.target_rotation = Some(
+        transform_manager.set_target_rotation(Some(
             combatant_transform
                 .looking_at(
                     transform_manager
@@ -65,6 +65,6 @@ pub fn set_melee_target_destination_transform_and_rotation(
                     up,
                 )
                 .rotation,
-        );
+        ));
     }
 }

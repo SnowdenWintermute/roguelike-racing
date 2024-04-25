@@ -94,7 +94,7 @@ pub fn process_next_turn_result_event_handler(
                                     );
                                 }
                                 if transform_manager.target_rotation.is_none() {
-                                    transform_manager.target_rotation = None
+                                    transform_manager.set_target_rotation(None)
                                 }
                             }
                         }

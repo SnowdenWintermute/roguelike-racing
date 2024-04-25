@@ -25,16 +25,13 @@ pub fn combatant_recentering_processor(
         .transforms
         .get_mut(skeleton_entity.0)
         .expect("their skeleton to have a transform");
-    let target_rotation = match &transform_manager.target_rotation {
-        Some(rotation) => rotation,
-        None => &home_location.0.rotation,
-    };
+
     let percent_rotated = rotate_transform_toward_target(
         &mut skeleton_entity_transform,
         &transform_manager.last_location.rotation,
-        target_rotation,
+        &home_location.0.rotation,
         elapsed,
-        TIME_TO_RECENTER,
+        transform_manager.time_to_rotate * 3.0, // slow down recentering
     );
 
     if percent_rotated >= 1.0 {

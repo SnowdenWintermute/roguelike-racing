@@ -4,6 +4,7 @@ use self::model_actions::CombatantModelActions;
 use super::Animations;
 use super::HomeLocation;
 use super::StartNewFloatingTextEvent;
+use crate::bevy_app::bevy_app_consts::COMBATANT_TIME_TO_ROTATE_FULL_CIRCLE;
 use crate::bevy_app::bevy_app_consts::COMBATANT_TIME_TO_TRAVEL_ONE_METER;
 use crate::bevy_app::bevy_app_consts::UNKNOWN_ANIMATION_DURATION;
 use crate::bevy_app::utils::link_animations::AnimationEntityLink;
@@ -39,9 +40,10 @@ pub struct TransformManager {
     pub destination: Option<Transform>,
     pub last_location: Transform,
     pub target_rotation: Option<Quat>,
-    pub last_rotation: Option<Quat>,
     pub distance_last_location_to_destination: f32,
     pub time_to_translate: f32,
+    pub angle_last_rotation_to_target: f32,
+    pub time_to_rotate: f32,
 }
 
 impl TransformManager {
@@ -69,6 +71,20 @@ impl TransformManager {
                 COMBATANT_TIME_TO_TRAVEL_ONE_METER * self.distance_last_location_to_destination;
         }
     }
+
+    pub fn set_target_rotation(&mut self, target_rotation: Option<Quat>) {
+        self.target_rotation = target_rotation;
+
+        if let Some(target_rotation) = &self.target_rotation {
+            self.angle_last_rotation_to_target = self
+                .last_location
+                .rotation
+                .normalize()
+                .angle_between(target_rotation.normalize());
+            self.time_to_rotate =
+                COMBATANT_TIME_TO_ROTATE_FULL_CIRCLE * self.angle_last_rotation_to_target;
+        }
+    }
 }
 
 pub struct FloatingText {
@@ -86,7 +102,7 @@ pub struct ActiveModelActions(HashMap<CombatantModelActions, CombatantModelActio
 #[derive(Component, Default)]
 pub struct ModelActionQueue(pub VecDeque<CombatantModelActions>);
 #[derive(Component, Default)]
-pub struct FloatingTextComponent(Vec<FloatingText>);
+pub struct FloatingTextComponent(HashMap<Entity, FloatingText>);
 
 impl ModelActionQueue {
     /// takes the next model action in the queue and adds it to the list of active model actions

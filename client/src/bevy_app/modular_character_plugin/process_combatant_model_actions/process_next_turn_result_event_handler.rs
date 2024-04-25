@@ -16,6 +16,8 @@ use bevy::prelude::*;
 use common::combat::combat_actions::CombatAction;
 use common::combat::CombatTurnResult;
 use common::combatants::abilities::CombatantAbilityNames;
+use common::items::consumables::ConsumableTypes;
+use common::items::ItemProperties;
 
 pub fn process_next_turn_result_event_handler(
     mut proccess_next_turn_result_event_reader: EventReader<ProcessNextTurnResultEvent>,
@@ -26,7 +28,6 @@ pub fn process_next_turn_result_event_handler(
         &mut ModelActionQueue,
         &mut ActionResultsProcessing,
         &MainSkeletonEntity,
-        &HomeLocation,
     )>,
     target_combatants: Query<(&MainSkeletonEntity, &HitboxRadius)>,
     transforms: Query<&Transform>,
@@ -39,11 +40,12 @@ pub fn process_next_turn_result_event_handler(
                 .send(MessageFromBevy::FinishedProcessingTurnResult(combatant_id));
         }
 
-        if let Some(CombatTurnResult {
-            combatant_id,
-            action_results,
-        }) = turn_results_queue.0.pop_front()
-        {
+        if let Some(turn_result) = turn_results_queue.0.pop_front() {
+            let CombatTurnResult {
+                combatant_id,
+                action_results,
+            } = turn_result;
+
             let _result = bevy_transmitter
                 .0
                 .send(MessageFromBevy::StartedProcessingTurnResult(combatant_id));
@@ -58,7 +60,6 @@ pub fn process_next_turn_result_event_handler(
                 mut model_action_queue,
                 mut action_results_processing,
                 skeleton_entity,
-                home_location,
             ) = combatants
                 .get_mut(*combatant_entity)
                 .expect("to have the entity");
@@ -91,20 +92,6 @@ pub fn process_next_turn_result_event_handler(
                                     &target_combatants,
                                     &transforms,
                                 )
-                                // if no destination was set, make it the home location
-                                // if transform_manager.destination.is_none() {
-                                //     let combatant_transform = transforms
-                                //         .get(skeleton_entity.0)
-                                //         .expect("to have the transformm")
-                                //         .clone();
-                                //     transform_manager.set_destination(
-                                //         combatant_transform.clone(),
-                                //         Some(home_location.0.clone()),
-                                //     );
-                                // }
-                                // if transform_manager.target_rotation.is_none() {
-                                //     transform_manager.set_target_rotation(None)
-                                // }
                             }
                         }
                         let model_action = match ability_name {
@@ -127,8 +114,12 @@ pub fn process_next_turn_result_event_handler(
 
                         model_action_queue.0.push_back(model_action)
                     }
-                    CombatAction::ConsumableUsed(item) => {
-                        //
+                    CombatAction::ConsumableUsed(_) => {
+                        info!("pushing consumable used model action");
+                        // ask yew what item this is
+                        model_action_queue
+                            .0
+                            .push_back(CombatantModelActions::UseConsumable)
                     }
                 }
                 // to be removed and read by relevant actions that need the damage/targets info etc
@@ -140,9 +131,10 @@ pub fn process_next_turn_result_event_handler(
                 .push_back(CombatantModelActions::ReturnHome);
             model_action_queue
                 .0
+                .push_back(CombatantModelActions::EndTurn);
+            model_action_queue
+                .0
                 .push_back(CombatantModelActions::Recenter);
-        } else {
-            // no more turn results, tell yew to have the combatants take their next turn
         };
     }
 }

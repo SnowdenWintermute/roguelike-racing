@@ -43,8 +43,18 @@ pub fn character_sheet() -> Html {
         Vec::new()
     };
 
-    let show_character_sheet =
-        game_state.viewing_inventory || game_state.viewing_attribute_point_assignment_menu;
+    let focused_character_has_selected_action = if let Some(character) = character_option {
+        character
+            .combatant_properties
+            .selected_combat_action
+            .is_some()
+    } else {
+        false
+    };
+
+    let show_character_sheet = (game_state.viewing_inventory
+        || game_state.viewing_attribute_point_assignment_menu)
+        && !focused_character_has_selected_action;
 
     let conditional_styles = if show_character_sheet {
         "overflow-scroll"

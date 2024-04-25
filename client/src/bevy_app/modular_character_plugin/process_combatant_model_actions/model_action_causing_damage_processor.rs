@@ -76,20 +76,6 @@ pub fn model_action_causing_damage_processor(
             .0
             .pop()
             .expect("to have a current action result processing");
-
-        if let Some(mp_changes) = &current_action.mp_combat_action_prices_paid_by_entity_id {
-            for (entity_id, mp_change) in mp_changes {
-                info!("sending mp change to yew {mp_change}");
-                let _result =
-                    bevy_transmitter
-                        .0
-                        .send(MessageFromBevy::MpChangeById(CombatantIdWithValue {
-                            combatant_id: *entity_id,
-                            value: *mp_change as i16 * -1,
-                        }));
-            }
-        }
-
         if let Some(hp_changes) = &current_action.hp_changes_by_entity_id {
             for (entity_id, hp_change) in hp_changes {
                 start_new_attack_reaction_event_writer.send(StartNewAttackReactionEvent {
@@ -108,6 +94,36 @@ pub fn model_action_causing_damage_processor(
                 });
             }
         }
+        // tell yew to apply the action result
+        let _result = bevy_transmitter.send(MessageFromBevy::ApplyActionResult(current_action));
+
+        // if let Some(item_ids) = &current_action.items_consumed_in_entity_id_inventories {
+        //     // for
+        // }
+
+        // if let Some(mp_changes) = &current_action.mp_combat_action_prices_paid_by_entity_id {
+        //     for (entity_id, mp_change) in mp_changes {
+        //         let _result =
+        //             bevy_transmitter
+        //                 .0
+        //                 .send(MessageFromBevy::MpChangeById(CombatantIdWithValue {
+        //                     combatant_id: *entity_id,
+        //                     value: *mp_change as i16 * -1,
+        //                 }));
+        //     }
+        // }
+
+        // if let Some(mp_changes) = &current_action.mp_changes_by_entity_id {
+        //     for (entity_id, mp_change) in mp_changes {
+        //         let _result =
+        //             bevy_transmitter
+        //                 .0
+        //                 .send(MessageFromBevy::MpChangeById(CombatantIdWithValue {
+        //                     combatant_id: *entity_id,
+        //                     value: *mp_change,
+        //                 }));
+        //     }
+        // }
     }
 
     if percent_completed >= 1.0 {

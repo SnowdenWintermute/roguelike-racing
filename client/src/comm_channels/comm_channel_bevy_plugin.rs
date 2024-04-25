@@ -6,6 +6,7 @@ use super::CharacterSpawnEvent;
 use super::DespawnCombatantModelEvent;
 use super::ProcessNextTurnResultEvent;
 use super::YewTransmitter;
+use crate::bevy_app::modular_character_plugin::RawActionResultsQueue;
 use crate::bevy_app::modular_character_plugin::TurnResultsQueue;
 use crate::bevy_app::BevyAppState;
 use bevy::prelude::*;
@@ -43,6 +44,7 @@ fn handle_yew_messages(
     mut select_animation_event_writer: EventWriter<DespawnCombatantModelEvent>,
     mut process_next_turn_result_event_writer: EventWriter<ProcessNextTurnResultEvent>,
     mut turn_results_queue: ResMut<TurnResultsQueue>,
+    mut raw_action_results_queue: ResMut<RawActionResultsQueue>,
     mut next_state: ResMut<NextState<BevyAppState>>,
     // mut camera_query: Query<&mut Camera>,
 ) {
@@ -70,19 +72,16 @@ fn handle_yew_messages(
             MessageFromYew::NewTurnResults(mut turn_results) => {
                 turn_results_queue.0.append(&mut turn_results);
                 process_next_turn_result_event_writer.send(ProcessNextTurnResultEvent(None));
-                // ON TURN RESULTS
-                // put turn results in queue
-                // emit event to process next turn result
-                // iterate action results in turn result and enqueue model actions
-                // on return to home model action, emit event to process the next turn result
-                //
-                // ON RAW ACTION RESULTS
-                // take action result and enqueue model actions
             }
             MessageFromYew::SetBevyRendering(should_be_rendering) => match should_be_rendering {
                 true => next_state.set(BevyAppState::Running),
                 false => next_state.set(BevyAppState::PausedAndHidden),
             },
+            MessageFromYew::NewRawActionResults(action_taker_id, action_results) => {
+                raw_action_results_queue
+                    .0
+                    .push_back((action_taker_id, action_results))
+            }
         }
     }
 }

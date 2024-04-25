@@ -11,6 +11,7 @@ pub fn started_processing_turn_result(
         let (_, combatant_properties) = game.get_mut_combatant_by_id(&combatant_id)?;
         combatant_properties.selected_combat_action = None;
         combatant_properties.combat_action_targets = None;
+        store.combatants_animating.insert(combatant_id);
         Ok(())
     })
 }

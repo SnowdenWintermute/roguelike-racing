@@ -1,6 +1,7 @@
 use crate::bevy_app::modular_character_plugin::HomeLocation;
 use crate::frontend_common::CharacterPartSelection;
 use crate::frontend_common::CombatantSpecies;
+use common::combat::ActionResult;
 use common::combat::CombatTurnResult;
 use common::combatants::CombatantProperties;
 use common::primatives::EntityId;
@@ -18,5 +19,6 @@ pub enum MessageFromYew {
     ),
     DespawnCombatantModel(EntityId),
     NewTurnResults(VecDeque<CombatTurnResult>),
+    NewRawActionResults(EntityId, Vec<ActionResult>),
     SetBevyRendering(bool),
 }

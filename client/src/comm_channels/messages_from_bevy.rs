@@ -1,5 +1,6 @@
 use crate::frontend_common::PartsByName;
 use bevy::math::Vec3;
+use common::combat::ActionResult;
 use common::primatives::EntityId;
 use std::collections::HashSet;
 
@@ -29,6 +30,8 @@ pub enum MessageFromBevy {
     MpChangeById(CombatantIdWithValue),
     CombatantEvadedAttack(EntityId),
     FinishedProcessingTurnResult(EntityId),
+    FinishedAnimating(EntityId),
     StartedProcessingTurnResult(EntityId),
     FinishedProcessingModelActions(EntityId),
+    ApplyActionResult(ActionResult),
 }

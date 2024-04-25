@@ -99,9 +99,21 @@ pub fn game() -> Html {
     });
 
     let focused_character = party.characters.get(&game_state.focused_character_id);
-    let show_character_sheet = (game_state.viewing_inventory
-        || game_state.viewing_attribute_point_assignment_menu)
-        && focused_character.is_some();
+
+    let focused_character_has_selected_combat_action = match focused_character {
+        Some(character) => character
+            .combatant_properties
+            .selected_combat_action
+            .is_some(),
+        None => false,
+    };
+
+    let show_character_sheet = if let Some(character) = focused_character {
+        (game_state.viewing_inventory || game_state.viewing_attribute_point_assignment_menu)
+            && !focused_character_has_selected_combat_action
+    } else {
+        false
+    };
 
     let conditional_styles = if show_character_sheet {
         "items-center justify-end"
@@ -187,7 +199,9 @@ pub fn game() -> Html {
                         </div>
                         <CharacterSheet />
                     </div>
-                    <ItemDetailsViewer />
+                    if !focused_character_has_selected_combat_action {
+                        <ItemDetailsViewer />
+                    }
                 </div>
             </div>
         </main>

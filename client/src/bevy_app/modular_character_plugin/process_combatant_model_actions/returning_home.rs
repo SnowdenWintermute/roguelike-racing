@@ -3,7 +3,8 @@ use super::process_active_model_actions::ModelActionCombatantQueryStructItem;
 use super::process_active_model_actions::ModelActionSystemParams;
 use crate::bevy_app::modular_character_plugin::StartNextModelActionEvent;
 use crate::bevy_app::utils::translate_transform_toward_target::translate_transform_toward_target;
-use crate::comm_channels::ProcessNextTurnResultEvent;
+use crate::comm_channels::messages_from_bevy::MessageFromBevy;
+use crate::comm_channels::BevyTransmitter;
 use bevy::prelude::*;
 
 const PERCENT_DISTANCE_TO_START_IDLE: f32 = 0.8;
@@ -14,14 +15,14 @@ pub fn combatant_returning_to_home_position_home_processor(
     transition_started: bool,
     model_action_params: &mut ModelActionSystemParams,
     start_next_model_action_event_writer: &mut EventWriter<StartNextModelActionEvent>,
-    process_next_turn_result_event_writer: &mut EventWriter<ProcessNextTurnResultEvent>,
+    bevy_transmitter: &mut ResMut<BevyTransmitter>,
 ) {
     let ModelActionCombatantQueryStructItem {
-        combatant_id_component,
         skeleton_entity,
         mut transform_manager,
         home_location,
         mut active_model_actions,
+        combatant_id_component,
         ..
     } = model_action_params
         .combatants_query
@@ -59,10 +60,11 @@ pub fn combatant_returning_to_home_position_home_processor(
             .0
             .remove(&CombatantModelActions::ReturnHome);
 
+        let _result = bevy_transmitter
+            .0
+            .send(MessageFromBevy::FinishedAnimating(combatant_id_component.0));
+
         transform_manager.set_target_rotation(Some(home_location.0.rotation));
         transform_manager.set_destination(skeleton_entity_transform.clone(), Some(home_location.0));
-
-        process_next_turn_result_event_writer
-            .send(ProcessNextTurnResultEvent(Some(combatant_id_component.0)));
     }
 }

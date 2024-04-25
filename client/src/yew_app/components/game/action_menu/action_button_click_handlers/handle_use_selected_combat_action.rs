@@ -20,10 +20,6 @@ pub fn handle_use_selected_combat_action(
                 store.action_menu_current_page_number = page_number;
             }
 
-            store
-                .combatants_animating
-                .insert(store.focused_character_id);
-
             send_client_input(
                 websocket_option,
                 PlayerInputs::UseSelectedCombatAction(store.focused_character_id),

@@ -1,4 +1,7 @@
+use common::combat::CombatTurnResult;
+use common::items::Item;
 use common::primatives::EntityId;
+use std::collections::HashMap;
 use std::collections::HashSet;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]

@@ -135,7 +135,7 @@ pub fn handle_packet(
             character_cycled_targeting_schemes_handler(game_dispatch, character_id)
         }
         GameServerUpdatePackets::ActionResults(packet) => {
-            handle_raw_action_results(game_dispatch, packet)
+            handle_raw_action_results(bevy_communication_dispatch, packet)
         }
         GameServerUpdatePackets::CombatTurnResults(packet) => handle_combat_turn_results(
             bevy_communication_dispatch,

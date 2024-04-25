@@ -8,6 +8,7 @@ use self::process_combatant_model_actions::handle_start_floating_text_events::ha
 use self::process_combatant_model_actions::handle_start_next_model_action_events::handle_start_next_model_action_events;
 use self::process_combatant_model_actions::process_active_model_actions::process_active_model_actions;
 use self::process_combatant_model_actions::process_floating_text::process_floating_text;
+use self::process_combatant_model_actions::process_new_raw_action_results_handler::process_new_raw_action_results_handler;
 use self::process_combatant_model_actions::process_next_turn_result_event_handler::process_next_turn_result_event_handler;
 use self::process_combatant_model_actions::start_new_model_actions_or_idle::start_new_model_actions_or_idle;
 use self::register_animations::register_animations;
@@ -19,6 +20,7 @@ use crate::bevy_app::asset_loader_plugin::AssetLoaderState;
 use crate::comm_channels::DespawnCombatantModelEvent;
 use crate::frontend_common::CombatantSpecies;
 use bevy::prelude::*;
+use common::combat::ActionResult;
 use common::combat::CombatTurnResult;
 use common::primatives::EntityId;
 use std::collections::HashMap;
@@ -50,6 +52,8 @@ pub struct AttachedPartsReparentedEntities {
 
 #[derive(Resource, Default)]
 pub struct TurnResultsQueue(pub VecDeque<CombatTurnResult>);
+#[derive(Resource, Default)]
+pub struct RawActionResultsQueue(pub VecDeque<(EntityId, Vec<ActionResult>)>);
 #[derive(Resource, Default)]
 pub struct CurrentTurnResultProcessing(pub Option<CombatTurnResult>);
 
@@ -89,6 +93,7 @@ impl Plugin for ModularCharacterPlugin {
             .init_resource::<Events<StartNewFloatingTextEvent>>()
             .init_resource::<Events<DespawnCombatantModelEvent>>()
             .init_resource::<TurnResultsQueue>()
+            .init_resource::<RawActionResultsQueue>()
             .init_resource::<CurrentTurnResultProcessing>()
             // .init_::<CombatantsExecutingAttacks>()
             .add_plugins(PartChangePlugin)
@@ -111,6 +116,7 @@ impl Plugin for ModularCharacterPlugin {
                         process_next_turn_result_event_handler,
                         start_new_model_actions_or_idle,
                         process_active_model_actions,
+                        process_new_raw_action_results_handler,
                     ),
                     handle_start_next_model_action_events,
                     handle_new_attack_reaction_events,

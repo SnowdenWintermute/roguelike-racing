@@ -1,5 +1,6 @@
 use super::animation_only_model_action_processor::animation_only_model_action_processor;
 use super::approaching_destination::combatant_approaching_destination_processor;
+use super::end_turn::process_combatant_ending_turn;
 use super::model_action_causing_damage_processor::model_action_causing_damage_processor;
 use super::model_actions::CombatantModelActions;
 use super::recentering::combatant_recentering_processor;
@@ -94,7 +95,7 @@ pub fn process_active_model_actions(
                         transition_started,
                         &mut model_action_params,
                         &mut start_next_model_action_event_writer,
-                        &mut process_next_turn_result_event_writer,
+                        &mut bevy_transmitter,
                     )
                 }
                 CombatantModelActions::Recenter => {
@@ -103,7 +104,8 @@ pub fn process_active_model_actions(
                 CombatantModelActions::TurnToFaceTarget => todo!(),
                 CombatantModelActions::AttackMeleeMainHand
                 | CombatantModelActions::AttackMeleeOffHand
-                | CombatantModelActions::CastSpell => model_action_causing_damage_processor(
+                | CombatantModelActions::CastSpell
+                | CombatantModelActions::UseConsumable => model_action_causing_damage_processor(
                     entity,
                     elapsed,
                     transition_started,
@@ -122,6 +124,11 @@ pub fn process_active_model_actions(
                     &model_action,
                 ),
                 CombatantModelActions::Idle => (),
+                CombatantModelActions::EndTurn => process_combatant_ending_turn(
+                    entity,
+                    &mut process_next_turn_result_event_writer,
+                    &mut model_action_params,
+                ),
             }
         }
     }

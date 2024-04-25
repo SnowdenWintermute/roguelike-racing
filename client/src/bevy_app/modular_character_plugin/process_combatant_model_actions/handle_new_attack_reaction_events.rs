@@ -54,14 +54,6 @@ pub fn handle_new_attack_reaction_events(
                     .model_action_queue
                     .0
                     .push_back(new_model_action);
-                // send message to yew
-                let _result =
-                    bevy_transmitter
-                        .0
-                        .send(MessageFromBevy::HpChangeById(CombatantIdWithValue {
-                            combatant_id: *entity_id,
-                            value: *number,
-                        }));
                 // return text to float
                 (
                     number.abs().to_string(),
@@ -78,11 +70,6 @@ pub fn handle_new_attack_reaction_events(
                     .model_action_queue
                     .0
                     .push_back(CombatantModelActions::Evade);
-                // send message to yew (for combat log)
-                let _result = bevy_transmitter
-                    .0
-                    .send(MessageFromBevy::CombatantEvadedAttack(*entity_id));
-                // return text to float
                 (String::from("Evaded"), Vec3::new(1.0, 1.0, 1.0))
             }
         };

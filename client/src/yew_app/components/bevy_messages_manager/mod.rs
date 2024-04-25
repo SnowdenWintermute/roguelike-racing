@@ -11,6 +11,7 @@ use crate::comm_channels::BevyTransmitter;
 use crate::comm_channels::YewTransmitter;
 use crate::yew_app::store::bevy_communication_store::BevyCommunicationStore;
 use crate::yew_app::store::game_store::GameStore;
+use common::combat::apply_action_result::apply_action_result;
 use gloo::console::log;
 use std::ops::Deref;
 use yew::platform::spawn_local;
@@ -119,6 +120,21 @@ pub fn bevy_messages_manager(props: &Props) -> Html {
                     MessageFromBevy::FinishedProcessingTurnResult(combatant_id) => {
                         let _result =
                             finished_processing_turn(game_dispatch.clone(), *combatant_id);
+                    }
+                    MessageFromBevy::FinishedAnimating(combatant_id) => {
+                        game_dispatch
+                            .reduce_mut(|store| store.combatants_animating.remove(combatant_id));
+                    }
+                    MessageFromBevy::ApplyActionResult(action_result) => {
+                        game_dispatch.reduce_mut(|store| {
+                            if let Some(game) = &mut store.game {
+                                let _result = apply_action_result(
+                                    game,
+                                    &action_result,
+                                    store.current_battle_id,
+                                );
+                            }
+                        })
                     }
                     _ => (), // MessageFromBevy::PartNames(part_names) => cloned_dispatch
                              //     .reduce_mut(|store| store.parts_available = part_names.clone()),

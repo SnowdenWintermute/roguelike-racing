@@ -18,9 +18,6 @@ pub fn finished_processing_turn(
             if combatant_properties.hit_points > 0 {
                 game.end_active_combatant_turn(battle_id)?;
             }
-
-            // animating combatants have their buttons disabled
-            store.combatants_animating.remove(&combatant_id);
         }
         Ok(())
     })

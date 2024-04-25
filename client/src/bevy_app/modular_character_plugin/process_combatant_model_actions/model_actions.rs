@@ -10,11 +10,13 @@ pub enum CombatantModelActions {
     TurnToFaceTarget,
     AttackMeleeMainHand,
     AttackMeleeOffHand,
+    UseConsumable,
     CastSpell,
     HitRecovery,
     Evade,
     Death,
     Idle,
+    EndTurn,
 }
 
 #[derive(Debug, Clone)]
@@ -32,21 +34,25 @@ pub fn get_animation_name_from_model_action(
         CombatantSpecies::Humanoid => match model_action {
             CombatantModelActions::ApproachDestination => Some("Run"),
             CombatantModelActions::ReturnHome => Some("Run_Back"),
-            CombatantModelActions::Recenter => Some("Idle"),
             CombatantModelActions::TurnToFaceTarget => Some("Run"),
             CombatantModelActions::AttackMeleeMainHand => Some("Sword_Slash"),
             CombatantModelActions::AttackMeleeOffHand => Some("Sword_Slash"),
             CombatantModelActions::HitRecovery => Some("HitRecieve"),
             CombatantModelActions::Death => Some("Death"),
-            CombatantModelActions::Idle => Some("Idle_Sword"),
+            CombatantModelActions::Idle
+            | CombatantModelActions::EndTurn
+            | CombatantModelActions::Recenter => Some("Idle_Sword"),
             CombatantModelActions::Evade => None,
             CombatantModelActions::CastSpell => None,
+            CombatantModelActions::UseConsumable => None,
+            _ => None,
         },
         CombatantSpecies::Wasp => match model_action {
             CombatantModelActions::ApproachDestination
             | CombatantModelActions::ReturnHome
             | CombatantModelActions::TurnToFaceTarget
             | CombatantModelActions::Idle
+            | CombatantModelActions::EndTurn
             | CombatantModelActions::Evade
             | CombatantModelActions::Recenter => Some("Wasp_Flying"),
             CombatantModelActions::HitRecovery => None,
@@ -54,6 +60,8 @@ pub fn get_animation_name_from_model_action(
             | CombatantModelActions::AttackMeleeMainHand => Some("Wasp_Attack"),
             CombatantModelActions::Death => Some("Wasp_Death"),
             CombatantModelActions::CastSpell => None,
+            CombatantModelActions::UseConsumable => None,
+            _ => None,
         },
         CombatantSpecies::Frog => match model_action {
             CombatantModelActions::ApproachDestination => Some("Frog_Jump"),
@@ -67,6 +75,8 @@ pub fn get_animation_name_from_model_action(
             CombatantModelActions::Idle => Some("Frog_Idle"),
             CombatantModelActions::Evade => None,
             CombatantModelActions::CastSpell => None,
+            CombatantModelActions::UseConsumable => None,
+            _ => None,
         },
     };
     match to_return {

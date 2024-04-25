@@ -22,6 +22,7 @@ use crate::bevy_app::modular_character_plugin::HomeLocation;
 use crate::bevy_app::modular_character_plugin::StartNewAttackReactionEvent;
 use crate::bevy_app::modular_character_plugin::StartNextModelActionEvent;
 use crate::bevy_app::utils::link_animations::AnimationEntityLink;
+use crate::comm_channels::BevyTransmitter;
 use crate::comm_channels::ProcessNextTurnResultEvent;
 use bevy::ecs::query::QueryData;
 use bevy::ecs::system::SystemParam;
@@ -63,6 +64,7 @@ pub fn process_active_model_actions(
     mut start_next_model_action_event_writer: EventWriter<StartNextModelActionEvent>,
     mut start_new_attack_reaction_event_writer: EventWriter<StartNewAttackReactionEvent>,
     mut process_next_turn_result_event_writer: EventWriter<ProcessNextTurnResultEvent>,
+    mut bevy_transmitter: ResMut<BevyTransmitter>,
 ) {
     let mut entities_and_active_model_actions = Vec::new();
     for combatant in &model_action_params.combatants_query {
@@ -109,6 +111,7 @@ pub fn process_active_model_actions(
                     &mut start_next_model_action_event_writer,
                     &mut start_new_attack_reaction_event_writer,
                     &model_action,
+                    &mut bevy_transmitter,
                 ),
                 CombatantModelActions::HitRecovery
                 | CombatantModelActions::Evade

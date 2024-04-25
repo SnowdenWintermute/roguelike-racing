@@ -20,7 +20,8 @@ pub fn combatant_returning_to_home_position_home_processor(
     let ModelActionCombatantQueryStructItem {
         combatant_id_component,
         skeleton_entity,
-        transform_manager,
+        mut transform_manager,
+        home_location,
         mut active_model_actions,
         ..
     } = model_action_params
@@ -39,7 +40,7 @@ pub fn combatant_returning_to_home_position_home_processor(
             .destination
             .expect("to have set the destination"),
         elapsed,
-        TIME_TO_RETURN as f32,
+        transform_manager.time_to_translate,
     );
 
     if percent_distance_travelled >= PERCENT_DISTANCE_TO_START_IDLE && !transition_started {
@@ -58,6 +59,9 @@ pub fn combatant_returning_to_home_position_home_processor(
         active_model_actions
             .0
             .remove(&CombatantModelActions::ReturnHome);
+
+        transform_manager.target_rotation = Some(home_location.0.rotation);
+        transform_manager.set_destination(home_location.0, None);
 
         process_next_turn_result_event_writer
             .send(ProcessNextTurnResultEvent(Some(combatant_id_component.0)));

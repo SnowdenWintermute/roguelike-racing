@@ -31,7 +31,7 @@ pub fn combatant_recentering_processor(
     };
     let percent_rotated = rotate_transform_toward_target(
         &mut skeleton_entity_transform,
-        &home_location.0.rotation,
+        &transform_manager.last_location.rotation,
         target_rotation,
         elapsed,
         TIME_TO_RECENTER,

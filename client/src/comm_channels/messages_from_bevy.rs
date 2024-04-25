@@ -12,9 +12,9 @@ pub struct CameraPosition {
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct HpChangeMessageFromBevy {
+pub struct CombatantIdWithValue {
     pub combatant_id: EntityId,
-    pub hp_change: i16,
+    pub value: i16,
 }
 
 // BEVY MESSAGES
@@ -25,7 +25,8 @@ pub enum MessageFromBevy {
     CombatantSpawned(EntityId),
     AssetsLoaded,
     CameraPosition(CameraPosition),
-    HpChangeById(HpChangeMessageFromBevy),
+    HpChangeById(CombatantIdWithValue),
+    MpChangeById(CombatantIdWithValue),
     CombatantEvadedAttack(EntityId),
     FinishedProcessingTurnResult(EntityId),
     StartedProcessingTurnResult(EntityId),

@@ -3,7 +3,7 @@ use super::process_active_model_actions::ModelActionSystemParams;
 use super::process_floating_text::FLOATING_TEXT_TIME_TO_LIVE_DEFAULT;
 use crate::bevy_app::modular_character_plugin::StartNewAttackReactionEvent;
 use crate::bevy_app::modular_character_plugin::StartNewFloatingTextEvent;
-use crate::comm_channels::messages_from_bevy::HpChangeMessageFromBevy;
+use crate::comm_channels::messages_from_bevy::CombatantIdWithValue;
 use crate::comm_channels::messages_from_bevy::MessageFromBevy;
 use crate::comm_channels::BevyTransmitter;
 use bevy::prelude::*;
@@ -55,12 +55,13 @@ pub fn handle_new_attack_reaction_events(
                     .0
                     .push_back(new_model_action);
                 // send message to yew
-                let _result = bevy_transmitter.0.send(MessageFromBevy::HpChangeById(
-                    HpChangeMessageFromBevy {
-                        combatant_id: *entity_id,
-                        hp_change: *number,
-                    },
-                ));
+                let _result =
+                    bevy_transmitter
+                        .0
+                        .send(MessageFromBevy::HpChangeById(CombatantIdWithValue {
+                            combatant_id: *entity_id,
+                            value: *number,
+                        }));
                 // return text to float
                 (
                     number.abs().to_string(),

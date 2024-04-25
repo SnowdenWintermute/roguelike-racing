@@ -2,7 +2,6 @@ use super::model_actions::CombatantModelActions;
 use super::set_melee_target_destination_transform_and_rotation::set_melee_target_destination_transform_and_rotation;
 use super::ModelActionQueue;
 use super::TransformManager;
-use crate::bevy_app::bevy_app_consts::COMBATANT_TIME_TO_TRAVEL_ONE_METER;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::ActionResultsProcessing;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::HitboxRadius;
 use crate::bevy_app::modular_character_plugin::spawn_combatant::MainSkeletonEntity;

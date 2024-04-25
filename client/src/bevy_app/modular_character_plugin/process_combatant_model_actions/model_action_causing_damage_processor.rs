@@ -7,6 +7,9 @@ use crate::bevy_app::bevy_app_consts::UNKNOWN_ANIMATION_DURATION;
 use crate::bevy_app::modular_character_plugin::process_combatant_model_actions::handle_new_attack_reaction_events::AttackResult;
 use crate::bevy_app::modular_character_plugin::StartNewAttackReactionEvent;
 use crate::bevy_app::modular_character_plugin::StartNextModelActionEvent;
+use crate::comm_channels::messages_from_bevy::CombatantIdWithValue;
+use crate::comm_channels::messages_from_bevy::MessageFromBevy;
+use crate::comm_channels::BevyTransmitter;
 use bevy::math::u64;
 use bevy::prelude::*;
 
@@ -20,6 +23,7 @@ pub fn model_action_causing_damage_processor(
     start_next_model_action_event_writer: &mut EventWriter<StartNextModelActionEvent>,
     start_new_attack_reaction_event_writer: &mut EventWriter<StartNewAttackReactionEvent>,
     model_action: &CombatantModelActions,
+    bevy_transmitter: &mut ResMut<BevyTransmitter>,
 ) {
     let ModelActionCombatantQueryStructItem {
         skeleton_entity,
@@ -72,6 +76,19 @@ pub fn model_action_causing_damage_processor(
             .0
             .pop()
             .expect("to have a current action result processing");
+
+        if let Some(mp_changes) = &current_action.mp_combat_action_prices_paid_by_entity_id {
+            for (entity_id, mp_change) in mp_changes {
+                info!("sending mp change to yew {mp_change}");
+                let _result =
+                    bevy_transmitter
+                        .0
+                        .send(MessageFromBevy::MpChangeById(CombatantIdWithValue {
+                            combatant_id: *entity_id,
+                            value: *mp_change as i16 * -1,
+                        }));
+            }
+        }
 
         if let Some(hp_changes) = &current_action.hp_changes_by_entity_id {
             for (entity_id, hp_change) in hp_changes {

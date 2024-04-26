@@ -27,11 +27,20 @@ pub fn handle_new_dungeon_room(
                 COMBATANT_POSITION_SPACING_BETWEEN_ROWS / 2.0,
             ));
 
-            for (monster_id, monster) in monsters {
+            let mut monster_ids = monsters
+                .iter()
+                .map(|(monster_id, _)| *monster_id)
+                .collect::<Vec<u32>>();
+
+            monster_ids.sort();
+            monster_ids.reverse();
+
+            for monster_id in monster_ids {
+                let monster = monsters.get(&monster_id).expect("there to be a monster");
                 game_store
                     .action_results_manager
                     .combantant_event_managers
-                    .insert(*monster_id, CombatantEventManager::new(*monster_id));
+                    .insert(monster_id, CombatantEventManager::new(monster_id));
                 // send messages to spawn enemy combatants
                 bevy_communication_dispatch.reduce_mut(|store| -> Result<(), AppError> {
                     let transmitter =
@@ -43,7 +52,7 @@ pub fn handle_new_dungeon_room(
 
                     transmitter
                         .send(MessageFromYew::SpawnCharacterWithHomeLocation(
-                            *monster_id,
+                            monster_id,
                             monster_home_location.clone(),
                             species,
                             monster.combatant_properties.clone(),
@@ -57,7 +66,7 @@ pub fn handle_new_dungeon_room(
         let party = game_store.get_current_party_mut()?;
 
         // SPAWN CHARACTER MODELS
-        let cloned_character_positions = party.character_positions.clone();
+        let mut cloned_character_positions = party.character_positions.clone();
         bevy_communication_dispatch.reduce_mut(|store| -> Result<(), AppError> {
             let transmitter = store.transmitter_option.as_ref().ok_or_else(|| AppError {
                 error_type: AppErrorTypes::ClientError,
@@ -69,6 +78,7 @@ pub fn handle_new_dungeon_room(
                 -COMBATANT_POSITION_SPACING_BETWEEN_ROWS / 2.0,
             ));
             character_home_location.0.rotate_y(PI);
+            cloned_character_positions.reverse();
 
             for character_id in cloned_character_positions {
                 let species = CombatantSpecies::Humanoid;

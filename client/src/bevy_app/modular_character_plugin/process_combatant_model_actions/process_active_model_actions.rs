@@ -45,7 +45,7 @@ pub struct ModelActionCombatantQueryStruct {
     pub model_action_queue: &'static mut ModelActionQueue,
     pub action_results_processing: &'static mut ActionResultsProcessing,
     pub active_model_actions: &'static mut ActiveModelActions,
-    pub floating_text_option: Option<&'static mut FloatingTextComponent>,
+    pub floating_text_component: &'static mut FloatingTextComponent,
 }
 
 #[derive(SystemParam)]

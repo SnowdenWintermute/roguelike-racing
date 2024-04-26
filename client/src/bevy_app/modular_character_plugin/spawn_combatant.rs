@@ -1,4 +1,5 @@
 use super::process_combatant_model_actions::ActiveModelActions;
+use super::process_combatant_model_actions::FloatingTextComponent;
 use super::process_combatant_model_actions::ModelActionQueue;
 use super::process_combatant_model_actions::TransformManager;
 use super::spawn_scenes::spawn_scene;
@@ -134,6 +135,7 @@ pub fn spawn_combatant(
         HitboxRadius(0.7),
         CombatantPropertiesComponent(combatant_properties),
         ActionResultsProcessing::default(),
+        FloatingTextComponent::default(),
     ));
 
     let character_entity = character_entity_commands.id();

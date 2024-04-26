@@ -3,12 +3,12 @@ use super::FloatingText;
 use super::FloatingTextComponent;
 use crate::bevy_app::asset_loader_plugin::MyAssets;
 use crate::bevy_app::modular_character_plugin::update_scene_aabbs::SceneAabb;
+use crate::bevy_app::modular_character_plugin::FloatingTextDebugger;
 use crate::bevy_app::modular_character_plugin::StartNewFloatingTextEvent;
 use bevy::prelude::*;
 use bevy_mod_billboard::BillboardDepth;
 use bevy_mod_billboard::BillboardTextBundle;
 use js_sys::Date;
-use std::collections::HashMap;
 
 pub fn handle_start_floating_text_events(
     mut commands: Commands,
@@ -16,6 +16,7 @@ pub fn handle_start_floating_text_events(
     scenes_with_aabbs: Query<&SceneAabb>,
     asset_pack: Res<MyAssets>,
     mut start_floating_text_event_reader: EventReader<StartNewFloatingTextEvent>,
+    mut floating_text_debugger: ResMut<FloatingTextDebugger>,
 ) {
     let font_handle = asset_pack
         .font_files
@@ -30,7 +31,7 @@ pub fn handle_start_floating_text_events(
         time_to_live,
     } in start_floating_text_event_reader.read()
     {
-        let combatant = model_action_params
+        let mut combatant = model_action_params
             .combatants_query
             .get_mut(*combatant_entity)
             .expect("to have a valid entity");
@@ -79,17 +80,11 @@ pub fn handle_start_floating_text_events(
             time_to_live: *time_to_live,
         };
 
-        if let Some(mut floating_text_component) = combatant.floating_text_option {
-            floating_text_component
-                .0
-                .insert(billboard_entity, new_floating_text);
-        } else {
-            commands
-                .entity(*combatant_entity)
-                .insert(FloatingTextComponent(HashMap::from([(
-                    billboard_entity,
-                    new_floating_text,
-                )])));
-        }
+        floating_text_debugger.num_spawned += 1;
+
+        combatant
+            .floating_text_component
+            .0
+            .insert(billboard_entity, new_floating_text);
     }
 }

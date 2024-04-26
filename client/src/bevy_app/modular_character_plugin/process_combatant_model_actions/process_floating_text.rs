@@ -1,3 +1,5 @@
+use crate::bevy_app::modular_character_plugin::FloatingTextDebugger;
+
 use super::FloatingTextComponent;
 use bevy::prelude::*;
 use js_sys::Date;
@@ -8,7 +10,9 @@ pub fn process_floating_text(
     mut commands: Commands,
     mut floating_text_query: Query<(Entity, &mut FloatingTextComponent)>,
     mut transforms: Query<&mut Transform>,
+    mut floating_text_debugger: ResMut<FloatingTextDebugger>,
 ) {
+    info!("{:#?}", floating_text_debugger);
     let current_time = Date::new_0().get_time() as u64;
 
     for (entity, mut floating_text_component) in floating_text_query.iter_mut() {
@@ -17,7 +21,6 @@ pub fn process_floating_text(
             if let Ok(mut transform) = transforms.get_mut(floating_text.billboard_entity) {
                 let elapsed = current_time - floating_text.time_started;
                 let percent_complete = elapsed as f32 / floating_text.time_to_live as f32;
-                info!("percent complete floatin text {:?}", percent_complete);
 
                 if let Some(destination) = floating_text.destination {
                     transform.translation = floating_text
@@ -30,7 +33,7 @@ pub fn process_floating_text(
                     floating_text_entities_to_remove.push(*billboard_entity);
                     let billboard_entity_commands = commands.entity(*billboard_entity);
                     billboard_entity_commands.despawn_recursive();
-                    info!("pushing billboard entity {:?}", billboard_entity);
+                    floating_text_debugger.num_despawned += 1;
                 }
             };
         }
@@ -38,12 +41,6 @@ pub fn process_floating_text(
         for billboard_entity in floating_text_entities_to_remove {
             floating_text_component.0.remove(&billboard_entity);
             info!("called despawn on {:?}", billboard_entity);
-        }
-
-        if floating_text_component.0.len() == 0 {
-            commands.entity(entity).remove::<FloatingTextComponent>();
-            info!("removing floating text component for {:?}", entity);
-            continue;
         }
     }
 }

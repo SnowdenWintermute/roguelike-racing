@@ -12,7 +12,7 @@ pub mod store;
 
 #[derive(Properties)]
 pub struct Props {
-    pub _shared: Arc<Mutex<SharedState>>,
+    pub shared: Arc<Mutex<SharedState>>,
     pub transmitter: YewTransmitter,
     pub bevy_transmitter: BevyTransmitter,
 }
@@ -26,14 +26,14 @@ impl PartialEq for Props {
 pub fn yew_main(
     yew_transmitter: YewTransmitter,
     bevy_transmitter: BevyTransmitter,
-    _shared: Arc<Mutex<SharedState>>,
+    shared: Arc<Mutex<SharedState>>,
 ) {
     let document = gloo::utils::document();
     let root = document.query_selector("#yew").unwrap().unwrap();
     let props = Props {
         transmitter: yew_transmitter,
         bevy_transmitter,
-        _shared,
+        shared,
     };
     yew::Renderer::<YewApp>::with_root_and_props(root, props).render();
 }

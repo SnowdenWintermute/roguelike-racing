@@ -3,20 +3,17 @@ use super::process_active_model_actions::ModelActionSystemParams;
 use super::process_floating_text::FLOATING_TEXT_TIME_TO_LIVE_DEFAULT;
 use crate::bevy_app::modular_character_plugin::StartNewAttackReactionEvent;
 use crate::bevy_app::modular_character_plugin::StartNewFloatingTextEvent;
-use crate::comm_channels::messages_from_bevy::CombatantIdWithValue;
-use crate::comm_channels::messages_from_bevy::MessageFromBevy;
-use crate::comm_channels::BevyTransmitter;
 use bevy::prelude::*;
 
 #[derive(Debug, Clone)]
 pub enum AttackResult {
     HpChange(i16),
+    MpChange(i16),
     Evade,
 }
 
 pub fn handle_new_attack_reaction_events(
     mut start_new_attack_reactions_event_reader: EventReader<StartNewAttackReactionEvent>,
-    bevy_transmitter: ResMut<BevyTransmitter>,
     mut model_action_params: ModelActionSystemParams,
     mut start_new_floating_text_event_writer: EventWriter<StartNewFloatingTextEvent>,
 ) {
@@ -45,15 +42,19 @@ pub fn handle_new_attack_reaction_events(
                     .change_hp(*number);
                 let new_model_action =
                     if target_combatant.combatant_properties_component.0.hit_points == 0 {
-                        CombatantModelActions::Death
+                        Some(CombatantModelActions::Death)
+                    } else if number < &0 {
+                        Some(CombatantModelActions::HitRecovery)
                     } else {
-                        CombatantModelActions::HitRecovery
+                        None
                     };
                 // start hit recovery model action
-                target_combatant
-                    .model_action_queue
-                    .0
-                    .push_back(new_model_action);
+                if let Some(model_action) = new_model_action {
+                    target_combatant
+                        .model_action_queue
+                        .0
+                        .push_back(model_action);
+                }
                 // return text to float
                 (
                     number.abs().to_string(),
@@ -71,6 +72,20 @@ pub fn handle_new_attack_reaction_events(
                     .0
                     .push_back(CombatantModelActions::Evade);
                 (String::from("Evaded"), Vec3::new(1.0, 1.0, 1.0))
+            }
+            AttackResult::MpChange(number) => {
+                target_combatant
+                    .combatant_properties_component
+                    .0
+                    .change_mp(*number);
+                (
+                    format!("{number} MP"),
+                    if *number > 0 {
+                        Vec3::new(0.0, 0.0, 1.0)
+                    } else {
+                        Vec3::new(1.0, 1.0, 1.0)
+                    },
+                )
             }
         };
         start_new_floating_text_event_writer.send(StartNewFloatingTextEvent {

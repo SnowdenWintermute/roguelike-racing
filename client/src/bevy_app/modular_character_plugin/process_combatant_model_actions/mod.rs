@@ -35,6 +35,7 @@ mod set_melee_target_destination_transform_and_rotation;
 mod set_non_melee_ability_destination_transform_and_rotation;
 mod start_idle_animation;
 pub mod start_new_model_actions_or_idle;
+mod start_processing_new_action_results;
 
 pub type Timestamp = u64;
 
@@ -93,7 +94,7 @@ impl TransformManager {
 pub struct FloatingText {
     value: String,
     home_location: Transform,
-    destination: Transform,
+    destination: Option<Transform>,
     billboard_entity: Entity,
     time_started: Timestamp,
     color: Vec3,

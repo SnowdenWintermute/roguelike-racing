@@ -17,26 +17,33 @@ pub fn process_floating_text(
             if let Ok(mut transform) = transforms.get_mut(floating_text.billboard_entity) {
                 let elapsed = current_time - floating_text.time_started;
                 let percent_complete = elapsed as f32 / floating_text.time_to_live as f32;
+                info!("percent complete floatin text {:?}", percent_complete);
 
-                transform.translation = floating_text
-                    .home_location
-                    .translation
-                    .lerp(floating_text.destination.translation, percent_complete);
+                if let Some(destination) = floating_text.destination {
+                    transform.translation = floating_text
+                        .home_location
+                        .translation
+                        .lerp(destination.translation, percent_complete);
+                }
 
                 if percent_complete >= 1.0 {
                     floating_text_entities_to_remove.push(*billboard_entity);
+                    let billboard_entity_commands = commands.entity(*billboard_entity);
+                    billboard_entity_commands.despawn_recursive();
+                    info!("pushing billboard entity {:?}", billboard_entity);
                 }
             };
         }
 
         for billboard_entity in floating_text_entities_to_remove {
             floating_text_component.0.remove(&billboard_entity);
-            let billboard_entity_commands = commands.entity(billboard_entity);
-            billboard_entity_commands.despawn_recursive();
+            info!("called despawn on {:?}", billboard_entity);
         }
 
         if floating_text_component.0.len() == 0 {
             commands.entity(entity).remove::<FloatingTextComponent>();
+            info!("removing floating text component for {:?}", entity);
+            continue;
         }
     }
 }

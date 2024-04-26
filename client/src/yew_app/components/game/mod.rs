@@ -108,6 +108,10 @@ pub fn game() -> Html {
         None => false,
     };
 
+    let focused_character_is_animating = game_state
+        .combatants_animating
+        .contains(&game_state.focused_character_id);
+
     let show_character_sheet = if let Some(character) = focused_character {
         (game_state.viewing_inventory || game_state.viewing_attribute_point_assignment_menu)
             && !focused_character_has_selected_combat_action
@@ -182,7 +186,9 @@ pub fn game() -> Html {
                     <div class="flex">
                         <div class="flex flex-col flex-grow justify-end max-w-full">
                             <div class="flex justify-between overflow-auto">
-                                <ActionMenu />
+                                if !focused_character_is_animating{
+                                    <ActionMenu />
+                                }
                                 if !viewing_character_sheet {
                                     <div class="flex overflow-auto">
                                         <div class="max-h-[13.375rem] h-fit flex flex-grow justify-end">
@@ -197,9 +203,11 @@ pub fn game() -> Html {
                                 }
                             </div>
                         </div>
-                        <CharacterSheet />
+                        if !focused_character_is_animating{
+                            <CharacterSheet />
+                        }
                     </div>
-                    if !focused_character_has_selected_combat_action {
+                    if !focused_character_has_selected_combat_action && !focused_character_is_animating{
                         <ItemDetailsViewer />
                     }
                 </div>

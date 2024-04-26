@@ -31,7 +31,7 @@ pub enum MessageFromBevy {
     CombatantEvadedAttack(EntityId),
     FinishedProcessingTurnResult(EntityId),
     FinishedAnimating(EntityId),
-    StartedProcessingTurnResult(EntityId),
+    StartedProcessingActionResults(EntityId),
     FinishedProcessingModelActions(EntityId),
     ApplyActionResult(ActionResult),
 }

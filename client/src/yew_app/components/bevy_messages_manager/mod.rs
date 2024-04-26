@@ -1,11 +1,11 @@
 mod finished_processing_turn;
 mod hp_change_message_handler;
 mod mp_change_message_handler;
-mod started_processing_turn_result;
+mod started_processing_action_results;
 use self::finished_processing_turn::finished_processing_turn;
 use self::hp_change_message_handler::hp_change_message_handler;
 use self::mp_change_message_handler::mp_change_message_handler;
-use self::started_processing_turn_result::started_processing_turn_result;
+use self::started_processing_action_results::started_processing_action_results;
 use crate::comm_channels::messages_from_bevy::MessageFromBevy;
 use crate::comm_channels::BevyTransmitter;
 use crate::comm_channels::YewTransmitter;
@@ -95,7 +95,7 @@ pub fn bevy_messages_manager(props: &Props) -> Html {
                 // log!(format!("processing message {:?}", message));
                 match message {
                     MessageFromBevy::AssetsLoaded => {
-                        cloned_dispatch.reduce_mut(|store| store.bevy_assets_loaded = true)
+                        cloned_dispatch.reduce_mut(|store| store.bevy_assets_loaded = true);
                     }
                     MessageFromBevy::CameraPosition(camera_position) => cloned_dispatch
                         .reduce_mut(|store| store.camera_position = camera_position.clone()),
@@ -113,9 +113,9 @@ pub fn bevy_messages_manager(props: &Props) -> Html {
                             mp_change_message.value,
                         );
                     }
-                    MessageFromBevy::StartedProcessingTurnResult(combatant_id) => {
+                    MessageFromBevy::StartedProcessingActionResults(combatant_id) => {
                         let _result =
-                            started_processing_turn_result(game_dispatch.clone(), *combatant_id);
+                            started_processing_action_results(game_dispatch.clone(), *combatant_id);
                     }
                     MessageFromBevy::FinishedProcessingTurnResult(combatant_id) => {
                         let _result =

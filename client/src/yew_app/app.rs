@@ -17,6 +17,7 @@ pub fn app(props: &Props) -> Html {
     let (game_state, _) = use_store::<GameStore>();
     let game = game_state.game.clone();
     let in_production = std::env::var("TRUNK_PROD").ok();
+
     // log!(format!("in production: {in_production}"));
     let websocket_server_url = if let Some(value) = in_production {
         if value == "true" {

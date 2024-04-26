@@ -2,7 +2,7 @@ use crate::yew_app::store::game_store::GameStore;
 use common::errors::AppError;
 use yewdux::Dispatch;
 
-pub fn started_processing_turn_result(
+pub fn started_processing_action_results(
     game_dispatch: Dispatch<GameStore>,
     combatant_id: u32,
 ) -> Result<(), AppError> {

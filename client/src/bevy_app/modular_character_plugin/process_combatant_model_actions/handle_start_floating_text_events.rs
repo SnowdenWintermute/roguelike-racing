@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use super::process_active_model_actions::ModelActionSystemParams;
 use super::FloatingText;
 use super::FloatingTextComponent;
@@ -10,6 +8,7 @@ use bevy::prelude::*;
 use bevy_mod_billboard::BillboardDepth;
 use bevy_mod_billboard::BillboardTextBundle;
 use js_sys::Date;
+use std::collections::HashMap;
 
 pub fn handle_start_floating_text_events(
     mut commands: Commands,
@@ -48,7 +47,7 @@ pub fn handle_start_floating_text_events(
             text: Text::from_sections([TextSection {
                 value: format!("{}", text),
                 style: TextStyle {
-                    font_size: 50.0,
+                    font_size: 40.0,
                     font: font_handle.clone(),
                     color: Color::rgb_from_array(*color),
                 },
@@ -63,9 +62,12 @@ pub fn handle_start_floating_text_events(
         target_skeleton_commands.add_child(billboard_entity);
 
         let mut destination = floating_text_start_location.clone();
-        if *distance_to_travel > 0.0 {
+        let destination = if *distance_to_travel > 0.0 {
             destination.translation.y = main_armature_scene_aabb.max.y + distance_to_travel;
-        }
+            Some(destination)
+        } else {
+            None
+        };
 
         let new_floating_text = FloatingText {
             value: text.clone(),

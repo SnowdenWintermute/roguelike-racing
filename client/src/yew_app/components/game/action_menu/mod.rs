@@ -40,7 +40,7 @@ pub struct ActionButtonPropertiesByCategory {
     next_prev_action_buttons: Vec<ActionMenuButtonProperties>,
 }
 
-pub const PAGE_SIZE: u8 = 6;
+pub const PAGE_SIZE: u32 = 6;
 
 #[function_component(ActionMenu)]
 pub fn action_menu(_: &Props) -> Html {
@@ -67,7 +67,7 @@ pub fn action_menu(_: &Props) -> Html {
                 .numbered_action_buttons
                 .iter()
                 .enumerate()
-                .filter(|(i, _)| *i as u8 >= min_index && *i as u8 <= max_index)
+                .filter(|(i, _)| *i as u32 >= min_index && *i as u32 <= max_index)
                 .map(|(_, item)| item.clone())
                 .collect::<Vec<ActionMenuButtonProperties>>();
             let num_actions = filtered_actions.len();
@@ -222,7 +222,7 @@ pub fn action_menu(_: &Props) -> Html {
                 html!(
                 <ActionPageButtons
                         number_of_pages={number_of_pages}
-                        hidden={( cloned_action_button_properties.numbered_action_buttons.len() as u8) <= PAGE_SIZE}
+                        hidden={( cloned_action_button_properties.numbered_action_buttons.len() as u32) <= PAGE_SIZE}
                     />
                 )
         }

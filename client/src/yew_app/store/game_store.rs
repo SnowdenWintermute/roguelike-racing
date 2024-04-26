@@ -65,8 +65,8 @@ pub struct GameStore {
     pub viewing_equipped_items: bool,
     pub selecting_injection_type: bool,
     pub viewing_items_on_ground: bool,
-    pub parent_menu_pages: Vec<u8>,
-    pub action_menu_current_page_number: u8,
+    pub parent_menu_pages: Vec<u32>,
+    pub action_menu_current_page_number: u32,
     pub combat_log: Vec<CombatLogMessage>,
 }
 

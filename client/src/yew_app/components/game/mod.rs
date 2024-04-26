@@ -34,7 +34,6 @@ use gloo::events::EventListener;
 use gloo_utils::window;
 use wasm_bindgen::JsCast;
 use wasm_bindgen::UnwrapThrowExt;
-use yew::html::SendAsMessage;
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 

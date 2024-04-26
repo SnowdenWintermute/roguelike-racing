@@ -69,6 +69,7 @@ pub fn handle_select_combat_action(
             party.get_mut_character_if_owned(player_character_ids_option.clone(), character_id)?;
         character.combatant_properties.selected_combat_action = combat_action_option.clone();
 
+        game_store.viewing_inventory = false;
         send_client_input(
             websocket_option,
             PlayerInputs::SelectCombatAction(CharacterAndCombatAction {

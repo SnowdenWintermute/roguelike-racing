@@ -168,7 +168,7 @@ impl ModelActionQueue {
                 // show missing animation billboard
                 start_new_floating_text_event_writer.send(StartNewFloatingTextEvent {
                     combatant_entity,
-                    text: "Missing Animation".to_string(),
+                    text: format!("Missing Animation: {:?}", model_action),
                     color: Vec3::from([1.0, 1.0, 1.0]),
                     distance_to_travel: 0.0,
                     time_to_live: UNKNOWN_ANIMATION_DURATION,

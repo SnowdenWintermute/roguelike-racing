@@ -92,7 +92,7 @@ pub fn ready_up_display() -> Html {
         .collect::<Html>();
 
     html!(
-    <div class="flex">
+    <div class="flex" id="ready-to-explore-display">
         <span class="border border-slate-400 bg-slate-700 h-10 pr-2 pl-2 mr-4 flex justify-center items-center pointer-events-auto">
             {"Players ready to explore: "}
         </span>

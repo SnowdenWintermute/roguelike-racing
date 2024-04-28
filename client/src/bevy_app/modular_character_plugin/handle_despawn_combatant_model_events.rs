@@ -13,6 +13,7 @@ pub fn handle_despawn_combatant_model_events(
 ) {
     for event in despawn_character_event_reader.read() {
         let combatant_id = event.0;
+        info!("reading despawn character event: {:?}", combatant_id);
         if let Some(character) = characters_by_id.0.remove(&combatant_id) {
             if let Ok(armature) = armatures.get(character) {
                 commands.entity(armature.0).despawn_recursive();

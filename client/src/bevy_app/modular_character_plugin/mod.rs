@@ -50,12 +50,6 @@ pub struct AttachedPartsReparentedEntities {
     parts_and_entities: HashMap<Entity, Vec<Entity>>,
 }
 
-#[derive(Resource, Default, Debug)]
-pub struct FloatingTextDebugger {
-    num_spawned: u32,
-    num_despawned: u32,
-}
-
 #[derive(Resource, Default)]
 pub struct TurnResultsQueue(pub VecDeque<CombatTurnResult>);
 #[derive(Resource, Default)]
@@ -101,7 +95,6 @@ impl Plugin for ModularCharacterPlugin {
             .init_resource::<TurnResultsQueue>()
             .init_resource::<RawActionResultsQueue>()
             .init_resource::<CurrentTurnResultProcessing>()
-            .init_resource::<FloatingTextDebugger>()
             // .init_::<CombatantsExecutingAttacks>()
             .add_plugins(PartChangePlugin)
             .add_systems(

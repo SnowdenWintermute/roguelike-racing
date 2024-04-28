@@ -1,9 +1,7 @@
 use super::process_active_model_actions::ModelActionSystemParams;
 use super::FloatingText;
-use super::FloatingTextComponent;
 use crate::bevy_app::asset_loader_plugin::MyAssets;
 use crate::bevy_app::modular_character_plugin::update_scene_aabbs::SceneAabb;
-use crate::bevy_app::modular_character_plugin::FloatingTextDebugger;
 use crate::bevy_app::modular_character_plugin::StartNewFloatingTextEvent;
 use bevy::prelude::*;
 use bevy_mod_billboard::BillboardDepth;
@@ -16,7 +14,6 @@ pub fn handle_start_floating_text_events(
     scenes_with_aabbs: Query<&SceneAabb>,
     asset_pack: Res<MyAssets>,
     mut start_floating_text_event_reader: EventReader<StartNewFloatingTextEvent>,
-    mut floating_text_debugger: ResMut<FloatingTextDebugger>,
 ) {
     let font_handle = asset_pack
         .font_files
@@ -79,8 +76,6 @@ pub fn handle_start_floating_text_events(
             color: *color,
             time_to_live: *time_to_live,
         };
-
-        floating_text_debugger.num_spawned += 1;
 
         combatant
             .floating_text_component

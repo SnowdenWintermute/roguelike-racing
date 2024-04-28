@@ -159,7 +159,7 @@ impl CombatantAbilityNames {
                     description: "Deals fire damage".to_string(),
                     targeting_schemes: vec![TargetingScheme::Area, TargetingScheme::Single],
                     hp_change_properties: Some(CombatActionHpChangeProperties {
-                        base_values: Range::new(4, 8),
+                        base_values: Range::new(4, 80),
                         additive_attribute_and_percent_scaling_factor: Some((
                             CombatAttributes::Intelligence,
                             100,

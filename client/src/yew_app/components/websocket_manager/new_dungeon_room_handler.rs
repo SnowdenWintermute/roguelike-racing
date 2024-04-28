@@ -65,6 +65,23 @@ pub fn handle_new_dungeon_room(
         }
         let party = game_store.get_current_party_mut()?;
 
+        // despawn any dead monsters from previous room
+        if let Some(monsters) = &party.current_room.monsters {
+            for (monster_id, _) in monsters {
+                bevy_communication_dispatch.reduce_mut(|store| -> Result<(), AppError> {
+                    let transmitter =
+                        store.transmitter_option.as_ref().ok_or_else(|| AppError {
+                            error_type: AppErrorTypes::ClientError,
+                            message: error_messages::NO_YEW_TRANSMITTER_TO_BEVY.to_string(),
+                        })?;
+                    transmitter
+                        .send(MessageFromYew::DespawnCombatantModel(*monster_id))
+                        .expect("to send message");
+                    Ok(())
+                })?;
+            }
+        }
+
         // SPAWN CHARACTER MODELS
         let mut cloned_character_positions = party.character_positions.clone();
         bevy_communication_dispatch.reduce_mut(|store| -> Result<(), AppError> {

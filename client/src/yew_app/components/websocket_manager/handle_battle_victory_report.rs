@@ -47,7 +47,6 @@ pub fn handle_battle_end_report(
                         character.combatant_properties.hit_points = 1;
                     }
                 }
-                party.current_room.monsters = None;
                 party.battle_id = None;
                 let mut entity_ids_and_previous_levels = HashMap::new();
                 // HANDLE LEVELUPS

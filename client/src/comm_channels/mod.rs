@@ -10,6 +10,8 @@ use bevy::prelude::*;
 use broadcast::Receiver;
 use broadcast::Sender;
 use common::combatants::CombatantProperties;
+use common::items::equipment::EquipmentSlots;
+use common::items::Item;
 use common::primatives::EntityId;
 use tokio::sync::broadcast;
 
@@ -30,6 +32,20 @@ pub struct DespawnCombatantModelEvent(pub EntityId);
 pub type IdOfCombatantTurnJustFinished = u32;
 #[derive(Clone, Debug, Event)]
 pub struct ProcessNextTurnResultEvent(pub Option<IdOfCombatantTurnJustFinished>);
+
+#[derive(Clone, Debug)]
+pub enum CombatantItemEvents {
+    PickedUp(Item),
+    Dropped(EntityId),
+    DroppedEquipped(EquipmentSlots),
+    Equipped(EntityId, bool),
+}
+
+#[derive(Clone, Debug, Event)]
+pub struct CombatantItemEvent {
+    pub combatant_id: EntityId,
+    pub event_type: CombatantItemEvents,
+}
 
 // CHANNELS
 #[derive(Clone, Resource, Deref)]

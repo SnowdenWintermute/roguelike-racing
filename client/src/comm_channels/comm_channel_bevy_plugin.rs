@@ -3,6 +3,8 @@ use super::BevyReceiver;
 use super::BevyTransmitter;
 use super::CharacterPartSelectionEvent;
 use super::CharacterSpawnEvent;
+use super::CombatantItemEvent;
+use super::CombatantItemEvents;
 use super::DespawnCombatantModelEvent;
 use super::ProcessNextTurnResultEvent;
 use super::YewTransmitter;
@@ -33,6 +35,7 @@ impl Plugin for CommChannelPlugin {
             .init_resource::<Events<CharacterSpawnEvent>>()
             .init_resource::<Events<DespawnCombatantModelEvent>>()
             .init_resource::<Events<ProcessNextTurnResultEvent>>()
+            .init_resource::<Events<CombatantItemEvent>>()
             .add_systems(PreUpdate, handle_yew_messages);
     }
 }
@@ -43,6 +46,7 @@ fn handle_yew_messages(
     mut spawn_combatant_event_writer: EventWriter<CharacterSpawnEvent>,
     mut select_animation_event_writer: EventWriter<DespawnCombatantModelEvent>,
     mut process_next_turn_result_event_writer: EventWriter<ProcessNextTurnResultEvent>,
+    mut combatant_item_event_writer: EventWriter<CombatantItemEvent>,
     mut turn_results_queue: ResMut<TurnResultsQueue>,
     mut raw_action_results_queue: ResMut<RawActionResultsQueue>,
     mut next_state: ResMut<NextState<BevyAppState>>,
@@ -81,6 +85,24 @@ fn handle_yew_messages(
                 raw_action_results_queue
                     .0
                     .push_back((action_taker_id, action_results))
+            }
+            MessageFromYew::CombatantPickedUpItem(combatant_id, item) => {
+                combatant_item_event_writer.send(CombatantItemEvent {
+                    combatant_id,
+                    event_type: CombatantItemEvents::PickedUp(item),
+                });
+            }
+            MessageFromYew::CombatantDroppedItem(combatant_id, item_id) => {
+                combatant_item_event_writer.send(CombatantItemEvent {
+                    combatant_id,
+                    event_type: CombatantItemEvents::Dropped(item_id),
+                });
+            }
+            MessageFromYew::CombatantEquippedItem(combatant_id, item_id, equip_to_alt_slot) => {
+                combatant_item_event_writer.send(CombatantItemEvent {
+                    combatant_id,
+                    event_type: CombatantItemEvents::Equipped(item_id, equip_to_alt_slot),
+                });
             }
         }
     }

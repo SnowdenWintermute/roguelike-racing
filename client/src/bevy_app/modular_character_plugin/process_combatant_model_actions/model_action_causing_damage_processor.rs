@@ -102,6 +102,27 @@ pub fn model_action_causing_damage_processor(
                 });
             }
         }
+
+        if let Some(items_consumed) = &current_action.items_consumed_in_entity_id_inventories {
+            for (combatant_id, item_ids_to_remove) in items_consumed {
+                let combatant_entity = model_action_params
+                    .combatants_by_id
+                    .0
+                    .get(combatant_id)
+                    .expect("to have registered the entity");
+                let mut combatant = model_action_params
+                    .combatants_query
+                    .get_mut(*combatant_entity)
+                    .expect("to have this entity in the query");
+                for item_id in item_ids_to_remove {
+                    let _result = combatant
+                        .combatant_properties_component
+                        .0
+                        .inventory
+                        .remove_item(*item_id);
+                }
+            }
+        }
         // tell yew to apply the action result
         let _result = bevy_transmitter.send(MessageFromBevy::ApplyActionResult(current_action));
     }

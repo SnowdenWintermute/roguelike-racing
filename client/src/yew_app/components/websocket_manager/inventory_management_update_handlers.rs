@@ -1,3 +1,6 @@
+use crate::comm_channels::messages_from_yew::MessageFromYew;
+use crate::yew_app::components::bevy_messages_manager::send_message_to_bevy::send_message_to_bevy;
+use crate::yew_app::store::bevy_communication_store::BevyCommunicationStore;
 use crate::yew_app::store::game_store::DetailableEntities;
 use crate::yew_app::store::game_store::GameStore;
 use common::adventuring_party::AdventuringParty;
@@ -9,9 +12,11 @@ use common::game::getters::get_party;
 use common::game::RoguelikeRacerGame;
 use common::packets::server_to_client::CharacterEquippedItemPacket;
 use common::packets::CharacterAndSlot;
+use yewdux::Dispatch;
 
 pub fn handle_character_equipped_item(
-    game_store: &mut GameStore,
+    game_dispatch: Dispatch<GameStore>,
+    bevy_communication_dispatch: Dispatch<BevyCommunicationStore>,
     packet: CharacterEquippedItemPacket,
     player_username: &String,
 ) -> Result<(), AppError> {
@@ -20,51 +25,69 @@ pub fn handle_character_equipped_item(
         item_id,
         alt_slot,
     } = packet;
-    let player_owns_character = game_store
-        .get_current_party_mut()?
-        .player_owns_character(player_username, character_id);
-    let character = game_store.get_mut_character(character_id)?;
+    game_dispatch.reduce_mut(|game_store| -> Result<(), AppError> {
+        let player_owns_character = game_store
+            .get_current_party_mut()?
+            .player_owns_character(player_username, character_id);
+        let character = game_store.get_mut_character(character_id)?;
 
-    let unequipped_item_ids = character
-        .combatant_properties
-        .equip_item(item_id, alt_slot)?;
-    let item_to_select = match unequipped_item_ids.get(0) {
-        Some(id) => {
-            let mut item = None;
-            for item_in_inventory in &character.combatant_properties.inventory.items {
-                if item_in_inventory.entity_properties.id == *id {
-                    item = Some(item_in_inventory.clone())
+        let unequipped_item_ids = character
+            .combatant_properties
+            .equip_item(item_id, alt_slot)?;
+        let item_to_select = match unequipped_item_ids.get(0) {
+            Some(id) => {
+                let mut item = None;
+                for item_in_inventory in &character.combatant_properties.inventory.items {
+                    if item_in_inventory.entity_properties.id == *id {
+                        item = Some(item_in_inventory.clone())
+                    }
                 }
+                item
             }
-            item
-        }
-        None => None,
-    };
+            None => None,
+        };
 
-    if player_owns_character {
-        match item_to_select {
-            Some(item) => {
-                game_store.selected_item = Some(item.clone());
-                game_store.detailed_entity = Some(DetailableEntities::Item(item.clone()));
-                game_store.hovered_entity = None;
+        if player_owns_character {
+            match item_to_select {
+                Some(item) => {
+                    game_store.selected_item = Some(item.clone());
+                    game_store.detailed_entity = Some(DetailableEntities::Item(item.clone()));
+                    game_store.hovered_entity = None;
+                }
+                None => (),
             }
-            None => (),
         }
-    }
 
-    Ok(())
+        Ok(())
+    });
+
+    bevy_communication_dispatch.reduce_mut(|store| -> Result<(), AppError> {
+        send_message_to_bevy(
+            &store.transmitter_option,
+            MessageFromYew::CombatantEquippedItem(packet.character_id, packet.item_id, alt_slot),
+        )
+    })
 }
 
 pub fn handle_character_unequipped_slot(
-    game_store: &mut GameStore,
+    game_dispatch: Dispatch<GameStore>,
+    bevy_communication_dispatch: Dispatch<BevyCommunicationStore>,
     packet: CharacterAndSlot,
 ) -> Result<(), AppError> {
-    let CharacterAndSlot { character_id, slot } = packet;
-    let character = game_store.get_mut_character(character_id)?;
-    character
-        .combatant_properties
-        .unequip_slots(&vec![slot], false);
-    Ok(())
+    game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
+        let CharacterAndSlot { character_id, slot } = &packet;
+        let character = store.get_mut_character(*character_id)?;
+        character
+            .combatant_properties
+            .unequip_slots(&vec![slot.clone()], false);
+        Ok(())
+    });
+    bevy_communication_dispatch.reduce_mut(|store| -> Result<(), AppError> {
+        send_message_to_bevy(
+            &store.transmitter_option,
+            MessageFromYew::CombatantUnequippedItem(packet.character_id, packet.slot),
+        )
+    })
 }
 
 impl GameStore {

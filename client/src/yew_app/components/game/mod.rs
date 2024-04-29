@@ -14,6 +14,8 @@ mod tailwind_class_loader;
 mod top_info_bar;
 use crate::comm_channels::messages_from_yew::MessageFromYew;
 use crate::utils::set_bevy_canvas_visibility;
+use crate::yew_app::components::bevy_messages_manager::send_message_to_bevy::send_message_to_bevy;
+use crate::yew_app::components::common_components::atoms::button_basic::ButtonBasic;
 use crate::yew_app::components::game::action_menu::ActionMenu;
 use crate::yew_app::components::game::character_autofocus_manager::CharacterAutofocusManager;
 use crate::yew_app::components::game::character_sheet::item_details_viewer::ItemDetailsViewer;
@@ -41,7 +43,8 @@ use yewdux::prelude::use_store;
 pub fn game() -> Html {
     let (game_state, game_dispatch) = use_store::<GameStore>();
     let (lobby_state, _) = use_store::<LobbyStore>();
-    let (bevy_communication_state, _) = use_store::<BevyCommunicationStore>();
+    let (bevy_communication_state, bevy_communication_dispatch) =
+        use_store::<BevyCommunicationStore>();
     if !bevy_communication_state.bevy_assets_loaded {
         return html!({ "loading assets" });
     };
@@ -153,11 +156,36 @@ pub fn game() -> Html {
         "w-full"
     };
 
+    let time_of_death_option = if game_state.combatants_animating.len() > 0 {
+        None
+    } else if let Some(time_of_wipe) = party.time_of_wipe {
+        Some(format!("unix timestamp ({})", time_of_wipe))
+    } else {
+        None
+    };
+    let leave_game = Callback::from(move |_| {
+        game_dispatch.set(GameStore::default());
+        let _result = bevy_communication_dispatch.reduce_mut(|store| {
+            send_message_to_bevy(&store.transmitter_option, MessageFromYew::EndGame)
+        });
+    });
+
     html!(
         <main class="h-screen w-screen flex justify-center relative">
             <TailwindClassLoader />
             <CharacterAutofocusManager />
             // <GameDebug />
+            if let Some(time_of_death) = time_of_death_option {
+                <div class=" border border-slate-400 bg-slate-700 p-4 pointer-events-auto text-zinc-300
+                    absolute z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" >
+                    <span class="
+                    text-lg mb-2
+                    ">{"Time of death: "}{time_of_death}</span>
+                    <ButtonBasic onclick={leave_game}>
+                        {"Leave Game"}
+                    </ButtonBasic>
+                </div>
+            }
             <div class="w-full h-full max-h-[calc(0.5625 * 100vw)] text-zinc-300 flex flex-col" >
                 <TopInfoBar />
                 <div class="p-4 flex-grow flex flex-col justify-between">
@@ -194,9 +222,11 @@ pub fn game() -> Html {
                                             <div class="mr-2 w-[50rem]">
                                                 <ItemDetailsAndComparison />
                                             </div>
-                                            <div class="max-w-[25rem] w-[25rem]" >
-                                                <ItemsOnGround max_height={25.0} />
-                                            </div>
+                                            if !game_state.combatants_animating.len() > 0 && !focused_character_is_animating {
+                                                <div class="max-w-[25rem] w-[25rem]" >
+                                                    <ItemsOnGround max_height={25.0} />
+                                                </div>
+                                            }
                                         </div>
                                     </div>
                                 }

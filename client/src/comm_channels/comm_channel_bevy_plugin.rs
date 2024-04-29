@@ -8,6 +8,7 @@ use super::CombatantItemEvents;
 use super::DespawnCombatantModelEvent;
 use super::ProcessNextTurnResultEvent;
 use super::YewTransmitter;
+use crate::bevy_app::modular_character_plugin::CombatantsById;
 use crate::bevy_app::modular_character_plugin::RawActionResultsQueue;
 use crate::bevy_app::modular_character_plugin::TurnResultsQueue;
 use crate::bevy_app::BevyAppState;
@@ -41,10 +42,11 @@ impl Plugin for CommChannelPlugin {
 }
 
 fn handle_yew_messages(
+    combatants_by_id: Res<CombatantsById>,
     mut bevy_receiver: ResMut<BevyReceiver>,
     mut part_selection_event_writer: EventWriter<CharacterPartSelectionEvent>,
     mut spawn_combatant_event_writer: EventWriter<CharacterSpawnEvent>,
-    mut select_animation_event_writer: EventWriter<DespawnCombatantModelEvent>,
+    mut despawn_combatant_event_writer: EventWriter<DespawnCombatantModelEvent>,
     mut process_next_turn_result_event_writer: EventWriter<ProcessNextTurnResultEvent>,
     mut combatant_item_event_writer: EventWriter<CombatantItemEvent>,
     mut turn_results_queue: ResMut<TurnResultsQueue>,
@@ -71,7 +73,7 @@ fn handle_yew_messages(
                 ));
             }
             MessageFromYew::DespawnCombatantModel(combatant_id) => {
-                select_animation_event_writer.send(DespawnCombatantModelEvent(combatant_id));
+                despawn_combatant_event_writer.send(DespawnCombatantModelEvent(combatant_id));
             }
             MessageFromYew::NewTurnResults(mut turn_results) => {
                 turn_results_queue.0.append(&mut turn_results);
@@ -103,6 +105,25 @@ fn handle_yew_messages(
                     combatant_id,
                     event_type: CombatantItemEvents::Equipped(item_id, equip_to_alt_slot),
                 });
+            }
+            MessageFromYew::CombatantDroppedEquippedItem(combatant_id, slot) => {
+                combatant_item_event_writer.send(CombatantItemEvent {
+                    combatant_id,
+                    event_type: CombatantItemEvents::DroppedEquipped(slot),
+                });
+            }
+            MessageFromYew::CombatantUnequippedItem(combatant_id, slot) => {
+                combatant_item_event_writer.send(CombatantItemEvent {
+                    combatant_id,
+                    event_type: CombatantItemEvents::Unequipped(slot),
+                });
+            }
+            MessageFromYew::EndGame => {
+                // despawn all models
+                for (entity_id, _entity) in &combatants_by_id.0 {
+                    despawn_combatant_event_writer.send(DespawnCombatantModelEvent(*entity_id));
+                }
+                // despawn the camera
             }
         }
     }

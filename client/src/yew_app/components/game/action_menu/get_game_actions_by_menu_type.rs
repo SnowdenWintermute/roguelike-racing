@@ -34,8 +34,8 @@ impl MenuTypes {
                 }
                 MenuTypes::CombatActionSelected => {
                     menu_items.push(GameActions::DeselectCombatAction);
-                    menu_items.push(GameActions::CycleTargets(NextOrPrevious::Next));
                     menu_items.push(GameActions::CycleTargets(NextOrPrevious::Previous));
+                    menu_items.push(GameActions::CycleTargets(NextOrPrevious::Next));
                     menu_items.push(GameActions::UseSelectedCombatAction);
                     match &selected_combat_action_properties_option {
                         Some(properties) => {

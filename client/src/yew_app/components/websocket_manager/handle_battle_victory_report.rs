@@ -33,7 +33,7 @@ pub fn handle_battle_end_report(
         match packet.conclusion {
             BattleConclusion::Victory => {
                 store.combat_log.push(CombatLogMessage::new(
-                    AttrValue::from("battle ended in victory"),
+                    AttrValue::from("Battle ended in victory"),
                     CombatLogMessageStyle::BattleVictory,
                     0,
                 ));
@@ -101,7 +101,7 @@ pub fn handle_battle_end_report(
                 let party = store.get_current_party_mut()?;
                 party.time_of_wipe = Some(js_sys::Date::now() as u64);
                 store.combat_log.push(CombatLogMessage::new(
-                    AttrValue::from("battle ended in defeat"),
+                    AttrValue::from("Battle ended in defeat"),
                     CombatLogMessageStyle::PartyWipe,
                     0,
                 ));

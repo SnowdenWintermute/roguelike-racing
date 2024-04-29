@@ -39,6 +39,7 @@ pub enum CombatantItemEvents {
     Dropped(EntityId),
     DroppedEquipped(EquipmentSlots),
     Equipped(EntityId, bool),
+    Unequipped(EquipmentSlots),
 }
 
 #[derive(Clone, Debug, Event)]

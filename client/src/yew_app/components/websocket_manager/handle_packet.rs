@@ -113,11 +113,15 @@ pub fn handle_packet(
         }
         GameServerUpdatePackets::CharacterEquippedItem(packet) => {
             let username = lobby_dispatch.reduce_mut(|store| store.username.clone());
-            game_dispatch
-                .reduce_mut(|store| handle_character_equipped_item(store, packet, &username))
+            handle_character_equipped_item(
+                game_dispatch,
+                bevy_communication_dispatch,
+                packet,
+                &username,
+            )
         }
         GameServerUpdatePackets::CharacterUnequippedSlot(packet) => {
-            game_dispatch.reduce_mut(|store| handle_character_unequipped_slot(store, packet))
+            handle_character_unequipped_slot(game_dispatch, bevy_communication_dispatch, packet)
         }
         GameServerUpdatePackets::PlayerToggledReadyToExplore(username) => {
             handle_player_toggled_ready_to_explore(game_dispatch, username)
@@ -149,13 +153,21 @@ pub fn handle_packet(
             handle_battle_end_report(game_dispatch, websocket_dispatch, packet)
         }
         GameServerUpdatePackets::CharacterPickedUpItem(packet) => {
-            handle_character_picked_up_item(game_dispatch, packet)
+            handle_character_picked_up_item(game_dispatch, bevy_communication_dispatch, packet)
         }
-        GameServerUpdatePackets::CharacterDroppedItem(packet) => {
-            handle_character_dropped_item(game_dispatch, websocket_dispatch, packet)
-        }
+        GameServerUpdatePackets::CharacterDroppedItem(packet) => handle_character_dropped_item(
+            game_dispatch,
+            websocket_dispatch,
+            bevy_communication_dispatch,
+            packet,
+        ),
         GameServerUpdatePackets::CharacterDroppedEquippedItem(packet) => {
-            handle_character_dropped_equipped_item(game_dispatch, websocket_dispatch, packet)
+            handle_character_dropped_equipped_item(
+                game_dispatch,
+                websocket_dispatch,
+                bevy_communication_dispatch,
+                packet,
+            )
         }
         GameServerUpdatePackets::PlayerToggledReadyToDescend(packet) => {
             handle_player_toggled_ready_to_descend(game_dispatch, packet)

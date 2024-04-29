@@ -21,7 +21,7 @@ pub fn game_list_item(props: &GameListItemProps) -> Html {
     });
 
     html!(
-        <li class="w-full flex border border-slate-400 mb-4 justify-between">
+        <li class="w-full flex border border-slate-400 mb-4 justify-between pointer-events-auto">
             <div class="flex">
                 <div class="h-10 flex items-center w-40 border-r border-slate-400 pl-4">
                     <div class="overflow-hidden whitespace-nowrap overflow-ellipsis">

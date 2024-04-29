@@ -1,4 +1,7 @@
 use super::send_client_input::send_client_input;
+use crate::comm_channels::messages_from_yew::MessageFromYew;
+use crate::yew_app::components::bevy_messages_manager::send_message_to_bevy::send_message_to_bevy;
+use crate::yew_app::store::bevy_communication_store::BevyCommunicationStore;
 use crate::yew_app::store::game_store::GameStore;
 use crate::yew_app::store::websocket_store::WebsocketStore;
 use common::app_consts::error_messages;
@@ -10,6 +13,7 @@ use yewdux::Dispatch;
 pub fn handle_character_dropped_equipped_item(
     game_dispatch: Dispatch<GameStore>,
     websocket_dispatch: Dispatch<WebsocketStore>,
+    bevy_communication_dispatch: Dispatch<BevyCommunicationStore>,
     packet: CharacterAndSlot,
 ) -> Result<(), AppError> {
     let item_id_result = game_dispatch.reduce_mut(|store| -> Result<u32, AppError> {
@@ -37,7 +41,12 @@ pub fn handle_character_dropped_equipped_item(
                     PlayerInputs::AcknowledgeReceiptOfItemOnGroundUpdate(item_id),
                 );
             });
-            Ok(())
+            bevy_communication_dispatch.reduce_mut(|store| {
+                send_message_to_bevy(
+                    &store.transmitter_option,
+                    MessageFromYew::CombatantDroppedEquippedItem(packet.character_id, packet.slot),
+                )
+            })
         }
         Err(err) => Err(err),
     }

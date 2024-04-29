@@ -18,7 +18,7 @@ use std::collections::VecDeque;
 use std::time::Duration;
 mod animation_only_model_action_processor;
 mod approaching_destination;
-mod combatant_item_event_handlers;
+pub mod combatant_item_event_handlers;
 mod end_turn;
 pub mod get_percent_animation_completed;
 pub mod handle_new_attack_reaction_events;

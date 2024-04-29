@@ -7,7 +7,7 @@ impl AdventuringParty {
     /// create a list of DungeonRoomTypes to generate when players vote to explore the next room in
     /// their dungeon
     pub fn generate_unexplored_rooms_queue(&mut self) {
-        let monster_lairs_per_floor = 3;
+        let monster_lairs_per_floor = 1;
         let empty_rooms_per_floor = 0;
 
         self.unexplored_rooms.clear();

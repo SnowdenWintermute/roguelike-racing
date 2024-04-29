@@ -48,6 +48,12 @@ pub fn handle_combatant_item_events(
                     .equipment
                     .remove(equipment_slot);
             }
+            CombatantItemEvents::Unequipped(equipment_slot) => {
+                let _result = combatant
+                    .combatant_properties_component
+                    .0
+                    .unequip_slots(&Vec::from([equipment_slot.clone()]), false);
+            }
         }
     }
 }

@@ -45,8 +45,7 @@ pub fn determine_menu_actions(
         None => None,
     };
 
-    if focused_character_selected_combat_action_properties_option.is_some() && player_owns_character
-    {
+    if focused_character_selected_combat_action_properties_option.is_some() {
         if let Some(combat_action_properties) =
             focused_character_selected_combat_action_properties_option
         {

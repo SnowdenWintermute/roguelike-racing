@@ -1,6 +1,7 @@
 mod finished_processing_turn;
 mod hp_change_message_handler;
 mod mp_change_message_handler;
+pub mod send_message_to_bevy;
 mod started_processing_action_results;
 use self::finished_processing_turn::finished_processing_turn;
 use self::hp_change_message_handler::hp_change_message_handler;

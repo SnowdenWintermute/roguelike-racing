@@ -2,6 +2,7 @@ use self::assign_skeleton_bones_to_combatants::assign_skeleton_bones_to_combatan
 use self::handle_despawn_combatant_model_events::handle_despawn_combatant_model_events;
 use self::notify_yew_that_assets_are_loaded::notify_yew_that_assets_are_loaded;
 use self::part_change_plugin::PartChangePlugin;
+use self::process_combatant_model_actions::combatant_item_event_handlers::handle_combatant_item_events;
 use self::process_combatant_model_actions::handle_new_attack_reaction_events::handle_new_attack_reaction_events;
 use self::process_combatant_model_actions::handle_new_attack_reaction_events::AttackResult;
 use self::process_combatant_model_actions::handle_start_floating_text_events::handle_start_floating_text_events;
@@ -121,6 +122,7 @@ impl Plugin for ModularCharacterPlugin {
                     handle_start_next_model_action_events,
                     handle_new_attack_reaction_events,
                     handle_start_floating_text_events,
+                    handle_combatant_item_events,
                     process_floating_text.chain(),
                 )
                     .run_if(in_state(AssetLoaderState::Done))

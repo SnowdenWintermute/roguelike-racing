@@ -8,15 +8,15 @@
     <link rel="icon" type="image/x-icon" href="./public/favicon.ico">
     <base href="/">
   
-<link rel="preload" href="/roguelike-racing-client-198abbe0a9fc89c8_bg.wasm" crossorigin="anonymous" integrity="sha384-lnp3qAtZPbCY8OQoQSIOVvz8mPdn1mN1catF2J1yk9GhgTMl1nTJVM/V0UxWl9L2" as="fetch" type="application/wasm">
+<link rel="preload" href="/roguelike-racing-client-53688dcf43e93b38_bg.wasm" crossorigin="anonymous" integrity="sha384-XAiXBUaEtWYnov++lbkZkvpKSVJdXddZ7WEaH2hU9/hVpUYE3ngBfAZ1qiQKUq71" as="fetch" type="application/wasm">
 <link rel="modulepreload" href="/9e10eb7cb8d5fd08-initializer.mjs" crossorigin="anonymous" integrity="sha384-90hoFGtjwuGt1EEG2O/HLxp6+Sm/SfTW7Pw673Zua3jAg7EVaD/r+JaUr2f3TA39">
-<link rel="modulepreload" href="/roguelike-racing-client-198abbe0a9fc89c8.js" crossorigin="anonymous" integrity="sha384-ixKlZ0gVoBJ60WcYgPtuC1l7jJsz1wdKKfbXlNKABJ8NhQ6HXxek6mAPXYaxYzQZ"></head>
+<link rel="modulepreload" href="/roguelike-racing-client-53688dcf43e93b38.js" crossorigin="anonymous" integrity="sha384-pfOx7fszTlqlIgTE7Jrt9Xox/ZsW9k02QIgPkPVY7/PyfSix/akjQh9NKZ/RoH6U"></head>
 
   <body class="bg-slate-800 h-screen w-screen">
     <div id="yew" class="absolute z-10 pointer-events-none"></div>
     <canvas id="bevy" class="!w-screen !h-screen"></canvas>
     <!-- loading indicator -->
-    <div id="loading-indicator" class="absolute z-20 top-1/2 left-1/2 text-lg text-zinc-300 bg-slate-800 border border-slate-400 p-2 transition-opacity duration-1000 -translate-x-1/2 -translate-y-1/2"></div>
+    <div id="loading-indicator" class="absolute z-20 top-1/2 left-1/2 text-lg text-zinc-300 bg-slate-800 border border-slate-400 p-2 transition-opacity duration-1000 -translate-x-1/2 -translate-y-1/2 pointer-events-auto"></div>
     <div id="tailwind-class-creator" class="opacity-0 bg-slate-700">
     
 <script type="module">
@@ -90,10 +90,10 @@ async function __trunkInitWithProgress(source, initializer) {
 }
 
 
-import init, * as bindings from '/roguelike-racing-client-198abbe0a9fc89c8.js';
+import init, * as bindings from '/roguelike-racing-client-53688dcf43e93b38.js';
 import initializer from '/9e10eb7cb8d5fd08-initializer.mjs';
 
-await __trunkInitializer('/roguelike-racing-client-198abbe0a9fc89c8_bg.wasm', initializer());
+await __trunkInitializer('/roguelike-racing-client-53688dcf43e93b38_bg.wasm', initializer());
 
 
 window.wasmBindings = bindings;

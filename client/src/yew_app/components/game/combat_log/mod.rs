@@ -20,7 +20,7 @@ pub fn combat_log() -> Html {
                {game_state.combat_log.iter().map(|log_entry| html!(
                        <CombatLogMessageElement combat_log_message={log_entry.clone()} />))
                    .collect::<Html>()}
-                    <CameraPositionDisplay />
+                    // <CameraPositionDisplay />
                </ul>
             </div>
         </div>

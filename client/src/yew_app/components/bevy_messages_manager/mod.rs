@@ -1,11 +1,7 @@
 mod finished_processing_turn;
-mod hp_change_message_handler;
-mod mp_change_message_handler;
 pub mod send_message_to_bevy;
 mod started_processing_action_results;
 use self::finished_processing_turn::finished_processing_turn;
-use self::hp_change_message_handler::hp_change_message_handler;
-use self::mp_change_message_handler::mp_change_message_handler;
 use self::started_processing_action_results::started_processing_action_results;
 use crate::comm_channels::messages_from_bevy::MessageFromBevy;
 use crate::comm_channels::BevyTransmitter;
@@ -103,20 +99,6 @@ pub fn bevy_messages_manager(props: &Props) -> Html {
                     }
                     MessageFromBevy::CameraPosition(camera_position) => cloned_dispatch
                         .reduce_mut(|store| store.camera_position = camera_position.clone()),
-                    MessageFromBevy::HpChangeById(hp_change_message) => {
-                        let _result = hp_change_message_handler(
-                            cloned_game_dispatch.clone(),
-                            hp_change_message.combatant_id,
-                            hp_change_message.value,
-                        );
-                    }
-                    MessageFromBevy::MpChangeById(mp_change_message) => {
-                        let _result = mp_change_message_handler(
-                            cloned_game_dispatch.clone(),
-                            mp_change_message.combatant_id,
-                            mp_change_message.value,
-                        );
-                    }
                     MessageFromBevy::StartedProcessingActionResults(combatant_id) => {
                         let _result =
                             started_processing_action_results(game_dispatch.clone(), *combatant_id);

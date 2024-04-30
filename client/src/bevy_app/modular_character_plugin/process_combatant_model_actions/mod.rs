@@ -93,12 +93,10 @@ impl TransformManager {
 }
 
 pub struct FloatingText {
-    value: String,
     home_location: Transform,
     destination: Option<Transform>,
     billboard_entity: Entity,
     time_started: Timestamp,
-    color: Vec3,
     time_to_live: u64,
 }
 

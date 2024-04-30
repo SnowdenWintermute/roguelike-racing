@@ -25,7 +25,7 @@ pub fn handle_character_equipped_item(
         item_id,
         alt_slot,
     } = packet;
-    game_dispatch.reduce_mut(|game_store| -> Result<(), AppError> {
+    let _result = game_dispatch.reduce_mut(|game_store| -> Result<(), AppError> {
         let player_owns_character = game_store
             .get_current_party_mut()?
             .player_owns_character(player_username, character_id);
@@ -74,7 +74,7 @@ pub fn handle_character_unequipped_slot(
     bevy_communication_dispatch: Dispatch<BevyCommunicationStore>,
     packet: CharacterAndSlot,
 ) -> Result<(), AppError> {
-    game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
+    let _result = game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
         let CharacterAndSlot { character_id, slot } = &packet;
         let character = store.get_mut_character(*character_id)?;
         character

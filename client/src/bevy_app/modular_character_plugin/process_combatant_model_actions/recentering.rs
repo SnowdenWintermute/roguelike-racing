@@ -4,8 +4,6 @@ use super::process_active_model_actions::ModelActionSystemParams;
 use crate::bevy_app::utils::rotate_transform_toward_target::rotate_transform_toward_target;
 use bevy::prelude::*;
 
-pub const TIME_TO_RECENTER: u64 = 1000;
-
 pub fn combatant_recentering_processor(
     entity: Entity,
     elapsed: u64,

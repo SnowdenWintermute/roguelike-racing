@@ -68,12 +68,10 @@ pub fn handle_start_floating_text_events(
         };
 
         let new_floating_text = FloatingText {
-            value: text.clone(),
             home_location: floating_text_start_location,
             destination,
             billboard_entity,
             time_started: Date::new_0().get_time() as u64,
-            color: *color,
             time_to_live: *time_to_live,
         };
 

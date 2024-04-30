@@ -1,8 +1,6 @@
 use bevy::math::u64;
 use bevy::prelude::*;
 
-pub const TIME_TO_ROTATE: u64 = 1000;
-
 pub fn rotate_transform_toward_target(
     transform_to_rotate: &mut Transform,
     start_rotation: &Quat,

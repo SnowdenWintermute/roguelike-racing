@@ -3,7 +3,6 @@ use super::process_active_model_actions::ModelActionCombatantQueryStructItem;
 use super::process_active_model_actions::ModelActionSystemParams;
 use crate::bevy_app::modular_character_plugin::StartNextModelActionEvent;
 use crate::bevy_app::utils::rotate_transform_toward_target::rotate_transform_toward_target;
-use crate::bevy_app::utils::rotate_transform_toward_target::TIME_TO_ROTATE;
 use crate::bevy_app::utils::translate_transform_toward_target::translate_transform_toward_target;
 use bevy::math::u64;
 use bevy::prelude::*;

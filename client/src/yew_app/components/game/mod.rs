@@ -6,7 +6,6 @@ pub mod combatant;
 mod combatant_plaques;
 pub mod context_dependant_information_display;
 pub mod debug;
-mod dungeon_room;
 mod item_details_viewers;
 mod items_on_ground;
 mod ready_up_display;

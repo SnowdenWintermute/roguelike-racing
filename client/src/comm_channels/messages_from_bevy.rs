@@ -26,12 +26,8 @@ pub enum MessageFromBevy {
     CombatantSpawned(EntityId),
     AssetsLoaded,
     CameraPosition(CameraPosition),
-    HpChangeById(CombatantIdWithValue),
-    MpChangeById(CombatantIdWithValue),
-    CombatantEvadedAttack(EntityId),
     FinishedProcessingTurnResult(EntityId),
     FinishedAnimating(EntityId),
     StartedProcessingActionResults(EntityId),
-    FinishedProcessingModelActions(EntityId),
     ApplyActionResult(ActionResult),
 }

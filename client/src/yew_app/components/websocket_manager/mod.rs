@@ -3,7 +3,7 @@ mod battle_full_update_handler;
 mod character_selected_combat_action_handler;
 mod dungeon_floor_number_changed_handler;
 mod game_full_update_handler;
-mod handle_battle_victory_report;
+pub mod handle_battle_victory_report;
 mod handle_character_dropped_equipped_item;
 mod handle_character_dropped_item;
 mod handle_character_picked_up_item;

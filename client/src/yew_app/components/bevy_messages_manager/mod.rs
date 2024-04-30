@@ -10,9 +10,12 @@ use self::started_processing_action_results::started_processing_action_results;
 use crate::comm_channels::messages_from_bevy::MessageFromBevy;
 use crate::comm_channels::BevyTransmitter;
 use crate::comm_channels::YewTransmitter;
+use crate::yew_app::components::game::combat_log::create_logs_from_action_result::create_logs_from_action_result;
+use crate::yew_app::components::websocket_manager::handle_battle_victory_report::process_battle_conclusion_report;
 use crate::yew_app::store::bevy_communication_store::BevyCommunicationStore;
 use crate::yew_app::store::game_store::GameStore;
 use common::combat::apply_action_result::apply_action_result;
+use common::errors::AppError;
 use gloo::console::log;
 use std::ops::Deref;
 use yew::platform::spawn_local;
@@ -127,15 +130,18 @@ pub fn bevy_messages_manager(props: &Props) -> Html {
                             .reduce_mut(|store| store.combatants_animating.remove(combatant_id));
                     }
                     MessageFromBevy::ApplyActionResult(action_result) => {
-                        game_dispatch.reduce_mut(|store| {
+                        let _result = game_dispatch.reduce_mut(|store| -> Result<(), AppError> {
                             if let Some(game) = &mut store.game {
-                                let _result = apply_action_result(
-                                    game,
-                                    &action_result,
-                                    store.current_battle_id,
-                                );
+                                // log action result
+                                let mut new_combat_log_messages =
+                                    create_logs_from_action_result(&game, &action_result)?;
+                                store.combat_log.append(&mut new_combat_log_messages);
+
+                                apply_action_result(game, &action_result, store.current_battle_id)?;
                             }
-                        })
+                            Ok(())
+                        });
+                        let _result = process_battle_conclusion_report(game_dispatch.clone());
                     }
                     _ => (), // MessageFromBevy::PartNames(part_names) => cloned_dispatch
                              //     .reduce_mut(|store| store.parts_available = part_names.clone()),

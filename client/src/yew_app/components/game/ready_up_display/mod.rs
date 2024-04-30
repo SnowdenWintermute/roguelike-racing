@@ -57,22 +57,22 @@ pub fn ready_up_display() -> Html {
     let ready_to_explore_buttons =
         create_ready_buttons(&party.player_usernames, &party.players_ready_to_explore, &lobby_state, handle_click_explore);
     let ready_to_descend_buttons =
-        create_ready_buttons(&party.player_usernames, &party.players_ready_to_explore, &lobby_state, handle_click_descend);
+        create_ready_buttons(&party.player_usernames, &party.players_ready_to_descend, &lobby_state, handle_click_descend);
 
     html!(
-        <div class="" id="ready-to-explore-display">
-            <div class="border border-slate-400 bg-slate-700 h-10 pr-2 pl-2 mr-4 pointer-events-auto flex items-center">
+        <div class="max-w-fit" id="ready-to-explore-display">
+            <div class="border border-slate-400 bg-slate-700 h-10 pr-2 pl-2 mr-4 mb-1 pointer-events-auto flex items-center max-w-fit">
             if party.current_room.room_type != DungeonRoomTypes::Stairs {
                 {"Players ready to explore: "}
             } else {
                 {"Players voting to stay on current floor: "}
             }
             </div>
-            <ul class="flex">
+            <ul class="flex mb-2">
                 {ready_to_explore_buttons}
             </ul>
             if party.current_room.room_type == DungeonRoomTypes::Stairs {
-                <div class="border border-slate-400 bg-slate-700 h-10 pr-2 pl-2 mr-4 pointer-events-auto flex items-center">
+                <div class="border border-slate-400 bg-slate-700 h-10 pr-2 pl-2 mr-4 mb-1 pointer-events-auto flex items-center">
                     {"Players voting to descend deeper into the dungeon: "}
                 </div>
                 <ul class="flex">
@@ -105,11 +105,11 @@ fn create_ready_buttons(usernames: &HashSet<String>,list_of_ready_users: &HashSe
             };
 
             html!(
-                <li>
+                <li class="mr-2 last:mr-0">
                     <button 
                         onclick={handle_click}
                         class={format!("border border-slate-400 bg-slate-700 h-10 pr-2 pl-2 {conditional_classes}
-                                       pointer-events-auto mr-2 last:mr-0")}
+                                       pointer-events-auto ")}
                         >
                           {item}
                       </button>

@@ -1,4 +1,5 @@
 pub mod combat_log_message;
+pub mod create_logs_from_action_result;
 use self::combat_log_message::CombatLogMessage;
 use crate::yew_app::components::common_components::atoms::divider::Divider;
 use crate::yew_app::components::game::debug::camera_position_display::CameraPositionDisplay;

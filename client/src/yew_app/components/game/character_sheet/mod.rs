@@ -57,7 +57,7 @@ pub fn character_sheet() -> Html {
         && !focused_character_has_selected_action;
 
     let conditional_styles = if show_character_sheet {
-        "overflow-scroll"
+        "overflow-auto"
     } else {
         "opacity-0 w-0 overflow-hidden"
     };

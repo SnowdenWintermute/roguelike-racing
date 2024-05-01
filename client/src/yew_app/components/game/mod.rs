@@ -27,7 +27,6 @@ use crate::yew_app::components::game::ready_up_display::ReadyUpDisplay;
 use crate::yew_app::components::game::tailwind_class_loader::TailwindClassLoader;
 use crate::yew_app::components::game::top_info_bar::TopInfoBar;
 use crate::yew_app::store::bevy_communication_store::BevyCommunicationStore;
-use crate::yew_app::store::game_store::DetailableEntities;
 use crate::yew_app::store::game_store::GameStore;
 use crate::yew_app::store::lobby_store::LobbyStore;
 use common::game::getters::get_ally_ids_and_opponent_ids_option;
@@ -56,23 +55,6 @@ pub fn game() -> Html {
             log!("set bevy to start rendering")
         }
     });
-    let detailed_entity = &game_state.detailed_entity;
-    let hovered_entity = &game_state.hovered_entity;
-
-    let hovered_item_option = match hovered_entity {
-        Some(detailable) => match detailable {
-            DetailableEntities::Item(item) => Some(item.clone()),
-            _ => None,
-        },
-        None => None,
-    };
-    let detailed_item_option = match detailed_entity {
-        Some(detailable) => match detailable {
-            DetailableEntities::Item(item) => Some(item.clone()),
-            _ => None,
-        },
-        None => None,
-    };
 
     let game = game_state
         .game
@@ -131,7 +113,7 @@ pub fn game() -> Html {
         .combatants_animating
         .contains(&game_state.focused_character_id);
 
-    let show_character_sheet = if let Some(_) = focused_character {
+    let show_character_sheet = if let Some(character) = focused_character {
         (game_state.viewing_inventory || game_state.viewing_attribute_point_assignment_menu)
             && !focused_character_has_selected_combat_action
     } else {
@@ -212,7 +194,7 @@ pub fn game() -> Html {
                             {monster_plaques}
                         </div>
                     </div>
-                    <div class="flex flex-wrap justify-between" style={"overflow: auto;"}>
+                    <div class="flex flex-wrap justify-between">
                         <div class="h-[14rem] min-w-[23rem] max-w-[26rem] w-full border border-slate-400 bg-slate-700 p-2 pointer-events-auto">
                             <CombatLog />
                         </div>
@@ -225,24 +207,20 @@ pub fn game() -> Html {
                 </div>
             </div>
             // Action Menu and Inventory/Equipment/Character sheet container
-            <div class={ format!( "absolute z-31 top-1/2 -translate-y-1/2 w-full p-4 text-zinc-300 flex flex-row box-border {}", conditional_styles)}>
+            <div class={ format!( "absolute z-31 top-1/2 -translate-y-1/2 w-full p-4 text-zinc-300 flex flex-row {}", conditional_styles)}>
                 <div class={ format!("flex flex-col {} max-w-full", action_menu_and_character_sheet_container_conditional_classes)}>
                     <div class="flex">
                         <div class="flex flex-col flex-grow justify-end max-w-full">
-                            <div class="flex justify-between " style={"overflow: auto;"}>
+                            <div class="flex justify-between overflow-hidden">
                                 if !focused_character_is_animating{
                                     <ActionMenu />
                                 }
                                 if !viewing_character_sheet {
-                                    <div class="flex">
+                                    <div class="flex overflow-hidden">
                                         <div class="max-h-[13.375rem] h-fit flex flex-grow justify-end">
-                                        if detailed_entity.is_some() || hovered_entity.is_some() {
-                                            <div class="flex-grow">
-                                                <div class="mr-2 w-[45rem]">
-                                                    <ItemDetailsAndComparison />
-                                                </div>
+                                            <div class="mr-2 w-[50rem]">
+                                                <ItemDetailsAndComparison />
                                             </div>
-                                        }
                                             if !game_state.combatants_animating.len() > 0 && !focused_character_is_animating {
                                                 <div class="max-w-[25rem] w-[25rem]" >
                                                     <ItemsOnGround max_height={25.0} />
@@ -257,7 +235,7 @@ pub fn game() -> Html {
                             <CharacterSheet />
                         }
                     </div>
-                    if !focused_character_has_selected_combat_action && !focused_character_is_animating{
+                    if !focused_character_is_animating{
                         <ItemDetailsViewer />
                     }
                 </div>

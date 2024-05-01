@@ -952,6 +952,10 @@ video {
   width: 45rem;
 }
 
+.w-\[50rem\] {
+  width: 50rem;
+}
+
 .\!min-w-\[2\.5rem\] {
   min-width: 2.5rem !important;
 }

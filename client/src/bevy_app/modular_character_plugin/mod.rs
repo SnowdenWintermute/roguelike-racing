@@ -77,6 +77,7 @@ pub struct StartNewFloatingTextEvent {
     color: Vec3,
     distance_to_travel: f32,
     time_to_live: u64,
+    size: Option<f32>,
 }
 
 pub struct ModularCharacterPlugin;

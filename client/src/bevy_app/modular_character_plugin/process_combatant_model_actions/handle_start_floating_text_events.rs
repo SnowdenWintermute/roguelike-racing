@@ -26,6 +26,7 @@ pub fn handle_start_floating_text_events(
         color,
         distance_to_travel,
         time_to_live,
+        size,
     } in start_floating_text_event_reader.read()
     {
         let mut combatant = model_action_params
@@ -39,13 +40,17 @@ pub fn handle_start_floating_text_events(
             .expect("to have an aabb for the main armature");
         let mut floating_text_start_location = Transform::from_xyz(0.0, 0.0, 0.0);
         floating_text_start_location.translation.y = main_armature_scene_aabb.max.y * 0.75;
+        let font_size = match size {
+            Some(size) => *size,
+            None => 40.0,
+        };
 
         let billboard_entity_commands = commands.spawn(BillboardTextBundle {
             transform: floating_text_start_location.with_scale(Vec3::splat(0.0125)),
             text: Text::from_sections([TextSection {
                 value: format!("{}", text),
                 style: TextStyle {
-                    font_size: 40.0,
+                    font_size,
                     font: font_handle.clone(),
                     color: Color::rgb_from_array(*color),
                 },

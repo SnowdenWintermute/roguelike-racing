@@ -171,6 +171,7 @@ impl ModelActionQueue {
                     color: Vec3::from([1.0, 1.0, 1.0]),
                     distance_to_travel: 0.0,
                     time_to_live: UNKNOWN_ANIMATION_DURATION,
+                    size: Some(20.0),
                 });
             };
         }

@@ -93,6 +93,7 @@ pub fn handle_new_attack_reaction_events(
             color,
             distance_to_travel: 1.5,
             time_to_live: FLOATING_TEXT_TIME_TO_LIVE_DEFAULT as u64,
+            size: None,
         });
     }
 }

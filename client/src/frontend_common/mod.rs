@@ -1,7 +1,4 @@
-use common::combat::CombatTurnResult;
-use common::items::Item;
 use common::primatives::EntityId;
-use std::collections::HashMap;
 use std::collections::HashSet;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -38,11 +35,4 @@ pub struct CharacterAnimationSelection {
 pub struct AttackCommand {
     pub combatant_id: EntityId,
     pub target_id: EntityId,
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub enum CombatantSpecies {
-    Humanoid,
-    Wasp,
-    Frog,
 }

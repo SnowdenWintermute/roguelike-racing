@@ -24,21 +24,32 @@ impl Plugin for AssetLoaderPlugin {
 
 #[derive(AssetCollection, Resource)]
 pub struct MyAssets {
-    #[asset(
-        paths("scifi_head.glb", "witch_head.glb", "space_head.glb"),
-        collection(typed, mapped)
-    )]
+    #[asset(paths("scifi_head.glb", "witch_head.glb"), collection(typed, mapped))]
     pub heads: HashMap<String, Handle<Gltf>>,
     #[asset(
         paths(
             "main_skeleton.glb",
             "wasp_main_skeleton.glb",
-            "frog_main_skeleton.glb"
+            "frog_main_skeleton.glb",
+            "dragon_main_skeleton.glb",
+            "skeleton_main_skeleton.glb",
+            "velociraptor_main_skeleton.glb"
         ),
         collection(typed, mapped)
     )]
     pub main_skeletons_with_animations: HashMap<String, Handle<Gltf>>,
-    #[asset(paths("wasp_full.glb", "frog_full.glb"), collection(typed, mapped))]
+    #[asset(
+        paths(
+            "wasp_full.glb",
+            "frog_full.glb",
+            "dragon_full.glb",
+            "skeleton_full.glb",
+            "velociraptor_full.glb",
+            "midieval.glb",
+            "adventurer.glb"
+        ),
+        collection(typed, mapped)
+    )]
     pub non_humanoids: HashMap<String, Handle<Gltf>>,
     #[asset(paths("scifi_torso.glb", "witch_torso.glb"), collection(typed, mapped))]
     pub torsos: HashMap<String, Handle<Gltf>>,

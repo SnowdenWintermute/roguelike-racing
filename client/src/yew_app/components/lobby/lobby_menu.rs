@@ -50,7 +50,7 @@ pub fn lobby_menu() -> Html {
             &websocket_state.websocket,
             PlayerInputs::CreateCharacter(CharacterCreation {
                 character_name: "".to_string(),
-                combatant_class: CombatantClass::Mage,
+                combatant_class: CombatantClass::Warrior,
             }),
         );
         send_client_input(
@@ -64,7 +64,7 @@ pub fn lobby_menu() -> Html {
             &websocket_state.websocket,
             PlayerInputs::CreateCharacter(CharacterCreation {
                 character_name: "".to_string(),
-                combatant_class: CombatantClass::Mage,
+                combatant_class: CombatantClass::Rogue,
             }),
         );
 

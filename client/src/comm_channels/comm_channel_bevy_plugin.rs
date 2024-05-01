@@ -44,7 +44,6 @@ impl Plugin for CommChannelPlugin {
 fn handle_yew_messages(
     combatants_by_id: Res<CombatantsById>,
     mut bevy_receiver: ResMut<BevyReceiver>,
-    mut part_selection_event_writer: EventWriter<CharacterPartSelectionEvent>,
     mut spawn_combatant_event_writer: EventWriter<CharacterSpawnEvent>,
     mut despawn_combatant_event_writer: EventWriter<DespawnCombatantModelEvent>,
     mut process_next_turn_result_event_writer: EventWriter<ProcessNextTurnResultEvent>,
@@ -56,9 +55,6 @@ fn handle_yew_messages(
 ) {
     if let Ok(message_from_yew) = bevy_receiver.try_recv() {
         match message_from_yew {
-            MessageFromYew::SelectCharacterPart(part_selection) => {
-                part_selection_event_writer.send(CharacterPartSelectionEvent(part_selection));
-            }
             MessageFromYew::SpawnCharacterWithHomeLocation(
                 character_id,
                 home_location,

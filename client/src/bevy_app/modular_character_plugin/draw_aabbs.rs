@@ -1,3 +1,4 @@
+#![allow(unused)]
 use bevy::prelude::*;
 
 pub fn draw_aabbs(mut config_store: ResMut<GizmoConfigStore>) {

@@ -2,9 +2,9 @@ use super::model_actions::get_animation_name_from_model_action;
 use super::model_actions::CombatantModelActions;
 use crate::bevy_app::modular_character_plugin::Animations;
 use crate::bevy_app::utils::link_animations::AnimationEntityLink;
-use crate::frontend_common::CombatantSpecies;
 use bevy::animation::AnimationPlayer;
 use bevy::prelude::*;
+use common::combatants::combatant_species::CombatantSpecies;
 use common::combatants::CombatantProperties;
 use std::time::Duration;
 

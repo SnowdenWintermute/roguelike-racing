@@ -141,11 +141,9 @@ pub fn handle_packet(
         GameServerUpdatePackets::ActionResults(packet) => {
             handle_raw_action_results(bevy_communication_dispatch, packet)
         }
-        GameServerUpdatePackets::CombatTurnResults(packet) => handle_combat_turn_results(
-            bevy_communication_dispatch,
-            game_dispatch,
-            packet.turn_results,
-        ),
+        GameServerUpdatePackets::CombatTurnResults(packet) => {
+            handle_combat_turn_results(bevy_communication_dispatch, packet.turn_results)
+        }
         GameServerUpdatePackets::BattleFullUpdate(packet) => {
             handle_battle_full_update(game_dispatch, packet)
         }

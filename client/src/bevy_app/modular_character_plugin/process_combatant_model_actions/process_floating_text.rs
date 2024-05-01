@@ -11,7 +11,7 @@ pub fn process_floating_text(
 ) {
     let current_time = Date::new_0().get_time() as u64;
 
-    for (entity, mut floating_text_component) in floating_text_query.iter_mut() {
+    for (_, mut floating_text_component) in floating_text_query.iter_mut() {
         let mut floating_text_entities_to_remove = Vec::new();
         for (billboard_entity, floating_text) in floating_text_component.0.iter() {
             if let Ok(mut transform) = transforms.get_mut(floating_text.billboard_entity) {

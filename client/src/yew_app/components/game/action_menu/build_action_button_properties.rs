@@ -43,7 +43,7 @@ pub fn build_action_button_properties(
     lobby_state: Rc<LobbyStore>,
     party: &AdventuringParty,
 ) -> ActionButtonPropertiesByCategory {
-    let new_actions = determine_menu_actions(&game_state, &lobby_state, party);
+    let new_actions = determine_menu_actions(&game_state, party);
     let mut numbered_button_properties = Vec::new();
     let mut top_button_properties = Vec::new();
     let mut next_prev_button_properties = Vec::new();

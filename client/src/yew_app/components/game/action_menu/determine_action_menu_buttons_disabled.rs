@@ -29,11 +29,6 @@ pub fn determine_action_menu_buttons_disabled(
         return true;
     }
     let focused_character = focused_character_result.expect("is_none checked");
-    let focused_character_event_queue = game_state
-        .action_results_manager
-        .combantant_event_managers
-        .get(&focused_character_id)
-        .expect("to have an event queue for every combatant entity");
 
     let player_owns_character =
         party.player_owns_character(&lobby_state.username, focused_character_id);

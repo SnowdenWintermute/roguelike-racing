@@ -86,7 +86,6 @@ pub fn bevy_messages_manager(props: &Props) -> Html {
     // DEQUEUE AND HANDLE MESSAGES
     let cloned_queued_bevy_messages_state = queued_bevy_messages_state.clone();
     let cloned_dispatch = dispatch.clone();
-    let cloned_game_dispatch = game_dispatch.clone();
     use_effect_with(
         cloned_queued_bevy_messages_state.clone(),
         move |cloned_queued_bevy_messages_state| {

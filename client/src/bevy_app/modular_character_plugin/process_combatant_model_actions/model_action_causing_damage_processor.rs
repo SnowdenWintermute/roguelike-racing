@@ -80,7 +80,6 @@ pub fn model_action_causing_damage_processor(
                 start_new_attack_reaction_event_writer.send(StartNewAttackReactionEvent {
                     entity_id: *entity_id,
                     attack_result: AttackResult::HpChange(*hp_change),
-                    causer_id: combatant.combatant_id_component.0,
                 });
             }
         }
@@ -89,7 +88,6 @@ pub fn model_action_causing_damage_processor(
                 start_new_attack_reaction_event_writer.send(StartNewAttackReactionEvent {
                     entity_id: *entity_id,
                     attack_result: AttackResult::MpChange(*mp_change),
-                    causer_id: combatant.combatant_id_component.0,
                 });
             }
         }
@@ -98,7 +96,6 @@ pub fn model_action_causing_damage_processor(
                 start_new_attack_reaction_event_writer.send(StartNewAttackReactionEvent {
                     entity_id: *entity_id,
                     attack_result: AttackResult::Evade,
-                    causer_id: combatant.combatant_id_component.0,
                 });
             }
         }

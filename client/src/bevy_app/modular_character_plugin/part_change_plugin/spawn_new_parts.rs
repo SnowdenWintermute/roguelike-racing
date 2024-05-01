@@ -27,8 +27,6 @@ pub fn spawn_new_parts(
         let file_name = &event.0.name;
         let category = &event.0.category;
 
-        let character_id = event.0.character_id;
-        //  - get associated character
         let character_entity = character_by_id
             .0
             .get(&event.0.character_id)

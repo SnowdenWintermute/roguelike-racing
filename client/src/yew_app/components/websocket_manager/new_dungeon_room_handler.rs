@@ -1,6 +1,5 @@
 use crate::bevy_app::modular_character_plugin::HomeLocation;
 use crate::comm_channels::messages_from_yew::MessageFromYew;
-use crate::frontend_common::CombatantSpecies;
 use crate::yew_app::components::mesh_manager::CombatantEventManager;
 use crate::yew_app::store::bevy_communication_store::BevyCommunicationStore;
 use crate::yew_app::store::game_store::GameStore;
@@ -8,6 +7,7 @@ use bevy::transform::components::Transform;
 use common::app_consts::error_messages;
 use common::app_consts::COMBATANT_POSITION_SPACING_BETWEEN_ROWS;
 use common::app_consts::COMBATANT_POSITION_SPACING_SIDE;
+use common::combatants::combatant_species::CombatantSpecies;
 use common::dungeon_rooms::DungeonRoom;
 use common::errors::AppError;
 use common::errors::AppErrorTypes;
@@ -48,13 +48,12 @@ pub fn handle_new_dungeon_room(
                             error_type: AppErrorTypes::ClientError,
                             message: error_messages::NO_YEW_TRANSMITTER_TO_BEVY.to_string(),
                         })?;
-                    let species = CombatantSpecies::Wasp;
 
                     transmitter
                         .send(MessageFromYew::SpawnCharacterWithHomeLocation(
                             monster_id,
                             monster_home_location.clone(),
-                            species,
+                            monster.combatant_properties.combatant_species.clone(),
                             monster.combatant_properties.clone(),
                         ))
                         .expect("to send message");

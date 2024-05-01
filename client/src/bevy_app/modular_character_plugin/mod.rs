@@ -19,10 +19,10 @@ use super::utils::link_animations::link_animations;
 use super::BevyAppState;
 use crate::bevy_app::asset_loader_plugin::AssetLoaderState;
 use crate::comm_channels::DespawnCombatantModelEvent;
-use crate::frontend_common::CombatantSpecies;
 use bevy::prelude::*;
 use common::combat::ActionResult;
 use common::combat::CombatTurnResult;
+use common::combatants::combatant_species::CombatantSpecies;
 use common::primatives::EntityId;
 use std::collections::HashMap;
 use std::collections::VecDeque;
@@ -55,8 +55,6 @@ pub struct AttachedPartsReparentedEntities {
 pub struct TurnResultsQueue(pub VecDeque<CombatTurnResult>);
 #[derive(Resource, Default)]
 pub struct RawActionResultsQueue(pub VecDeque<(EntityId, Vec<ActionResult>)>);
-#[derive(Resource, Default)]
-pub struct CurrentTurnResultProcessing(pub Option<CombatTurnResult>);
 
 #[derive(Default, Debug, Clone, Component)]
 pub struct HomeLocation(pub Transform);
@@ -71,7 +69,6 @@ pub struct StartNextModelActionEvent {
 pub struct StartNewAttackReactionEvent {
     entity_id: EntityId,
     attack_result: AttackResult,
-    causer_id: EntityId,
 }
 #[derive(Clone, Debug, Event)]
 pub struct StartNewFloatingTextEvent {
@@ -95,7 +92,6 @@ impl Plugin for ModularCharacterPlugin {
             .init_resource::<Events<DespawnCombatantModelEvent>>()
             .init_resource::<TurnResultsQueue>()
             .init_resource::<RawActionResultsQueue>()
-            .init_resource::<CurrentTurnResultProcessing>()
             // .init_::<CombatantsExecutingAttacks>()
             .add_plugins(PartChangePlugin)
             .add_systems(

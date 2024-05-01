@@ -2,11 +2,13 @@ pub mod abilities;
 pub mod award_levelups;
 pub mod combat_attributes;
 pub mod combatant_classes;
+pub mod combatant_species;
 pub mod combatant_traits;
 mod equip_item;
 mod get_total_elemental_affinites;
 mod get_total_physical_damage_type_affinities;
 use self::combatant_classes::CombatantClass;
+use self::combatant_species::CombatantSpecies;
 use self::combatant_traits::CombatantTraits;
 use crate::combat::combat_actions::CombatAction;
 mod get_equipped_item;
@@ -48,6 +50,7 @@ pub struct ExperiencePoints {
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct CombatantProperties {
     pub combatant_class: CombatantClass,
+    pub combatant_species: CombatantSpecies,
     pub inherent_attributes: HashMap<CombatAttributes, u16>,
     pub specced_attributes: HashMap<CombatAttributes, u16>,
     pub level: u8,
@@ -70,11 +73,13 @@ pub struct CombatantProperties {
 impl CombatantProperties {
     pub fn new(
         combatant_class: &CombatantClass,
+        combatant_species: &CombatantSpecies,
         abilities: HashMap<CombatantAbilityNames, CombatantAbility>,
         controlled_by: CombatantControlledBy,
     ) -> CombatantProperties {
         CombatantProperties {
             combatant_class: combatant_class.clone(),
+            combatant_species: combatant_species.clone(),
             inherent_attributes: HashMap::new(),
             specced_attributes: HashMap::new(),
             level: 1,

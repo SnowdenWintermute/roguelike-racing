@@ -1,3 +1,4 @@
+#![allow(unused)]
 use crate::comm_channels::messages_from_bevy::CameraPosition;
 use crate::comm_channels::messages_from_bevy::MessageFromBevy;
 use crate::comm_channels::BevyTransmitter;
@@ -17,7 +18,7 @@ impl Plugin for CameraPlugin {
 }
 
 fn spawn_camera(mut commands: Commands) {
-    let entity_commands = commands.spawn((
+    let _entity_commands = commands.spawn((
         Camera3dBundle {
             transform: Transform::from_xyz(0.0, 0.0, 3.0),
             camera: Camera {

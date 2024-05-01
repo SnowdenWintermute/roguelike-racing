@@ -113,7 +113,7 @@ pub fn game() -> Html {
         .combatants_animating
         .contains(&game_state.focused_character_id);
 
-    let show_character_sheet = if let Some(character) = focused_character {
+    let show_character_sheet = if let Some(_) = focused_character {
         (game_state.viewing_inventory || game_state.viewing_attribute_point_assignment_menu)
             && !focused_character_has_selected_combat_action
     } else {

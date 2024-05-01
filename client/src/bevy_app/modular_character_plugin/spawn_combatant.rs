@@ -11,11 +11,11 @@ use crate::comm_channels::messages_from_bevy::MessageFromBevy;
 use crate::comm_channels::BevyTransmitter;
 use crate::comm_channels::CharacterSpawnEvent;
 use crate::frontend_common::CharacterPartCategories;
-use crate::frontend_common::CombatantSpecies;
 use bevy::gltf::Gltf;
 use bevy::prelude::*;
 use bevy_mod_billboard::BillboardTextBundle;
 use common::combat::ActionResult;
+use common::combatants::combatant_species::CombatantSpecies;
 use common::combatants::CombatantProperties;
 use common::primatives::EntityId;
 use std::collections::HashMap;
@@ -66,6 +66,9 @@ pub fn spawn_combatants(
             CombatantSpecies::Humanoid => "main_skeleton.glb",
             CombatantSpecies::Wasp => "wasp_main_skeleton.glb",
             CombatantSpecies::Frog => "frog_main_skeleton.glb",
+            CombatantSpecies::Dragon => "dragon_main_skeleton.glb",
+            CombatantSpecies::Skeleton => "skeleton_main_skeleton.glb",
+            CombatantSpecies::Velociraptor => "velociraptor_main_skeleton.glb",
         };
 
         let skeleton_handle = asset_pack

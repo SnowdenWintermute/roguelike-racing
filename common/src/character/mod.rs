@@ -2,6 +2,7 @@ use self::outfit_new_character::outfit_new_character;
 use crate::combatants::abilities::CombatantAbility;
 use crate::combatants::abilities::CombatantAbilityNames;
 use crate::combatants::combatant_classes::CombatantClass;
+use crate::combatants::combatant_species::CombatantSpecies;
 use crate::combatants::CombatantControlledBy;
 use crate::combatants::CombatantProperties;
 use crate::game::RoguelikeRacerGame;
@@ -36,6 +37,7 @@ impl Character {
             },
             combatant_properties: CombatantProperties::new(
                 &combatant_class,
+                &CombatantSpecies::Humanoid,
                 HashMap::new(),
                 CombatantControlledBy::Player(name_of_controlling_user),
             ),

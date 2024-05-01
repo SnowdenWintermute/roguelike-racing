@@ -1,7 +1,6 @@
 use super::enums::GameActions;
 use super::enums::MenuTypes;
 use crate::yew_app::store::game_store::GameStore;
-use crate::yew_app::store::lobby_store::LobbyStore;
 use common::adventuring_party::AdventuringParty;
 use common::combat::combat_actions::AbilityUsableContext;
 use common::combatants::abilities::CombatantAbilityNames;
@@ -14,7 +13,6 @@ use std::rc::Rc;
 // determine menu actions
 pub fn determine_menu_actions(
     game_state: &Rc<GameStore>,
-    lobby_state: &Rc<LobbyStore>,
     party: &AdventuringParty,
 ) -> Vec<GameActions> {
     let mut menu_types: Vec<MenuTypes> = Vec::new();
@@ -22,8 +20,6 @@ pub fn determine_menu_actions(
 
     let inventory_is_open = game_state.viewing_inventory;
     let focused_character_option = party.characters.get(&game_state.focused_character_id);
-    let player_owns_character =
-        party.player_owns_character(&lobby_state.username, game_state.focused_character_id);
     let focused_character_selected_combat_action_properties_option = match focused_character_option
     {
         Some(character) => {

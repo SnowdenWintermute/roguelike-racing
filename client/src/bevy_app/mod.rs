@@ -8,7 +8,6 @@ use self::asset_loader_plugin::AssetLoaderPlugin;
 use self::camera_plugin::CameraPlugin;
 use self::modular_character_plugin::ModularCharacterPlugin;
 use self::plane_plugin::PlanePlugin;
-use crate::SharedState;
 use bevy::asset::AssetMetaCheck;
 use bevy::prelude::*;
 use bevy::render::Render;
@@ -17,11 +16,6 @@ use bevy::winit::UpdateMode;
 use bevy::winit::WinitSettings;
 use bevy_mod_billboard::plugin::BillboardPlugin;
 use bevy_panorbit_camera::PanOrbitCameraPlugin;
-use std::sync::Arc;
-use std::sync::Mutex;
-
-#[derive(Resource)]
-pub struct SharedResource(Arc<Mutex<SharedState>>);
 
 #[derive(States, Clone, Eq, PartialEq, Default, Hash, Debug)]
 pub enum BevyAppState {
@@ -30,7 +24,7 @@ pub enum BevyAppState {
     Running,
 }
 
-pub fn bevy_main(comm_channel_plugin: impl Plugin, shared_state: Arc<Mutex<SharedState>>) {
+pub fn bevy_main(comm_channel_plugin: impl Plugin) {
     App::new()
         .insert_resource(WinitSettings {
             focused_mode: UpdateMode::Continuous,
@@ -56,7 +50,6 @@ pub fn bevy_main(comm_channel_plugin: impl Plugin, shared_state: Arc<Mutex<Share
             RenderSet::Render.run_if(in_state(BevyAppState::Running)),
         )
         .add_plugins(comm_channel_plugin)
-        .insert_resource(SharedResource(shared_state))
         .add_plugins(PlanePlugin)
         .add_plugins(CameraPlugin)
         .add_plugins(AssetLoaderPlugin)

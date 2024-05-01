@@ -1,8 +1,7 @@
 use crate::bevy_app::modular_character_plugin::HomeLocation;
-use crate::frontend_common::CharacterPartSelection;
-use crate::frontend_common::CombatantSpecies;
 use common::combat::ActionResult;
 use common::combat::CombatTurnResult;
+use common::combatants::combatant_species::CombatantSpecies;
 use common::combatants::CombatantProperties;
 use common::items::equipment::EquipmentSlots;
 use common::items::Item;
@@ -12,7 +11,6 @@ use std::collections::VecDeque;
 // YEW MESSAGES
 #[derive(Debug, Clone)]
 pub enum MessageFromYew {
-    SelectCharacterPart(CharacterPartSelection),
     SpawnCharacterWithHomeLocation(
         EntityId,
         HomeLocation,

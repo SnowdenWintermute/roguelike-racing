@@ -21,7 +21,6 @@ pub fn handle_new_attack_reaction_events(
         let StartNewAttackReactionEvent {
             entity_id,
             attack_result,
-            causer_id,
         } = event;
 
         let target_entity = model_action_params

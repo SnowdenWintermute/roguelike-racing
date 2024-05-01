@@ -34,7 +34,7 @@ pub fn bevy_main(comm_channel_plugin: impl Plugin) {
         .insert_resource(ClearColor(Color::rgb(0.1, 0.1, 0.15)))
         .insert_resource(AmbientLight {
             color: Color::default(),
-            brightness: 1000.0,
+            brightness: 500.0,
         })
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {

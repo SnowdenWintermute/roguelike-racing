@@ -55,6 +55,7 @@ pub fn handle_new_dungeon_room(
                             monster_home_location.clone(),
                             monster.combatant_properties.combatant_species.clone(),
                             monster.combatant_properties.clone(),
+                            monster.entity_properties.clone(),
                         ))
                         .expect("to send message");
                     Ok(())
@@ -101,7 +102,7 @@ pub fn handle_new_dungeon_room(
                 transmitter
                     .send(MessageFromYew::DespawnCombatantModel(character_id))
                     .expect("to send message");
-                let (_, combatant_properties) = party
+                let (entity_properties, combatant_properties) = party
                     .get_combatant_by_id(&character_id)
                     .expect("to have the combatant in the party");
 
@@ -111,6 +112,7 @@ pub fn handle_new_dungeon_room(
                         character_home_location.clone(),
                         species,
                         combatant_properties.clone(),
+                        entity_properties.clone(),
                     ))
                     .expect("could not send event");
                 character_home_location.0.translation.x += COMBATANT_POSITION_SPACING_SIDE;

@@ -5,6 +5,7 @@ use super::spawn_combatant::CombatantMainArmatureEntityLink;
 use super::spawn_combatant::CombatantMainArmatureMarker;
 use super::spawn_combatant::CombatantPropertiesComponent;
 use super::spawn_combatant::CombatantSpeciesComponent;
+use super::spawn_combatant::EntityPropertiesComponent;
 use super::spawn_combatant::MainSkeletonBonesAndArmature;
 use super::spawn_scenes::SceneLoaded;
 use super::CombatantsById;
@@ -16,12 +17,16 @@ use bevy::prelude::*;
 use bevy::scene::SceneInstance;
 use common::combatants::combatant_classes::CombatantClass;
 use common::combatants::combatant_species::CombatantSpecies;
+use common::monsters::monster_types::MonsterTypes;
 
 pub fn assign_skeleton_bones_to_combatants(
     mut commands: Commands,
     scene_manager: Res<SceneSpawner>,
     unloaded_instances: Query<(Entity, &SceneInstance), Without<SceneLoaded>>,
-    combatant_properties_query: Query<&CombatantPropertiesComponent>,
+    entity_and_combatant_properties_query: Query<(
+        &EntityPropertiesComponent,
+        &CombatantPropertiesComponent,
+    )>,
     mut skeletons_awaiting_combatant_assignment: ResMut<SkeletonsAwaitingCombatantAssignment>,
     mut parts_awaiting_spawn_query: Query<&mut CharacterPartScenesAwaitingSpawn>,
     characters_by_id: Res<CombatantsById>,
@@ -73,9 +78,10 @@ pub fn assign_skeleton_bones_to_combatants(
             if let Ok(mut parts_awaiting_spawn) =
                 parts_awaiting_spawn_query.get_mut(*character_entity)
             {
-                let combatant_properties = combatant_properties_query
-                    .get(*character_entity)
-                    .expect("to have added combatant properties on the entity");
+                let (entity_properties, combatant_properties) =
+                    entity_and_combatant_properties_query
+                        .get(*character_entity)
+                        .expect("to have added combatant properties on the entity");
                 let parts_to_spawn = match species {
                     CombatantSpecies::Humanoid => match combatant_properties.0.combatant_class {
                         CombatantClass::Warrior => Vec::from([
@@ -93,7 +99,7 @@ pub fn assign_skeleton_bones_to_combatants(
                             ("sword.glb", CharacterPartCategories::Weapon),
                         ]),
                     },
-                    CombatantSpecies::Wasp => {
+                    CombatantSpecies::Wasp | CombatantSpecies::Golem => {
                         Vec::from([("wasp_full.glb", CharacterPartCategories::FullBodyMesh)])
                     }
                     CombatantSpecies::Frog => {
@@ -109,6 +115,16 @@ pub fn assign_skeleton_bones_to_combatants(
                         "velociraptor_full.glb",
                         CharacterPartCategories::FullBodyMesh,
                     )]),
+                    CombatantSpecies::Elemental => {
+                        if entity_properties.0.name == format!("{}", MonsterTypes::FireElemental) {
+                            Vec::from([(
+                                "cube_full_red.glb",
+                                CharacterPartCategories::FullBodyMesh,
+                            )])
+                        } else {
+                            Vec::from([("cube_full.glb", CharacterPartCategories::FullBodyMesh)])
+                        }
+                    }
                 };
                 for (part_name, category) in parts_to_spawn {
                     spawn_part(

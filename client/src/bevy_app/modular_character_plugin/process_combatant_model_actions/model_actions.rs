@@ -10,6 +10,7 @@ pub enum CombatantModelActions {
     TurnToFaceTarget,
     AttackMeleeMainHand,
     AttackMeleeOffHand,
+    AttackRanged,
     UseConsumable,
     CastSpell,
     HitRecovery,
@@ -45,8 +46,9 @@ pub fn get_animation_name_from_model_action(
             CombatantModelActions::Evade => None,
             CombatantModelActions::CastSpell => None,
             CombatantModelActions::UseConsumable => None,
+            CombatantModelActions::AttackRanged => None,
         },
-        CombatantSpecies::Wasp => match model_action {
+        CombatantSpecies::Wasp | CombatantSpecies::Golem => match model_action {
             CombatantModelActions::ApproachDestination
             | CombatantModelActions::ReturnHome
             | CombatantModelActions::TurnToFaceTarget
@@ -60,6 +62,7 @@ pub fn get_animation_name_from_model_action(
             CombatantModelActions::Death => Some("Wasp_Death"),
             CombatantModelActions::CastSpell => None,
             CombatantModelActions::UseConsumable => None,
+            CombatantModelActions::AttackRanged => None,
         },
         CombatantSpecies::Frog => match model_action {
             CombatantModelActions::ApproachDestination => Some("Frog_Jump"),
@@ -74,6 +77,7 @@ pub fn get_animation_name_from_model_action(
             CombatantModelActions::Evade => None,
             CombatantModelActions::CastSpell => None,
             CombatantModelActions::UseConsumable => None,
+            CombatantModelActions::AttackRanged => None,
         },
         CombatantSpecies::Dragon => match model_action {
             CombatantModelActions::AttackMeleeMainHand => Some("Dragon_Attack"),
@@ -112,6 +116,9 @@ pub fn get_animation_name_from_model_action(
             | CombatantModelActions::AttackMeleeMainHand => Some("Velociraptor_Attack"),
             CombatantModelActions::HitRecovery => Some("Velociraptor_Jump"),
             CombatantModelActions::Death => Some("Velociraptor_Death"),
+            _ => None,
+        },
+        CombatantSpecies::Elemental => match model_action {
             _ => None,
         },
     };

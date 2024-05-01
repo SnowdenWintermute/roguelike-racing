@@ -33,7 +33,8 @@ pub struct MyAssets {
             "frog_main_skeleton.glb",
             "dragon_main_skeleton.glb",
             "skeleton_main_skeleton.glb",
-            "velociraptor_main_skeleton.glb"
+            "velociraptor_main_skeleton.glb",
+            "cube_main_skeleton.glb"
         ),
         collection(typed, mapped)
     )]
@@ -45,6 +46,8 @@ pub struct MyAssets {
             "dragon_full.glb",
             "skeleton_full.glb",
             "velociraptor_full.glb",
+            "cube_full.glb",
+            "cube_full_red.glb",
             "midieval.glb",
             "adventurer.glb"
         ),

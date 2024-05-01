@@ -104,6 +104,7 @@ pub fn process_active_model_actions(
                 CombatantModelActions::TurnToFaceTarget => todo!(),
                 CombatantModelActions::AttackMeleeMainHand
                 | CombatantModelActions::AttackMeleeOffHand
+                | CombatantModelActions::AttackRanged
                 | CombatantModelActions::CastSpell
                 | CombatantModelActions::UseConsumable => model_action_causing_damage_processor(
                     entity,

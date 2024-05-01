@@ -6,6 +6,7 @@ use common::combatants::CombatantProperties;
 use common::items::equipment::EquipmentSlots;
 use common::items::Item;
 use common::primatives::EntityId;
+use common::primatives::EntityProperties;
 use std::collections::VecDeque;
 
 // YEW MESSAGES
@@ -16,6 +17,7 @@ pub enum MessageFromYew {
         HomeLocation,
         CombatantSpecies,
         CombatantProperties,
+        EntityProperties,
     ),
     DespawnCombatantModel(EntityId),
     EndGame,

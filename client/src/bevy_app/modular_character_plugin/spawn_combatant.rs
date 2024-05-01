@@ -18,6 +18,7 @@ use common::combat::ActionResult;
 use common::combatants::combatant_species::CombatantSpecies;
 use common::combatants::CombatantProperties;
 use common::primatives::EntityId;
+use common::primatives::EntityProperties;
 use std::collections::HashMap;
 use std::collections::HashSet;
 
@@ -34,6 +35,8 @@ pub struct MainSkeletonEntity(pub Entity);
 pub struct MainSkeletonBonesAndArmature(pub HashMap<String, Entity>, pub Entity);
 #[derive(Component, Debug)]
 pub struct CombatantPropertiesComponent(pub CombatantProperties);
+#[derive(Component, Debug)]
+pub struct EntityPropertiesComponent(pub EntityProperties);
 #[derive(Component, Debug, Default)]
 pub struct ActionResultsProcessing(pub Vec<ActionResult>);
 /// Queue of part entities waiting for spawn. Using Vec in case multiple part scenes get queued
@@ -61,6 +64,7 @@ pub fn spawn_combatants(
         let home_location = &event.1;
         let species = &event.2;
         let combatant_properties = event.3.clone();
+        let entity_properties = event.4.clone();
 
         let file_name = match species {
             CombatantSpecies::Humanoid => "main_skeleton.glb",
@@ -69,6 +73,8 @@ pub fn spawn_combatants(
             CombatantSpecies::Dragon => "dragon_main_skeleton.glb",
             CombatantSpecies::Skeleton => "skeleton_main_skeleton.glb",
             CombatantSpecies::Velociraptor => "velociraptor_main_skeleton.glb",
+            CombatantSpecies::Elemental => "cube_main_skeleton.glb",
+            CombatantSpecies::Golem => "wasp_main_skeleton.glb",
         };
 
         let skeleton_handle = asset_pack
@@ -89,6 +95,7 @@ pub fn spawn_combatants(
             file_name.to_string(),
             species.clone(),
             combatant_properties,
+            entity_properties,
         )
     }
 }
@@ -106,6 +113,7 @@ pub fn spawn_combatant(
     file_name: String,
     species: CombatantSpecies,
     combatant_properties: CombatantProperties,
+    entity_properties: EntityProperties,
 ) {
     // - spawn skeleton and store its entity id on the character
 
@@ -137,6 +145,7 @@ pub fn spawn_combatant(
         ActiveModelActions::default(),
         HitboxRadius(0.7),
         CombatantPropertiesComponent(combatant_properties),
+        EntityPropertiesComponent(entity_properties.clone()),
         ActionResultsProcessing::default(),
         FloatingTextComponent::default(),
     ));
@@ -154,7 +163,7 @@ pub fn spawn_combatant(
     let mut billboard_entity_commands = commands.spawn(BillboardTextBundle {
         transform: Transform::from_xyz(0.0, 2.0, 0.0).with_scale(Vec3::splat(0.003)),
         text: Text::from_sections([TextSection {
-            value: format!("Character {}", character_id),
+            value: format!("{}", entity_properties.name),
             style: TextStyle {
                 font_size: 60.0,
                 font: font_handle.clone(),

@@ -12,6 +12,8 @@ pub enum CombatantSpecies {
     Dragon,
     Skeleton,
     Velociraptor,
+    Elemental,
+    Golem,
 }
 
 impl Display for CombatantSpecies {
@@ -26,6 +28,8 @@ impl Display for CombatantSpecies {
                 CombatantSpecies::Dragon => "Dragon",
                 CombatantSpecies::Skeleton => "Skeleton",
                 CombatantSpecies::Velociraptor => "Velociraptor",
+                CombatantSpecies::Elemental => "Elemental",
+                CombatantSpecies::Golem => "Golem",
             }
         )
     }

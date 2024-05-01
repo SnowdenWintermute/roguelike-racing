@@ -73,7 +73,9 @@ pub fn start_processing_new_action_results(
                     CombatantAbilityNames::AttackMeleeOffhand => {
                         CombatantModelActions::AttackMeleeOffHand
                     }
-                    CombatantAbilityNames::AttackRangedMainhand => todo!(),
+                    CombatantAbilityNames::AttackRangedMainhand => {
+                        CombatantModelActions::AttackRanged
+                    }
                     CombatantAbilityNames::Fire
                     | CombatantAbilityNames::Ice
                     | CombatantAbilityNames::Healing => CombatantModelActions::CastSpell,

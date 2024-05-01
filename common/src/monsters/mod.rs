@@ -55,15 +55,13 @@ impl Monster {
         let mut rng = rand::thread_rng();
         let monster_type = spawnable_types.choose(&mut rng).unwrap();
         let combatant_species = match monster_type {
-            MonsterTypes::MetallicGolem => todo!(),
+            MonsterTypes::MetallicGolem => CombatantSpecies::Golem,
             MonsterTypes::Zombie => CombatantSpecies::Skeleton,
             MonsterTypes::SkeletonArcher => CombatantSpecies::Skeleton,
             MonsterTypes::Scavenger => CombatantSpecies::Velociraptor,
-            MonsterTypes::Vulture => todo!(),
-            MonsterTypes::FireMage => todo!(),
-            MonsterTypes::Cultist => todo!(),
-            MonsterTypes::FireElemental => todo!(),
-            MonsterTypes::IceElemental => todo!(),
+            MonsterTypes::Vulture => CombatantSpecies::Dragon,
+            MonsterTypes::FireMage | MonsterTypes::Cultist => CombatantSpecies::Humanoid,
+            MonsterTypes::FireElemental | MonsterTypes::IceElemental => CombatantSpecies::Elemental,
         };
         // @TODO - Performance - don't send the name, derive it on the client from the species
         // create a monster of that type

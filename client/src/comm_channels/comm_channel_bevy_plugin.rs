@@ -60,12 +60,14 @@ fn handle_yew_messages(
                 home_location,
                 species,
                 combatant_properties,
+                entity_properties,
             ) => {
                 spawn_combatant_event_writer.send(CharacterSpawnEvent(
                     character_id,
                     home_location,
                     species,
                     combatant_properties,
+                    entity_properties,
                 ));
             }
             MessageFromYew::DespawnCombatantModel(combatant_id) => {

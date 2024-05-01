@@ -13,6 +13,7 @@ use common::combatants::CombatantProperties;
 use common::items::equipment::EquipmentSlots;
 use common::items::Item;
 use common::primatives::EntityId;
+use common::primatives::EntityProperties;
 use tokio::sync::broadcast;
 
 #[derive(Clone, Debug, Event)]
@@ -24,6 +25,7 @@ pub struct CharacterSpawnEvent(
     pub HomeLocation,
     pub CombatantSpecies,
     pub CombatantProperties,
+    pub EntityProperties,
 );
 
 #[derive(Clone, Debug, Event)]

@@ -10,6 +10,7 @@ mod random_monster_names;
 use self::monster_types::MonsterTypes;
 use crate::combatants::combat_attributes::CombatAttributes;
 use crate::combatants::combatant_classes::CombatantClass;
+use crate::combatants::combatant_species::CombatantSpecies;
 use crate::combatants::CombatantControlledBy;
 use crate::combatants::CombatantProperties;
 use crate::combatants::ExperiencePoints;
@@ -53,11 +54,22 @@ impl Monster {
         let spawnable_types = MonsterTypes::get_spawnable_types_on_floor(level);
         let mut rng = rand::thread_rng();
         let monster_type = spawnable_types.choose(&mut rng).unwrap();
+        let combatant_species = match monster_type {
+            MonsterTypes::MetallicGolem => CombatantSpecies::Golem,
+            MonsterTypes::Zombie => CombatantSpecies::Skeleton,
+            MonsterTypes::SkeletonArcher => CombatantSpecies::Skeleton,
+            MonsterTypes::Scavenger => CombatantSpecies::Velociraptor,
+            MonsterTypes::Vulture => CombatantSpecies::Dragon,
+            MonsterTypes::FireMage | MonsterTypes::Cultist => CombatantSpecies::Humanoid,
+            MonsterTypes::FireElemental | MonsterTypes::IceElemental => CombatantSpecies::Elemental,
+        };
+        // @TODO - Performance - don't send the name, derive it on the client from the species
         // create a monster of that type
         let mut monster = Monster::new(
             id_generator.get_next_entity_id(),
             format!("{}", monster_type),
             monster_type.clone(),
+            combatant_species,
         );
         // - some combatant class
         let monster_class = monster_type.get_combatant_class();
@@ -113,11 +125,17 @@ impl Monster {
         monster
     }
 
-    pub fn new(id: u32, name: String, monster_type: MonsterTypes) -> Self {
+    pub fn new(
+        id: u32,
+        name: String,
+        monster_type: MonsterTypes,
+        combatant_species: CombatantSpecies,
+    ) -> Self {
         let mut to_return = Monster {
             entity_properties: EntityProperties { id, name },
             combatant_properties: CombatantProperties::new(
                 &CombatantClass::Warrior,
+                &combatant_species,
                 HashMap::new(),
                 CombatantControlledBy::AI,
             ),

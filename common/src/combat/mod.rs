@@ -1,6 +1,7 @@
 pub mod ability_handlers;
 pub mod ai_behavior;
 pub mod all_combatants_in_group_are_dead;
+pub mod apply_action_result;
 pub mod battle;
 pub mod combat_actions;
 pub mod consumable_use_handlers;

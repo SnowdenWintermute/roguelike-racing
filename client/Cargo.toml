@@ -5,13 +5,25 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+# Enable max optimizations for dependencies, but not for our code:
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.release]
+opt-level = 's'
+lto = true
+codegen-units = 1
+
 [dependencies]
+# yew-bevy channel
+tokio = { version = "1.36.0", features = ["sync"] }
+
+# yew
 yew = {version = "0.21.0", features = ["csr"]}
 gloo = "0.10.0"
 wasm-bindgen = "0.2.88"
 web-sys = {version = "0.3.64", features = ["HtmlInputElement", "DomRect"]}
 yew-router = "0.18.0"
-# yewdux = "0.9.4"
 yewdux = "0.10.0"
 common = { path = "../common"}
 serde = { version = "1.0", features = ["derive"] }
@@ -21,15 +33,37 @@ gloo-utils = "0.2.0"
 strum = "0.25.0"
 strum_macros = "0.25.2"
 
-# [dependencies.web-sys]
-# version = "0.3.22"
-# features = [
-#   "BinaryType",
-#   "Blob",
-#   "ErrorEvent",
-#   "FileReader",
-#   "MessageEvent",
-#   "ProgressEvent",
-#   "WebSocket",
-# ]
-
+#bevy
+bevy_panorbit_camera = "0.16.0"
+bevy_mod_billboard = { git = "https://github.com/kulkalkul/bevy_mod_billboard" }
+bevy_asset_loader ="0.20"
+[dependencies.bevy]
+version = "0.13.0"
+# Disable the default features if there are any that you do not want
+default-features = false
+features = [
+    "animation",
+    "bevy_asset",
+    "bevy_audio",
+    # "bevy_gilrs",
+    "bevy_scene",
+    "bevy_winit",
+    "bevy_core_pipeline",
+    "bevy_pbr",
+    "bevy_gltf",
+    "bevy_render",
+    "bevy_sprite",
+    "bevy_text",
+    "bevy_ui",
+    # "multi-threaded",
+    "png",
+    "hdr",
+    "vorbis",
+    # "x11",
+    "bevy_gizmos",
+    # "android_shared_stdcxx",
+    "tonemapping_luts",
+    "default_font",
+    "webgl2",
+    # "bevy_debug_stepping" ,
+    ]

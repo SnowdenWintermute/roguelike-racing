@@ -1,0 +1,5 @@
+use std::f32::consts::PI;
+
+pub const UNKNOWN_ANIMATION_DURATION: u64 = 1000;
+pub const COMBATANT_TIME_TO_TRAVEL_ONE_METER: f32 = 200.0;
+pub const COMBATANT_TIME_TO_ROTATE_FULL_CIRCLE: f32 = 1000.0 / (PI * 2.0);

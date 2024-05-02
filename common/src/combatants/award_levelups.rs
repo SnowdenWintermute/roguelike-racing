@@ -55,11 +55,13 @@ pub fn award_levelups(combatant_properties: &mut CombatantProperties) {
 #[test]
 fn award_levelups_test() {
     use crate::combatants::combatant_classes::CombatantClass;
+    use crate::combatants::combatant_species::CombatantSpecies;
     use crate::combatants::CombatantControlledBy;
     use std::collections::HashMap;
 
     let mut combatant_properties = CombatantProperties::new(
         &CombatantClass::Warrior,
+        &CombatantSpecies::Humanoid,
         HashMap::new(),
         CombatantControlledBy::Player("test_user".to_string()),
     );

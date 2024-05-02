@@ -102,3 +102,5 @@ pub const CANT_DESCEND_IF_NO_STAIRS_ARE_PRESENT: &str =
 pub const MISSING_ROOM_TYPE_TO_GENERATE: &str =
     "Tried to generate a new room but the party's list of rooms to generate was empty";
 pub const CLIENT_LIST_MISSING_ROOM_TYPE: &str = "The client's list of room types on the current floor didn't contain a room type at the specified index";
+// YEW BEVY
+pub const NO_YEW_TRANSMITTER_TO_BEVY: &str = "Unable to find a transmitter to the bevy app";

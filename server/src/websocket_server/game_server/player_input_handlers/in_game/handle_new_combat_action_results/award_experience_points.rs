@@ -31,11 +31,13 @@ pub fn award_experience_points(
 #[test]
 fn award_experience_points_test() {
     use common::combatants::combatant_classes::CombatantClass;
+    use common::combatants::combatant_species::CombatantSpecies;
     use common::combatants::CombatantControlledBy;
     use std::collections::HashMap;
 
     let mut character_combatant_properties = CombatantProperties::new(
         &CombatantClass::Warrior,
+        &CombatantSpecies::Humanoid,
         HashMap::new(),
         CombatantControlledBy::Player("test_user".to_string()),
     );

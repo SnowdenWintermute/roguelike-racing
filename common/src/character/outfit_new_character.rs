@@ -29,6 +29,10 @@ pub fn outfit_new_character(game: &mut RoguelikeRacerGame, character: &mut Chara
         }
     }
 
+    // let mut hp = inherent_attributes
+    //     .entry(CombatAttributes::Hp)
+    //     .and_modify(|item| *item = 1);
+
     // SET UP STARTING TRAITS
     let starting_traits = match STARTING_COMBATANT_TRAITS.get(&combatant_properties.combatant_class)
     {

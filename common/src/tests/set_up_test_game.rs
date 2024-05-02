@@ -1,5 +1,6 @@
 use crate::adventuring_party::AdventuringParty;
 use crate::combatants::combatant_classes::CombatantClass;
+use crate::combatants::combatant_species::CombatantSpecies;
 use crate::errors::AppError;
 use crate::game::getters::get_mut_party;
 use crate::game::player::RoguelikeRacerPlayer;
@@ -30,6 +31,7 @@ pub fn set_up_test_game() -> Result<(RoguelikeRacerGame, u32, u32, u32), AppErro
         monster_id,
         "test_monster".to_string(),
         MonsterTypes::Scavenger,
+        CombatantSpecies::Wasp,
     );
     test_monster.combatant_properties.hit_points = 20;
 

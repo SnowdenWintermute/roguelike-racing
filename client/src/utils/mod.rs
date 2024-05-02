@@ -1,5 +1,7 @@
 use common::combat::magical_elements::MagicalElements;
 use wasm_bindgen::prelude::*;
+use web_sys::window;
+use web_sys::HtmlElement;
 
 // Import the JavaScript Date object
 #[wasm_bindgen]
@@ -28,4 +30,20 @@ pub fn get_magical_element_tailwind_color(element: &MagicalElements) -> String {
         MagicalElements::Light => "bg-lightwhite text-slate-700",
     };
     str.to_string()
+}
+
+pub fn set_bevy_canvas_visibility(visible: bool) {
+    let new_class_name = if visible {
+        "!w-screen !h-screen"
+    } else {
+        "hidden"
+    };
+    let bevy_canvas_node = window()
+        .unwrap_throw()
+        .document()
+        .unwrap_throw()
+        .get_element_by_id("bevy")
+        .expect("to have the bevy canvas")
+        .unchecked_into::<HtmlElement>();
+    bevy_canvas_node.set_class_name(new_class_name);
 }

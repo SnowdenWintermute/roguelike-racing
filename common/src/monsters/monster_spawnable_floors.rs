@@ -5,6 +5,7 @@ impl MonsterTypes {
     pub fn get_spawnable_types_on_floor(level: u8) -> Vec<MonsterTypes> {
         match level {
             1 => vec![MonsterTypes::Zombie, MonsterTypes::Scavenger],
+            // 1 => vec![MonsterTypes::FireElemental, MonsterTypes::IceElemental],
             2 => vec![
                 MonsterTypes::Zombie,
                 MonsterTypes::Scavenger,

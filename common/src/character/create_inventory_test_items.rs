@@ -10,7 +10,7 @@ pub fn create_inventory_test_items(game: &mut RoguelikeRacerGame) -> Vec<Item> {
             Item::generate(&mut game.id_generator, 5, Some(ItemCategories::Consumable));
         to_return.push(random_consumable);
     }
-    for _ in 0..18 {
+    for _ in 0..10 {
         let random_equipment =
             Item::generate(&mut game.id_generator, 1, Some(ItemCategories::Equipment));
         to_return.push(random_equipment);

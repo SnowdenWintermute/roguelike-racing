@@ -1,0 +1,20 @@
+spawn character 
+ - spawn skeleton and store its entity id on the character
+ - add character name to list of characters resource
+ - add skeleton entity to skeletons_awaiting_combatant_assignment resource
+ - upon skeleton load 
+   - add its bones to the corresponding character
+   - remove skeleton entity from skeletons_awaiting_combatant_assignment resource
+
+upon part change request
+ - get associated character
+ - check if character has assigned skeleton bones
+ - spawn new part and store entity id and category on character "awaiting spawn"
+ - for each character's list of parts awaiting spawn, check newly loaded scenes
+ - if one exists
+   - mark scene as loaded
+   - remove from character's list of parts awaiting spawn
+   - despawn any currently attached part in that category
+   - attach newly spawned part to character's skeleton bones
+   - add newly spawned part to character's list of attached parts
+   - make part scene visible

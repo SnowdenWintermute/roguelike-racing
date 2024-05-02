@@ -13,13 +13,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "concurrently": "^8.2.2",
-    "cypress": "^13.3.3",
-    "env-cmd": "^10.1.0",
-    "typescript": "^5.2.2"
+    "@testing-library/cypress": "10.0.1",
+    "concurrently": "8.2.2",
+    "cypress": "13.3.3",
+    "env-cmd": "10.1.0",
+    "typescript": "5.2.2"
   },
   "dependencies": {
-    "socket.io": "^4.7.2",
-    "socket.io-client": "^4.7.2"
+    "socket.io": "4.7.2",
+    "socket.io-client": "4.7.2"
   }
 }

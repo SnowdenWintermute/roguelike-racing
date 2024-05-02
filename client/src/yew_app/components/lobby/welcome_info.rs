@@ -19,7 +19,7 @@ pub fn welcome_info() -> Html {
     html!(
         <section class="h-[19rem] max-h-[19rem] p-4 mb-4 mr-4 bg-slate-700 border border-slate-400 overflow-y-auto pointer-events-auto">
             <div class="flex justify-between mb-2">
-                <h3 class="text-lg mb-2">{"Roguelike Racing alpha 0.6.0 "}</h3>
+                <h3 class="text-lg mb-2">{"Roguelike Racing alpha 0.7.0 "}</h3>
                 <button onclick={handle_show_patch_notes_click} class="border border-slate-400 p-[.25rem] pr-2 pl-2">
                     {patch_notes_button_text}
                 </button>
@@ -37,6 +37,16 @@ pub fn welcome_info() -> Html {
 fn welcome_message() -> Html {
     html!(
         <>
+
+    <p class="font-bold" >{"0.7.0 5/2/2024"}</p>
+    <p class="underline" >{"Summary:"}</p>
+    <p class="mb-2">{ "Added a 3D graphical representation of the game and revamped the UI layout to fit with it" }</p>
+    <p class="underline" >{"Added features:"}</p>
+    <ul class="list-disc list-inside mb-1">
+        <li>{ "The game world is now displayed in 3D grapics" }</li>
+        <li>{ "The user interface has been reworked to fit with the new 3D game world" }</li>
+    </ul>
+    <Divider />
     <p class="font-bold" >{"0.6.0 2/25/2024"}</p>
     <p class="underline" >{"Summary:"}</p>
     <p class="mb-2">{ "Added two new character classes, a leveling system, implemented physical damage types and resistances and elemental weapon damage." }</p>

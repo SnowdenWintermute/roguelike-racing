@@ -1,3 +1,5 @@
+Superceded by [speed dungeon](https://github.com/SnowdenWintermute/speed-dungeon)
+
 # Roguelike Racing
 
 A multiplayer turn based game in the spirit of For the King, Diablo and Final Fantasy.

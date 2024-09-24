@@ -1,4 +1,4 @@
-FROM rust:1.76.0 as builder
+FROM rust:latest as builder
 
 WORKDIR /app
 RUN mkdir /app/common
@@ -26,7 +26,7 @@ RUN cargo build --release
 RUN echo LISTING FILES
 RUN ls
 
-FROM rust:1.76.0 
+FROM rust:latest 
 WORKDIR /app
 COPY --from=builder /app/server/target .
 RUN ls -a

@@ -17,18 +17,20 @@ pub fn app(props: &Props) -> Html {
     let (game_state, _) = use_store::<GameStore>();
     let game = game_state.game.clone();
     let in_production = std::env::var("TRUNK_PROD").ok();
+    // let in_production = Some("true");
 
     // log!(format!("in production: {in_production}"));
-    let websocket_server_url = if let Some(value) = in_production {
-        if value == "true" {
-            "wss://roguelikeracing.com/ws"
-        } else {
-            "ws://127.0.0.1:8082/ws"
-        }
-    } else {
-        // "wss://roguelikeracing.com/ws"
-        "ws://127.0.0.1:8082/ws"
-    };
+    // let websocket_server_url = if let Some(value) = in_production {
+    //     if value == "true" {
+    //         "wss://rust.roguelikeracing.com/ws"
+    //     } else {
+    //         "ws://127.0.0.1:8082/ws"
+    //     }
+    // } else {
+    //     // "wss://roguelikeracing.com/ws"
+    //     "ws://127.0.0.1:8082/ws"
+    // };
+    let websocket_server_url = "wss://rust.roguelikeracing.com/ws";
 
     html! {
         <div class="relative" >

@@ -17,6 +17,7 @@ pub mod one_handed_melee_weapon_generation_templates;
 pub mod one_handed_melee_weapon_possible_affixes;
 pub mod shield_generation_templates;
 pub mod shield_possible_affixes;
+pub mod test;
 pub mod two_handed_melee_weapon_generation_templates;
 pub mod two_handed_melee_weapon_possible_affixes;
 pub mod two_handed_ranged_weapon_generation_templates;

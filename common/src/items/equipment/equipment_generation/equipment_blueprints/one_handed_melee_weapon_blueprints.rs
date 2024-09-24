@@ -1,4 +1,5 @@
 use super::EquipmentBlueprint;
+
 use crate::items::equipment::{
     affixes::{PrefixTypes, SuffixTypes},
     equipment_generation::{

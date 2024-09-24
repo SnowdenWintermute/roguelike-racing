@@ -20,9 +20,10 @@ impl RoguelikeRacerGame {
         let is_undead = target_combatant_properties
             .traits
             .contains(&CombatantTraits::Undead);
-        //  - if not undead trait, convert to healing and add resilience_multiplier
-        if is_undead {
-            target_hp_change += resilience_multiplier;
+
+        if !is_undead {
+            target_hp_change *= resilience_multiplier;
+        } else {
             target_hp_change *= -1.5;
         }
         Ok(target_hp_change as i16)

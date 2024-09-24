@@ -51,7 +51,7 @@ impl MonsterTypes {
             61..=70 => Self::FireMage,
             71..=80 => Self::Cultist,
             81..=85 => Self::FireElemental,
-            86..=90 => Self::FireElemental,
+            86..=90 => Self::IceElemental,
             _ => Self::MetallicGolem,
         }
     }

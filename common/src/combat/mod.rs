@@ -12,8 +12,6 @@ mod turn_order;
 use self::battle::BattleGroup;
 use self::combat_actions::CombatAction;
 use self::combat_actions::CombatActionTarget;
-use crate::combatants::abilities::CombatantAbilityNames;
-use crate::items::consumables::ConsumableTypes;
 use crate::primatives::GainedOrLost;
 use crate::status_effects::StatusEffects;
 use serde::Deserialize;
@@ -67,16 +65,4 @@ impl ActionResult {
             ends_turn: true,
         }
     }
-}
-
-#[derive(Debug)]
-pub enum CombatActionEffect {
-    AbilityUsed(CombatantAbilityNames, Vec<u32>),
-    ConsumableUsed(ConsumableTypes, Vec<u32>),
-    CurrentHpChange(i16, u32),
-    CurrentMpChange(i16, u32),
-    StatusEffectGained(StatusEffects, u32),
-    StatusEffectLost(StatusEffects, u32),
-    CombatantDeath(u32),
-    EndTurn,
 }

@@ -1,4 +1,3 @@
-use super::combatant_classes::attributes_per_level::ATTRIBUTES_BY_LEVEL;
 use super::CombatAttributes;
 use super::CombatantProperties;
 use crate::app_consts::AGI_TO_EVASION_RATIO;

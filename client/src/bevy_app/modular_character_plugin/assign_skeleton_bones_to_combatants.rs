@@ -89,9 +89,10 @@ pub fn assign_skeleton_bones_to_combatants(
                             ("sword.glb", CharacterPartCategories::Weapon),
                         ]),
                         CombatantClass::Mage => Vec::from([
-                            ("witch_torso.glb", CharacterPartCategories::Torso),
-                            ("witch_head.glb", CharacterPartCategories::Head),
-                            ("witch_legs.glb", CharacterPartCategories::Leg),
+                            ("witch.glb", CharacterPartCategories::FullBodyMesh),
+                            // ("witch_torso.glb", CharacterPartCategories::Torso),
+                            // ("witch_head.glb", CharacterPartCategories::Head),
+                            // ("witch_legs.glb", CharacterPartCategories::Leg),
                             ("sword.glb", CharacterPartCategories::Weapon),
                         ]),
                         CombatantClass::Rogue => Vec::from([

@@ -39,7 +39,6 @@ pub fn take_ai_controlled_turns_if_appropriate(
         })?;
         let (ally_battle_group, enemy_battle_group) =
             battle.get_ally_and_enemy_battle_groups(&active_combatant_id)?;
-        let enemy_ids = enemy_battle_group.combatant_ids.clone();
         let ally_ids = ally_battle_group.combatant_ids.clone();
         let (ability_name, targets) = game.ai_select_ability_and_targets(
             active_combatant_id,
@@ -60,8 +59,6 @@ pub fn take_ai_controlled_turns_if_appropriate(
         )?;
         // process result
         apply_action_results(game, &action_results, Some(battle.id))?;
-        let party_defeated = game.all_combatants_in_group_are_dead(enemy_ids)?;
-        if party_defeated {}
 
         active_combatant_turn_action_results.append(&mut action_results);
         let ability_attributes = ability_name.get_attributes();
@@ -98,11 +95,6 @@ pub fn take_ai_controlled_turns_if_appropriate(
             active_combatant_id = active_combatant_entity_properties.id;
             active_combatant_is_ai_controlled =
                 active_combatant_properties.controlled_by == CombatantControlledBy::AI;
-        }
-
-        if party_defeated {
-            server_log("party defeated by ai ability");
-            return Ok(ai_turn_results);
         }
     }
 

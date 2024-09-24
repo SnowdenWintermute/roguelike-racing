@@ -1,10 +1,9 @@
 use super::CombatantProperties;
-use crate::items::{
-    equipment::{
-        weapon_properties::WeaponProperties, EquipmentSlots, EquipmentTraits, EquipmentTypes,
-    },
-    ItemProperties,
-};
+use crate::items::equipment::weapon_properties::WeaponProperties;
+use crate::items::equipment::EquipmentSlots;
+use crate::items::equipment::EquipmentTraits;
+use crate::items::equipment::EquipmentTypes;
+use crate::items::ItemProperties;
 
 impl CombatantProperties {
     pub fn get_equipped_weapon_properties(

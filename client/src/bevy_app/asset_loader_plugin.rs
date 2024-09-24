@@ -24,7 +24,7 @@ impl Plugin for AssetLoaderPlugin {
 
 #[derive(AssetCollection, Resource)]
 pub struct MyAssets {
-    #[asset(paths("scifi_head.glb", "witch_head.glb"), collection(typed, mapped))]
+    // #[asset(paths("scifi_head.glb", "witch_head.glb"), collection(typed, mapped))]
     pub heads: HashMap<String, Handle<Gltf>>,
     #[asset(
         paths(
@@ -49,14 +49,16 @@ pub struct MyAssets {
             "cube_full.glb",
             "cube_full_red.glb",
             "midieval.glb",
-            "adventurer.glb"
+            "adventurer.glb",
+            "witch.glb"
         ),
         collection(typed, mapped)
     )]
     pub non_humanoids: HashMap<String, Handle<Gltf>>,
-    #[asset(paths("scifi_torso.glb", "witch_torso.glb"), collection(typed, mapped))]
+    #[asset(paths("witch_torso.glb"), collection(typed, mapped))]
     pub torsos: HashMap<String, Handle<Gltf>>,
-    #[asset(paths("scifi_legs.glb", "witch_legs.glb"), collection(typed, mapped))]
+    #[asset(paths(), collection(typed, mapped))]
+    // #[asset(paths("scifi_legs.glb", "witch_legs.glb"), collection(typed, mapped))]
     pub legs: HashMap<String, Handle<Gltf>>,
     #[asset(paths("sword.glb", "spear.glb"), collection(typed, mapped))]
     pub weapons: HashMap<String, Handle<Gltf>>,
